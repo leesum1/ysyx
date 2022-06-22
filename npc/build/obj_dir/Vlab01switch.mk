@@ -4,7 +4,7 @@
 # Execute this makefile from the object directory:
 #    make -f Vlab01switch.mk
 
-default: Vlab01switch
+default: /home/leesum/ysyx-workbench/npc/build/lab01switch
 
 ### Constants...
 # Perl executable (from $PERL)
@@ -35,17 +35,24 @@ VM_PREFIX = Vlab01switch
 VM_MODPREFIX = Vlab01switch
 # User CFLAGS (from -CFLAGS on Verilator command line)
 VM_USER_CFLAGS = \
+	-I/home/leesum/ysyx-workbench/nvboard/include \
+	-DTOP_NAME="Vlab01switch" \
 
 # User LDLIBS (from -LDFLAGS on Verilator command line)
 VM_USER_LDLIBS = \
+	/home/leesum/ysyx-workbench/nvboard/build/nvboard.a \
+	-lSDL2 \
+	-lSDL2_image \
 
 # User .cpp files (from .cpp's on Verilator command line)
 VM_USER_CLASSES = \
+	auto_bind \
 	lab01switch \
 
 # User .cpp directories (from .cpp's on Verilator command line)
 VM_USER_DIR = \
-	./csrc \
+	/home/leesum/ysyx-workbench/npc/build \
+	/home/leesum/ysyx-workbench/npc/csrc \
 
 
 ### Default rules...
@@ -57,11 +64,13 @@ include $(VERILATOR_ROOT)/include/verilated.mk
 ### Executable rules... (from --exe)
 VPATH += $(VM_USER_DIR)
 
-lab01switch.o: ./csrc/lab01switch.cpp
+auto_bind.o: /home/leesum/ysyx-workbench/npc/build/auto_bind.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+lab01switch.o: /home/leesum/ysyx-workbench/npc/csrc/lab01switch.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 
 ### Link rules... (from --exe)
-Vlab01switch: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
+/home/leesum/ysyx-workbench/npc/build/lab01switch: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
 	$(LINK) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) $(LIBS) $(SC_LIBS) -o $@
 
 

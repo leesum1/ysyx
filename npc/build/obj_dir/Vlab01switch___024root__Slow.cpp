@@ -52,7 +52,7 @@ void Vlab01switch___024root___ctor_var_reset(Vlab01switch___024root* vlSelf) {
     Vlab01switch__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vlab01switch___024root___ctor_var_reset\n"); );
     // Body
-    vlSelf->a = VL_RAND_RESET_I(1);
-    vlSelf->b = VL_RAND_RESET_I(1);
-    vlSelf->f = VL_RAND_RESET_I(1);
+    vlSelf->a = 0;
+    vlSelf->b = 0;
+    vlSelf->f = 0;
 }
