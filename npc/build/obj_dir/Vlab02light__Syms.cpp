@@ -1,16 +1,16 @@
 // Verilated -*- C++ -*-
 // DESCRIPTION: Verilator output: Symbol table implementation internals
 
-#include "Vlab01switch__Syms.h"
-#include "Vlab01switch.h"
-#include "Vlab01switch___024root.h"
+#include "Vlab02light__Syms.h"
+#include "Vlab02light.h"
+#include "Vlab02light___024root.h"
 
 // FUNCTIONS
-Vlab01switch__Syms::~Vlab01switch__Syms()
+Vlab02light__Syms::~Vlab02light__Syms()
 {
 }
 
-Vlab01switch__Syms::Vlab01switch__Syms(VerilatedContext* contextp, const char* namep,Vlab01switch* modelp)
+Vlab02light__Syms::Vlab02light__Syms(VerilatedContext* contextp, const char* namep,Vlab02light* modelp)
     : VerilatedSyms{contextp}
     // Setup internal state of the Syms class
     , __Vm_modelp(modelp)

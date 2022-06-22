@@ -5,31 +5,31 @@
 // The class here is then constructed to instantiate the design.
 // See the Verilator manual for examples.
 
-#ifndef VERILATED_VLAB01SWITCH_H_
-#define VERILATED_VLAB01SWITCH_H_  // guard
+#ifndef VERILATED_VLAB02LIGHT_H_
+#define VERILATED_VLAB02LIGHT_H_  // guard
 
 #include "verilated_heavy.h"
 
-class Vlab01switch__Syms;
-class Vlab01switch___024root;
+class Vlab02light__Syms;
+class Vlab02light___024root;
 class VerilatedVcdC;
-class Vlab01switch_VerilatedVcd;
+class Vlab02light_VerilatedVcd;
 
 
 // This class is the main interface to the Verilated model
-class Vlab01switch VL_NOT_FINAL {
+class Vlab02light VL_NOT_FINAL {
   private:
     // Symbol table holding complete model state (owned by this class)
-    Vlab01switch__Syms* const vlSymsp;
+    Vlab02light__Syms* const vlSymsp;
 
   public:
 
     // PORTS
     // The application code writes and reads these signals to
     // propagate new values into/out from the Verilated model.
-    VL_IN8(&a,0,0);
-    VL_IN8(&b,0,0);
-    VL_OUT8(&f,0,0);
+    VL_IN8(&clk,0,0);
+    VL_IN8(&rst,0,0);
+    VL_OUT16(&led,15,0);
 
     // CELLS
     // Public to allow access to /* verilator public */ items.
@@ -37,19 +37,19 @@ class Vlab01switch VL_NOT_FINAL {
 
     // Root instance pointer to allow access to model internals,
     // including inlined /* verilator public_flat_* */ items.
-    Vlab01switch___024root* const rootp;
+    Vlab02light___024root* const rootp;
 
     // CONSTRUCTORS
     /// Construct the model; called by application code
     /// If contextp is null, then the model will use the default global context
     /// If name is "", then makes a wrapper with a
     /// single model invisible with respect to DPI scope names.
-    explicit Vlab01switch(VerilatedContext* contextp, const char* name = "TOP");
-    explicit Vlab01switch(const char* name = "TOP");
+    explicit Vlab02light(VerilatedContext* contextp, const char* name = "TOP");
+    explicit Vlab02light(const char* name = "TOP");
     /// Destroy the model; called (often implicitly) by application code
-    virtual ~Vlab01switch();
+    virtual ~Vlab02light();
   private:
-    VL_UNCOPYABLE(Vlab01switch);  ///< Copying not allowed
+    VL_UNCOPYABLE(Vlab02light);  ///< Copying not allowed
 
   public:
     // API METHODS
