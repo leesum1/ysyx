@@ -4,8 +4,8 @@
 !Makefile
 !*.mk
 !*.[cSh]
-!*.v
-!*.cc
-!*.cpp
+!*lab*.v
+!*lab*.cc
+!*lab*.cpp
 !.gitignore
 !README.md
