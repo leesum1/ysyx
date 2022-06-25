@@ -2,7 +2,7 @@
 # DESCRIPTION: Verilator output: Make include file with class lists
 #
 # This file lists generated Verilated files, for including in higher level makefiles.
-# See Vlab04ecode83.mk for the caller.
+# See Vlab05alu4.mk for the caller.
 
 ### Switches...
 # C11 constructs required?  0/1 (always on now)
@@ -25,22 +25,22 @@ VM_TRACE_FST_WRITER_THREAD = 0
 ### Object file lists...
 # Generated module classes, fast-path, compile with highest optimization
 VM_CLASSES_FAST += \
-	Vlab04ecode83 \
-	Vlab04ecode83___024root \
+	Vlab05alu4 \
+	Vlab05alu4___024root \
 
 # Generated module classes, non-fast-path, compile with low/medium optimization
 VM_CLASSES_SLOW += \
-	Vlab04ecode83__ConstPool_0 \
-	Vlab04ecode83___024root__Slow \
+	Vlab05alu4__ConstPool_0 \
+	Vlab05alu4___024root__Slow \
 
 # Generated support classes, fast-path, compile with highest optimization
 VM_SUPPORT_FAST += \
-	Vlab04ecode83__Trace \
+	Vlab05alu4__Trace \
 
 # Generated support classes, non-fast-path, compile with low/medium optimization
 VM_SUPPORT_SLOW += \
-	Vlab04ecode83__Syms \
-	Vlab04ecode83__Trace__Slow \
+	Vlab05alu4__Syms \
+	Vlab05alu4__Trace__Slow \
 
 # Global classes, need linked once per executable, fast-path, compile with highest optimization
 VM_GLOBAL_FAST += \

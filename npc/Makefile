@@ -1,5 +1,5 @@
 # 需要仿真的模块名称
-TOPNAME = lab04ecode83
+TOPNAME = lab05alu4
 NXDC_FILES = constr/$(TOPNAME).nxdc
 INC_PATH ?=
 
@@ -47,6 +47,7 @@ all: default
 	@echo "Write this Makefile by your self."
 
 run: $(BIN)
+	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@$^
 
 sim:

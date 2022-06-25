@@ -2,9 +2,9 @@
 # DESCRIPTION: Verilator output: Makefile for building Verilated archive or executable
 #
 # Execute this makefile from the object directory:
-#    make -f Vlab04ecode83.mk
+#    make -f Vlab05alu4.mk
 
-default: /home/leesum/ysyx-workbench/npc/build/lab04ecode83
+default: /home/leesum/ysyx-workbench/npc/build/lab05alu4
 
 ### Constants...
 # Perl executable (from $PERL)
@@ -30,13 +30,13 @@ VM_SC_TARGET_ARCH = linux
 
 ### Vars...
 # Design prefix (from --prefix)
-VM_PREFIX = Vlab04ecode83
+VM_PREFIX = Vlab05alu4
 # Module prefix (from --prefix)
-VM_MODPREFIX = Vlab04ecode83
+VM_MODPREFIX = Vlab05alu4
 # User CFLAGS (from -CFLAGS on Verilator command line)
 VM_USER_CFLAGS = \
 	-I/home/leesum/ysyx-workbench/nvboard/include \
-	-DTOP_NAME="Vlab04ecode83" \
+	-DTOP_NAME="Vlab05alu4" \
 
 # User LDLIBS (from -LDFLAGS on Verilator command line)
 VM_USER_LDLIBS = \
@@ -47,7 +47,7 @@ VM_USER_LDLIBS = \
 # User .cpp files (from .cpp's on Verilator command line)
 VM_USER_CLASSES = \
 	auto_bind \
-	lab04ecode83 \
+	lab05alu4 \
 
 # User .cpp directories (from .cpp's on Verilator command line)
 VM_USER_DIR = \
@@ -57,7 +57,7 @@ VM_USER_DIR = \
 
 ### Default rules...
 # Include list of all generated classes
-include Vlab04ecode83_classes.mk
+include Vlab05alu4_classes.mk
 # Include global rules
 include $(VERILATOR_ROOT)/include/verilated.mk
 
@@ -66,11 +66,11 @@ VPATH += $(VM_USER_DIR)
 
 auto_bind.o: /home/leesum/ysyx-workbench/npc/build/auto_bind.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-lab04ecode83.o: /home/leesum/ysyx-workbench/npc/csrc/lab04ecode83.cpp
+lab05alu4.o: /home/leesum/ysyx-workbench/npc/csrc/lab05alu4.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 
 ### Link rules... (from --exe)
-/home/leesum/ysyx-workbench/npc/build/lab04ecode83: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
+/home/leesum/ysyx-workbench/npc/build/lab05alu4: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
 	$(LINK) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) $(LIBS) $(SC_LIBS) -o $@
 
 

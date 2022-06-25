@@ -5,5 +5,4 @@ module lab01switch (
   output f
 );
   assign f = a ^ b;
-
 endmodule
