@@ -5,39 +5,32 @@
 // The class here is then constructed to instantiate the design.
 // See the Verilator manual for examples.
 
-#ifndef VERILATED_VLAB05ALU4_H_
-#define VERILATED_VLAB05ALU4_H_  // guard
+#ifndef VERILATED_VLAB07RAND8_H_
+#define VERILATED_VLAB07RAND8_H_  // guard
 
 #include "verilated_heavy.h"
 
-class Vlab05alu4__Syms;
-class Vlab05alu4___024root;
+class Vlab07rand8__Syms;
+class Vlab07rand8___024root;
 class VerilatedVcdC;
-class Vlab05alu4_VerilatedVcd;
+class Vlab07rand8_VerilatedVcd;
 
 
 // This class is the main interface to the Verilated model
-class Vlab05alu4 VL_NOT_FINAL {
+class Vlab07rand8 VL_NOT_FINAL {
   private:
     // Symbol table holding complete model state (owned by this class)
-    Vlab05alu4__Syms* const vlSymsp;
+    Vlab07rand8__Syms* const vlSymsp;
 
   public:
 
     // PORTS
     // The application code writes and reads these signals to
     // propagate new values into/out from the Verilated model.
-    VL_IN8(&a,3,0);
-    VL_IN8(&b,3,0);
-    VL_OUT8(&out,3,0);
-    VL_OUT8(&CF,0,0);
-    VL_OUT8(&PF,0,0);
-    VL_OUT8(&AF,0,0);
-    VL_OUT8(&ZF,0,0);
-    VL_OUT8(&SF,0,0);
-    VL_OUT8(&OF,0,0);
-    VL_IN8(&sel,2,0);
-    VL_OUT8(&segout,7,0);
+    VL_IN8(&clk,0,0);
+    VL_OUT8(&out,7,0);
+    VL_OUT8(&seg1,7,0);
+    VL_OUT8(&seg2,7,0);
 
     // CELLS
     // Public to allow access to /* verilator public */ items.
@@ -45,19 +38,19 @@ class Vlab05alu4 VL_NOT_FINAL {
 
     // Root instance pointer to allow access to model internals,
     // including inlined /* verilator public_flat_* */ items.
-    Vlab05alu4___024root* const rootp;
+    Vlab07rand8___024root* const rootp;
 
     // CONSTRUCTORS
     /// Construct the model; called by application code
     /// If contextp is null, then the model will use the default global context
     /// If name is "", then makes a wrapper with a
     /// single model invisible with respect to DPI scope names.
-    explicit Vlab05alu4(VerilatedContext* contextp, const char* name = "TOP");
-    explicit Vlab05alu4(const char* name = "TOP");
+    explicit Vlab07rand8(VerilatedContext* contextp, const char* name = "TOP");
+    explicit Vlab07rand8(const char* name = "TOP");
     /// Destroy the model; called (often implicitly) by application code
-    virtual ~Vlab05alu4();
+    virtual ~Vlab07rand8();
   private:
-    VL_UNCOPYABLE(Vlab05alu4);  ///< Copying not allowed
+    VL_UNCOPYABLE(Vlab07rand8);  ///< Copying not allowed
 
   public:
     // API METHODS

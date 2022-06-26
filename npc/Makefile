@@ -1,5 +1,5 @@
 # 需要仿真的模块名称
-TOPNAME = lab05alu4
+TOPNAME = lab07rand8
 NXDC_FILES = constr/$(TOPNAME).nxdc
 INC_PATH ?=
 
