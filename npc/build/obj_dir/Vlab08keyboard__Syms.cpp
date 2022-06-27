@@ -1,16 +1,16 @@
 // Verilated -*- C++ -*-
 // DESCRIPTION: Verilator output: Symbol table implementation internals
 
-#include "Vlab07rand8__Syms.h"
-#include "Vlab07rand8.h"
-#include "Vlab07rand8___024root.h"
+#include "Vlab08keyboard__Syms.h"
+#include "Vlab08keyboard.h"
+#include "Vlab08keyboard___024root.h"
 
 // FUNCTIONS
-Vlab07rand8__Syms::~Vlab07rand8__Syms()
+Vlab08keyboard__Syms::~Vlab08keyboard__Syms()
 {
 }
 
-Vlab07rand8__Syms::Vlab07rand8__Syms(VerilatedContext* contextp, const char* namep,Vlab07rand8* modelp)
+Vlab08keyboard__Syms::Vlab08keyboard__Syms(VerilatedContext* contextp, const char* namep,Vlab08keyboard* modelp)
     : VerilatedSyms{contextp}
     // Setup internal state of the Syms class
     , __Vm_modelp(modelp)

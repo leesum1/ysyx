@@ -2,7 +2,7 @@
 # DESCRIPTION: Verilator output: Make include file with class lists
 #
 # This file lists generated Verilated files, for including in higher level makefiles.
-# See Vlab07rand8.mk for the caller.
+# See Vlab08keyboard.mk for the caller.
 
 ### Switches...
 # C11 constructs required?  0/1 (always on now)
@@ -25,22 +25,22 @@ VM_TRACE_FST_WRITER_THREAD = 0
 ### Object file lists...
 # Generated module classes, fast-path, compile with highest optimization
 VM_CLASSES_FAST += \
-	Vlab07rand8 \
-	Vlab07rand8___024root \
+	Vlab08keyboard \
+	Vlab08keyboard___024root \
 
 # Generated module classes, non-fast-path, compile with low/medium optimization
 VM_CLASSES_SLOW += \
-	Vlab07rand8__ConstPool_0 \
-	Vlab07rand8___024root__Slow \
+	Vlab08keyboard__ConstPool_0 \
+	Vlab08keyboard___024root__Slow \
 
 # Generated support classes, fast-path, compile with highest optimization
 VM_SUPPORT_FAST += \
-	Vlab07rand8__Trace \
+	Vlab08keyboard__Trace \
 
 # Generated support classes, non-fast-path, compile with low/medium optimization
 VM_SUPPORT_SLOW += \
-	Vlab07rand8__Syms \
-	Vlab07rand8__Trace__Slow \
+	Vlab08keyboard__Syms \
+	Vlab08keyboard__Trace__Slow \
 
 # Global classes, need linked once per executable, fast-path, compile with highest optimization
 VM_GLOBAL_FAST += \

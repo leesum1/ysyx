@@ -1,7 +1,8 @@
 # 需要仿真的模块名称
-TOPNAME = lab07rand8
+TOPNAME = lab08keyboard
+NVBOARD_HOME =/home/leesum/ysyx-workbench/nvboard
 NXDC_FILES = constr/$(TOPNAME).nxdc
-INC_PATH ?=
+INC_PATH ?= /usr/local/share/verilator/include/
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  --trace \
@@ -31,7 +32,7 @@ include $(NVBOARD_HOME)/scripts/nvboard.mk
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
-LDFLAGS += -lSDL2 -lSDL2_image
+LDFLAGS += -lSDL2 -lSDL2_image 
 
 
 

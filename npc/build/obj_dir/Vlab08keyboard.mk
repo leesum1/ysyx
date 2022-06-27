@@ -2,9 +2,9 @@
 # DESCRIPTION: Verilator output: Makefile for building Verilated archive or executable
 #
 # Execute this makefile from the object directory:
-#    make -f Vlab07rand8.mk
+#    make -f Vlab08keyboard.mk
 
-default: /home/leesum/ysyx-workbench/npc/build/lab07rand8
+default: /home/leesum/ysyx-workbench/npc/build/lab08keyboard
 
 ### Constants...
 # Perl executable (from $PERL)
@@ -30,13 +30,14 @@ VM_SC_TARGET_ARCH = linux
 
 ### Vars...
 # Design prefix (from --prefix)
-VM_PREFIX = Vlab07rand8
+VM_PREFIX = Vlab08keyboard
 # Module prefix (from --prefix)
-VM_MODPREFIX = Vlab07rand8
+VM_MODPREFIX = Vlab08keyboard
 # User CFLAGS (from -CFLAGS on Verilator command line)
 VM_USER_CFLAGS = \
+	-I/usr/local/share/verilator/include/ \
 	-I/home/leesum/ysyx-workbench/nvboard/include \
-	-DTOP_NAME="Vlab07rand8" \
+	-DTOP_NAME="Vlab08keyboard" \
 
 # User LDLIBS (from -LDFLAGS on Verilator command line)
 VM_USER_LDLIBS = \
@@ -47,7 +48,7 @@ VM_USER_LDLIBS = \
 # User .cpp files (from .cpp's on Verilator command line)
 VM_USER_CLASSES = \
 	auto_bind \
-	lab07rand8 \
+	lab08keyboard \
 
 # User .cpp directories (from .cpp's on Verilator command line)
 VM_USER_DIR = \
@@ -57,7 +58,7 @@ VM_USER_DIR = \
 
 ### Default rules...
 # Include list of all generated classes
-include Vlab07rand8_classes.mk
+include Vlab08keyboard_classes.mk
 # Include global rules
 include $(VERILATOR_ROOT)/include/verilated.mk
 
@@ -66,11 +67,11 @@ VPATH += $(VM_USER_DIR)
 
 auto_bind.o: /home/leesum/ysyx-workbench/npc/build/auto_bind.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-lab07rand8.o: /home/leesum/ysyx-workbench/npc/csrc/lab07rand8.cpp
+lab08keyboard.o: /home/leesum/ysyx-workbench/npc/csrc/lab08keyboard.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 
 ### Link rules... (from --exe)
-/home/leesum/ysyx-workbench/npc/build/lab07rand8: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
+/home/leesum/ysyx-workbench/npc/build/lab08keyboard: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
 	$(LINK) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) $(LIBS) $(SC_LIBS) -o $@
 
 
