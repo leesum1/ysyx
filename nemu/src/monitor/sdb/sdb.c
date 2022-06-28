@@ -130,6 +130,15 @@ static struct
     {"help", "Display informations about all supported commands", cmd_help},
     {"c", "Continue the execution of the program", cmd_c},
     {"q", "Exit NEMU", cmd_q},
+    {"si", "execut the program by  N step", cmd_si},
+    {"info", "show the information of register or watchpoint", cmd_info},
+    {"x", "Calculate the value of the expression EXPR, take the result as the starting memory address\n, \
+    and output N consecutive 4 - bytes in hexadecimal form ",
+     cmd_x},
+    {"p", "Calculate the value of the expression EXPR", cmd_p},
+    {"w", "Suspend program execution when the value of the expression EXPR changes", cmd_w},
+    {"d", "Delete the watchpoint with sequence number N", cmd_w},
+
     /* TODO: Add more commands */
 
 };
