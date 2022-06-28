@@ -90,7 +90,7 @@ static int cmd_info(char *args)
   char val[20];
   sscanf(args, "%s", val);
   printf("info:%s,\n", val);
-  if (strcmp(val, 'r'))
+  if (strcmp(val, "r"))
   {
     isa_reg_display();
   }
