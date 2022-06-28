@@ -108,8 +108,11 @@ static int cmd_x(char *args)
     return 0;
   uint64_t addr;
   uint32_t len;
+  //解析参数
   sscanf(args, "%d %lX", &len, &addr);
   printf("len:%d,addr:0x%lX\n", len, addr);
+  uint64_t data = paddr_read(addr, len);
+  printf("data:%lx", data);
   return 0;
 }
 
