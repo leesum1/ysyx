@@ -103,6 +103,7 @@ static int cmd_x(char* args) {
   sscanf(args, "%d %x", &len, &addr);
   DEBUG_S("len:%d,addr:%x\n", len, addr);
   int32_t i = 0;
+  /* 每次读取 4byte */
   for (i = 0; i < len; i++) {
     DEBUG_S("addr:0x%08x\tData: %08x\n", addr,
       (void*)vaddr_read(addr, 4));
