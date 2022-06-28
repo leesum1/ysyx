@@ -18,11 +18,11 @@
 #include <cpu/difftest.h>
 #include <locale.h>
 
-/* The assembly code of instructions executed is only output to the screen
- * when the number of instructions executed is less than this value.
- * This is useful when you use the `si' command.
- * You can modify this value as you want.
- */
+ /* The assembly code of instructions executed is only output to the screen
+  * when the number of instructions executed is less than this value.
+  * This is useful when you use the `si' command.
+  * You can modify this value as you want.
+  */
 #define MAX_INST_TO_PRINT 10
 
 CPU_state cpu = {};
@@ -32,35 +32,30 @@ static bool g_print_step = false;
 
 void device_update();
 
-static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
-{
+static void trace_and_difftest(Decode* _this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
-  if (ITRACE_COND)
-  {
+  if (ITRACE_COND) {
     log_write("%s\n", _this->logbuf);
   }
 #endif
-  if (g_print_step)
-  {
+  if (g_print_step) {
     IFDEF(CONFIG_ITRACE, puts(_this->logbuf));
   }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
 }
 
-static void exec_once(Decode *s, vaddr_t pc)
-{
+static void exec_once(Decode* s, vaddr_t pc) {
   s->pc = pc;
   s->snpc = pc;
   isa_exec_once(s);
   cpu.pc = s->dnpc;
 #ifdef CONFIG_ITRACE
-  char *p = s->logbuf;
+  char* p = s->logbuf;
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
   int ilen = s->snpc - s->pc;
   int i;
-  uint8_t *inst = (uint8_t *)&s->isa.inst.val;
-  for (i = ilen - 1; i >= 0; i--)
-  {
+  uint8_t* inst = (uint8_t*)&s->isa.inst.val;
+  for (i = ilen - 1; i >= 0; i--) {
     p += snprintf(p, 4, " %02x", inst[i]);
   }
   int ilen_max = MUXDEF(CONFIG_ISA_x86, 8, 4);
@@ -71,17 +66,15 @@ static void exec_once(Decode *s, vaddr_t pc)
   memset(p, ' ', space_len);
   p += space_len;
 
-  void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
+  void disassemble(char* str, int size, uint64_t pc, uint8_t * code, int nbyte);
   disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
-              MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst.val, ilen);
+    MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t*)&s->isa.inst.val, ilen);
 #endif
 }
 
-static void execute(uint64_t n)
-{
+static void execute(uint64_t n) {
   Decode s;
-  for (; n > 0; n--)
-  {
+  for (; n > 0; n--) {
     exec_once(&s, cpu.pc);
     g_nr_guest_inst++;
     trace_and_difftest(&s, cpu.pc);
@@ -91,8 +84,7 @@ static void execute(uint64_t n)
   }
 }
 
-static void statistic()
-{
+static void statistic() {
   IFNDEF(CONFIG_TARGET_AM, setlocale(LC_NUMERIC, ""));
 #define NUMBERIC_FMT MUXDEF(CONFIG_TARGET_AM, "%ld", "%'ld")
   Log("host time spent = " NUMBERIC_FMT " us", g_timer);
@@ -103,8 +95,7 @@ static void statistic()
     Log("Finish running in less than 1 us and can not calculate the simulation frequency");
 }
 
-void assert_fail_msg()
-{
+void assert_fail_msg() {
   isa_reg_display();
   statistic();
 }
@@ -114,11 +105,9 @@ void assert_fail_msg()
  *  Simulate how the CPU works.
  * @param n CPU执行的次数 -1 为无限次
  */
-void cpu_exec(uint64_t n)
-{
+void cpu_exec(uint64_t n) {
   g_print_step = (n < MAX_INST_TO_PRINT);
-  switch (nemu_state.state)
-  {
+  switch (nemu_state.state) {
   case NEMU_END:
   case NEMU_ABORT:
     printf("Program execution has ended. To restart the program, exit NEMU and run again.\n");
@@ -134,8 +123,7 @@ void cpu_exec(uint64_t n)
   uint64_t timer_end = get_time();
   g_timer += timer_end - timer_start;
 
-  switch (nemu_state.state)
-  {
+  switch (nemu_state.state) {
   case NEMU_RUNNING:
     nemu_state.state = NEMU_STOP;
     break;
@@ -143,8 +131,8 @@ void cpu_exec(uint64_t n)
   case NEMU_END:
   case NEMU_ABORT:
     Log("nemu: %s at pc = " FMT_WORD,
-        (nemu_state.state == NEMU_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) : (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) : ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
-        nemu_state.halt_pc);
+      (nemu_state.state == NEMU_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) : (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) : ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
+      nemu_state.halt_pc);
     // fall through
   case NEMU_QUIT:
     statistic();

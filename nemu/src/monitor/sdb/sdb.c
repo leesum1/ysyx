@@ -27,34 +27,29 @@ void init_regex();
 void init_wp_pool();
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
-static char *rl_gets()
-{
-  static char *line_read = NULL;
+static char* rl_gets() {
+  static char* line_read = NULL;
 
-  if (line_read)
-  {
+  if (line_read) {
     free(line_read);
     line_read = NULL;
   }
 
   line_read = readline("(nemu) ");
 
-  if (line_read && *line_read)
-  {
+  if (line_read && *line_read) {
     add_history(line_read);
   }
 
   return line_read;
 }
 
-static int cmd_c(char *args)
-{
+static int cmd_c(char* args) {
   cpu_exec(-1);
   return 0;
 }
 
-static int cmd_q(char *args)
-{
+static int cmd_q(char* args) {
   nemu_state.state = NEMU_QUIT; // leesum
   return -1;
 }
@@ -63,15 +58,12 @@ static int cmd_q(char *args)
  * 让程序单步执行N条指令后暂停执行,当N没有给出时, 缺省为1
  */
 static int
-cmd_si(char *args)
-{
+cmd_si(char* args) {
   int N;
-  if (NULL == args)
-  {
+  if (NULL == args) {
     N = 1; //默认值 1
   }
-  else
-  {
+  else {
     sscanf(args, "%d", &N);
   }
   printf("cpu_exec:%d,\n", N);
@@ -82,16 +74,14 @@ cmd_si(char *args)
  * @brief info SUBCMD
  * 打印寄存器状态 打印监视点信息
  */
-static int cmd_info(char *args)
-{
+static int cmd_info(char* args) {
   if (NULL == args)
     return 0;
 
   char val[20];
   sscanf(args, "%s", val);
   printf("info:%s,\n", val);
-  if (0 == strcmp(val, "r"))
-  {
+  if (0 == strcmp(val, "r")) {
     isa_reg_display();
   }
 
@@ -102,8 +92,7 @@ static int cmd_info(char *args)
  * 求出表达式EXPR的值, 将结果作为起始内存地址,
  * 以十六进制形式输出连续的N个4字节
  */
-static int cmd_x(char *args)
-{
+static int cmd_x(char* args) {
   if (NULL == args)
     return 0;
   uint64_t addr;
@@ -114,10 +103,9 @@ static int cmd_x(char *args)
 
   int32_t i = 0;
   uint64_t data;
-  for (i = 0; i < len; i++)
-  {
+  for (i = 0; i < len; i++) {
     printf("addr:0x%08lx\tData: 0x%016lx\n", addr,
-           vaddr_read(addr, 8));
+      vaddr_read(addr, 8));
     addr += 8; // 64-bit machine 8*8 Byte = 64-bit
   }
 
@@ -129,8 +117,7 @@ static int cmd_x(char *args)
  * 求出表达式EXPR的值, EXPR支持的
  * 运算请见调试中的表达式求值小节
  */
-static int cmd_p(char *args)
-{
+static int cmd_p(char* args) {
   nemu_state.state = NEMU_QUIT; // leesum
   return -1;
 }
@@ -139,8 +126,7 @@ static int cmd_p(char *args)
  * @brief w EXPR
  * 当表达式EXPR的值发生变化时, 暂停程序执行
  */
-static int cmd_w(char *args)
-{
+static int cmd_w(char* args) {
   nemu_state.state = NEMU_QUIT; // leesum
   return -1;
 }
@@ -149,19 +135,17 @@ static int cmd_w(char *args)
  * @brief d N
  * 删除序号为N的监视点
  */
-static int cmd_d(char *args)
-{
+static int cmd_d(char* args) {
   nemu_state.state = NEMU_QUIT; // leesum
   return -1;
 }
 
 #define NR_CMD ARRLEN(cmd_table)
-static int cmd_help(char *args);
-static struct
-{
-  const char *name;
-  const char *description;
-  int (*handler)(char *);
+static int cmd_help(char* args);
+static struct {
+  const char* name;
+  const char* description;
+  int (*handler)(char*);
 } cmd_table[] = {
     {"help", "Display informations about all supported commands", cmd_help},
     {"c", "Continue the execution of the program", cmd_c},
@@ -175,30 +159,24 @@ static struct
     {"w", "Suspend program execution when the value of the expression EXPR changes", cmd_w},
     {"d", "Delete the watchpoint with sequence number N", cmd_d},
 
-    /* TODO: Add more commands */
+  /* TODO: Add more commands */
 
 };
 //需要放在最后
-static int cmd_help(char *args)
-{
+static int cmd_help(char* args) {
   /* extract the first argument */
-  char *arg = strtok(NULL, " ");
+  char* arg = strtok(NULL, " ");
   int i;
 
-  if (arg == NULL)
-  {
+  if (arg == NULL) {
     /* no argument given */
-    for (i = 0; i < NR_CMD; i++)
-    {
+    for (i = 0; i < NR_CMD; i++) {
       printf("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
     }
   }
-  else
-  {
-    for (i = 0; i < NR_CMD; i++)
-    {
-      if (strcmp(arg, cmd_table[i].name) == 0)
-      {
+  else {
+    for (i = 0; i < NR_CMD; i++) {
+      if (strcmp(arg, cmd_table[i].name) == 0) {
         printf("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
         return 0;
       }
@@ -208,29 +186,24 @@ static int cmd_help(char *args)
   return 0;
 }
 
-void sdb_set_batch_mode()
-{
+void sdb_set_batch_mode() {
   is_batch_mode = true;
 }
 
-void sdb_mainloop()
-{
-  if (is_batch_mode)
-  {
+void sdb_mainloop() {
+  if (is_batch_mode) {
     cmd_c(NULL);
     return;
   }
 
-  for (char *str; (str = rl_gets()) != NULL;)
-  {
+  for (char* str; (str = rl_gets()) != NULL;) {
 
     /* str 字符串的结束地址 */
-    char *str_end = str + strlen(str);
+    char* str_end = str + strlen(str);
 
     /* extract the first token as the command */
-    char *cmd = strtok(str, " ");
-    if (cmd == NULL)
-    {
+    char* cmd = strtok(str, " ");
+    if (cmd == NULL) {
       continue;
     }
 
@@ -240,9 +213,8 @@ void sdb_mainloop()
      *  参数args 字符串的结束地址
      * 通过比较结束地址来判断是否有参数
      */
-    char *args = cmd + strlen(cmd) + 1;
-    if (args >= str_end)
-    {
+    char* args = cmd + strlen(cmd) + 1;
+    if (args >= str_end) {
       args = NULL;
     }
 
@@ -252,27 +224,22 @@ void sdb_mainloop()
 #endif
 
     int i;
-    for (i = 0; i < NR_CMD; i++)
-    {
-      if (strcmp(cmd, cmd_table[i].name) == 0)
-      {
-        if (cmd_table[i].handler(args) < 0)
-        {
+    for (i = 0; i < NR_CMD; i++) {
+      if (strcmp(cmd, cmd_table[i].name) == 0) {
+        if (cmd_table[i].handler(args) < 0) {
           return;
         }
         break;
       }
     }
 
-    if (i == NR_CMD)
-    {
+    if (i == NR_CMD) {
       printf("Unknown command '%s'\n", cmd);
     }
   }
 }
 
-void init_sdb()
-{
+void init_sdb() {
   /* Compile the regular expressions. */
   init_regex();
 

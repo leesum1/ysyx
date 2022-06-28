@@ -16,8 +16,8 @@
 #include <isa.h>
 #include <memory/paddr.h>
 
-// this is not consistent with uint8_t
-// but it is ok since we do not access the array directly
+ // this is not consistent with uint8_t
+ // but it is ok since we do not access the array directly
 static const uint32_t img[] = {
     0x00000297, // auipc t0,0
     0x0002b823, // sd  zero,16(t0)
@@ -26,8 +26,7 @@ static const uint32_t img[] = {
     0xdeadbeef, // some data
 };
 
-static void restart()
-{
+static void restart() {
   /* Set the initial program counter. */
   cpu.pc = RESET_VECTOR;
 
@@ -35,14 +34,12 @@ static void restart()
   cpu.gpr[0] = 0;
 }
 
-void init_isa()
-{
+void init_isa() {
   /* Load built-in image. */
   memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));
 
-  uint16_t *data = guest_to_host(RESET_VECTOR);
-  for (int i = 0; i < 20; i++)
-  {
+  uint16_t* data = guest_to_host(RESET_VECTOR);
+  for (int i = 0; i < 20; i++) {
     printf("data:%02x\r\n", data[i]);
   }
 
