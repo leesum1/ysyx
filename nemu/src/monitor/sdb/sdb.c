@@ -20,7 +20,7 @@
 #include "sdb.h"
 
 #include <utils.h>
-
+#include <memory/paddr.h>
 static int is_batch_mode = false;
 
 void init_regex();
@@ -107,12 +107,20 @@ static int cmd_x(char *args)
   if (NULL == args)
     return 0;
   uint64_t addr;
-  uint32_t len;
+  int32_t len;
   //解析参数
   sscanf(args, "%d %lX", &len, &addr);
   printf("len:%d,addr:0x%lX\n", len, addr);
-  uint64_t data = paddr_read(addr, len);
-  printf("data:%lx", data);
+
+  uint16_t i = 0;
+  uint64_t data;
+  do
+  {
+    data = paddr_read(addr, i + 8);
+    printf("addr:%lx\t%lx", (addr + i), data);
+    i = i + 8;
+  } while (i < len);
+
   return 0;
 }
 
