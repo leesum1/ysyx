@@ -65,8 +65,9 @@ static int cmd_q(char *args)
 static int
 cmd_si(char *args)
 {
-  nemu_state.state = NEMU_QUIT; // leesum
-  return -1;
+  printf("arg:%d", *args);
+  // cpu_exec(-1);
+  return 0;
 }
 /**
  * @brief info SUBCMD
@@ -133,7 +134,7 @@ static struct
     {"si", "execut the program by  N step", cmd_si},
     {"info", "show the information of register or watchpoint", cmd_info},
     {"x", "Calculate the value of the expression EXPR, take the result as the starting memory address\n, \
-    and output N consecutive 4 - bytes in hexadecimal form ",
+  and output N consecutive 4 - bytes in hexadecimal form ",
      cmd_x},
     {"p", "Calculate the value of the expression EXPR", cmd_p},
     {"w", "Suspend program execution when the value of the expression EXPR changes", cmd_w},
