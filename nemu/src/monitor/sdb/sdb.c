@@ -58,7 +58,7 @@ static int cmd_q(char *args)
   nemu_state.state = NEMU_QUIT; // leesum
   return -1;
 }
-
+#define NR_CMD ARRLEN(cmd_table)
 static int cmd_help(char *args);
 
 static struct
@@ -74,8 +74,6 @@ static struct
     /* TODO: Add more commands */
 
 };
-
-#define NR_CMD ARRLEN(cmd_table)
 
 static int cmd_help(char *args)
 {
