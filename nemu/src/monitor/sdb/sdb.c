@@ -137,7 +137,7 @@ static struct
      cmd_x},
     {"p", "Calculate the value of the expression EXPR", cmd_p},
     {"w", "Suspend program execution when the value of the expression EXPR changes", cmd_w},
-    {"d", "Delete the watchpoint with sequence number N", cmd_w},
+    {"d", "Delete the watchpoint with sequence number N", cmd_d},
 
     /* TODO: Add more commands */
 
