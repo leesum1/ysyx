@@ -50,10 +50,12 @@ static void exec_once(Decode* s, vaddr_t pc) {
   s->snpc = pc;
   isa_exec_once(s);
   cpu.pc = s->dnpc;
+
   DEBUG_S("pc%08x\r\n:", cpu.pc);
   DEBUG_S("p2c%08x\r\n:", s->pc);
   DEBUG_S("dpc%08x\r\n:", s->dnpc);
   DEBUG_S("spc%08x\r\n:", s->snpc);
+
 #ifdef CONFIG_ITRACE
   char* p = s->logbuf;
   /* 地址 */
