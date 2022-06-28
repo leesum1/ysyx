@@ -21,6 +21,7 @@
 
 #include <utils.h>
 #include <memory/paddr.h>
+#include <memory/vaddr.h>
 static int is_batch_mode = false;
 
 void init_regex();
