@@ -86,8 +86,8 @@ static int cmd_info(char *args)
 {
 
   isa_reg_display();
-  nemu_state.state = NEMU_QUIT; // leesum
-  return -1;
+  // nemu_state.state = NEMU_QUIT; // leesum
+  return 0;
 }
 /**
  * @brief p EXPR
