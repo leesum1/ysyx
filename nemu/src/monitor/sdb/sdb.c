@@ -117,7 +117,7 @@ static int cmd_x(char *args)
   do
   {
     printf("i=:%d\r\n", i);
-    data = paddr_read(addr, i + 8);
+    data = paddr_read(addr, 8);
     printf("addr:%lx\t%lx", (addr + i), data);
     i = i + 8;
   } while (i < len);
