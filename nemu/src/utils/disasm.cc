@@ -91,7 +91,7 @@ extern "C" void disassemble(char* str, int size, uint64_t pc, uint8_t * code, in
   MCInst inst;
   llvm::ArrayRef<uint8_t> arr(code, nbyte);
   uint64_t dummy_size = 0;
-  gDisassembler->getInstruction(inst, dummy_size, arr, pc, llvm::nulls());
+  //gDisassembler->getInstruction(inst, dummy_size, arr, pc, llvm::nulls());
 
   std::string s;
   raw_string_ostream os(s);
