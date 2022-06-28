@@ -96,7 +96,7 @@ static int cmd_info(char* args) {
 static int cmd_x(char* args) {
   if (NULL == args)
     return 0;
-  uint64_t addr;
+  uint32_t addr;
   int32_t len;
   //解析参数
   sscanf(args, "%d %lX", &len, &addr);
