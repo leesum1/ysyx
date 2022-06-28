@@ -29,8 +29,6 @@ void isa_reg_display()
   {
     printf("%d:%s\t%lx\n", i, reg_name(i, 64), gpr(i));
   }
-
-  printf("len:%d\n", strlen(regs));
 }
 
 word_t isa_reg_str2val(const char *s, bool *success)
