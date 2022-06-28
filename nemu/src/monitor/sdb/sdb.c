@@ -66,8 +66,10 @@ static int
 cmd_si(char *args)
 {
   /* 首次调用 strtok 输入地址，再次调用用 NULL */
-  char *cmd1 = strtok(args, " ");
-  int N = *cmd1 - '0';
+  // char *cmd1 = strtok(args, " ");
+  // int N = *cmd1 - '0';
+  int N;
+  sscanf(args, "%d", &N);
   printf("arg:%d,\n", N);
   // cpu_exec(-1);
   return 0;
