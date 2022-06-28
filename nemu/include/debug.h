@@ -24,7 +24,8 @@
   _Log(ANSI_FMT("[%s:%d %s] " format, ANSI_FG_BLUE) "\n", \
        __FILE__, __LINE__, __func__, ##__VA_ARGS__)
  //完整的调试信息：设备类型，当前源文件名，当前源函数名，当前源代码行号，格式化输出内容，格式化参数
-#define DEBUG_L(format, argent...)
+#define DEBUG_L(format, argent...) do{} while (0)
+
 // #define DEBUG_L(format, argent...) printf("Node:S, File: "__FILE__                \
 //                                           ", Func: %s(), Line: %03d: " format "", \
 //                                           __func__, __LINE__, ##argent)
