@@ -90,8 +90,11 @@ static int cmd_info(char *args)
   char val[20];
   sscanf(args, "%s", val);
   printf("info:%s,\n", val);
-  isa_reg_display();
-  // nemu_state.state = NEMU_QUIT; // leesum
+  if (strcmp(val, 'r'))
+  {
+    isa_reg_display();
+  }
+
   return 0;
 }
 /**
