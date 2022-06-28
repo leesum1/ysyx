@@ -108,7 +108,7 @@ static int cmd_x(char *args)
     return 0;
   uint32_t addr;
   uint32_t len;
-  sscanf(args, "%d,%d", &len, &addr);
+  sscanf(args, "%d %d", &len, &addr);
   printf("len:%d,addr:%d\n", len, addr);
   return 0;
 }
