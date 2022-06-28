@@ -68,8 +68,7 @@ cmd_si(char *args)
   int N;
   if (NULL == args)
   {
-    N = 1;
-    printf("cpu_exec:NULL,\n");
+    N = 1; //默认值 1
   }
   else
   {
@@ -85,6 +84,8 @@ cmd_si(char *args)
  */
 static int cmd_info(char *args)
 {
+
+  isa_reg_display();
   nemu_state.state = NEMU_QUIT; // leesum
   return -1;
 }
