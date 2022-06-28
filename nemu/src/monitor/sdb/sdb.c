@@ -112,10 +112,11 @@ static int cmd_x(char *args)
   sscanf(args, "%d %lX", &len, &addr);
   printf("len:%d,addr:0x%lX\n", len, addr);
 
-  uint16_t i = 0;
+  int32_t i = 0;
   uint64_t data;
   do
   {
+    printf("i=%d\r", i);
     data = paddr_read(addr, i + 8);
     printf("addr:%lx\t%lx", (addr + i), data);
     i = i + 8;
