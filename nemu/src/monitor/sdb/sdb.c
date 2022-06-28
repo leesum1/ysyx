@@ -84,7 +84,12 @@ cmd_si(char *args)
  */
 static int cmd_info(char *args)
 {
+  if (NULL == args)
+    return 0;
 
+  char val[20];
+  sscanf(args, "%s", val);
+  printf("info:%s,\n", val);
   isa_reg_display();
   // nemu_state.state = NEMU_QUIT; // leesum
   return 0;
