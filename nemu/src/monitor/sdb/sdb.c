@@ -116,7 +116,7 @@ static int cmd_x(char *args)
   uint64_t data;
   do
   {
-    printf("123213123123\r\n");
+    printf("123213123123%d\r\n", i);
     // data = paddr_read(addr, i + 8);
     // printf("addr:%lx\t%lx", (addr + i), data);
     i = i + 8;
