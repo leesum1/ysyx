@@ -114,13 +114,12 @@ static int cmd_x(char *args)
 
   int32_t i = 0;
   uint64_t data;
-  do
+  for (i = 0; i < len; i++)
   {
-    printf("i=:%d\r\n", i);
-    data = paddr_read((addr + i), 8);
-    printf("addr:%lx\t%lx\n", (addr + i), data);
-    i = i + 8;
-  } while (i < len);
+    printf("Memory address:0x%lx\tData: 0x%lx\n", addr,
+           vaddr_read(addr, 8));
+    addr += 8; // 64-bit machine 8*8 Byte = 64-bit
+  }
 
   return 0;
 }
