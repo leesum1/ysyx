@@ -38,7 +38,7 @@ void init_isa() {
   /* Load built-in image. */
   memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));
 
-  uint16_t* data = guest_to_host(RESET_VECTOR);
+  // uint16_t* data = guest_to_host(RESET_VECTOR);
   // for (int i = 0; i < 20; i++) {
   //   printf("data:%02x\r\n", data[i]);
   // }
