@@ -22,6 +22,7 @@
 #include <utils.h>
 #include <memory/paddr.h>
 #include <memory/vaddr.h>
+
 static int is_batch_mode = false;
 
 void init_regex();
@@ -67,7 +68,7 @@ cmd_si(char* args) {
   else {
     sscanf(args, "%d", &N);
   }
-  printf("cpu_exec:%d,\n", N);
+  DEBUG_S("cpu_exec:%d,\n", N);
   cpu_exec(N);
   return 0;
 }
@@ -81,7 +82,7 @@ static int cmd_info(char* args) {
 
   char val[20];
   sscanf(args, "%s", val);
-  printf("info:%s,\n", val);
+  DEBUG_S("info:%s,\n", val);
   if (0 == strcmp(val, "r")) {
     isa_reg_display();
   }
@@ -100,11 +101,9 @@ static int cmd_x(char* args) {
   int32_t len;
   //解析参数
   sscanf(args, "%d %lX", &len, &addr);
-  printf("len:%d,addr:0x%x\n", len, addr);
-
   int32_t i = 0;
   for (i = 0; i < len; i++) {
-    printf("addr:0x%08x\tData: 0x%p\n", addr,
+    DEBUG_S("addr:0x%08x\tData: 0x%p\n", addr,
       (void*)vaddr_read(addr, 8));
     addr += 8; // 64-bit machine 8*8 Byte = 64-bit
   }
@@ -171,17 +170,17 @@ static int cmd_help(char* args) {
   if (arg == NULL) {
     /* no argument given */
     for (i = 0; i < NR_CMD; i++) {
-      printf("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
+      DEBUG_S("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
     }
   }
   else {
     for (i = 0; i < NR_CMD; i++) {
       if (strcmp(arg, cmd_table[i].name) == 0) {
-        printf("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
+        DEBUG_S("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
         return 0;
       }
     }
-    printf("Unknown command '%s'\n", arg);
+    DEBUG_S("Unknown command '%s'\n", arg);
   }
   return 0;
 }
@@ -207,7 +206,7 @@ void sdb_mainloop() {
       continue;
     }
 
-    printf("str_end:%s\n", str_end);
+    DEBUG_S("str_end:%s\n", str_end);
     /* treat the remaining string as the arguments,
      * which may need further parsing
      *  参数args 字符串的结束地址
@@ -234,7 +233,7 @@ void sdb_mainloop() {
     }
 
     if (i == NR_CMD) {
-      printf("Unknown command '%s'\n", cmd);
+      DEBUG_S("Unknown command '%s'\n", cmd);
     }
   }
 }
