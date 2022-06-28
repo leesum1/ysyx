@@ -102,9 +102,8 @@ static int cmd_x(char* args) {
   printf("len:%d,addr:0x%lX\n", len, addr);
 
   int32_t i = 0;
-  uint64_t data;
   for (i = 0; i < len; i++) {
-    printf("addr:0x%08lx\tData: 0x%016lx\n", addr,
+    printf("addr:0x%08x\tData: 0x%p\n", addr,
       vaddr_read(addr, 8));
     addr += 8; // 64-bit machine 8*8 Byte = 64-bit
   }
