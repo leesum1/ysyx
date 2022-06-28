@@ -104,7 +104,7 @@ static int cmd_x(char* args) {
   int32_t i = 0;
   for (i = 0; i < len; i++) {
     printf("addr:0x%08x\tData: 0x%p\n", addr,
-      vaddr_read(addr, 8));
+      (void*)vaddr_read(addr, 8));
     addr += 8; // 64-bit machine 8*8 Byte = 64-bit
   }
 
