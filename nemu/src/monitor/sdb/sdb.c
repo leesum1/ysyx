@@ -104,7 +104,7 @@ static int cmd_x(char* args) {
   DEBUG_S("len:%d,addr:%x\n", len, addr);
   int32_t i = 0;
   for (i = 0; i < len; i++) {
-    DEBUG_S("addr:0x%08x\tData: 0x%016p\n", addr,
+    DEBUG_S("addr:0x%08x\tData: 0x%16p\n", addr,
       (void*)vaddr_read(addr, 8));
     addr += 8;
   }
