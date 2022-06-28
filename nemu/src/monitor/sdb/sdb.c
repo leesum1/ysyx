@@ -65,7 +65,7 @@ static int cmd_q(char *args)
 static int
 cmd_si(char *args)
 {
-  printf("arg:%d", *args);
+  printf("arg:%d\n", *args);
   // cpu_exec(-1);
   return 0;
 }
