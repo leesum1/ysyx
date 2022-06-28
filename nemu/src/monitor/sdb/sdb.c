@@ -100,7 +100,7 @@ static int cmd_x(char* args) {
   uint32_t addr;
   int32_t len;
   //解析参数
-  sscanf(args, "%d %lX", &len, &addr);
+  sscanf(args, "%d %x", &len, &addr);
   DEBUG_S("len:%d,addr:%x\n", len, addr);
   int32_t i = 0;
   for (i = 0; i < len; i++) {
