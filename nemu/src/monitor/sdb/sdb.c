@@ -100,11 +100,11 @@ static int cmd_x(char* args) {
   uint32_t addr;
   int32_t len;
   //解析参数
-  sscanf(args, "%d %x", &len, &addr);
-  DEBUG_S("len:%d,addr:%x\n", len, addr);
+  sscanf(args, "%d %#X", &len, &addr);
+  DEBUG_S("len:%d,addr:%#X\n", len, addr);
   int32_t i = 0;
   for (i = 0; i < len; i++) {
-    DEBUG_S("addr:0x%08x\tData: %08x\n", addr,
+    DEBUG_S("addr:%#X\tData: %#X\n", addr,
       (void*)vaddr_read(addr, 4));
     addr += 4;
   }
