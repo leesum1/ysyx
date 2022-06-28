@@ -71,7 +71,7 @@ cmd_si(char *args)
   int N;
   sscanf(args, "%d", &N);
   printf("cpu_exec:%d,\n", N);
-  cpu_exec(N);
+  // cpu_exec(N);
   return 0;
 }
 /**
