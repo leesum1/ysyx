@@ -197,7 +197,7 @@ void sdb_mainloop()
       continue;
     }
 
-    printf("str_end:%s", str_end);
+    printf("str_end:%d\n", str_end);
     /* treat the remaining string as the arguments,
      * which may need further parsing
      */
