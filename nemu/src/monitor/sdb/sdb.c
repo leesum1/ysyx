@@ -98,14 +98,19 @@ static int cmd_info(char *args)
   return 0;
 }
 /**
- * @brief p EXPR
+ * @brief x N EXPR
  * 求出表达式EXPR的值, 将结果作为起始内存地址,
  * 以十六进制形式输出连续的N个4字节
  */
 static int cmd_x(char *args)
 {
-  nemu_state.state = NEMU_QUIT; // leesum
-  return -1;
+  if (NULL == args)
+    return 0;
+  uint64_t addr;
+  uint32_t len;
+  sscanf(args, "%d,%x", len, addr);
+  printf("len:%d,addr:%x\n", len, addr);
+  return 0;
 }
 
 /**
