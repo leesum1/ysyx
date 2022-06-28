@@ -27,7 +27,7 @@ void isa_reg_display()
 {
   for (int i = 0; i < strlen(regs); i++)
   {
-    printf("%d:%s\t%x", reg_name(i, 64), gpr(i));
+    printf("%d:%s\t%x", i, reg_name(i, 64), gpr(i));
   }
 }
 
