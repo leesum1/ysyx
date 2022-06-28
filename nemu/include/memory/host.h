@@ -20,6 +20,7 @@
 
 static inline word_t host_read(void *addr, int len)
 {
+  printf("hello1\r\n");
   switch (len)
   {
   case 1:
