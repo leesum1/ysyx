@@ -65,7 +65,9 @@ static int cmd_q(char *args)
 static int
 cmd_si(char *args)
 {
-  printf("arg:%d\n", *args);
+
+  char *cmd = strtok(args, " ");
+  printf("arg:%s\n", *cmd);
   // cpu_exec(-1);
   return 0;
 }
@@ -188,6 +190,8 @@ void sdb_mainloop()
 
   for (char *str; (str = rl_gets()) != NULL;)
   {
+
+    /* str 字符串的结束地址 */
     char *str_end = str + strlen(str);
 
     /* extract the first token as the command */
@@ -200,6 +204,8 @@ void sdb_mainloop()
     printf("str_end:%s\n", str_end);
     /* treat the remaining string as the arguments,
      * which may need further parsing
+     *  参数args 字符串的结束地址
+     * 通过比较结束地址来判断是否有参数
      */
     char *args = cmd + strlen(cmd) + 1;
     if (args >= str_end)
