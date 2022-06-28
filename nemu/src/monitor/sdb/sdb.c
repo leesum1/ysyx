@@ -70,8 +70,8 @@ cmd_si(char *args)
   // int N = *cmd1 - '0';
   int N;
   sscanf(args, "%d", &N);
-  printf("arg:%d,\n", N);
-  // cpu_exec(-1);
+  printf("cpu_exec:%d,\n", N);
+  cpu_exec(N);
   return 0;
 }
 /**
