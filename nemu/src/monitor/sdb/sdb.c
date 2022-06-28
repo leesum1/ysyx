@@ -106,10 +106,10 @@ static int cmd_x(char *args)
 {
   if (NULL == args)
     return 0;
-  uint64_t addr;
+  uint32_t addr;
   uint32_t len;
   sscanf(args, "%d,%d", &len, &addr);
-  printf("len:%d,addr:0x%ld\n", len, addr);
+  printf("len:%d,addr:%d\n", len, addr);
   return 0;
 }
 
