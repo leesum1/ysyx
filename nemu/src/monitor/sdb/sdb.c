@@ -67,7 +67,7 @@ cmd_si(char *args)
 {
 
   char *cmd = strtok(args, " ");
-  printf("arg:%s\n", *cmd);
+  printf("arg:%s\n", cmd);
   // cpu_exec(-1);
   return 0;
 }
