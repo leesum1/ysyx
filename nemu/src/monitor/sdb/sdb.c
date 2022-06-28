@@ -117,7 +117,7 @@ static int cmd_x(char *args)
   for (i = 0; i < len; i++)
   {
     printf("addr:0x%08lx\tData: 0x%08lx\n", addr,
-           vaddr_read(addr, 4));
+           vaddr_read(addr, 8));
     addr += 4; // 64-bit machine 8*8 Byte = 64-bit
   }
 
