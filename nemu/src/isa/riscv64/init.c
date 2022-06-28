@@ -43,7 +43,7 @@ void init_isa()
   uint16_t *data = guest_to_host(RESET_VECTOR);
   for (int i = 0; i < 20; i++)
   {
-    printf("data:%02x", data[i]);
+    printf("data:%02x\r\n", data[i]);
   }
 
   /* Initialize this virtual computer system. */
