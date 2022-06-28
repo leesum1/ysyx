@@ -101,6 +101,7 @@ static int cmd_x(char* args) {
   int32_t len;
   //解析参数
   sscanf(args, "%d %lX", &len, &addr);
+  DEBUG_S("len:%d,addr:%x\n", len, addr);
   int32_t i = 0;
   for (i = 0; i < len; i++) {
     DEBUG_S("addr:0x%08x\tData: 0x%p\n", addr,
@@ -206,7 +207,6 @@ void sdb_mainloop() {
       continue;
     }
 
-    DEBUG_S("str_end:%s\n", str_end);
     /* treat the remaining string as the arguments,
      * which may need further parsing
      *  参数args 字符串的结束地址
