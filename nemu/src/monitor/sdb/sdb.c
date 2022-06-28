@@ -58,9 +58,69 @@ static int cmd_q(char *args)
   nemu_state.state = NEMU_QUIT; // leesum
   return -1;
 }
+/**
+ * @brief  si [N]
+ * 让程序单步执行N条指令后暂停执行,当N没有给出时, 缺省为1
+ */
+static int
+cmd_si(char *args)
+{
+  nemu_state.state = NEMU_QUIT; // leesum
+  return -1;
+}
+/**
+ * @brief info SUBCMD
+ * 打印寄存器状态 打印监视点信息
+ */
+static int cmd_info(char *args)
+{
+  nemu_state.state = NEMU_QUIT; // leesum
+  return -1;
+}
+/**
+ * @brief p EXPR
+ * 求出表达式EXPR的值, 将结果作为起始内存地址,
+ * 以十六进制形式输出连续的N个4字节
+ */
+static int cmd_x(char *args)
+{
+  nemu_state.state = NEMU_QUIT; // leesum
+  return -1;
+}
+
+/**
+ * @brief p EXPR
+ * 求出表达式EXPR的值, EXPR支持的
+ * 运算请见调试中的表达式求值小节
+ */
+static int cmd_p(char *args)
+{
+  nemu_state.state = NEMU_QUIT; // leesum
+  return -1;
+}
+
+/**
+ * @brief w EXPR
+ * 当表达式EXPR的值发生变化时, 暂停程序执行
+ */
+static int cmd_w(char *args)
+{
+  nemu_state.state = NEMU_QUIT; // leesum
+  return -1;
+}
+
+/**
+ * @brief d N
+ * 删除序号为N的监视点
+ */
+static int cmd_d(char *args)
+{
+  nemu_state.state = NEMU_QUIT; // leesum
+  return -1;
+}
+
 #define NR_CMD ARRLEN(cmd_table)
 static int cmd_help(char *args);
-
 static struct
 {
   const char *name;
@@ -69,12 +129,11 @@ static struct
 } cmd_table[] = {
     {"help", "Display informations about all supported commands", cmd_help},
     {"c", "Continue the execution of the program", cmd_c},
-    {"q", "Exit NEMU", cmd_q},
-
+    {"q", "Exit NEMU", cmd_q}
     /* TODO: Add more commands */
 
 };
-
+//需要放在最后
 static int cmd_help(char *args)
 {
   /* extract the first argument */
