@@ -65,10 +65,10 @@ static int cmd_q(char *args)
 static int
 cmd_si(char *args)
 {
-
+  /* 首次调用 strtok 输入地址，再次调用用 NULL */
   char *cmd1 = strtok(args, " ");
-  char *cmd2 = strtok(NULL, " ");
-  printf("arg:%s,%s\n", cmd1, cmd2);
+  int N = *cmd1 - '0';
+  printf("arg:%d,\n", N);
   // cpu_exec(-1);
   return 0;
 }
