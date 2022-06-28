@@ -116,9 +116,9 @@ static int cmd_x(char *args)
   uint64_t data;
   for (i = 0; i < len; i++)
   {
-    printf("Memory address:0x%lx\tData: 0x%lx\n", addr,
-           vaddr_read(addr, 8));
-    addr += 8; // 64-bit machine 8*8 Byte = 64-bit
+    printf("addr:0x%lx\tData: 0x%lx\n", addr,
+           vaddr_read(addr, 4));
+    addr += 4; // 64-bit machine 8*8 Byte = 64-bit
   }
 
   return 0;
