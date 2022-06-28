@@ -39,9 +39,10 @@ static void trace_and_difftest(Decode* _this, vaddr_t dnpc) {
   }
 #endif
   /* 指令最终打印的地方 */
-  // if (g_print_step) {
-  //   IFDEF(CONFIG_ITRACE, puts(_this->logbuf));
-  // }
+  if (g_print_step) {
+    DEBUG_L("%d\n", g_print_step);
+    IFDEF(CONFIG_ITRACE, puts(_this->logbuf));
+  }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
 }
 
