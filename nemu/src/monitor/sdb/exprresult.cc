@@ -69,11 +69,11 @@ void Exprresult::run1() {
             continue;
         }
         // else {
-        //     ret = isPriority(tokens.at(i));
-        //     if (!ret) {
-        //         DEBUG_L();
-        //         stackNum.push(calculate());
-        //     }
+        ret = isPriority(tokens.at(i));
+        if (!ret) {
+            DEBUG_L();
+            //stackNum.push(calculate());
+        }
         stackOpre.push(tokens.at(i).type);
         // }
     }
