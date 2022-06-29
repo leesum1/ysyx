@@ -85,8 +85,6 @@ void Exprresult::run1() {
         else {
             stackOpre.push(tokens.at(i).type);
         }
-
-
     }
 
 
@@ -141,8 +139,10 @@ bool Exprresult::isPriority(Token val) {
         break;
     case '+':
     case '-':
-    case '(':
         ret = false;
+        break;
+    case '(':
+        ret = true;
         break;
     default:
         cout << "type undefine!!!!!" << endl;
