@@ -82,7 +82,7 @@ void Exprresult::run1() {
     // }
     cout << "stackNumsize:" << stackNum.size() << endl;
     cout << "calculate:" << stackNum.top() << endl;
-    cout << "stackop:" << stackNum.size() << endl;
+    cout << "stackop:" << stackOpre.size() << endl;
 
 
 }
