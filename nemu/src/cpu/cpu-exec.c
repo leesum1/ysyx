@@ -66,7 +66,7 @@ static void exec_once(Decode* s, vaddr_t pc) {
   /* 当前指令 */
   for (i = ilen - 1; i >= 0; i--) {
     p += snprintf(p, 4, " %02x", inst[i]);
-    DEBUG_M();
+    DEBUG_M("%d\n", i);
   }
 
   int ilen_max = MUXDEF(CONFIG_ISA_x86, 8, 4);
