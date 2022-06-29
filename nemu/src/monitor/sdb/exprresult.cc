@@ -64,8 +64,9 @@ void Exprresult::run1() {
     for (int i = 0; i < tokens.size(); i++) {
         ret = isOperator(tokens.at(i));
         if (!ret) {
-            DEBUG_L();
+            DEBUG_L("size:%d", tokens.size());
             stackNum.push(atoi(tokens.at(i).str));
+            break;
         }
         else {
             ret = isPriority(tokens.at(i));
@@ -75,8 +76,6 @@ void Exprresult::run1() {
             }
             stackOpre.push(tokens.at(i).type);
         }
-
-
     }
     while (!stackOpre.empty()) {
         stackNum.push(calculate());
