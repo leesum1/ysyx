@@ -196,7 +196,7 @@ void Exprresult::negNum() {
                 tokens.emplace(tokens.begin(), numzore);
             }
             else if (isOperator((iter - 1).operator*())) {
-                tokens.emplace(tokens.begin(), numzore);
+                tokens.emplace(iter, numzore);
             }
         }
     }
