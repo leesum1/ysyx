@@ -11,16 +11,15 @@ private:
         int type;
         char str[32];
     } Token;
-    vector<Token> tokens;
+
     enum {
         TK_NOTYPE = 256, TK_EQ,
         TK_NUM,
         /* TODO: Add more token types */
 
     };
-
+    vector<Token> tokens;
     stack<int32_t> stackOpre, stackNum;
-
 public:
     Exprresult(void* tokens_addr, int num);
     ~Exprresult();
@@ -28,6 +27,7 @@ public:
     bool isOperator(Token val);
     bool isPriority(Token val);
     int32_t calculate();
+    void negNum();
     void run1();
 };
 
@@ -39,6 +39,8 @@ Exprresult::Exprresult(void* tokens_addr, int num) {
     for (int i = 0; i < num; i++) {
         tokens.push_back(p[i]);
     }
+    printTokens();
+    negNum();
     printTokens();
     //cout << "isPriority:" << isPriority(tokens.at(0)) << endl;
 }
@@ -93,7 +95,6 @@ void Exprresult::run1() {
     cout << "calculate:" << stackNum.top() << endl;
     cout << "stackop:" << stackOpre.size() << endl;
 
-
 }
 
 bool Exprresult::isOperator(Token val) {
@@ -115,13 +116,12 @@ bool Exprresult::isOperator(Token val) {
 bool Exprresult::isPriority(Token val) {
 
 
-    /* 操作数少于两个,或者为括号 */
-    if ((stackNum.size() < 2))
-        return true;
+    /* 特殊情况处理：操作数少于两个,或者为括号 */
+    if ((stackNum.size() < 2)) return true;
     int32_t toptype;
     toptype = stackOpre.top();
-    if (toptype == '(')
-        return true;
+    if (toptype == '(') return true;
+
 
     bool ret = false;
     switch (val.type) {
@@ -180,11 +180,34 @@ int32_t Exprresult::calculate() {
 }
 
 
+void Exprresult::negNum() {
+    Token numzore;
+    numzore.type = TK_NUM;
+    sprintf(numzore.str, "%d", 0);
+    if (tokens.at(0).type == '-') {
+        // tokens.insert(0, &numzore);
+
+    }
+
+    for (auto iter = tokens.cbegin(); iter != tokens.cend(); iter++) {
+
+        if (iter->type == '-') {
+            if (tokens.begin() == iter) {
+                tokens.emplace(tokens.begin(), numzore);
+            }
+            else if (isOperator((iter - 1).operator*())) {
+                tokens.emplace(tokens.begin(), numzore);
+            }
+        }
+    }
+}
+
+
 /* 供外部调用 */
 extern "C" void exprcpp(void* tokens_addr, int num) {
 
     Exprresult test(tokens_addr, num);
-    test.run1();
+    //test.run1();
 }
 
 
