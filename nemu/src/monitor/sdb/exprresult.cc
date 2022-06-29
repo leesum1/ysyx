@@ -99,10 +99,10 @@ bool Exprresult::isOperator(Token val) {
 
 /**
  * @brief () * / + -
- *
+ * 优先级高：可直接入栈 优先级低：进行一次calculate
  * @param val
- * @return true
- * @return false
+ * @return true : 新加入的操作码优先级高
+ * @return false：新加入的操作码优先级低
  */
 bool Exprresult::isPriority(Token val) {
 
@@ -110,6 +110,10 @@ bool Exprresult::isPriority(Token val) {
         cout << "please input opra!!!!" << endl;
         return false;
     }
+    /* 操作数少于两个 */
+    if (stackNum.size() < 2)
+        return true;
+
     bool ret = false;
     uint32_t toptype;
     switch (val.type) {
@@ -131,9 +135,6 @@ bool Exprresult::isPriority(Token val) {
         cout << "type undefine!!!!!" << endl;
         break;
     }
-
-    if (stackNum.size() < 2)
-        ret = true;
     return ret;
 }
 
