@@ -38,10 +38,13 @@ static struct rule {
 
   /* TODO: Add more rules.
    * Pay attention to the precedence level of different rules.
+   * + 、 * 、（、） 在正则表达式中有特殊含义
    */
 
   {" +", TK_NOTYPE},    // spaces
   {"[0-9]+", TK_NUM},      // num
+  {"\\(", '('},         // left brackets
+  {"\\)", ')'},         // right brackets
   {"\\*", '*'},         // multi
   {"/", '/'},        // div
   {"\\+", '+'},         // plus
