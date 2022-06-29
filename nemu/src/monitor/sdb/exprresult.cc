@@ -71,8 +71,8 @@ void Exprresult::run1() {
         // else {
         ret = isPriority(tokens.at(i));
         if (!ret) {
-            DEBUG_L();
-            //stackNum.push(calculate());
+            DEBUG_L("\n");
+            stackNum.push(calculate());
         }
         stackOpre.push(tokens.at(i).type);
         // }
