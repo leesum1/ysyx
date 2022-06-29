@@ -51,11 +51,10 @@ static void exec_once(Decode* s, vaddr_t pc) {
   isa_exec_once(s);
   cpu.pc = s->dnpc;
 
-  DEBUG_S("pc%08x\r\n:", cpu.pc);
-  DEBUG_S("p2c%08x\r\n:", s->pc);
-  DEBUG_S("dpc%08x\r\n:", s->dnpc);
-  DEBUG_S("spc%08x\r\n:", s->snpc);
-
+  // DEBUG_S("pc%08x\r\n:", cpu.pc);
+  // DEBUG_S("p2c%08x\r\n:", s->pc);
+  // DEBUG_S("dpc%08x\r\n:", s->dnpc);
+  // DEBUG_S("spc%08x\r\n:", s->snpc);
 #ifdef CONFIG_ITRACE
   char* p = s->logbuf;
   /* 地址 */
@@ -71,15 +70,16 @@ static void exec_once(Decode* s, vaddr_t pc) {
 
   int ilen_max = MUXDEF(CONFIG_ISA_x86, 8, 4);
   int space_len = ilen_max - ilen;
+  /* 添加一些空格 */
   if (space_len < 0)
     space_len = 0;
-  space_len = space_len * 1 + 3;
+  space_len = space_len * 3 + 1;
   memset(p, ' ', space_len);
   p += space_len;
 
   void disassemble(char* str, int size, uint64_t pc, uint8_t * code, int nbyte);
 
-  /* 打印指令的翻译 */
+  /* 添加指令的翻译 */
   disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
     MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t*)&s->isa.inst.val, ilen);
 #endif
