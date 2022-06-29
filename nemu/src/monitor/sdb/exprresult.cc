@@ -65,7 +65,7 @@ void Exprresult::run() {
         ret = isOperator(tokens.at(i));
         if (!ret) {
             stackNum.push(atoi(tokens.at(i).str));
-            break;
+            continue;
         }
         ret = isPriority(tokens.at(i));
         if (!ret) {
