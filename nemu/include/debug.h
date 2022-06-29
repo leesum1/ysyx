@@ -49,6 +49,6 @@
 
 #define panic(format, ...) Assert(0, format, ##__VA_ARGS__)
 
-#define TODO() panic("please implement me\n")
+#define TODO() DEBUG_S("please implement me\n") //panic("please implement me\n")
 
 #endif
