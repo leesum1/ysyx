@@ -79,20 +79,18 @@ bool Exprresult::isPriority(Token val) {
     bool ret = false;
     uint32_t toptype;
     switch (val.type) {
-    case '(':
-        ret = true;
-        break;
-        // case ')':
-        //     break;
     case '*':
     case '/':
-        toptype = stackOpre.top();
-        // if ('+' == toptype || '-' == toptype) {
-        //     ret = true;
-        // }
+        if (!stackOpre.empty()) {
+            toptype = stackOpre.top();
+            if ('+' == toptype || '-' == toptype) {
+                ret = true;
+            }
+        }
         break;
     case '+':
     case '-':
+    case '(':
         ret = false;
         break;
     default:
