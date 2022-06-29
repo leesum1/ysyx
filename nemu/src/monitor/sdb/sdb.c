@@ -118,7 +118,10 @@ static int cmd_x(char* args) {
  * 运算请见调试中的表达式求值小节
  */
 static int cmd_p(char* args) {
-  nemu_state.state = NEMU_QUIT; // leesum
+
+  bool ret;
+  DEBUG_S("expr:%s\n", args);
+  expr(args, &ret);
   return -1;
 }
 
