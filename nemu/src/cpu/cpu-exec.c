@@ -88,9 +88,10 @@ static void exec_once(Decode* s, vaddr_t pc) {
 static void execute(uint64_t n) {
   Decode s;
   for (; n > 0; n--) {
+    trace_and_difftest(&s, cpu.pc);
     exec_once(&s, cpu.pc);
     g_nr_guest_inst++;
-    trace_and_difftest(&s, cpu.pc);
+
     if (nemu_state.state != NEMU_RUNNING)
       break;
     IFDEF(CONFIG_DEVICE, device_update());
