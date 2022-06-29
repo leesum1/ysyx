@@ -80,6 +80,7 @@ void Exprresult::run1() {
             while (!stackOpre.top() != '(') {
                 stackNum.push(calculate());
             }
+            stackOpre.pop();
         }
         /* 不是右括号操作符入栈 */
         else {
