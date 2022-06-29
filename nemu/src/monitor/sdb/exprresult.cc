@@ -143,6 +143,7 @@ bool Exprresult::isPriority(Token val) {
         ret = false;
         break;
     case '(':
+    case ')':
         ret = true;
         break;
     default:
