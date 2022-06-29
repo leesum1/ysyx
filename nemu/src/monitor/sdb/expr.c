@@ -94,9 +94,10 @@ static bool make_token(char* e) {
           i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
         position += substr_len;
-
-        sprintf(tokens->str, "%.*s", substr_len, substr_start);
-        DEBUG_M("tokens->str:%s\r", tokens->str);
+        /* 记录匹配规则 */
+        sprintf(tokens[i].str, "%.*s", substr_len, substr_start);
+        tokens[i].type = rules[i].token_type;
+        DEBUG_M("tokens->str:%s\n", tokens[i].str);
         /* TODO: Now a new token is recognized with rules[i]. Add codes
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
