@@ -54,10 +54,7 @@ static void decode_operand(Decode* s, word_t* dest, word_t* src1, word_t* src2, 
 static int decode_exec(Decode* s) {
   word_t dest = 0, src1 = 0, src2 = 0;
   s->dnpc = s->snpc;
-  DEBUG_M("pc%08x\r\n:", cpu.pc);
-  DEBUG_M("p2c%08x\r\n:", s->pc);
-  DEBUG_M("dpc%08x\r\n:", s->dnpc);
-  DEBUG_M("spc%08x\r\n:", s->snpc);
+
 #define INSTPAT_INST(s) ((s)->isa.inst.val)
 #define INSTPAT_MATCH(s, name, type, ... /* body */ ) { \
   decode_operand(s, &dest, &src1, &src2, concat(TYPE_, type)); \
