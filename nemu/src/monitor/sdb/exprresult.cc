@@ -74,7 +74,7 @@ void Exprresult::run1() {
         //         DEBUG_L();
         //         stackNum.push(calculate());
         //     }
-        //     stackOpre.push(tokens.at(i).type);
+        stackOpre.push(tokens.at(i).type);
         // }
     }
     // while (!stackOpre.empty()) {
@@ -82,6 +82,8 @@ void Exprresult::run1() {
     // }
     cout << "stackNumsize:" << stackNum.size() << endl;
     cout << "calculate:" << stackNum.top() << endl;
+    cout << "stackop:" << stackNum.size() << endl;
+
 
 }
 
