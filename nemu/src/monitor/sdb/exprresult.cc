@@ -65,14 +65,12 @@ void Exprresult::run1() {
         ret = isOperator(tokens.at(i));
         /* 数字直接入栈 */
         if (!ret) {
-            DEBUG_L("size:%d\n", tokens.size());
             stackNum.push(atoi(tokens.at(i).str));
             continue;
         }
         ret = isPriority(tokens.at(i));
         /* 优先级低，出栈计算 */
         if (!ret) {
-            DEBUG_L("\n");
             stackNum.push(calculate());
         }
         /* 右括号单独处理 */
@@ -86,6 +84,7 @@ void Exprresult::run1() {
         else {
             stackOpre.push(tokens.at(i).type);
         }
+        cout << "循环i::" << i << endl;
     }
     while (!stackOpre.empty()) {
         stackNum.push(calculate());
@@ -126,8 +125,6 @@ bool Exprresult::isPriority(Token val) {
         return true;
 
     bool ret = false;
-
-
     switch (val.type) {
     case '*':
     case '/':
