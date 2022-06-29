@@ -25,6 +25,7 @@
 #include <stdio.h>
 enum {
   TK_NOTYPE = 256, TK_EQ,
+  TK_NUM,
 
   /* TODO: Add more token types */
 
@@ -40,12 +41,12 @@ static struct rule {
    */
 
   {" +", TK_NOTYPE},    // spaces
-  {"[1-9]+", 100},         // multi
-  {"\\*", '*'},         // multi
-  {"\\*", '*'},         // multi
-  {"\\/", '/'},        // div
+  {"[0-9]+", TK_NUM},      // num
+  {"*", '*'},         // multi
+  {"*", '*'},         // multi
+  {"/", '/'},        // div
   {"\\+", '+'},         // plus
-  {"\\-", '-'},         // minus
+  {"-", '-'},         // minus
   {"==", TK_EQ},        // equal
 };
 
