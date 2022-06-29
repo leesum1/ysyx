@@ -121,7 +121,7 @@ static int cmd_p(char* args) {
   bool ret;
   DEBUG_S("expr:%s\n", args);
   expr(args, &ret);
-  return -1;
+  return 0;
 }
 
 /**
