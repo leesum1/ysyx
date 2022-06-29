@@ -141,7 +141,7 @@ word_t expr(char* e, bool* success) {
   exprcpp(tokens, nr_token);
 
   /* TODO: Insert codes to evaluate the expression. */
-  TODO();
+  //TODO();
 
   return 0;
 }
