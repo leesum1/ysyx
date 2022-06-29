@@ -183,18 +183,17 @@ void Exprresult::negNum() {
     Token numzore;
     numzore.type = TK_NUM;
     sprintf(numzore.str, "%d", 0);
-    vector<Token> copy(tokens);
+    vector<Token> tokencopy(tokens);
 
-    for (auto iter = copy.cbegin(); iter != copy.cend(); iter++) {
+    for (int i = 0; i < tokencopy.size(); i++) {
+        if (tokencopy.at(i).type == '-') {
 
-        if (iter->type == '-') {
-            if (tokens.begin() == iter) {
+            if (i == 0) {
                 tokens.emplace(tokens.begin(), numzore);
             }
-            else if (isOperator((iter - 1).operator*())) {
-                tokens.emplace(iter, numzore);
+            else if (isOperator(tokencopy.at(i - 1))) {
+                tokens.emplace(tokens.begin() + i, numzore);
             }
-            cout << "result undefine!!!!!" << endl;
         }
     }
 }
