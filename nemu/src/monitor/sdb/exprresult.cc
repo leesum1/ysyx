@@ -87,19 +87,8 @@ void Exprresult::run1() {
             stackOpre.push(tokens.at(i).type);
         }
     }
-
-
     while (!stackOpre.empty()) {
-        /* 右括号单独处理 */
-        if (stackOpre.top() == ')') {
-            while (!stackOpre.top() != '(') {
-                stackNum.push(calculate());
-            }
-            stackOpre.pop();
-        }
-        else {
-            stackNum.push(calculate());
-        }
+        stackNum.push(calculate());
     }
     cout << "stackNumsize:" << stackNum.size() << endl;
     cout << "calculate:" << stackNum.top() << endl;
