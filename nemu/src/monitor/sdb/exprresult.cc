@@ -37,7 +37,7 @@ Exprresult::Exprresult(void* tokens_addr, int num) {
         tokens.push_back(p[i]);
     }
     printTokens();
-    isPriority(tokens.at(0));
+    cout << "isPriority:" << isPriority(tokens.at(0)) << endl;
 }
 
 Exprresult::~Exprresult() {
@@ -76,7 +76,7 @@ bool Exprresult::isPriority(Token val) {
         cout << "please input opra!!!!" << endl;
         return false;
     }
-    bool ret;
+    bool ret = false;
     uint32_t toptype;
     switch (val.type) {
     case '(':
@@ -93,7 +93,7 @@ bool Exprresult::isPriority(Token val) {
         break;
     case '+':
     case '-':
-        ret = true;
+        ret = false;
         break;
     default:
         cout << "type undefine!!!!!" << endl;
