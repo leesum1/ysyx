@@ -64,7 +64,7 @@ void Exprresult::run1() {
     for (int i = 0; i < tokens.size(); i++) {
         ret = isOperator(tokens.at(i));
         if (!ret) {
-            DEBUG_L("size:%d", tokens.size());
+            DEBUG_L("size:%d\n", tokens.size());
             stackNum.push(atoi(tokens.at(i).str));
         }
         // else {
