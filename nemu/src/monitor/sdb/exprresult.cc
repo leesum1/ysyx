@@ -185,7 +185,7 @@ void Exprresult::negNum() {
     sprintf(numzore.str, "%d", 0);
 
     for (auto iter = tokens.cbegin(); iter != tokens.cend(); iter++) {
-        cout << "result undefine!!!!!" << endl;
+
         if (iter->type == '-') {
             if (tokens.begin() == iter) {
                 tokens.emplace(tokens.begin(), numzore);
@@ -193,6 +193,7 @@ void Exprresult::negNum() {
             else if (isOperator((iter - 1).operator*())) {
                 tokens.emplace(iter, numzore);
             }
+            cout << "result undefine!!!!!" << endl;
         }
     }
 }
