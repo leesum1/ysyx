@@ -77,7 +77,7 @@ void Exprresult::run1() {
         }
         /* 右括号单独处理 */
         if (tokens.at(i).type == ')') {
-            while (!stackOpre.top() != '(') {
+            while (stackOpre.top() != '(') {
                 stackNum.push(calculate());
             }
             stackOpre.pop();
@@ -102,7 +102,6 @@ bool Exprresult::isOperator(Token val) {
     if (val.type != this->TK_NUM) {
         return true;
     }
-
     return false;
 
 }
