@@ -114,10 +114,6 @@ bool Exprresult::isOperator(Token val) {
  */
 bool Exprresult::isPriority(Token val) {
 
-    if (val.type == this->TK_NUM) {
-        cout << "please input opra!!!!" << endl;
-        return false;
-    }
     int32_t toptype;
     toptype = stackOpre.top();
     /* 操作数少于两个,或者为括号 */
@@ -125,8 +121,6 @@ bool Exprresult::isPriority(Token val) {
         return true;
 
     bool ret = false;
-
-
     switch (val.type) {
     case '*':
     case '/':
