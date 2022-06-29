@@ -28,7 +28,7 @@ public:
     bool isOperator(Token val);
     bool isPriority(Token val);
     int32_t calculate();
-    void run();
+    void run1();
 };
 
 
@@ -40,7 +40,6 @@ Exprresult::Exprresult(void* tokens_addr, int num) {
         tokens.push_back(p[i]);
     }
     printTokens();
-    //run();
     //cout << "isPriority:" << isPriority(tokens.at(0)) << endl;
 }
 
@@ -60,7 +59,7 @@ void Exprresult::printTokens() {
 
 }
 
-void Exprresult::run() {
+void Exprresult::run1() {
     bool ret;
     for (int i = 0; i < tokens.size(); i++) {
         ret = isOperator(tokens.at(i));
@@ -167,6 +166,7 @@ int32_t Exprresult::calculate() {
 extern "C" void exprcpp(void* tokens_addr, int num) {
 
     Exprresult test(tokens_addr, num);
+    test.run1();
 }
 
 
