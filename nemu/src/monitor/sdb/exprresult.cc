@@ -28,13 +28,15 @@ exprresult::exprresult(void* tokens_addr, int num) {
 }
 
 exprresult::~exprresult() {
+    cout << "exprresult end" << endl;
 }
 
 void exprresult::printTokens() {
 
+    cout << "exprresult start" << endl;
     for (int i = 0; i < tokens.size(); i++) {
-        cout << "str:" << tokens.at(i).str \
-            << "type:" << tokens.at(i).str << endl;
+        cout << " str: " << tokens.at(i).str \
+            << " type: " << tokens.at(i).str << endl;
     }
 
 }
