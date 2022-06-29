@@ -87,9 +87,9 @@ bool Exprresult::isPriority(Token val) {
     case '*':
     case '/':
         toptype = stackOpre.top();
-        if ('+' == toptype || '-' == toptype) {
-            ret = true;
-        }
+        // if ('+' == toptype || '-' == toptype) {
+        //     ret = true;
+        // }
         break;
     case '+':
     case '-':
