@@ -37,6 +37,7 @@ Exprresult::Exprresult(void* tokens_addr, int num) {
         tokens.push_back(p[i]);
     }
     printTokens();
+    stackOpre.push('+');
     cout << "isPriority:" << isPriority(tokens.at(0)) << endl;
 }
 
