@@ -89,6 +89,7 @@ bool Exprresult::isOperator(Token val) {
     if (val.type != this->TK_NUM) {
         return true;
     }
+    DEBUG_L();
     return false;
 
 }
