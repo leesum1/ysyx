@@ -90,7 +90,16 @@ void Exprresult::run1() {
 
 
     while (!stackOpre.empty()) {
-        stackNum.push(calculate());
+        /* 右括号单独处理 */
+        if (stackOpre.top() == ')') {
+            while (!stackOpre.top() != '(') {
+                stackNum.push(calculate());
+            }
+            stackOpre.pop();
+        }
+        else {
+            stackNum.push(calculate());
+        }
     }
     cout << "stackNumsize:" << stackNum.size() << endl;
     cout << "calculate:" << stackNum.top() << endl;
