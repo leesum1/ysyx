@@ -66,6 +66,7 @@ void Exprresult::run1() {
         if (!ret) {
             DEBUG_L("size:%d\n", tokens.size());
             stackNum.push(atoi(tokens.at(i).str));
+            continue;
         }
         // else {
         //     ret = isPriority(tokens.at(i));
