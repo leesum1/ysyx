@@ -20,6 +20,9 @@
  */
 #include <regex.h>
 
+
+#include <string.h>
+#include <stdio.h>
 enum {
   TK_NOTYPE = 256, TK_EQ,
 
@@ -62,6 +65,7 @@ void init_regex() {
       panic("regex compilation failed: %s\n%s", error_msg, rules[i].regex);
     }
   }
+
 }
 
 typedef struct token {
@@ -86,11 +90,14 @@ static bool make_token(char* e) {
         char* substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
-        Log("match rules[%d] = \"%s\" at position %d with len %d: %s",
-          i, rules[i].regex, position, substr_len, substr_start);
+        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+          i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
         position += substr_len;
 
+        sprintf(tokens->str, "%.*s", substr_len, substr_start);
+
+        printf("tokens->str:%s", tokens->str);
         /* TODO: Now a new token is recognized with rules[i]. Add codes
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
