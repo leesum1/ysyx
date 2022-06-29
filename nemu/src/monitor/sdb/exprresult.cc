@@ -63,20 +63,33 @@ void Exprresult::run1() {
     bool ret;
     for (int i = 0; i < tokens.size(); i++) {
         ret = isOperator(tokens.at(i));
+        /* 数字直接入栈 */
         if (!ret) {
             DEBUG_L("size:%d\n", tokens.size());
             stackNum.push(atoi(tokens.at(i).str));
             continue;
         }
-        // else {
         ret = isPriority(tokens.at(i));
+        /* 优先级低，出栈计算 */
         if (!ret) {
             DEBUG_L("\n");
             stackNum.push(calculate());
         }
-        stackOpre.push(tokens.at(i).type);
-        // }
+        /* 右括号单独处理 */
+        if (tokens.at(i).type == ')') {
+            while (!stackOpre.top() != '(') {
+                stackNum.push(calculate());
+            }
+        }
+        /* 不是右括号操作符入栈 */
+        else {
+            stackOpre.push(tokens.at(i).type);
+        }
+
+
     }
+
+
     while (!stackOpre.empty()) {
         stackNum.push(calculate());
     }
