@@ -109,8 +109,7 @@ static bool make_token(char* e) {
             tokens[nr_token].type, nr_token);
           nr_token++;
         }
-        extern void exprcpp(void* tokens_addr, int num);
-        exprcpp(tokens, nr_token);
+
         /* TODO: Now a new token is recognized with rules[i]. Add codes
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
@@ -137,6 +136,9 @@ word_t expr(char* e, bool* success) {
     *success = false;
     return 0;
   }
+
+  extern void exprcpp(void* tokens_addr, int num);
+  exprcpp(tokens, nr_token);
 
   /* TODO: Insert codes to evaluate the expression. */
   TODO();
