@@ -40,6 +40,10 @@ static struct rule {
    */
 
   {" +", TK_NOTYPE},    // spaces
+  {"[1-9]+", 100},         // multi
+  {"\\*", '*'},         // multi
+  {"\\*", '*'},         // multi
+  {"\\/", '/'},        // div
   {"\\+", '+'},         // plus
   {"\\-", '-'},         // minus
   {"==", TK_EQ},        // equal
