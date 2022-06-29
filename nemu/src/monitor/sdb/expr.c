@@ -95,7 +95,7 @@ static bool make_token(char* e) {
 
         position += substr_len;
         /* 记录匹配规则 */
-        if (rules[i].token_type != TK_EQ) {
+        if (rules[i].token_type != TK_NOTYPE) {
           sprintf(tokens[nr_token].str, "%.*s", substr_len, substr_start);
           tokens[nr_token].type = rules[i].token_type;
           DEBUG_M("tokens->str:%s,index:%d\n", tokens[nr_token].str, nr_token);
