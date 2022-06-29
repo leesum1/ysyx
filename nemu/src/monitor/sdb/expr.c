@@ -96,8 +96,7 @@ static bool make_token(char* e) {
         position += substr_len;
 
         sprintf(tokens->str, "%.*s", substr_len, substr_start);
-
-        printf("tokens->str:%s", tokens->str);
+        DEBUG_M("tokens->str:%s\r", tokens->str);
         /* TODO: Now a new token is recognized with rules[i]. Add codes
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
