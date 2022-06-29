@@ -18,7 +18,7 @@ private:
 
     };
 
-    stack<uint32_t> stackOpre, stackNum;
+    stack<int32_t> stackOpre, stackNum;
 
 public:
     Exprresult(void* tokens_addr, int num);
@@ -26,6 +26,8 @@ public:
     void printTokens();
     bool isOperator(Token val);
     bool isPriority(Token val);
+    int32_t calculate();
+    void run();
 };
 
 
@@ -37,8 +39,8 @@ Exprresult::Exprresult(void* tokens_addr, int num) {
         tokens.push_back(p[i]);
     }
     printTokens();
-    stackOpre.push('+');
-    cout << "isPriority:" << isPriority(tokens.at(0)) << endl;
+    run();
+    //cout << "isPriority:" << isPriority(tokens.at(0)) << endl;
 }
 
 Exprresult::~Exprresult() {
@@ -52,6 +54,30 @@ void Exprresult::printTokens() {
         cout << " str: " << tokens.at(i).str \
             << " type: " << tokens.at(i).type << endl;
     }
+
+
+
+}
+
+void Exprresult::run() {
+    bool ret;
+    for (int i = 0; i < tokens.size(); i++) {
+        ret = isOperator(tokens.at(i));
+        if (!ret) {
+            stackNum.push(atoi(tokens.at(i).str));
+            break;
+        }
+        ret = isPriority(tokens.at(i));
+        if (!ret) {
+            stackNum.push(calculate());
+        }
+        stackOpre.push(tokens.at(i).type);
+    }
+    while (!stackOpre.empty()) {
+        stackNum.push(calculate());
+    }
+    cout << "stackNumsize:" << stackNum.size() << endl;
+    cout << "calculate:" << stackNum.top() << endl;
 
 }
 
@@ -99,6 +125,37 @@ bool Exprresult::isPriority(Token val) {
         break;
     }
     return ret;
+}
+
+int32_t Exprresult::calculate() {
+    /* 运算符出栈 */
+    uint32_t op = stackOpre.top();
+    stackOpre.pop();
+    uint32_t numright = stackNum.top();
+    stackNum.pop();
+    uint32_t numleft = stackNum.top();
+    stackNum.pop();
+
+    int32_t result;
+    switch (op) {
+    case '+':
+        result = numleft + numright;
+        break;
+    case '-':
+        result = numleft - numright;
+        break;
+    case '*':
+        result = numleft * numright;
+        break;
+    case '/':
+        result = numleft / numright;
+        break;
+    default:
+        cout << "result undefine!!!!!" << endl;
+        break;
+    }
+
+    return result;
 }
 
 
