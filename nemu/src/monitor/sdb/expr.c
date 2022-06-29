@@ -132,7 +132,7 @@ static bool make_token(char* e) {
 }
 
 
-extern "C" word_t expr(char* e, bool* success) {
+word_t expr(char* e, bool* success) {
   if (!make_token(e)) {
     *success = false;
     return 0;
