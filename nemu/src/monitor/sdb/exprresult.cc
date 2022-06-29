@@ -125,15 +125,15 @@ bool Exprresult::isPriority(Token val) {
     case '+':
     case '-':
     case '(':
-        if (stackNum.size() >= 2)
-            ret = false;
-        else
-            ret = true;
+        ret = false;
         break;
     default:
         cout << "type undefine!!!!!" << endl;
         break;
     }
+
+    if (stackNum.size() < 2)
+        ret = true;
     return ret;
 }
 
