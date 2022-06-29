@@ -16,7 +16,7 @@
 // refer to http://www.patorjk.com/software/taag/#p=display&f=Big&t=Type%20Something%20
 
 /*
-       _                         __  __                         _ 
+       _                         __  __                         _
       (_)                       |  \/  |                       | |
   _ __ _ ___  ___ ________   __ | \  / | __ _ _ __  _   _  __ _| |
  | '__| / __|/ __|______\ \ / / | |\/| |/ _` | '_ \| | | |/ _` | |

@@ -39,12 +39,11 @@
 
 using namespace llvm;
 
-static llvm::MCDisassembler *gDisassembler = nullptr;
-static llvm::MCSubtargetInfo *gSTI = nullptr;
-static llvm::MCInstPrinter *gIP = nullptr;
+static llvm::MCDisassembler* gDisassembler = nullptr;
+static llvm::MCSubtargetInfo* gSTI = nullptr;
+static llvm::MCInstPrinter* gIP = nullptr;
 
-extern "C" void init_disasm(const char *triple)
-{
+extern "C" void init_disasm(const char* triple) {
   llvm::InitializeAllTargetInfos();
   llvm::InitializeAllTargetMCs();
   llvm::InitializeAllAsmParsers();
@@ -53,11 +52,10 @@ extern "C" void init_disasm(const char *triple)
   std::string errstr;
   std::string gTriple(triple);
 
-  llvm::MCInstrInfo *gMII = nullptr;
-  llvm::MCRegisterInfo *gMRI = nullptr;
+  llvm::MCInstrInfo* gMII = nullptr;
+  llvm::MCRegisterInfo* gMRI = nullptr;
   auto target = llvm::TargetRegistry::lookupTarget(gTriple, errstr);
-  if (!target)
-  {
+  if (!target) {
     llvm::errs() << "Can't find target for " << gTriple << ": " << errstr << "\n";
     assert(0);
   }
@@ -65,8 +63,7 @@ extern "C" void init_disasm(const char *triple)
   MCTargetOptions MCOptions;
   gSTI = target->createMCSubtargetInfo(gTriple, "", "");
   std::string isa = target->getName();
-  if (isa == "riscv32" || isa == "riscv64")
-  {
+  if (isa == "riscv32" || isa == "riscv64") {
     gSTI->ApplyFeatureFlag("+m");
     gSTI->ApplyFeatureFlag("+a");
     gSTI->ApplyFeatureFlag("+c");
@@ -85,13 +82,12 @@ extern "C" void init_disasm(const char *triple)
 #endif
   gDisassembler = target->createMCDisassembler(*gSTI, *Ctx);
   gIP = target->createMCInstPrinter(llvm::Triple(gTriple),
-                                    AsmInfo->getAssemblerDialect(), *AsmInfo, *gMII, *gMRI);
+    AsmInfo->getAssemblerDialect(), *AsmInfo, *gMII, *gMRI);
   gIP->setPrintImmHex(true);
   gIP->setPrintBranchImmAsAddress(true);
 }
 
-extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte)
-{
+extern "C" void disassemble(char* str, int size, uint64_t pc, uint8_t * code, int nbyte) {
   MCInst inst;
   llvm::ArrayRef<uint8_t> arr(code, nbyte);
   uint64_t dummy_size = 0;
@@ -99,10 +95,12 @@ extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int
 
   std::string s;
   raw_string_ostream os(s);
-  gIP->printInst(&inst, pc, "", *gSTI, os);
 
+
+  gIP->printInst(&inst, pc, "", *gSTI, os);
   int skip = s.find_first_not_of('\t');
-  const char *p = s.c_str() + skip;
+
+  const char* p = s.c_str() + skip;
   assert((int)s.length() - skip < size);
   strcpy(str, p);
 }
