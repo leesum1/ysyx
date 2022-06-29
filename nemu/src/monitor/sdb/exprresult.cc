@@ -36,7 +36,7 @@ void exprresult::printTokens() {
     cout << "exprresult start" << endl;
     for (int i = 0; i < tokens.size(); i++) {
         cout << " str: " << tokens.at(i).str \
-            << " type: " << tokens.at(i).str << endl;
+            << " type: " << tokens.at(i).type << endl;
     }
 
 }
