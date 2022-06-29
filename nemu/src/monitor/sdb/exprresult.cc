@@ -124,8 +124,11 @@ bool Exprresult::isPriority(Token val) {
         return true;
 
     bool ret = false;
-    uint32_t toptype;
+    int32_t toptype;
     toptype = stackOpre.top();
+    if (toptype == '(')
+        return true;
+
     switch (val.type) {
     case '*':
     case '/':
