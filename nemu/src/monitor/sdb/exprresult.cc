@@ -1,6 +1,7 @@
 #include <stack>
 #include <iostream>
 #include <vector>
+#include <common.h>
 
 using namespace std;
 
@@ -64,11 +65,13 @@ void Exprresult::run() {
     for (int i = 0; i < tokens.size(); i++) {
         ret = isOperator(tokens.at(i));
         if (!ret) {
+            DEBUG_L();
             stackNum.push(atoi(tokens.at(i).str));
             continue;
         }
         ret = isPriority(tokens.at(i));
         if (!ret) {
+            DEBUG_L();
             stackNum.push(calculate());
         }
         stackOpre.push(tokens.at(i).type);
