@@ -184,15 +184,16 @@ void Exprresult::negNum() {
     numzore.type = TK_NUM;
     sprintf(numzore.str, "%d", 0);
     vector<Token> tokencopy(tokens);
-
+    int count;
+    //https://blog.csdn.net/hechao3225/article/details/55101344
     for (int i = 0; i < tokencopy.size(); i++) {
         if (tokencopy.at(i).type == '-') {
 
             if (i == 0) {
-                tokens.emplace(tokens.begin(), numzore);
+                tokens.emplace(tokens.begin() + count++, numzore);
             }
             else if (isOperator(tokencopy.at(i - 1))) {
-                tokens.emplace(tokens.begin() + i, numzore);
+                tokens.emplace(tokens.begin() + i + count++, numzore);
             }
         }
     }
