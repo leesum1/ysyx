@@ -184,13 +184,9 @@ void Exprresult::negNum() {
     Token numzore;
     numzore.type = TK_NUM;
     sprintf(numzore.str, "%d", 0);
-    if (tokens.at(0).type == '-') {
-        // tokens.insert(0, &numzore);
-
-    }
 
     for (auto iter = tokens.cbegin(); iter != tokens.cend(); iter++) {
-
+        cout << "result undefine!!!!!" << endl;
         if (iter->type == '-') {
             if (tokens.begin() == iter) {
                 tokens.emplace(tokens.begin(), numzore);
