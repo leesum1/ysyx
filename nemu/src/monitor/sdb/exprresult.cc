@@ -85,11 +85,11 @@ void Exprresult::run() {
 }
 
 bool Exprresult::isOperator(Token val) {
-
+    DEBUG_L();
     if (val.type != this->TK_NUM) {
         return true;
     }
-    DEBUG_L();
+
     return false;
 
 }
