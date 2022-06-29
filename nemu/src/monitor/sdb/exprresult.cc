@@ -66,20 +66,19 @@ void Exprresult::run1() {
         if (!ret) {
             DEBUG_L("size:%d", tokens.size());
             stackNum.push(atoi(tokens.at(i).str));
-            break;
         }
-        else {
-            ret = isPriority(tokens.at(i));
-            if (!ret) {
-                DEBUG_L();
-                stackNum.push(calculate());
-            }
-            stackOpre.push(tokens.at(i).type);
-        }
+        // else {
+        //     ret = isPriority(tokens.at(i));
+        //     if (!ret) {
+        //         DEBUG_L();
+        //         stackNum.push(calculate());
+        //     }
+        //     stackOpre.push(tokens.at(i).type);
+        // }
     }
-    while (!stackOpre.empty()) {
-        stackNum.push(calculate());
-    }
+    // while (!stackOpre.empty()) {
+    //     stackNum.push(calculate());
+    // }
     cout << "stackNumsize:" << stackNum.size() << endl;
     cout << "calculate:" << stackNum.top() << endl;
 
