@@ -25,6 +25,8 @@ INCLUDES = $(addprefix -I, $(INC_PATH))
 CFLAGS  := -O2 -MMD -Wall  $(INCLUDES) $(CFLAGS) #-Werror 不需要
 LDFLAGS := -O2 $(LDFLAGS)
 
+CXXSRC += $(WORK_DIR)/src/monitor/sdb/expr.cc
+
 OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o) $(CXXSRC:%.cc=$(OBJ_DIR)/%.o)
 
 # Compilation patterns
