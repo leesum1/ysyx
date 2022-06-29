@@ -119,17 +119,19 @@ bool Exprresult::isPriority(Token val) {
         cout << "please input opra!!!!" << endl;
         return false;
     }
-    /* 操作数少于两个 */
-    if (stackNum.size() < 2)
+    uint32_t toptype;
+    toptype = stackOpre.top();
+    /* 操作数少于两个,或者为括号 */
+    if (stackNum.size() < 2 || toptype == '(')
         return true;
 
     bool ret = false;
-    uint32_t toptype;
+
+
     switch (val.type) {
     case '*':
     case '/':
         if (!stackOpre.empty()) {
-            toptype = stackOpre.top();
             if ('+' == toptype || '-' == toptype) {
                 ret = true;
             }
