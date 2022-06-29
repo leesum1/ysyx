@@ -114,12 +114,12 @@ bool Exprresult::isOperator(Token val) {
  */
 bool Exprresult::isPriority(Token val) {
 
-    int32_t toptype;
-    toptype = stackOpre.top();
+
     /* 操作数少于两个,或者为括号 */
     if ((stackNum.size() < 2))
         return true;
-
+    int32_t toptype;
+    toptype = stackOpre.top();
     if (toptype == '(')
         return true;
 
