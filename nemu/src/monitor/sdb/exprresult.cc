@@ -183,8 +183,9 @@ void Exprresult::negNum() {
     Token numzore;
     numzore.type = TK_NUM;
     sprintf(numzore.str, "%d", 0);
+    vector<Token> copy(tokens);
 
-    for (auto iter = tokens.cbegin(); iter != tokens.cend(); iter++) {
+    for (auto iter = copy.cbegin(); iter != copy.cend(); iter++) {
 
         if (iter->type == '-') {
             if (tokens.begin() == iter) {
