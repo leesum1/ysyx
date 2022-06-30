@@ -86,14 +86,13 @@ void Exprresult::run1() {
         else {
             stackOpre.push(tokens.at(i).type);
         }
-        cout << "循环i::" << i << endl;
     }
     while (!stackOpre.empty()) {
         stackNum.push(calculate());
     }
     cout << "stackNumsize:" << stackNum.size() << endl;
     cout << "calculate:" << stackNum.top() << endl;
-    cout << "stackop:" << stackOpre.size() << endl;
+    cout << "stackOpsize:" << stackOpre.size() << endl;
 
 }
 
