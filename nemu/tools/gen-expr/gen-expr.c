@@ -59,7 +59,8 @@ static void gen(char symbol) {
 // +-*/
 static void gen_rand_op() {
   char op;
-  switch (rand() % 4) {
+  /* 不要除法 */
+  switch (rand() % 3) {
   case 0:
     op = '+';
     break;
