@@ -193,7 +193,8 @@ void Exprresult::negNum() {
             if (i == 0) {
                 tokens.emplace(tokens.begin() + count++, numzore);
             }
-            else if (isOperator(tokencopy.at(i - 1))) {
+            else if (isOperator(tokencopy.at(i - 1))
+                && (tokencopy.at(i - 1).type != ')')) {
                 tokens.emplace(tokens.begin() + i + count++, numzore);
             }
         }
