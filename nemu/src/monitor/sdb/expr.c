@@ -80,7 +80,7 @@ typedef struct token {
   char str[32];
 } Token;
 
-static Token tokens[32] __attribute__((used)) = {};
+static Token tokens[200] __attribute__((used)) = {};
 static int nr_token __attribute__((used)) = 0;
 
 static bool make_token(char* e) {
@@ -142,6 +142,21 @@ word_t expr(char* e, bool* success) {
 
   /* TODO: Insert codes to evaluate the expression. */
   //TODO();
-
   return 0;
 }
+
+
+
+void expr_test(void) {
+  FILE* fp = fopen("/home/leesum/ysyx-workbench/nemu/tools/gen-expr/input", "r");
+  if (fp == NULL) {
+    printf("Fail to open file!\n");
+    exit(0);  //退出程序（结束程序）
+  }
+  char buf[1024];
+  while (fgets(buf, sizeof(buf), fp) != NULL) {
+    printf("%s", buf);
+  }
+  fclose(fp);
+}
+
