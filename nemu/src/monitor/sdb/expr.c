@@ -156,14 +156,14 @@ void expr_test(void) {
   char buf[1024];
   /* 读取每一行 */
   while (fgets(buf, sizeof(buf), fp) != NULL) {
-    printf("%s", buf);
+    printf("%s\n", buf);
     char* cmd = strtok(buf, " ");
     if (cmd == NULL) {
       continue;
     }
-    printf("%s", cmd);
+    printf("%s\n", cmd);
     char* args = cmd + strlen(cmd) + 1;
-    printf("%s", args);
+    printf("%s\n", args);
   }
   fclose(fp);
 }
