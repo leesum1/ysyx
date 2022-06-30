@@ -137,17 +137,18 @@ word_t expr(char* e, bool* success) {
     return 0;
   }
 
-  extern void exprcpp(void* tokens_addr, int num);
-  exprcpp(tokens, nr_token);
-
+  extern uint32_t exprcpp(void* tokens_addr, int num);
+  uint32_t result = exprcpp(tokens, nr_token);
   /* TODO: Insert codes to evaluate the expression. */
   //TODO();
-  return 0;
+  return result;
 }
 
 
 
 void expr_test(void) {
+  bool ret;
+  uint32_t testinput, testoutput;
   FILE* fp = fopen("/home/leesum/ysyx-workbench/nemu/tools/gen-expr/input", "r");
   if (fp == NULL) {
     printf("Fail to open file!\n");
@@ -156,14 +157,15 @@ void expr_test(void) {
   char buf[1024];
   /* 读取每一行 */
   while (fgets(buf, sizeof(buf), fp) != NULL) {
-    printf("%s\n", buf);
+
     char* cmd = strtok(buf, " ");
-    if (cmd == NULL) {
-      continue;
-    }
-    printf("%s\n", cmd);
     char* args = cmd + strlen(cmd) + 1;
-    printf("%s\n", args);
+    // DEBUG_M("%s\n", buf);
+    // DEBUG_M("%s\n", cmd);
+    // DEBUG_M("%s\n", args);
+    testinput = atoi(cmd);
+    testoutput = expr(args, &ret);
+    Assert(testinput == testoutput, "input:%d,output:%d", testinput, testoutput);
   }
   fclose(fp);
 }

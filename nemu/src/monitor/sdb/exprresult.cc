@@ -28,7 +28,7 @@ public:
     bool isPriority(Token val);
     uint32_t calculate();
     void negNum();
-    void run1();
+    uint32_t run1();
 };
 
 
@@ -61,7 +61,7 @@ void Exprresult::printTokens() {
 
 }
 
-void Exprresult::run1() {
+uint32_t Exprresult::run1() {
     bool ret;
     for (int i = 0; i < tokens.size(); i++) {
         ret = isOperator(tokens.at(i));
@@ -93,6 +93,8 @@ void Exprresult::run1() {
     cout << "stackNumsize:" << stackNum.size() << endl;
     cout << "calculate:" << stackNum.top() << endl;
     cout << "stackOpsize:" << stackOpre.size() << endl;
+
+    return stackNum.top();
 
 }
 
@@ -200,10 +202,10 @@ void Exprresult::negNum() {
 
 
 /* 供外部调用 */
-extern "C" void exprcpp(void* tokens_addr, int num) {
+extern "C" uint32_t exprcpp(void* tokens_addr, int num) {
 
     Exprresult test(tokens_addr, num);
-    test.run1();
+    return test.run1();
 }
 
 
