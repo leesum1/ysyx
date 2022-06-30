@@ -117,6 +117,8 @@ static bool make_token(char* e) {
     if (i == NR_REGEX) {
       printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
       printf("%s\n,size:%d\n", e, strlen(e));
+      printf("%d\n,", e[2]);
+      printf("%d\n,", e[3]);
       return false;
     }
   }
