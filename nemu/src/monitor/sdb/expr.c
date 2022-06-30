@@ -111,6 +111,7 @@ static bool make_token(char* e) {
         }
         break;
       }
+      printf("%d", e[i]);
     }
 
     if (i == NR_REGEX) {
