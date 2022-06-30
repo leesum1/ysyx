@@ -70,9 +70,8 @@ uint32_t Exprresult::run1() {
             stackNum.push(atoi(tokens.at(i).str));
             continue;
         }
-        ret = isPriority(tokens.at(i));
         /* 优先级低，出栈计算 */
-        if (!ret) {
+        while (!isPriority(tokens.at(i))) {
             stackNum.push(calculate());
         }
         /* 右括号单独处理 */
