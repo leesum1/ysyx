@@ -151,9 +151,9 @@ void expr_test(void) {
 
     char* cmd = strtok(buf, " ");
     char* args = cmd + strlen(cmd) + 1;
-    // DEBUG_M("%s\n", buf);
-    // DEBUG_M("%s\n", cmd);
-    // DEBUG_M("%s\n", args);
+    DEBUG_M("%s\n", buf);
+    DEBUG_M("%s\n", cmd);
+    DEBUG_M("%s\n", args);
     testinput = atoi(cmd);
     testoutput = expr(args, &ret);
     Assert(testinput == testoutput, "input:%d,output:%d", testinput, testoutput);
