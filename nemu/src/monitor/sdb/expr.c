@@ -151,8 +151,15 @@ void expr_test(void) {
     exit(0);  //退出程序（结束程序）
   }
   char buf[1024];
-  /* 读取每一行 */
+  /* 读取每一行
+   * 换行键被坑了
+   * 封装fgets函数，去掉其末尾的换行符"\n"
+   */
   while (fgets(buf, sizeof(buf), fp) != NULL) {
+
+    char* find = strchr(buf, '\n');  //找出data中的"\n"
+    if (find)
+      *find = '\0';   //替换
 
     char* cmd = strtok(buf, " ");
     char* args = cmd + strlen(cmd) + 1;
