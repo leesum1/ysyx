@@ -204,7 +204,7 @@ void Exprresult::negNum() {
 extern "C" void exprcpp(void* tokens_addr, int num) {
 
     Exprresult test(tokens_addr, num);
-    //test.run1();
+    test.run1();
 }
 
 
