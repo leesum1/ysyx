@@ -25,8 +25,10 @@ const char* regs[] = {
 
 void isa_reg_display() {
   for (int i = 0; i < 32; i++) {
+    /* 打印寄存器名称和内容 */
     printf("%d:%s\t%lx\n", i, reg_name(i, 64), gpr(i));
   }
+  /* pc 寄存器 */
   printf("%d:%s\t%lx\n", 33, "pc", cpu.pc);
 }
 
