@@ -80,7 +80,7 @@ typedef struct token {
   char str[32];
 } Token;
 
-static Token tokens[32] __attribute__((used)) = {};
+static Token tokens[200] __attribute__((used)) = {};
 static int nr_token __attribute__((used)) = 0;
 
 static bool make_token(char* e) {
@@ -109,21 +109,17 @@ static bool make_token(char* e) {
             tokens[nr_token].type, nr_token);
           nr_token++;
         }
-
-        /* TODO: Now a new token is recognized with rules[i]. Add codes
-         * to record the token in the array `tokens'. For certain types
-         * of tokens, some extra actions should be performed.
-         */
-
-         // switch (rules[i].token_type) {
-         // default: TODO();
-         // }
         break;
       }
     }
 
+    printf("e:%c\n", e[i]);
     if (i == NR_REGEX) {
       printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
+      printf("%s\n,size:%d\n", e, strlen(e));
+      printf("%d\n", e[2]);
+      printf("%d\n", e[3]);
+      printf("%d\n", e[4]);
       return false;
     }
   }
@@ -137,11 +133,43 @@ word_t expr(char* e, bool* success) {
     return 0;
   }
 
-  extern void exprcpp(void* tokens_addr, int num);
-  exprcpp(tokens, nr_token);
-
+  extern uint32_t exprcpp(void* tokens_addr, int num);
+  uint32_t result = exprcpp(tokens, nr_token);
   /* TODO: Insert codes to evaluate the expression. */
   //TODO();
-
-  return 0;
+  return result;
 }
+
+
+
+void expr_test(void) {
+  bool ret;
+  uint32_t testinput, testoutput;
+  FILE* fp = fopen("/home/leesum/ysyx-workbench/nemu/tools/gen-expr/input", "r");
+  if (fp == NULL) {
+    printf("Fail to open file!\n");
+    exit(0);  //退出程序（结束程序）
+  }
+  char buf[1024];
+  /* 读取每一行
+   * 换行键被坑了
+   * 封装fgets函数，去掉其末尾的换行符"\n"
+   */
+  while (fgets(buf, sizeof(buf), fp) != NULL) {
+
+    char* find = strchr(buf, '\n');  //找出data中的"\n"
+    if (find)
+      *find = '\0';   //替换
+
+    char* cmd = strtok(buf, " ");
+    char* args = cmd + strlen(cmd) + 1;
+    DEBUG_M("%s\n", buf);
+    DEBUG_M("%s\n", cmd);
+    DEBUG_M("%s\n", args);
+    testinput = atoi(cmd);
+    testoutput = expr(args, &ret);
+    Assert(testinput == testoutput, "input:%d,output:%d", testinput, testoutput);
+  }
+  fclose(fp);
+}
+

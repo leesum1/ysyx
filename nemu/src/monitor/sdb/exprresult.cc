@@ -19,16 +19,16 @@ private:
 
     };
     vector<Token> tokens;
-    stack<int32_t> stackOpre, stackNum;
+    stack<uint32_t> stackOpre, stackNum;
 public:
     Exprresult(void* tokens_addr, int num);
     ~Exprresult();
     void printTokens();
     bool isOperator(Token val);
     bool isPriority(Token val);
-    int32_t calculate();
+    uint32_t calculate();
     void negNum();
-    void run1();
+    uint32_t run1();
 };
 
 
@@ -39,7 +39,7 @@ Exprresult::Exprresult(void* tokens_addr, int num) {
     for (int i = 0; i < num; i++) {
         tokens.push_back(p[i]);
     }
-    printTokens();
+    //printTokens();
     negNum();
     printTokens();
     //cout << "isPriority:" << isPriority(tokens.at(0)) << endl;
@@ -61,7 +61,7 @@ void Exprresult::printTokens() {
 
 }
 
-void Exprresult::run1() {
+uint32_t Exprresult::run1() {
     bool ret;
     for (int i = 0; i < tokens.size(); i++) {
         ret = isOperator(tokens.at(i));
@@ -70,9 +70,8 @@ void Exprresult::run1() {
             stackNum.push(atoi(tokens.at(i).str));
             continue;
         }
-        ret = isPriority(tokens.at(i));
         /* 优先级低，出栈计算 */
-        if (!ret) {
+        while (!isPriority(tokens.at(i))) {
             stackNum.push(calculate());
         }
         /* 右括号单独处理 */
@@ -86,14 +85,15 @@ void Exprresult::run1() {
         else {
             stackOpre.push(tokens.at(i).type);
         }
-        cout << "循环i::" << i << endl;
     }
     while (!stackOpre.empty()) {
         stackNum.push(calculate());
     }
     cout << "stackNumsize:" << stackNum.size() << endl;
     cout << "calculate:" << stackNum.top() << endl;
-    cout << "stackop:" << stackOpre.size() << endl;
+    cout << "stackOpsize:" << stackOpre.size() << endl;
+
+    return stackNum.top();
 
 }
 
@@ -117,7 +117,7 @@ bool Exprresult::isPriority(Token val) {
 
     /* 特殊情况处理：操作数少于两个,或者为括号 */
     if ((stackNum.size() < 2)) return true;
-    int32_t toptype;
+    uint32_t toptype;
     toptype = stackOpre.top();
     if (toptype == '(') return true;
 
@@ -147,7 +147,7 @@ bool Exprresult::isPriority(Token val) {
     return ret;
 }
 
-int32_t Exprresult::calculate() {
+uint32_t Exprresult::calculate() {
     /* 运算符出栈 */
     uint32_t op = stackOpre.top();
     stackOpre.pop();
@@ -156,7 +156,7 @@ int32_t Exprresult::calculate() {
     uint32_t numleft = stackNum.top();
     stackNum.pop();
 
-    int32_t result;
+    uint32_t result;
     switch (op) {
     case '+':
         result = numleft + numright;
@@ -192,7 +192,8 @@ void Exprresult::negNum() {
             if (i == 0) {
                 tokens.emplace(tokens.begin() + count++, numzore);
             }
-            else if (isOperator(tokencopy.at(i - 1))) {
+            else if (isOperator(tokencopy.at(i - 1))
+                && (tokencopy.at(i - 1).type != ')')) {
                 tokens.emplace(tokens.begin() + i + count++, numzore);
             }
         }
@@ -201,10 +202,10 @@ void Exprresult::negNum() {
 
 
 /* 供外部调用 */
-extern "C" void exprcpp(void* tokens_addr, int num) {
+extern "C" uint32_t exprcpp(void* tokens_addr, int num) {
 
     Exprresult test(tokens_addr, num);
-    //test.run1();
+    return test.run1();
 }
 
 
