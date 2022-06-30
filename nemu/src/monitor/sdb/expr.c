@@ -154,8 +154,16 @@ void expr_test(void) {
     exit(0);  //退出程序（结束程序）
   }
   char buf[1024];
+  /* 读取每一行 */
   while (fgets(buf, sizeof(buf), fp) != NULL) {
     printf("%s", buf);
+    char* cmd = strtok(buf, " ");
+    if (cmd == NULL) {
+      continue;
+    }
+    printf("%s", cmd);
+    char* args = cmd + strlen(cmd) + 1;
+    printf("%s", args);
   }
   fclose(fp);
 }
