@@ -28,7 +28,7 @@ private:
         /* TODO: Add more token types */
     };
     vector<Token> tokens;
-    stack<uint32_t> stackOpre, stackNum;
+    stack<uint64_t> stackOpre, stackNum;
 public:
     Exprresult(void* tokens_addr, int num);
     Exprresult(vector<Token> val);
@@ -36,12 +36,12 @@ public:
     void printTokens();
     bool isOperator(Token val);
     bool isPriority(Token val);
-    uint32_t calculate();
+    uint64_t calculate();
     void negNum();
     void ref();
     void reg();
     void hex();
-    uint32_t run1();
+    uint64_t run1();
 };
 
 
@@ -91,7 +91,7 @@ void Exprresult::printTokens() {
 
 }
 
-uint32_t Exprresult::run1() {
+uint64_t Exprresult::run1() {
     bool ret;
     for (int i = 0; i < tokens.size(); i++) {
         /* 跳过无用数据 */
@@ -185,16 +185,16 @@ bool Exprresult::isPriority(Token val) {
     return ret;
 }
 
-uint32_t Exprresult::calculate() {
+uint64_t Exprresult::calculate() {
     /* 运算符出栈 */
-    uint32_t op = stackOpre.top();
+    uint64_t op = stackOpre.top();
     stackOpre.pop();
-    uint32_t numright = stackNum.top();
+    uint64_t numright = stackNum.top();
     stackNum.pop();
-    uint32_t numleft = stackNum.top();
+    uint64_t numleft = stackNum.top();
     stackNum.pop();
 
-    uint32_t result;
+    uint64_t result;
     switch (op) {
     case '+':
         result = numleft + numright;
@@ -303,7 +303,7 @@ void Exprresult::hex() {
     }
 }
 /* 供外部调用 */
-extern "C" uint32_t exprcpp(void* tokens_addr, int num) {
+extern "C" uint64_t exprcpp(void* tokens_addr, int num) {
 
     Exprresult test(tokens_addr, num);
     // return test.run1();
