@@ -101,7 +101,10 @@ uint64_t Exprresult::run1() {
         ret = isOperator(tokens.at(i));
         /* 数字直接入栈 */
         if (!ret) {
-            stackNum.push(atoi(tokens.at(i).str));
+            /* 这里的字符串转换函数要匹配 */
+            uint64_t data64;
+            sscanf(tokens.at(1).str, "%lu", &data64);
+            stackNum.push(data64);
             continue;
         }
         /* 优先级低，出栈计算 */
