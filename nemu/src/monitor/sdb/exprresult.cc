@@ -258,8 +258,9 @@ void Exprresult::ref() {
     for (size_t i = 0; i < tokens.size(); i++) {
         uint64_t addr, data;
         if (tokens.at(i).type == TK_DEREF) {
-            tokens[i].type == TK_NOTYPE;
+            tokens[i].type = TK_NOTYPE;
             if (tokens.at(i + 1).type == TK_NUM) {
+
                 /* 得到地址 */
                 sscanf(tokens.at(i + 1).str, "%lu", &addr);
                 data = vaddr_read(addr, 8);//读取地址数据
