@@ -141,8 +141,7 @@ word_t expr(char* e, bool* success) {
 
   extern uint64_t exprcpp(void* tokens_addr, int num);
   uint64_t result = exprcpp(tokens, nr_token);
-  /* TODO: Insert codes to evaluate the expression. */
-  //TODO();
+
   return result;
 }
 
