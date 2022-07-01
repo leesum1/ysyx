@@ -54,7 +54,7 @@ Exprresult::Exprresult(void* tokens_addr, int num) {
     for (int i = 0; i < num; i++) {
         tokens.push_back(p[i]);
     }
-    ParseAll();
+    //ParseAll();
 
 }
 
