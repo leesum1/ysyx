@@ -159,20 +159,21 @@ void expr_test(void) {
   char buf[1024];
   /* 读取每一行
    * 换行键被坑了
-   * 封装fgets函数，去掉其末尾的换行符"\n"
+   * fgets函数，会默认添加换行\n,导致字符串结尾是 \n\0"
    */
   while (fgets(buf, sizeof(buf), fp) != NULL) {
 
     char* find = strchr(buf, '\n');  //找出data中的"\n"
     if (find)
       *find = '\0';   //替换
-
+    /* 参考nemu读取命令的代码 */
     char* cmd = strtok(buf, " ");
     char* args = cmd + strlen(cmd) + 1;
     DEBUG_M("%s\n", buf);
     DEBUG_M("%s\n", cmd);
     DEBUG_M("%s\n", args);
-    testinput = atoi(cmd);
+
+    sscanf(cmd, "%lu", &testinput);
     testoutput = expr(args, &ret);
     Assert(testinput == testoutput, "input:%lu,output:%lu", testinput, testoutput);
   }

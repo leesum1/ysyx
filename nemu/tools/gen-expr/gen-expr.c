@@ -37,7 +37,7 @@ static char* code_format =
 static void gen_num() {
   char str[32];
   /* 随机插入空格 */
-  sprintf(str, "%*d", rand() % 4, (rand() % 20) - 10);
+  sprintf(str, "%*d", rand() % 4, (rand() % 20));
   DEBUG_S("size:%ld,num:%s\n", strlen(str), str);
   strcpy(bufindex, str);
   bufindex += strlen(str);
@@ -60,7 +60,7 @@ static void gen(char symbol) {
 static void gen_rand_op() {
   char op;
   /* 不要除法 */
-  switch (rand() % 3) {
+  switch (rand() % 4) {
   case 0:
     op = '+';
     break;
@@ -87,12 +87,8 @@ static void gen_rand_op() {
 
 
 static void gen_rand_expr() {
-  static int i = 0;
-  if (i > 8) {
-    i = 0;
-    return;
-  }
   int choose = rand() % 3;
+  /* 表达式长度超过20后，强制选择 0 路线，不进行递归调用 */
   if (strlen(buf) > 20) {
     choose = 0;
   }
