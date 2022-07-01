@@ -55,7 +55,7 @@ static struct rule {
   {"==", TK_EQ},                  // equal
   {"!=", TK_NEQ},                 // not equal
   {"0[xX][0-9a-fA-F]+",TK_HEX},   // hex ,十六进制识别必须在十进制前面
-  {"\\$[a-zA-z]+",TK_REG},        // reg
+  {"\\$[a-zA-z]+[0-9]*",TK_REG},  // reg
   {"[0-9]+", TK_NUM},             // num
   {"&&"},                         // and
 };
