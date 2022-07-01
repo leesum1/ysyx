@@ -103,7 +103,7 @@ uint64_t Exprresult::run1() {
         if (!ret) {
             /* 这里的字符串转换函数要匹配 */
             uint64_t data64;
-            sscanf(tokens.at(1).str, "%lu", &data64);
+            sscanf(tokens.at(i).str, "%lu", &data64);
             stackNum.push(data64);
             continue;
         }
