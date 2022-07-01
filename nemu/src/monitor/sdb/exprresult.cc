@@ -5,6 +5,7 @@
 extern "C" {
 #include <common.h>
 #include <isa.h>
+#include <memory/vaddr.h>
 }
 using namespace std;
 
@@ -91,6 +92,9 @@ void Exprresult::printTokens() {
 uint32_t Exprresult::run1() {
     bool ret;
     for (int i = 0; i < tokens.size(); i++) {
+        if (tokens.at(i).type == TK_NOTYPE) {
+            continue;
+        }
         ret = isOperator(tokens.at(i));
         /* 数字直接入栈 */
         if (!ret) {
@@ -210,28 +214,31 @@ uint32_t Exprresult::calculate() {
 
 /* 处理负号 */
 void Exprresult::negNum() {
-    Token numzore;
-    numzore.type = TK_NUM;
-    sprintf(numzore.str, "%d", 0);
-    vector<Token> tokencopy(tokens);
-    int count = 0;;
+    uint64_t data, negdata;;
     //https://blog.csdn.net/hechao3225/article/details/55101344
-    for (int i = 0; i < tokencopy.size(); i++) {
-        if (tokencopy.at(i).type == '-') {
-
+    for (int i = 0; i < tokens.size(); i++) {
+        if (tokens.at(i).type == '-') {
+            /* 位于头部 是负号 */
             if (i == 0) {
-                tokens.emplace(tokens.begin() + count++, numzore);
+                tokens[i].type = TK_NOTYPE;
+                sscanf(tokens[i + 1].str, "%lu", &data);
+                negdata = -data;
+                sprintf(tokens[i + 1].str, "%lu", &negdata);
             }
-            else if (isOperator(tokencopy.at(i - 1))
-                && (tokencopy.at(i - 1).type != ')')) {
-                tokens.emplace(tokens.begin() + i + count++, numzore);
+            /* 前一个是操作符 是符号 */
+            else if (isOperator(tokens.at(i - 1))
+                && (tokens.at(i - 1).type != ')')) {
+                tokens[i].type = TK_NOTYPE;
+                sscanf(tokens[i + 1].str, "%lu", &data);
+                negdata = -data;
+                sprintf(tokens[i + 1].str, "%lu", &negdata);
             }
         }
     }
 }
-
 /* 处理指针 */
 void Exprresult::ref() {
+
     //https://blog.csdn.net/hechao3225/article/details/55101344
     for (size_t i = 0; i < tokens.size(); i++) {
         /* 区分是乘法还是指针 */
@@ -249,22 +256,17 @@ void Exprresult::ref() {
     }
 
     for (size_t i = 0; i < tokens.size(); i++) {
-        uint64_t ret;
+        uint64_t addr, data;
         if (tokens.at(i).type == TK_DEREF) {
-            if (tokens.at(i).type == TK_NUM) {
-                sscanf(tokens.at(i + 1).str, "%lu", &ret);
+            tokens[i].type == TK_NOTYPE;
+            if (tokens.at(i + 1).type == TK_NUM) {
+                /* 得到地址 */
+                sscanf(tokens.at(i + 1).str, "%lu", &addr);
+                data = vaddr_read(addr, 8);//读取地址数据
+                sprintf(tokens[i + 1].str, "%lu", data);//重新写入数据
             }
-            else if (tokens.at(i).type == TK_NUM) {
-                /* code */
-            }
-
-
         }
-
     }
-
-
-
 }
 
 /* 处理寄存器 */
@@ -288,9 +290,10 @@ void Exprresult::hex() {
     for (int i = 0; i < tokens.size(); i++) {
         /* 读取寄存器 */
         if (tokens.at(i).type == TK_HEX) {
-            sscanf(tokens.at(i).str, "%p", &ret);
+            sscanf(tokens.at(i).str, "%lx", &ret);
             cout << "hexret:" << ret << endl;
             sprintf(tokens[i].str, "%lu", ret);
+            tokens[i].type = TK_NUM;
         }
     }
 }
