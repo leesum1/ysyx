@@ -140,7 +140,9 @@ bool Exprresult::isOperator(Token val) {
     if (val.type == '+'
         || val.type == '-'
         || val.type == '*'
-        || val.type == '/') {
+        || val.type == '/'
+        || val.type == '('
+        || val.type == ')') {
         return true;
     }
     return false;
