@@ -149,7 +149,7 @@ word_t expr(char* e, bool* success) {
 
 void expr_test(void) {
   bool ret;
-  uint32_t testinput, testoutput;
+  uint64_t testinput, testoutput;
   FILE* fp = fopen("/home/leesum/ysyx-workbench/nemu/tools/gen-expr/input", "r");
   if (fp == NULL) {
     printf("Fail to open file!\n");
@@ -173,7 +173,7 @@ void expr_test(void) {
     DEBUG_M("%s\n", args);
     testinput = atoi(cmd);
     testoutput = expr(args, &ret);
-    Assert(testinput == testoutput, "input:%d,output:%d", testinput, testoutput);
+    Assert(testinput == testoutput, "input:%lu,output:%lu", testinput, testoutput);
   }
   fclose(fp);
 }
