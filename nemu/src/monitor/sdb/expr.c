@@ -173,7 +173,9 @@ void expr_test(void) {
     DEBUG_M("%s\n", cmd);
     DEBUG_M("%s\n", args);
 
-    sscanf(cmd, "%lu", &testinput);
+    int temp;
+    sscanf(cmd, "%d", &temp);
+    testinput = temp;
     testoutput = expr(args, &ret);
     Assert(testinput == testoutput, "input:%lu,output:%lu", testinput, testoutput);
   }
