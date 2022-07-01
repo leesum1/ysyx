@@ -222,7 +222,7 @@ void Exprresult::negNum() {
             if (i == 0) {
                 tokens[i].type = TK_NOTYPE;
                 sscanf(tokens[i + 1].str, "%ld", &data);
-                negdata = -data;
+                negdata = 0 - data;
                 sprintf(tokens[i + 1].str, "%lu", &negdata);
             }
             /* 前一个是操作符 是符号 */
@@ -230,7 +230,7 @@ void Exprresult::negNum() {
                 && (tokens.at(i - 1).type != ')')) {
                 tokens[i].type = TK_NOTYPE;
                 sscanf(tokens[i + 1].str, "%ld", &data);
-                negdata = -data;
+                negdata = 0 - data;
                 sprintf(tokens[i + 1].str, "%lu", &negdata);
             }
         }
