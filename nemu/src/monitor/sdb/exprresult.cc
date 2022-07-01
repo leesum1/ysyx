@@ -1,8 +1,12 @@
 #include <stack>
 #include <iostream>
 #include <vector>
+
+extern "C" {
 #include <common.h>
 #include <isa.h>
+}
+
 using namespace std;
 
 class Exprresult {
