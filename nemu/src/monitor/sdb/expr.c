@@ -143,7 +143,7 @@ word_t expr(char* e, bool* success) {
   uint32_t result = exprcpp(tokens, nr_token);
   /* TODO: Insert codes to evaluate the expression. */
   //TODO();
-  return 0;
+  return result;
 }
 
 
