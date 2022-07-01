@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <common.h>
-
+#include <isa.h>
 using namespace std;
 
 class Exprresult {
@@ -27,6 +27,7 @@ private:
     stack<uint32_t> stackOpre, stackNum;
 public:
     Exprresult(void* tokens_addr, int num);
+    Exprresult(vector<Token> val);
     ~Exprresult();
     void printTokens();
     bool isOperator(Token val);
@@ -34,6 +35,7 @@ public:
     uint32_t calculate();
     void negNum();
     void ref();
+    void reg();
     uint32_t run1();
 };
 
@@ -45,6 +47,18 @@ Exprresult::Exprresult(void* tokens_addr, int num) {
     for (int i = 0; i < num; i++) {
         tokens.push_back(p[i]);
     }
+    //printTokens();
+    negNum();
+    ref();
+    printTokens();
+
+    //cout << "isPriority:" << isPriority(tokens.at(0)) << endl;
+}
+
+
+Exprresult::Exprresult(vector<Token> val) {
+    /* 赋值 */
+    tokens.assign(val.begin(), val.end());
     //printTokens();
     negNum();
     ref();
@@ -105,7 +119,8 @@ uint32_t Exprresult::run1() {
 }
 
 bool Exprresult::isOperator(Token val) {
-    if (val.type != this->TK_NUM) {
+    if (val.type != this->TK_NUM
+        || val.type != this->TK_HEX) {
         return true;
     }
     return false;
@@ -222,6 +237,22 @@ void Exprresult::ref() {
                 && (tokens.at(i - 1).type != ')')) {
                 tokens.at(i).type = TK_DEREF;
             }
+        }
+    }
+}
+
+/* 处理寄存器 */
+void Exprresult::reg() {
+    //https://blog.csdn.net/hechao3225/article/details/55101344
+    for (int i = 0; i < tokens.size(); i++) {
+        /* 读取寄存器 */
+        if (tokens.at(i).type == TK_REG) {
+            char* regname = tokens.at(i).str;
+            bool ret;
+            extern word_t isa_reg_str2val(const char* s, bool* success);
+            uint64_t val = isa_reg_str2val(&regname[1], &ret);
+            tokens[i].type = TK_NUM;
+            sprintf(tokens[i].str, "%lu", val);
         }
     }
 }
