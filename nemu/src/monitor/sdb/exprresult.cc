@@ -221,22 +221,17 @@ void Exprresult::negNum() {
             /* 位于头部 是负号 */
             if (i == 0) {
                 tokens[i].type = TK_NOTYPE;
-                sscanf(tokens[i + 1].str, "%ld", &data);
-
+                sscanf(tokens[i + 1].str, "%lu", &data);
                 negdata = 0 - data;
                 sprintf(tokens[i + 1].str, "%lu", negdata);
-                cout << "data:" << data << endl;
-                cout << "negdata:" << negdata << endl;
             }
             /* 前一个是操作符 是符号 */
             else if (isOperator(tokens.at(i - 1))
                 && (tokens.at(i - 1).type != ')')) {
                 tokens[i].type = TK_NOTYPE;
-                sscanf(tokens[i + 1].str, "%ld", &data);
+                sscanf(tokens[i + 1].str, "%lu", &data);
                 negdata = 0 - data;
                 sprintf(tokens[i + 1].str, "%lu", negdata);
-                cout << "data:" << data << endl;
-                cout << "negdata:" << negdata << endl;
             }
         }
     }
