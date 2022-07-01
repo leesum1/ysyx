@@ -53,10 +53,12 @@ Exprresult::Exprresult(void* tokens_addr, int num) {
         tokens.push_back(p[i]);
     }
     printTokens();
-    negNum();
-    reg();
-    hex();
-    ref();
+    negNum(); //负数处理
+    reg();    //寄存器处理  
+    hex();    //十六进制处理
+    ref();    //指针处理
+    /* 处理完毕后,所有数据都是 64位 无符号数 */
+    run1();
     printTokens();
 
     //cout << "isPriority:" << isPriority(tokens.at(0)) << endl;
@@ -92,6 +94,7 @@ void Exprresult::printTokens() {
 uint32_t Exprresult::run1() {
     bool ret;
     for (int i = 0; i < tokens.size(); i++) {
+        /* 跳过无用数据 */
         if (tokens.at(i).type == TK_NOTYPE) {
             continue;
         }
@@ -117,6 +120,7 @@ uint32_t Exprresult::run1() {
             stackOpre.push(tokens.at(i).type);
         }
     }
+    /* 剩余数据处理 */
     while (!stackOpre.empty()) {
         stackNum.push(calculate());
     }
@@ -220,7 +224,8 @@ void Exprresult::negNum() {
         if (tokens.at(i).type == '-') {
             /* 位于头部 是负号 */
             if (i == 0) {
-                tokens[i].type = TK_NOTYPE;
+                tokens[i].type = TK_NOTYPE; //标记为无用数据
+                /* 重新写入负数 */
                 sscanf(tokens[i + 1].str, "%lu", &data);
                 negdata = 0 - data;
                 sprintf(tokens[i + 1].str, "%lu", negdata);
@@ -258,9 +263,8 @@ void Exprresult::ref() {
     for (size_t i = 0; i < tokens.size(); i++) {
         uint64_t addr, data;
         if (tokens.at(i).type == TK_DEREF) {
-            tokens[i].type = TK_NOTYPE;
+            tokens[i].type = TK_NOTYPE; //标记为无用数据
             if (tokens.at(i + 1).type == TK_NUM) {
-
                 /* 得到地址 */
                 sscanf(tokens.at(i + 1).str, "%lu", &addr);
                 data = vaddr_read(addr, 8);//读取地址数据
