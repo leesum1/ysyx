@@ -364,7 +364,7 @@ extern "C" uint64_t exprcpp(void* tokens_addr, int num) {
 
     Exprresult test(tokens_addr, num);
 
-    return test.run1();
+    return test.getResult();
     //return 0;
 }
 
