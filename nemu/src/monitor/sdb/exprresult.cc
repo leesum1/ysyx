@@ -132,8 +132,8 @@ uint64_t Exprresult::run1() {
     cout << "stackNumsize:" << stackNum.size() << endl;
     cout << "stackOpsize:" << stackOpre.size() << endl;
     cout << "calculate:" << stackNum.top() << endl;
-    return stackNum.top();
 
+    return stackNum.top();
 }
 
 bool Exprresult::isOperator(Token val) {
