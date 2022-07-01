@@ -6,6 +6,7 @@ extern "C" {
 #include <common.h>
 #include <isa.h>
 #include <memory/vaddr.h>
+#include <debug.h>
 }
 using namespace std;
 
