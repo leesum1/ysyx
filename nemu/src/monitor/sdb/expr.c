@@ -54,7 +54,7 @@ static struct rule {
   {"-", '-'},                     // minus
   {"==", TK_EQ},                  // equal
   {"!=", TK_NEQ},                 // not equal
-  {"0[xX][0-9a-fA-F]+",TK_HEX},   // hex
+  {"0[xX][0-9a-fA-F]+",TK_HEX},   // hex ,十六进制识别必须在十进制前面
   {"[0-9]+", TK_NUM},             // num
   {"&&"},                         // and
   {"\\$[a-zA-z]+",TK_REG},        // reg
@@ -141,11 +141,11 @@ word_t expr(char* e, bool* success) {
     return 0;
   }
 
-  extern uint32_t exprcpp(void* tokens_addr, int num);
-  uint32_t result = exprcpp(tokens, nr_token);
+  // extern uint32_t exprcpp(void* tokens_addr, int num);
+  // uint32_t result = exprcpp(tokens, nr_token);
   /* TODO: Insert codes to evaluate the expression. */
   //TODO();
-  return result;
+  return 0;
 }
 
 
