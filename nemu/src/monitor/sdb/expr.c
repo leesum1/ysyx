@@ -46,7 +46,6 @@ static struct rule {
    * + 、 * 、（、） 在正则表达式中有特殊含义
     */
   {" +", TK_NOTYPE},              // spaces
-  {"[0-9]+", TK_NUM},             // num
   {"\\(", '('},                   // left brackets
   {"\\)", ')'},                   // right brackets
   {"\\*", '*'},                   // multi
@@ -56,6 +55,7 @@ static struct rule {
   {"==", TK_EQ},                  // equal
   {"!=", TK_NEQ},                 // not equal
   {"0[xX][0-9a-fA-F]+",TK_HEX},   // hex
+  {"[0-9]+", TK_NUM},             // num
   {"&&"},                         // and
   {"\\$[a-zA-z]+",TK_REG},        // reg
 };
