@@ -147,6 +147,7 @@ word_t expr(char* e, bool* success) {
 
 
 
+/* 表达式测试 */
 void expr_test(void) {
   bool ret;
   uint64_t testinput, testoutput;

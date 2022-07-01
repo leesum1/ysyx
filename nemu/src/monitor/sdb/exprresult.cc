@@ -36,6 +36,7 @@ public:
     ~Exprresult();
     void printTokens();
     bool isOperator(Token val);
+    bool isCompare(Token val);
     bool isPriority(Token val);
     uint64_t calculate();
     void negNum();
@@ -44,6 +45,7 @@ public:
     void hex();
     void ParseAll();
     uint64_t run1();
+    uint64_t getResult();
 };
 
 
@@ -55,7 +57,6 @@ Exprresult::Exprresult(void* tokens_addr, int num) {
         tokens.push_back(p[i]);
     }
     ParseAll();
-
 }
 
 
@@ -63,8 +64,24 @@ Exprresult::Exprresult(vector<Token> val) {
     /* 赋值 */
     tokens.assign(val.begin(), val.end());
     ParseAll();
+    printTokens();
 }
 
+
+uint64_t Exprresult::getResult() {
+    auto iter = tokens.begin();
+    uint64_t leftval, rightval;
+    vector<Token> vector_l, vector_r;
+    for (; iter != tokens.end(); iter++) {
+        if (isCompare(iter.operator*())) {
+            vector<Token> vector_l(tokens.begin(), iter);
+            vector<Token> vector_r(iter + 1, tokens.end());
+            Exprresult expl(vector_l);
+            Exprresult expr(vector_r);
+        }
+    }
+
+}
 /* 处理完毕后,所有数据都是 64位 无符号数 */
 void Exprresult::ParseAll() {
     printTokens();
@@ -148,6 +165,18 @@ bool Exprresult::isOperator(Token val) {
     return false;
 
 }
+
+/* 比较运算符 */
+bool Exprresult::isCompare(Token val) {
+    if (val.type == TK_AND
+        || val.type == TK_EQ
+        || val.type == TK_NEQ) {
+        return true;
+    }
+    return false;
+}
+
+
 
 /**
  * @brief () * / + -
@@ -309,12 +338,16 @@ void Exprresult::hex() {
         }
     }
 }
+
+
+
 /* 供外部调用 */
 extern "C" uint64_t exprcpp(void* tokens_addr, int num) {
 
     Exprresult test(tokens_addr, num);
-    return test.run1();
-    // return 0;
+    test.getResult();
+    //return test.run1();
+    return 0;
 }
 
 
