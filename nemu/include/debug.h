@@ -33,6 +33,8 @@
 //最简洁的调试信息：格式化输出内容，格式化参数
 #define DEBUG_S(format, argent...) printf("" format "", ##argent)
 
+
+extern void assert_fail_msg();
 #define Assert(cond, format, ...)                                                                   \
   do                                                                                                \
   {                                                                                                 \
@@ -41,7 +43,6 @@
       MUXDEF(CONFIG_TARGET_AM, printf(ANSI_FMT(format, ANSI_FG_RED) "\n", ##__VA_ARGS__),           \
              (fflush(stdout), fprintf(stderr, ANSI_FMT(format, ANSI_FG_RED) "\n", ##__VA_ARGS__))); \
       IFNDEF(CONFIG_TARGET_AM, extern FILE *log_fp; fflush(log_fp));                                \
-      extern void assert_fail_msg();                                                                \
       assert_fail_msg();                                                                            \
       assert(cond);                                                                                 \
     }                                                                                               \

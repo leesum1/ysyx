@@ -139,18 +139,18 @@ word_t expr(char* e, bool* success) {
     return 0;
   }
 
-  extern uint32_t exprcpp(void* tokens_addr, int num);
-  uint32_t result = exprcpp(tokens, nr_token);
-  /* TODO: Insert codes to evaluate the expression. */
-  //TODO();
-  return 0;
+  extern uint64_t exprcpp(void* tokens_addr, int num);
+  uint64_t result = exprcpp(tokens, nr_token);
+
+  return result;
 }
 
 
 
+/* 表达式测试 */
 void expr_test(void) {
   bool ret;
-  uint32_t testinput, testoutput;
+  uint64_t testinput, testoutput;
   FILE* fp = fopen("/home/leesum/ysyx-workbench/nemu/tools/gen-expr/input", "r");
   if (fp == NULL) {
     printf("Fail to open file!\n");
@@ -174,7 +174,7 @@ void expr_test(void) {
     DEBUG_M("%s\n", args);
     testinput = atoi(cmd);
     testoutput = expr(args, &ret);
-    Assert(testinput == testoutput, "input:%d,output:%d", testinput, testoutput);
+    Assert(testinput == testoutput, "input:%lu,output:%lu", testinput, testoutput);
   }
   fclose(fp);
 }

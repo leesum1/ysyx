@@ -6,6 +6,7 @@ extern "C" {
 #include <common.h>
 #include <isa.h>
 #include <memory/vaddr.h>
+#include <debug.h>
 }
 using namespace std;
 
@@ -35,13 +36,17 @@ public:
     ~Exprresult();
     void printTokens();
     bool isOperator(Token val);
+    bool isCompare(Token val);
     bool isPriority(Token val);
     uint64_t calculate();
     void negNum();
     void ref();
     void reg();
     void hex();
+    void ParseAll();
     uint64_t run1();
+    uint64_t getResult();
+    bool getCompare(uint64_t leftVal, uint64_t rightVal, Token cmp);
 };
 
 
@@ -52,27 +57,44 @@ Exprresult::Exprresult(void* tokens_addr, int num) {
     for (int i = 0; i < num; i++) {
         tokens.push_back(p[i]);
     }
-    printTokens();
-    negNum(); //负数处理
-    reg();    //寄存器处理  
-    hex();    //十六进制处理
-    ref();    //指针处理
-    /* 处理完毕后,所有数据都是 64位 无符号数 */
-    run1();
-    printTokens();
-
-    //cout << "isPriority:" << isPriority(tokens.at(0)) << endl;
+    ParseAll();
 }
 
 
 Exprresult::Exprresult(vector<Token> val) {
     /* 赋值 */
     tokens.assign(val.begin(), val.end());
-    //printTokens();
-    // negNum();
-    // ref();
-    // printTokens();
-    //cout << "isPriority:" << isPriority(tokens.at(0)) << endl;
+    ParseAll();
+    printTokens();
+}
+
+
+uint64_t Exprresult::getResult() {
+    auto iter = tokens.begin();
+    vector<Token> vector_l, vector_r;
+    for (; iter != tokens.end(); iter++) {
+        if (isCompare(iter.operator*())) {
+            /* 以比较运算符为界，分为两个表达式 */
+            vector<Token> vector_l(tokens.begin(), iter);
+            vector<Token> vector_r(iter + 1, tokens.end());
+            Exprresult expl(vector_l);
+            Exprresult expr(vector_r);
+            uint64_t leftval = expl.run1();
+            uint64_t rightval = expr.run1();
+            bool ret = getCompare(leftval, rightval, iter.operator*());
+            return ret;
+        }
+    }
+    return run1();
+}
+/* 处理完毕后,所有数据都是 64位 无符号数 */
+void Exprresult::ParseAll() {
+    printTokens();
+    negNum();               //负数处理
+    reg();                  //寄存器处理  
+    hex();                  //十六进制处理
+    ref();                  //指针处理
+    printTokens();
 }
 
 Exprresult::~Exprresult() {
@@ -127,23 +149,51 @@ uint64_t Exprresult::run1() {
     while (!stackOpre.empty()) {
         stackNum.push(calculate());
     }
+
+    Assert(stackNum.size() == 1 || stackOpre.size() == 0, "stackNum.size:%d,stackOpre.size%d", stackNum.size(), stackOpre.size());
     cout << "stackNumsize:" << stackNum.size() << endl;
-    cout << "calculate:" << stackNum.top() << endl;
     cout << "stackOpsize:" << stackOpre.size() << endl;
+    cout << "calculate:" << stackNum.top() << endl;
 
     return stackNum.top();
-
 }
 
 bool Exprresult::isOperator(Token val) {
     if (val.type == '+'
         || val.type == '-'
         || val.type == '*'
-        || val.type == '/') {
+        || val.type == '/'
+        || val.type == '('
+        || val.type == ')') {
         return true;
     }
     return false;
 
+}
+
+/* 比较运算符 */
+bool Exprresult::isCompare(Token val) {
+    if (val.type == TK_AND
+        || val.type == TK_EQ
+        || val.type == TK_NEQ) {
+        return true;
+    }
+    return false;
+}
+
+bool Exprresult::getCompare(uint64_t leftVal, uint64_t rightVal, Token cmp) {
+    bool ret;
+    switch (cmp.type) {
+    case TK_EQ:
+        ret = (leftVal == rightVal) ? true : false;
+        break;
+    case TK_NEQ:
+        ret = (leftVal != rightVal) ? true : false;
+        break;
+    default:
+        break;
+    }
+    return ret;
 }
 
 /**
@@ -306,12 +356,16 @@ void Exprresult::hex() {
         }
     }
 }
+
+
+
 /* 供外部调用 */
 extern "C" uint64_t exprcpp(void* tokens_addr, int num) {
 
     Exprresult test(tokens_addr, num);
-    // return test.run1();
-    return 0;
+
+    return test.getResult();
+    //return 0;
 }
 
 
