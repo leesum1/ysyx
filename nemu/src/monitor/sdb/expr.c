@@ -120,8 +120,6 @@ static bool make_token(char* e) {
         break;
       }
     }
-
-    printf("e:%c\n", e[i]);
     if (i == NR_REGEX) {
       printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
       printf("%s\n,size:%d\n", e, strlen(e));
@@ -141,8 +139,8 @@ word_t expr(char* e, bool* success) {
     return 0;
   }
 
-  // extern uint32_t exprcpp(void* tokens_addr, int num);
-  // uint32_t result = exprcpp(tokens, nr_token);
+  extern uint32_t exprcpp(void* tokens_addr, int num);
+  uint32_t result = exprcpp(tokens, nr_token);
   /* TODO: Insert codes to evaluate the expression. */
   //TODO();
   return 0;

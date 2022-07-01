@@ -33,6 +33,7 @@ public:
     bool isPriority(Token val);
     uint32_t calculate();
     void negNum();
+    void ref();
     uint32_t run1();
 };
 
@@ -46,6 +47,7 @@ Exprresult::Exprresult(void* tokens_addr, int num) {
     }
     //printTokens();
     negNum();
+    ref();
     printTokens();
     //cout << "isPriority:" << isPriority(tokens.at(0)) << endl;
 }
@@ -183,7 +185,7 @@ uint32_t Exprresult::calculate() {
     return result;
 }
 
-
+/* 处理负号 */
 void Exprresult::negNum() {
     Token numzore;
     numzore.type = TK_NUM;
@@ -205,12 +207,32 @@ void Exprresult::negNum() {
     }
 }
 
+/* 处理指针 */
+void Exprresult::ref() {
+    //https://blog.csdn.net/hechao3225/article/details/55101344
+    for (int i = 0; i < tokens.size(); i++) {
+        /* 区分是乘法还是指针 */
+        if (tokens.at(i).type == '*') {
+            /* 位于头部是指针 */
+            if (i == 0) {
+                tokens.at(i).type = TK_DEREF;
+            }
+            /* 前面是预算符，且不是 ')' 为指针 */
+            else if (isOperator(tokens.at(i - 1))
+                && (tokens.at(i - 1).type != ')')) {
+                tokens.at(i).type = TK_DEREF;
+            }
+        }
+    }
+}
+
 
 /* 供外部调用 */
 extern "C" uint32_t exprcpp(void* tokens_addr, int num) {
 
     Exprresult test(tokens_addr, num);
-    return test.run1();
+    // return test.run1();
+    return 0;
 }
 
 
