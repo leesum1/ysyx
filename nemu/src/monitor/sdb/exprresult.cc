@@ -268,6 +268,7 @@ void Exprresult::ref() {
                 /* 得到地址 */
                 sscanf(tokens.at(i + 1).str, "%lu", &addr);
                 data = vaddr_read(addr, 8);//读取地址数据
+                cout << "data:" << data << endl;
                 sprintf(tokens[i + 1].str, "%lu", data);//重新写入数据
             }
         }
