@@ -216,14 +216,17 @@ uint32_t Exprresult::calculate() {
 void Exprresult::negNum() {
     uint64_t data, negdata;;
     //https://blog.csdn.net/hechao3225/article/details/55101344
-    for (int i = 0; i < tokens.size(); i++) {
+    for (size_t i = 0; i < tokens.size(); i++) {
         if (tokens.at(i).type == '-') {
             /* 位于头部 是负号 */
             if (i == 0) {
                 tokens[i].type = TK_NOTYPE;
                 sscanf(tokens[i + 1].str, "%ld", &data);
+
                 negdata = 0 - data;
-                sprintf(tokens[i + 1].str, "%lu", &negdata);
+                sprintf(tokens[i + 1].str, "%lu", negdata);
+                cout << "data:" << data << endl;
+                cout << "negdata:" << negdata << endl;
             }
             /* 前一个是操作符 是符号 */
             else if (isOperator(tokens.at(i - 1))
@@ -231,7 +234,9 @@ void Exprresult::negNum() {
                 tokens[i].type = TK_NOTYPE;
                 sscanf(tokens[i + 1].str, "%ld", &data);
                 negdata = 0 - data;
-                sprintf(tokens[i + 1].str, "%lu", &negdata);
+                sprintf(tokens[i + 1].str, "%lu", negdata);
+                cout << "data:" << data << endl;
+                cout << "negdata:" << negdata << endl;
             }
         }
     }
