@@ -67,9 +67,9 @@ Exprresult::Exprresult(vector<Token> val) {
     /* 赋值 */
     tokens.assign(val.begin(), val.end());
     //printTokens();
-    negNum();
-    ref();
-    printTokens();
+    // negNum();
+    // ref();
+    // printTokens();
     //cout << "isPriority:" << isPriority(tokens.at(0)) << endl;
 }
 
