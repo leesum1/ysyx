@@ -41,6 +41,7 @@ public:
     void ref();
     void reg();
     void hex();
+    void ParseAll();
     uint64_t run1();
 };
 
@@ -52,27 +53,25 @@ Exprresult::Exprresult(void* tokens_addr, int num) {
     for (int i = 0; i < num; i++) {
         tokens.push_back(p[i]);
     }
-    printTokens();
-    negNum(); //负数处理
-    reg();    //寄存器处理  
-    hex();    //十六进制处理
-    ref();    //指针处理
-    /* 处理完毕后,所有数据都是 64位 无符号数 */
-    run1();
-    printTokens();
+    ParseAll();
 
-    //cout << "isPriority:" << isPriority(tokens.at(0)) << endl;
 }
 
 
 Exprresult::Exprresult(vector<Token> val) {
     /* 赋值 */
     tokens.assign(val.begin(), val.end());
-    //printTokens();
-    // negNum();
-    // ref();
-    // printTokens();
-    //cout << "isPriority:" << isPriority(tokens.at(0)) << endl;
+    ParseAll();
+}
+
+/* 处理完毕后,所有数据都是 64位 无符号数 */
+void Exprresult::ParseAll() {
+    printTokens();
+    negNum();               //负数处理
+    reg();                  //寄存器处理  
+    hex();                  //十六进制处理
+    ref();                  //指针处理
+    printTokens();
 }
 
 Exprresult::~Exprresult() {
@@ -127,10 +126,12 @@ uint64_t Exprresult::run1() {
     while (!stackOpre.empty()) {
         stackNum.push(calculate());
     }
-    cout << "stackNumsize:" << stackNum.size() << endl;
-    cout << "calculate:" << stackNum.top() << endl;
-    cout << "stackOpsize:" << stackOpre.size() << endl;
 
+    Assert(stackNum.size() == 1 || stackOpre.size() == 0,
+        "stackNum.size:%d,stackOpre.size%d", stackNum.size(), stackOpre.size());
+    cout << "stackNumsize:" << stackNum.size() << endl;
+    cout << "stackOpsize:" << stackOpre.size() << endl;
+    cout << "calculate:" << stackNum.top() << endl;
     return stackNum.top();
 
 }
