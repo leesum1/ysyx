@@ -58,8 +58,7 @@ static int cmd_q(char* args) {
  * @brief  si [N]
  * 让程序单步执行N条指令后暂停执行,当N没有给出时, 缺省为1
  */
-static int
-cmd_si(char* args) {
+static int cmd_si(char* args) {
   int N;
   if (NULL == args) {
     N = 1; //默认值 1
@@ -120,9 +119,9 @@ static int cmd_p(char* args) {
 
   bool ret;
   DEBUG_S("expr:%s\n", args);
-  //expr(args, &ret);
-  extern void expr_test(void);
-  expr_test();
+  expr(args, &ret);
+  // extern void expr_test(void);
+  // expr_test();
   return 0;
 }
 

@@ -1,8 +1,12 @@
 #include <stack>
 #include <iostream>
 #include <vector>
-#include <common.h>
 
+extern "C" {
+#include <common.h>
+#include <isa.h>
+#include <memory/vaddr.h>
+}
 using namespace std;
 
 class Exprresult {
@@ -13,22 +17,31 @@ private:
     } Token;
 
     enum {
-        TK_NOTYPE = 256, TK_EQ,
-        TK_NUM,
+        TK_NOTYPE = 256,
+        TK_EQ,     // ==
+        TK_NEQ,    // !=
+        TK_AND,    // && 与
+        TK_NUM,    // 数字
+        TK_DEREF,  //指针解引用 *
+        TK_HEX,    // 0x开头，十六进制
+        TK_REG     // 以"$"开头 寄存器
         /* TODO: Add more token types */
-
     };
     vector<Token> tokens;
-    stack<uint32_t> stackOpre, stackNum;
+    stack<uint64_t> stackOpre, stackNum;
 public:
     Exprresult(void* tokens_addr, int num);
+    Exprresult(vector<Token> val);
     ~Exprresult();
     void printTokens();
     bool isOperator(Token val);
     bool isPriority(Token val);
-    uint32_t calculate();
+    uint64_t calculate();
     void negNum();
-    uint32_t run1();
+    void ref();
+    void reg();
+    void hex();
+    uint64_t run1();
 };
 
 
@@ -39,9 +52,26 @@ Exprresult::Exprresult(void* tokens_addr, int num) {
     for (int i = 0; i < num; i++) {
         tokens.push_back(p[i]);
     }
-    //printTokens();
-    negNum();
     printTokens();
+    negNum(); //负数处理
+    reg();    //寄存器处理  
+    hex();    //十六进制处理
+    ref();    //指针处理
+    /* 处理完毕后,所有数据都是 64位 无符号数 */
+    run1();
+    printTokens();
+
+    //cout << "isPriority:" << isPriority(tokens.at(0)) << endl;
+}
+
+
+Exprresult::Exprresult(vector<Token> val) {
+    /* 赋值 */
+    tokens.assign(val.begin(), val.end());
+    //printTokens();
+    // negNum();
+    // ref();
+    // printTokens();
     //cout << "isPriority:" << isPriority(tokens.at(0)) << endl;
 }
 
@@ -61,13 +91,20 @@ void Exprresult::printTokens() {
 
 }
 
-uint32_t Exprresult::run1() {
+uint64_t Exprresult::run1() {
     bool ret;
-    for (int i = 0; i < tokens.size(); i++) {
+    for (size_t i = 0; i < tokens.size(); i++) {
+        /* 跳过无用数据 */
+        if (tokens.at(i).type == TK_NOTYPE) {
+            continue;
+        }
         ret = isOperator(tokens.at(i));
         /* 数字直接入栈 */
         if (!ret) {
-            stackNum.push(atoi(tokens.at(i).str));
+            /* 这里的字符串转换函数要匹配 */
+            uint64_t data64;
+            sscanf(tokens.at(i).str, "%lu", &data64);
+            stackNum.push(data64);
             continue;
         }
         /* 优先级低，出栈计算 */
@@ -86,6 +123,7 @@ uint32_t Exprresult::run1() {
             stackOpre.push(tokens.at(i).type);
         }
     }
+    /* 剩余数据处理 */
     while (!stackOpre.empty()) {
         stackNum.push(calculate());
     }
@@ -98,7 +136,10 @@ uint32_t Exprresult::run1() {
 }
 
 bool Exprresult::isOperator(Token val) {
-    if (val.type != this->TK_NUM) {
+    if (val.type == '+'
+        || val.type == '-'
+        || val.type == '*'
+        || val.type == '/') {
         return true;
     }
     return false;
@@ -147,16 +188,16 @@ bool Exprresult::isPriority(Token val) {
     return ret;
 }
 
-uint32_t Exprresult::calculate() {
+uint64_t Exprresult::calculate() {
     /* 运算符出栈 */
-    uint32_t op = stackOpre.top();
+    uint64_t op = stackOpre.top();
     stackOpre.pop();
-    uint32_t numright = stackNum.top();
+    uint64_t numright = stackNum.top();
     stackNum.pop();
-    uint32_t numleft = stackNum.top();
+    uint64_t numleft = stackNum.top();
     stackNum.pop();
 
-    uint32_t result;
+    uint64_t result;
     switch (op) {
     case '+':
         result = numleft + numright;
@@ -178,34 +219,99 @@ uint32_t Exprresult::calculate() {
     return result;
 }
 
-
+/* 处理负号 */
 void Exprresult::negNum() {
-    Token numzore;
-    numzore.type = TK_NUM;
-    sprintf(numzore.str, "%d", 0);
-    vector<Token> tokencopy(tokens);
-    int count = 0;;
+    uint64_t data, negdata;;
     //https://blog.csdn.net/hechao3225/article/details/55101344
-    for (int i = 0; i < tokencopy.size(); i++) {
-        if (tokencopy.at(i).type == '-') {
-
+    for (size_t i = 0; i < tokens.size(); i++) {
+        if (tokens.at(i).type == '-') {
+            /* 位于头部 是负号 */
             if (i == 0) {
-                tokens.emplace(tokens.begin() + count++, numzore);
+                tokens[i].type = TK_NOTYPE; //标记为无用数据
+                /* 重新写入负数 */
+                sscanf(tokens[i + 1].str, "%lu", &data);
+                negdata = 0 - data;
+                sprintf(tokens[i + 1].str, "%lu", negdata);
             }
-            else if (isOperator(tokencopy.at(i - 1))
-                && (tokencopy.at(i - 1).type != ')')) {
-                tokens.emplace(tokens.begin() + i + count++, numzore);
+            /* 前一个是操作符 是符号 */
+            else if (isOperator(tokens.at(i - 1))
+                && (tokens.at(i - 1).type != ')')) {
+                tokens[i].type = TK_NOTYPE;
+                sscanf(tokens[i + 1].str, "%lu", &data);
+                negdata = 0 - data;
+                sprintf(tokens[i + 1].str, "%lu", negdata);
+            }
+        }
+    }
+}
+/* 处理指针 */
+void Exprresult::ref() {
+
+    //https://blog.csdn.net/hechao3225/article/details/55101344
+    for (size_t i = 0; i < tokens.size(); i++) {
+        /* 区分是乘法还是指针 */
+        if (tokens.at(i).type == '*') {
+            /* 位于头部是指针 */
+            if (i == 0) {
+                tokens.at(i).type = TK_DEREF;
+            }
+            /* 前面是预算符，且不是 ')' 为指针 */
+            else if (isOperator(tokens.at(i - 1))
+                && (tokens.at(i - 1).type != ')')) {
+                tokens.at(i).type = TK_DEREF;
+            }
+        }
+    }
+
+    for (size_t i = 0; i < tokens.size(); i++) {
+        uint64_t addr, data;
+        if (tokens.at(i).type == TK_DEREF) {
+            tokens[i].type = TK_NOTYPE; //标记为无用数据
+            if (tokens.at(i + 1).type == TK_NUM) {
+                /* 得到地址 */
+                sscanf(tokens.at(i + 1).str, "%lu", &addr);
+                data = vaddr_read(addr, 8);//读取地址数据
+                cout << "data:" << data << endl;
+                sprintf(tokens[i + 1].str, "%lu", data);//重新写入数据
             }
         }
     }
 }
 
+/* 处理寄存器 */
+void Exprresult::reg() {
+    //https://blog.csdn.net/hechao3225/article/details/55101344
+    for (int i = 0; i < tokens.size(); i++) {
+        /* 读取寄存器 */
+        if (tokens.at(i).type == TK_REG) {
+            char* regname = tokens.at(i).str;
+            bool ret;
+            uint64_t val = isa_reg_str2val(&regname[1], &ret);
+            tokens[i].type = TK_NUM;
+            sprintf(tokens[i].str, "%lu", val);
+        }
+    }
+}
 
+/* 处理十六进制 */
+void Exprresult::hex() {
+    uint64_t ret;
+    for (int i = 0; i < tokens.size(); i++) {
+        /* 读取寄存器 */
+        if (tokens.at(i).type == TK_HEX) {
+            sscanf(tokens.at(i).str, "%lx", &ret);
+            cout << "hexret:" << ret << endl;
+            sprintf(tokens[i].str, "%lu", ret);
+            tokens[i].type = TK_NUM;
+        }
+    }
+}
 /* 供外部调用 */
-extern "C" uint32_t exprcpp(void* tokens_addr, int num) {
+extern "C" uint64_t exprcpp(void* tokens_addr, int num) {
 
     Exprresult test(tokens_addr, num);
-    return test.run1();
+    // return test.run1();
+    return 0;
 }
 
 

@@ -25,11 +25,29 @@ const char* regs[] = {
 
 void isa_reg_display() {
   for (int i = 0; i < 32; i++) {
+    /* 打印寄存器名称和内容 */
     printf("%d:%s\t%lx\n", i, reg_name(i, 64), gpr(i));
   }
+  /* pc 寄存器 */
   printf("%d:%s\t%lx\n", 33, "pc", cpu.pc);
 }
 
 word_t isa_reg_str2val(const char* s, bool* success) {
-  return 0;
+
+  word_t val;
+  if (!strcmp(s, "pc")) {
+    val = cpu.pc;
+    *success = 1;
+    return val;
+  }
+  for (int i = 0; i < 32; i++) {
+    /*对比寄存器名字*/
+    if (!strcmp(s, reg_name(i, 64))) {
+      val = gpr(i);
+      *success = 0;
+      return val;
+    }
+  }
+  *success = 0;
+  return -1;
 }
