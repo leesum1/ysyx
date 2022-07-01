@@ -120,8 +120,8 @@ static int cmd_p(char* args) {
   bool ret;
   DEBUG_S("expr:%s\n", args);
   expr(args, &ret);
-  // extern void expr_test(void);
-  // expr_test();
+  extern void expr_test(void);
+  expr_test();
   return 0;
 }
 
