@@ -93,7 +93,7 @@ void Exprresult::printTokens() {
 
 uint64_t Exprresult::run1() {
     bool ret;
-    for (int i = 0; i < tokens.size(); i++) {
+    for (size_t i = 0; i < tokens.size(); i++) {
         /* 跳过无用数据 */
         if (tokens.at(i).type == TK_NOTYPE) {
             continue;
