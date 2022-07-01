@@ -249,7 +249,6 @@ void Exprresult::reg() {
         if (tokens.at(i).type == TK_REG) {
             char* regname = tokens.at(i).str;
             bool ret;
-            extern word_t isa_reg_str2val(const char* s, bool* success);
             uint64_t val = isa_reg_str2val(&regname[1], &ret);
             tokens[i].type = TK_NUM;
             sprintf(tokens[i].str, "%lu", val);
