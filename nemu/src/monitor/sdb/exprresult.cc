@@ -46,6 +46,7 @@ public:
     void ParseAll();
     uint64_t run1();
     uint64_t getResult();
+    bool getCompare(uint64_t leftVal, uint64_t rightVal, Token cmp);
 };
 
 
@@ -70,19 +71,21 @@ Exprresult::Exprresult(vector<Token> val) {
 
 uint64_t Exprresult::getResult() {
     auto iter = tokens.begin();
-    uint64_t leftval, rightval;
     vector<Token> vector_l, vector_r;
     for (; iter != tokens.end(); iter++) {
         if (isCompare(iter.operator*())) {
+            /* 以比较运算符为界，分为两个表达式 */
             vector<Token> vector_l(tokens.begin(), iter);
             vector<Token> vector_r(iter + 1, tokens.end());
             Exprresult expl(vector_l);
             Exprresult expr(vector_r);
+            uint64_t leftval = expl.run1();
+            uint64_t rightval = expr.run1();
+            bool ret = getCompare(leftval, rightval, iter.operator*());
+            return ret;
         }
     }
-
-    return 0;
-
+    return run1();
 }
 /* 处理完毕后,所有数据都是 64位 无符号数 */
 void Exprresult::ParseAll() {
@@ -178,7 +181,20 @@ bool Exprresult::isCompare(Token val) {
     return false;
 }
 
-
+bool Exprresult::getCompare(uint64_t leftVal, uint64_t rightVal, Token cmp) {
+    bool ret;
+    switch (cmp.type) {
+    case TK_EQ:
+        ret = (leftVal == rightVal) ? true : false;
+        break;
+    case TK_NEQ:
+        ret = (leftVal != rightVal) ? true : false;
+        break;
+    default:
+        break;
+    }
+    return ret;
+}
 
 /**
  * @brief () * / + -
@@ -347,9 +363,9 @@ void Exprresult::hex() {
 extern "C" uint64_t exprcpp(void* tokens_addr, int num) {
 
     Exprresult test(tokens_addr, num);
-    test.getResult();
-    //return test.run1();
-    return 0;
+
+    return test.run1();
+    //return 0;
 }
 
 
