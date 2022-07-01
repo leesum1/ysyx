@@ -81,6 +81,8 @@ uint64_t Exprresult::getResult() {
         }
     }
 
+    return 0;
+
 }
 /* 处理完毕后,所有数据都是 64位 无符号数 */
 void Exprresult::ParseAll() {
