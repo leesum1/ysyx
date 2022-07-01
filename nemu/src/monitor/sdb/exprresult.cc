@@ -221,7 +221,7 @@ void Exprresult::negNum() {
             /* 位于头部 是负号 */
             if (i == 0) {
                 tokens[i].type = TK_NOTYPE;
-                sscanf(tokens[i + 1].str, "%lu", &data);
+                sscanf(tokens[i + 1].str, "%ld", &data);
                 negdata = -data;
                 sprintf(tokens[i + 1].str, "%lu", &negdata);
             }
@@ -229,7 +229,7 @@ void Exprresult::negNum() {
             else if (isOperator(tokens.at(i - 1))
                 && (tokens.at(i - 1).type != ')')) {
                 tokens[i].type = TK_NOTYPE;
-                sscanf(tokens[i + 1].str, "%lu", &data);
+                sscanf(tokens[i + 1].str, "%ld", &data);
                 negdata = -data;
                 sprintf(tokens[i + 1].str, "%lu", &negdata);
             }
