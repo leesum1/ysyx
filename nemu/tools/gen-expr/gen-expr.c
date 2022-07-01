@@ -37,7 +37,7 @@ static char* code_format =
 static void gen_num() {
   char str[32];
   /* 随机插入空格 */
-  sprintf(str, "%*d", rand() % 4, (rand() % 20 - 10));
+  sprintf(str, "%*d", rand() % 4, (rand() % 20));
   DEBUG_S("size:%ld,num:%s\n", strlen(str), str);
   strcpy(bufindex, str);
   bufindex += strlen(str);
