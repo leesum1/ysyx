@@ -6,7 +6,6 @@ extern "C" {
 #include <common.h>
 #include <isa.h>
 }
-
 using namespace std;
 
 class Exprresult {
@@ -51,8 +50,9 @@ Exprresult::Exprresult(void* tokens_addr, int num) {
     for (int i = 0; i < num; i++) {
         tokens.push_back(p[i]);
     }
-    //printTokens();
+    printTokens();
     negNum();
+    reg();
     ref();
     printTokens();
 
