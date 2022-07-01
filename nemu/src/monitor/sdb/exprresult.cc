@@ -125,8 +125,10 @@ uint32_t Exprresult::run1() {
 }
 
 bool Exprresult::isOperator(Token val) {
-    if (val.type != this->TK_NUM
-        || val.type != this->TK_HEX) {
+    if (val.type == '+'
+        || val.type == '-'
+        || val.type == '*'
+        || val.type == '/') {
         return true;
     }
     return false;
