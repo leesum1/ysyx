@@ -39,6 +39,7 @@ public:
     void negNum();
     void ref();
     void reg();
+    void hex();
     uint32_t run1();
 };
 
@@ -53,6 +54,7 @@ Exprresult::Exprresult(void* tokens_addr, int num) {
     printTokens();
     negNum();
     reg();
+    hex();
     ref();
     printTokens();
 
@@ -229,7 +231,7 @@ void Exprresult::negNum() {
 /* 处理指针 */
 void Exprresult::ref() {
     //https://blog.csdn.net/hechao3225/article/details/55101344
-    for (int i = 0; i < tokens.size(); i++) {
+    for (size_t i = 0; i < tokens.size(); i++) {
         /* 区分是乘法还是指针 */
         if (tokens.at(i).type == '*') {
             /* 位于头部是指针 */
@@ -243,6 +245,24 @@ void Exprresult::ref() {
             }
         }
     }
+
+    for (size_t i = 0; i < tokens.size(); i++) {
+        uint64_t ret;
+        if (tokens.at(i).type == TK_DEREF) {
+            if (tokens.at(i).type == TK_NUM) {
+                sscanf(tokens.at(i + 1).str, "%lu", &ret);
+            }
+            else if (tokens.at(i).type == TK_NUM) {
+                /* code */
+            }
+
+
+        }
+
+    }
+
+
+
 }
 
 /* 处理寄存器 */
@@ -260,7 +280,18 @@ void Exprresult::reg() {
     }
 }
 
-
+/* 处理十六进制 */
+void Exprresult::hex() {
+    uint64_t ret;
+    for (int i = 0; i < tokens.size(); i++) {
+        /* 读取寄存器 */
+        if (tokens.at(i).type == TK_HEX) {
+            sscanf(tokens.at(i).str, "%p", &ret);
+            cout << "hexret:" << ret << endl;
+            sprintf(tokens[i].str, "%lu", ret);
+        }
+    }
+}
 /* 供外部调用 */
 extern "C" uint32_t exprcpp(void* tokens_addr, int num) {
 
