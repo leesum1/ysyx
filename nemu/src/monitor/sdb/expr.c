@@ -23,33 +23,41 @@
 
 #include <string.h>
 #include <stdio.h>
+
+ /* 与 cpp 中的枚举一致 */
 enum {
-  TK_NOTYPE = 256, TK_EQ,
-  TK_NUM,
-
+  TK_NOTYPE = 256,
+  TK_EQ,     // ==
+  TK_NEQ,    // !=
+  TK_AND,    // && 与
+  TK_NUM,    // 数字
+  TK_DEREF,  //指针解引用 *
+  TK_HEX,    // 0x开头，十六进制
+  TK_REG     // 以"$"开头 寄存器
   /* TODO: Add more token types */
-
 };
 
 static struct rule {
   const char* regex;
   int token_type;
 } rules[] = {
-
   /* TODO: Add more rules.
    * Pay attention to the precedence level of different rules.
    * + 、 * 、（、） 在正则表达式中有特殊含义
-   */
-
-  {" +", TK_NOTYPE},    // spaces
-  {"[0-9]+", TK_NUM},      // num
-  {"\\(", '('},         // left brackets
-  {"\\)", ')'},         // right brackets
-  {"\\*", '*'},         // multi
-  {"/", '/'},        // div
-  {"\\+", '+'},         // plus
-  {"-", '-'},         // minus
-  {"==", TK_EQ},        // equal
+    */
+  {" +", TK_NOTYPE},              // spaces
+  {"[0-9]+", TK_NUM},             // num
+  {"\\(", '('},                   // left brackets
+  {"\\)", ')'},                   // right brackets
+  {"\\*", '*'},                   // multi
+  {"/", '/'},                     // div
+  {"\\+", '+'},                   // plus
+  {"-", '-'},                     // minus
+  {"==", TK_EQ},                  // equal
+  {"!=", TK_NEQ},                 // not equal
+  {"0[xX][0-9a-fA-F]+",TK_HEX},   // hex
+  {"&&"},                         // and
+  {"\\$[a-zA-z]+",TK_REG},        // reg
 };
 
 /* 规则数组的长度 */

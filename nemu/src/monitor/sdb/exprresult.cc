@@ -13,10 +13,15 @@ private:
     } Token;
 
     enum {
-        TK_NOTYPE = 256, TK_EQ,
-        TK_NUM,
+        TK_NOTYPE = 256,
+        TK_EQ,     // ==
+        TK_NEQ,    // !=
+        TK_AND,    // && 与
+        TK_NUM,    // 数字
+        TK_DEREF,  //指针解引用 *
+        TK_HEX,    // 0x开头，十六进制
+        TK_REG     // 以"$"开头 寄存器
         /* TODO: Add more token types */
-
     };
     vector<Token> tokens;
     stack<uint32_t> stackOpre, stackNum;
