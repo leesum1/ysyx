@@ -127,8 +127,7 @@ uint64_t Exprresult::run1() {
         stackNum.push(calculate());
     }
 
-    Assert(stackNum.size() == 1 || stackOpre.size() == 0,
-        "stackNum.size:%d,stackOpre.size%d", stackNum.size(), stackOpre.size());
+    Assert(stackNum.size() == 1 || stackOpre.size() == 0, "stackNum.size:%d,stackOpre.size%d", stackNum.size(), stackOpre.size());
     cout << "stackNumsize:" << stackNum.size() << endl;
     cout << "stackOpsize:" << stackOpre.size() << endl;
     cout << "calculate:" << stackNum.top() << endl;
