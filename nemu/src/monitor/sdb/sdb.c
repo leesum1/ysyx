@@ -25,8 +25,8 @@
 
 static int is_batch_mode = false;
 void init_regex();
-void init_wp_pool();
-// extern "C" void exprcpp(void* tokens_addr, int num);
+// void init_wp_pool();
+
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
   static char* line_read = NULL;
@@ -246,5 +246,5 @@ void init_sdb() {
   init_regex();
 
   /* Initialize the watchpoint pool. */
-  init_wp_pool();
+  // init_wp_pool();
 }
