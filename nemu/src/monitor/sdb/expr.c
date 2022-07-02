@@ -130,7 +130,7 @@ static bool make_token(char* e) {
 
 word_t expr(char* e, bool* success) {
   if (!make_token(e)) {
-    Assert(*success = false, "make_token fail!\n");
+    Assert(*success == false, "make_token fail!\n");
     return 0;
   }
 
