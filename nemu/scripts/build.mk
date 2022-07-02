@@ -26,6 +26,7 @@ CFLAGS  := -O2 -MMD -Wall  $(INCLUDES) $(CFLAGS) #-Werror 不需要
 LDFLAGS := -O2 $(LDFLAGS)
 
 CXXSRC += $(WORK_DIR)/src/monitor/sdb/exprresult.cc
+CXXSRC += $(WORK_DIR)/src/monitor/sdb/watchpoint.cc
 
 OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o) $(CXXSRC:%.cc=$(OBJ_DIR)/%.o)
 

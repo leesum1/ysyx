@@ -25,8 +25,11 @@
 
 static int is_batch_mode = false;
 void init_regex();
-void init_wp_pool();
-// extern "C" void exprcpp(void* tokens_addr, int num);
+void new_wp(char* str);
+void free_wp(uint32_t NO);
+void show_wp();
+// void init_wp_pool();
+
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
   static char* line_read = NULL;
@@ -84,6 +87,10 @@ static int cmd_info(char* args) {
   if (0 == strcmp(val, "r")) {
     isa_reg_display();
   }
+  else if (0 == strcmp(val, "w")) {
+    show_wp();
+  }
+
 
   return 0;
 }
@@ -103,8 +110,8 @@ static int cmd_x(char* args) {
   int32_t i = 0;
   /* 每次读取 4byte */
   for (i = 0; i < len; i++) {
-    DEBUG_S("addr:0x%08x\tData: %08x\n", addr,
-      (void*)vaddr_read(addr, 4));
+    DEBUG_S("addr:0x%08x\tData: %08lx\n", addr,
+      vaddr_read(addr, 4));
     addr += 4;
   }
   return 0;
@@ -120,18 +127,18 @@ static int cmd_p(char* args) {
   bool ret;
   DEBUG_S("expr:%s\n", args);
   DEBUG_S("expret:%lu\n", expr(args, &ret));
-  // extern void expr_test(void);
-  // expr_test();
+  extern void expr_test(void);
+  expr_test();
   return 0;
 }
 
 /**
  * @brief w EXPR
- * 当表达式EXPR的值发生变化时, 暂停程序执行
+ * 监视点：当表达式EXPR的值发生变化时, 暂停程序执行
  */
 static int cmd_w(char* args) {
-  nemu_state.state = NEMU_QUIT; // leesum
-  return -1;
+  new_wp(args);
+  return 0;
 }
 
 /**
@@ -139,8 +146,9 @@ static int cmd_w(char* args) {
  * 删除序号为N的监视点
  */
 static int cmd_d(char* args) {
-  nemu_state.state = NEMU_QUIT; // leesum
-  return -1;
+
+  free_wp((uint32_t)atoi(args));
+  return 0;
 }
 
 #define NR_CMD ARRLEN(cmd_table)
@@ -246,5 +254,5 @@ void init_sdb() {
   init_regex();
 
   /* Initialize the watchpoint pool. */
-  init_wp_pool();
+  // init_wp_pool();
 }

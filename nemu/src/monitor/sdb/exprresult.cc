@@ -104,7 +104,7 @@ Exprresult::~Exprresult() {
 void Exprresult::printTokens() {
 
     cout << "Exprresult start" << endl;
-    for (int i = 0; i < tokens.size(); i++) {
+    for (size_t i = 0; i < tokens.size(); i++) {
         cout << " str: " << tokens.at(i).str \
             << " type: " << tokens.at(i).type << endl;
     }
@@ -150,7 +150,7 @@ uint64_t Exprresult::run1() {
         stackNum.push(calculate());
     }
 
-    Assert(stackNum.size() == 1 || stackOpre.size() == 0, "stackNum.size:%d,stackOpre.size%d", stackNum.size(), stackOpre.size());
+    Assert(stackNum.size() == 1 || stackOpre.size() == 0, "stackNum.size:%ld,stackOpre.size%ld", stackNum.size(), stackOpre.size());
     cout << "stackNumsize:" << stackNum.size() << endl;
     cout << "stackOpsize:" << stackOpre.size() << endl;
     cout << "calculate:" << stackNum.top() << endl;
@@ -182,7 +182,7 @@ bool Exprresult::isCompare(Token val) {
 }
 
 bool Exprresult::getCompare(uint64_t leftVal, uint64_t rightVal, Token cmp) {
-    bool ret;
+    bool ret = false;
     switch (cmp.type) {
     case TK_EQ:
         ret = (leftVal == rightVal) ? true : false;
@@ -247,7 +247,7 @@ uint64_t Exprresult::calculate() {
     uint64_t numleft = stackNum.top();
     stackNum.pop();
 
-    uint64_t result;
+    uint64_t result = 0;;
     switch (op) {
     case '+':
         result = numleft + numright;
@@ -331,7 +331,7 @@ void Exprresult::ref() {
 /* 处理寄存器 */
 void Exprresult::reg() {
     //https://blog.csdn.net/hechao3225/article/details/55101344
-    for (int i = 0; i < tokens.size(); i++) {
+    for (size_t i = 0; i < tokens.size(); i++) {
         /* 读取寄存器 */
         if (tokens.at(i).type == TK_REG) {
             char* regname = tokens.at(i).str;
@@ -346,7 +346,7 @@ void Exprresult::reg() {
 /* 处理十六进制 */
 void Exprresult::hex() {
     uint64_t ret;
-    for (int i = 0; i < tokens.size(); i++) {
+    for (size_t i = 0; i < tokens.size(); i++) {
         /* 读取寄存器 */
         if (tokens.at(i).type == TK_HEX) {
             sscanf(tokens.at(i).str, "%lx", &ret);

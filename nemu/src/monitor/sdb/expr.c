@@ -105,15 +105,14 @@ static bool make_token(char* e) {
         char* substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
-        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
-          i, rules[i].regex, position, substr_len, substr_len, substr_start);
-
+        //Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+        // i, rules[i].regex, position, substr_len, substr_len, substr_start);
         position += substr_len;
         /* 记录匹配规则,空格除外 */
         if (rules[i].token_type != TK_NOTYPE) {
           sprintf(tokens[nr_token].str, "%.*s", substr_len, substr_start);
           tokens[nr_token].type = rules[i].token_type;
-          DEBUG_M("tokens->str:%s,tpye:%d,index:%d\n", tokens[nr_token].str, \
+          //DEBUG_M("tokens->str:%s,tpye:%d,index:%d\n", tokens[nr_token].str, \
             tokens[nr_token].type, nr_token);
           nr_token++;
         }
@@ -122,10 +121,6 @@ static bool make_token(char* e) {
     }
     if (i == NR_REGEX) {
       printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
-      printf("%s\n,size:%d\n", e, strlen(e));
-      printf("%d\n", e[2]);
-      printf("%d\n", e[3]);
-      printf("%d\n", e[4]);
       return false;
     }
   }
@@ -135,10 +130,9 @@ static bool make_token(char* e) {
 
 word_t expr(char* e, bool* success) {
   if (!make_token(e)) {
-    *success = false;
+    Assert(*success == false, "make_token fail!\n");
     return 0;
   }
-
   extern uint64_t exprcpp(void* tokens_addr, int num);
   uint64_t result = exprcpp(tokens, nr_token);
 
@@ -159,20 +153,23 @@ void expr_test(void) {
   char buf[1024];
   /* 读取每一行
    * 换行键被坑了
-   * 封装fgets函数，去掉其末尾的换行符"\n"
+   * fgets函数，会默认添加换行\n,导致字符串结尾是 \n\0"
    */
   while (fgets(buf, sizeof(buf), fp) != NULL) {
 
     char* find = strchr(buf, '\n');  //找出data中的"\n"
     if (find)
       *find = '\0';   //替换
-
+    /* 参考nemu读取命令的代码 */
     char* cmd = strtok(buf, " ");
     char* args = cmd + strlen(cmd) + 1;
     DEBUG_M("%s\n", buf);
     DEBUG_M("%s\n", cmd);
     DEBUG_M("%s\n", args);
-    testinput = atoi(cmd);
+
+    int temp;
+    sscanf(cmd, "%d", &temp);
+    testinput = temp;
     testoutput = expr(args, &ret);
     Assert(testinput == testoutput, "input:%lu,output:%lu", testinput, testoutput);
   }
