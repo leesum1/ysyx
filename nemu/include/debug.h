@@ -31,7 +31,7 @@
 //简洁的调试信息：设备类型，当前源函数名，格式化输出内容，格式化参数
 #define DEBUG_M(format, argent...) printf(" Node:S, Func: %s(), " format "", __func__, ##argent)
 //最简洁的调试信息：格式化输出内容，格式化参数
-#define DEBUG_S(format, argent...) printf("" format "", ##argent)
+#define DEBUG_S(format, argent...) printf(" " format "", ##argent)
 
 
 extern void assert_fail_msg();

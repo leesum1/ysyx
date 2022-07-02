@@ -103,8 +103,8 @@ static int cmd_x(char* args) {
   int32_t i = 0;
   /* 每次读取 4byte */
   for (i = 0; i < len; i++) {
-    DEBUG_S("addr:0x%08x\tData: %08p\n", addr,
-      (void*)vaddr_read(addr, 4));
+    DEBUG_S("addr:0x%08x\tData: %08x\n", addr,
+      vaddr_read(addr, 4));
     addr += 4;
   }
   return 0;

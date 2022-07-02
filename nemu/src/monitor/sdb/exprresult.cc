@@ -54,7 +54,7 @@ public:
 
 Exprresult::Exprresult(void* tokens_addr, int num) {
     Token* p = (Token*)tokens_addr;
-    for (size_t i = 0; i < num; i++) {
+    for (int i = 0; i < num; i++) {
         tokens.push_back(p[i]);
     }
     ParseAll();
@@ -182,7 +182,7 @@ bool Exprresult::isCompare(Token val) {
 }
 
 bool Exprresult::getCompare(uint64_t leftVal, uint64_t rightVal, Token cmp) {
-    bool ret;
+    bool ret = false;
     switch (cmp.type) {
     case TK_EQ:
         ret = (leftVal == rightVal) ? true : false;
