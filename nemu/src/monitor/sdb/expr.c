@@ -133,7 +133,6 @@ word_t expr(char* e, bool* success) {
     Assert(*success == false, "make_token fail!\n");
     return 0;
   }
-
   extern uint64_t exprcpp(void* tokens_addr, int num);
   uint64_t result = exprcpp(tokens, nr_token);
 

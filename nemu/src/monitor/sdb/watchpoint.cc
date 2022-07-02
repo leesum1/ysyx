@@ -121,7 +121,12 @@ void Watchpoint::praseAllwp() {
   uint64_t exprResult;
   for (auto it = wp_pool.begin(); it != wp_pool.end();it++) {
     exprResult = expr((char*)it.operator*().exp.c_str(), &ret);
-    nemu_state.state == NEMU_STOP;
+    if (true == exprResult) {
+      nemu_state.state = NEMU_STOP;
+      cout << "NUM:" << it.operator*().NO <<
+        "\twpexp: " << it.operator*().exp <<
+        "\texprResult" << exprResult << endl;
+    }
   }
 }
 
@@ -130,9 +135,9 @@ void Watchpoint::showAllwp() {
   uint64_t exprResult;
   for (auto it = wp_pool.begin(); it != wp_pool.end();it++) {
     exprResult = expr((char*)it.operator*().exp.c_str(), &ret);
-    cout << "NUM: " << it.operator*().NO <<
-      "wpexp: " << it.operator*().exp <<
-      "exprResult" << exprResult << endl;
+    cout << "NUM:" << it.operator*().NO <<
+      "\twpexp: " << it.operator*().exp <<
+      "\texprResult" << exprResult << endl;
   }
 }
 
