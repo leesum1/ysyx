@@ -105,15 +105,14 @@ static bool make_token(char* e) {
         char* substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
-        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
-          i, rules[i].regex, position, substr_len, substr_len, substr_start);
-
+        //Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+        // i, rules[i].regex, position, substr_len, substr_len, substr_start);
         position += substr_len;
         /* 记录匹配规则,空格除外 */
         if (rules[i].token_type != TK_NOTYPE) {
           sprintf(tokens[nr_token].str, "%.*s", substr_len, substr_start);
           tokens[nr_token].type = rules[i].token_type;
-          DEBUG_M("tokens->str:%s,tpye:%d,index:%d\n", tokens[nr_token].str, \
+          //DEBUG_M("tokens->str:%s,tpye:%d,index:%d\n", tokens[nr_token].str, \
             tokens[nr_token].type, nr_token);
           nr_token++;
         }
@@ -122,10 +121,6 @@ static bool make_token(char* e) {
     }
     if (i == NR_REGEX) {
       printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
-      printf("%s\n,size:%ld\n", e, strlen(e));
-      printf("%d\n", e[2]);
-      printf("%d\n", e[3]);
-      printf("%d\n", e[4]);
       return false;
     }
   }

@@ -25,6 +25,9 @@
 
 static int is_batch_mode = false;
 void init_regex();
+void new_wp(char* str);
+void free_wp(uint32_t NO);
+void show_wp();
 // void init_wp_pool();
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
@@ -84,6 +87,10 @@ static int cmd_info(char* args) {
   if (0 == strcmp(val, "r")) {
     isa_reg_display();
   }
+  else if (0 == strcmp(val, "w")) {
+    show_wp();
+  }
+
 
   return 0;
 }
@@ -127,11 +134,11 @@ static int cmd_p(char* args) {
 
 /**
  * @brief w EXPR
- * 当表达式EXPR的值发生变化时, 暂停程序执行
+ * 监视点：当表达式EXPR的值发生变化时, 暂停程序执行
  */
 static int cmd_w(char* args) {
-  nemu_state.state = NEMU_QUIT; // leesum
-  return -1;
+  new_wp(args);
+  return 0;
 }
 
 /**
@@ -139,8 +146,9 @@ static int cmd_w(char* args) {
  * 删除序号为N的监视点
  */
 static int cmd_d(char* args) {
-  nemu_state.state = NEMU_QUIT; // leesum
-  return -1;
+
+  free_wp((uint32_t)atoi(args));
+  return 0;
 }
 
 #define NR_CMD ARRLEN(cmd_table)
