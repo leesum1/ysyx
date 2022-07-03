@@ -44,7 +44,7 @@ static word_t immJ(uint32_t i) {
     BITS(i, 7, 0) << 12 |
     BITS(i, 8, 8) << 11 |
     BITS(i, 18, 9) << 1 |
-    0), 20);
+    0), 21);
 }
 // BITS(i, 7, 0)
 // BITS(i, 8, 8)
