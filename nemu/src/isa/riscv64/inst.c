@@ -58,6 +58,7 @@ static void decode_operand(Decode* s, word_t* dest, word_t* src1, word_t* src2, 
   case TYPE_J: src1I(immJ(i)); DEBUG_S("TYPEJ:%x", *src1); break;
   default: break;
   }
+  DEBUG_S("TYPEJ:%x", *src1);
 }
 
 static int decode_exec(Decode* s) {
