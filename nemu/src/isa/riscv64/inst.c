@@ -40,10 +40,10 @@ static word_t immS(uint32_t i) { return (SEXT(BITS(i, 31, 25), 7) << 5) | BITS(i
 /* add by leesum */
 static word_t immJ(uint32_t i) {
   return SEXT((
-    BITS(i, 19, 19) << 20 |
-    BITS(i, 7, 0) << 12 |
-    BITS(i, 8, 8) << 11 |
-    BITS(i, 18, 9) << 1 |
+    BITS(i, 19 + 12, 19 + 12) << 20 |
+    BITS(i, 7 + 12, 0 + 12) << 12 |
+    BITS(i, 8 + 12, 8 + 12) << 11 |
+    BITS(i, 18 + 12, 9 + 12) << 1 |
     0), 21);
 }
 // BITS(i, 7, 0)
