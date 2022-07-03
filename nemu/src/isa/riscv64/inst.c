@@ -38,7 +38,14 @@ static word_t immI(uint32_t i) { return SEXT(BITS(i, 31, 20), 12); }
 static word_t immU(uint32_t i) { return SEXT(BITS(i, 31, 12), 20) << 12; }
 static word_t immS(uint32_t i) { return (SEXT(BITS(i, 31, 25), 7) << 5) | BITS(i, 11, 7); }
 /* add by leesum */
-static word_t immJ(uint32_t i) { return SEXT((BITS(i, 19, 19), BITS(i, 7, 0), BITS(i, 8, 8), BITS(i, 18, 9), 0), 20); }
+static word_t immJ(uint32_t i) {
+  return SEXT((
+    BITS(i, 19, 19) << 20 |
+    BITS(i, 7, 0) << 12 |
+    BITS(i, 8, 8) << 11 |
+    BITS(i, 18, 9) << 1 |
+    0), 20);
+}
 // BITS(i, 7, 0)
 // BITS(i, 8, 8)
 // BITS(i, 18, 9)
