@@ -110,7 +110,7 @@ bool Watchpoint::delNum(uint32_t NO) {
 void Watchpoint::printwp() {
 
   for (auto it = wp_pool.begin(); it != wp_pool.end();it++) {
-    cout << "NUM: " << it.operator*().NO << "wpexp: " << it.operator*().exp << endl;
+    cout << "NUM: " << it.operator*().NO << "\twpexp: " << it.operator*().exp << endl;
   }
 }
 
@@ -136,13 +136,14 @@ void Watchpoint::showAllwp() {
   for (auto it = wp_pool.begin(); it != wp_pool.end();it++) {
     exprResult = expr((char*)it.operator*().exp.c_str(), &ret);
     cout << "NUM:" << it.operator*().NO <<
-      "\twpexp: " << it.operator*().exp <<
+      "\twpexp:" << it.operator*().exp <<
       "\texprResult" << exprResult << endl;
   }
 }
 
 
 
+/* 供c函数调用 */
 static Watchpoint wp;
 extern "C" {
 
@@ -164,22 +165,6 @@ extern "C" {
   }
 }
 
-// int main(void) {
-
-//   Watchpoint testwp;
-//   string a, b, c, d;
-//   a.append("astring");
-//   b.append("bstring");
-//   c.append("cstring");
-//   d.append("dstring");
-//   testwp.newWp(a);
-//   testwp.newWp(b);
-//   testwp.newWp(c);
-//   testwp.delWp(0);
-//   testwp.newWp(c);
-
-//   return 0;
-// }
 
 
 
