@@ -79,7 +79,7 @@ static void decode_operand(Decode* s, word_t* dest, word_t* src1, word_t* src2, 
     /* add by leesum */
   case TYPE_J: src1I(immJ(i)); DEBUG_S("TYPEJ:%x", immJ(i)); DEBUG_S("TYPEJ:%x\n", *src1);break;
   case TYPE_R: src1R(rs1); src2R(rs2); break;
-  case TYPE_B: destI(immB(i));src1R(rs1); src2R(rs2);
+  case TYPE_B: destI(immB(i));src1R(rs1); src2R(rs2); break;
   default: break;
   }
 
