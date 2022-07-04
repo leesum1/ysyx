@@ -39,24 +39,23 @@ static word_t immI(uint32_t i) { return SEXT(BITS(i, 31, 20), 12); }
 static word_t immU(uint32_t i) { return SEXT(BITS(i, 31, 12), 20) << 12; }
 static word_t immS(uint32_t i) { return (SEXT(BITS(i, 31, 25), 7) << 5) | BITS(i, 11, 7); }
 /* add by leesum */
-// static word_t immB(uint32_t i) {
-//   return SEXT((
-//     BITS(i, 31, 31) << 12 |
-//     BITS(i, 7, 7) << 11 |
-//     BITS(i, 30, 25) << 5 |
-//     BITS(i, 11, 8)) << 1 |
-//     0, 13);
-// }
-static word_t immB(uint32_t i) { return (SEXT(BITS(i, 31, 31), 1) << 12) | (BITS(i, 7, 7) << 11) | (BITS(i, 30, 25) << 5) | (BITS(i, 11, 8) << 1); }
-static word_t immJ(uint32_t i) { return (SEXT(BITS(i, 31, 31), 1) << 20) | (BITS(i, 19, 12) << 12) | (BITS(i, 20, 20) << 11) | (BITS(i, 30, 21) << 1); }
-// static word_t immJ(uint32_t i) {
-//   return SEXT((
-//     BITS(i, 31, 31) << 20 |
-//     BITS(i, 19, 12) << 12 |
-//     BITS(i, 20, 20) << 11 |
-//     BITS(i, 30, 21) << 1 |
-//     0), 21);
-// }
+static word_t immB(uint32_t i) {
+  return SEXT((
+    BITS(i, 31, 31) << 12 |
+    BITS(i, 7, 7) << 11 |
+    BITS(i, 30, 25) << 5 |
+    BITS(i, 11, 8)) << 1 |
+    0, 13);
+}
+
+static word_t immJ(uint32_t i) {
+  return SEXT((
+    BITS(i, 31, 31) << 20 |
+    BITS(i, 19, 12) << 12 |
+    BITS(i, 20, 20) << 11 |
+    BITS(i, 30, 21) << 1 |
+    0), 21);
+}
 
 #define S32(i) ((int32_t)i)
 #define S64(i) ((int64_t)i)
@@ -107,7 +106,7 @@ static int decode_exec(Decode* s) {
   INSTPAT("??????? ????? ????? 010 ????? 00000 11", lw, I, R(dest) = SEXT(BITS(Mr(src1 + src2, 4), 31, 0), 32));
   INSTPAT("0000000 ????? ????? 000 ????? 01110 11", addw, R, R(dest) = SEXT(BITS(src1 + src2, 31, 0), 32));
   INSTPAT("0100000 ????? ????? 000 ????? 01100 11", sub, R, R(dest) = src1 - src2);
-  INSTPAT("??????? ????? ????? 011 ????? 00100 11", sltiu, I, R(dest) = (U64(src1) < U64(src2)) ? 1 : 0);
+  INSTPAT("??????? ????? ????? 011 ????? 00100 11", sltiu, I, R(dest) = U64(src1) < U64(src2));
   INSTPAT("??????? ????? ????? 000 ????? 11000 11", bne, B, s->dnpc = (src1 != src2) ? (s->pc + dest) : s->dnpc);
 
 
