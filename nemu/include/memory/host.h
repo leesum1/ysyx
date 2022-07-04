@@ -27,7 +27,6 @@ static inline word_t host_read(void* addr, int len) {
   case 4:
     return *(uint32_t*)addr;
   case 8:
-    DEBUG_L("test16%p", (void*)*(uint64_t*)addr);
     return *(uint64_t*)addr;
   default:
     MUXDEF(CONFIG_RT_CHECK, assert(0), return 0);
