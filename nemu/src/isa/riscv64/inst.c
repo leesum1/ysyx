@@ -56,6 +56,7 @@ static word_t immJ(uint32_t i) {
     0);
 }
 
+/* 格式转换 */
 #define S32(i) ((int32_t)i)
 #define S64(i) ((int64_t)i)
 #define U32(i) ((uint32_t)i)
