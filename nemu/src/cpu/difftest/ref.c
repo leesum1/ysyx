@@ -18,11 +18,11 @@
 #include <difftest-def.h>
 #include <memory/paddr.h>
 
-void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
+void difftest_memcpy(paddr_t addr, void* buf, size_t n, bool direction) {
   assert(0);
 }
 
-void difftest_regcpy(void *dut, bool direction) {
+void difftest_regcpy(void* dut, bool direction) {
   assert(0);
 }
 

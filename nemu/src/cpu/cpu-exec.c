@@ -44,6 +44,7 @@ static void trace_and_difftest(Decode* _this, vaddr_t dnpc) {
   }
 
   extern void prase_wp();
+  /* 监视点信息 */
   IFDEF(CONFIG_WATCHPOINT, prase_wp());
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
 }
