@@ -13,8 +13,9 @@ module top (
     input [3:0] alu_op_i,
     output [`XLEN-1:0] alu_out,
     output OF,
-    ZF,
-    SLT
+    output ZF,
+    output SLT,
+    output CF
 );
 
 
@@ -39,7 +40,8 @@ module top (
       .alu_out (alu_out),
       .OF      (OF),
       .ZF      (ZF),
-      .SLT     (SLT)
+      .SLT     (SLT),
+      .CF      (CF)
   );
 
 endmodule
