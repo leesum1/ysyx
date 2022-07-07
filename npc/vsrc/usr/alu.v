@@ -14,7 +14,7 @@ module alu (
   wire [`XLEN:0] _cin = {{64{1'b0}}, isSUBop};
   //采用双符号位
   wire [`XLEN:0] _alu_a = {{1{alu_a_i[`XLEN-1]}}, alu_a_i};
-  wire [`XLEN:0] _alu_b = {{1{alu_b_i[`XLEN-1]}}, alu_b_i} ^ _cin;
+  wire [`XLEN:0] _alu_b = {{1{alu_b_i[`XLEN-1]}}, alu_b_i} ^ {65{isSUBop}};
   wire [`XLEN:0] _add_out;
   //加减法
   assign _add_out = _alu_a + _alu_b + _cin;
