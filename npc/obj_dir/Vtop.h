@@ -5,22 +5,22 @@
 // The class here is then constructed to instantiate the design.
 // See the Verilator manual for examples.
 
-#ifndef VERILATED_VLAB08KEYBOARD_H_
-#define VERILATED_VLAB08KEYBOARD_H_  // guard
+#ifndef VERILATED_VTOP_H_
+#define VERILATED_VTOP_H_  // guard
 
 #include "verilated_heavy.h"
 
-class Vlab08keyboard__Syms;
-class Vlab08keyboard___024root;
+class Vtop__Syms;
+class Vtop___024root;
 class VerilatedVcdC;
-class Vlab08keyboard_VerilatedVcd;
+class Vtop_VerilatedVcd;
 
 
 // This class is the main interface to the Verilated model
-class Vlab08keyboard VL_NOT_FINAL {
+class Vtop VL_NOT_FINAL {
   private:
     // Symbol table holding complete model state (owned by this class)
-    Vlab08keyboard__Syms* const vlSymsp;
+    Vtop__Syms* const vlSymsp;
 
   public:
 
@@ -29,16 +29,15 @@ class Vlab08keyboard VL_NOT_FINAL {
     // propagate new values into/out from the Verilated model.
     VL_IN8(&clk,0,0);
     VL_IN8(&rst,0,0);
-    VL_IN8(&ps2_clk,0,0);
-    VL_IN8(&ps2_data,0,0);
-    VL_OUT8(&seg1,7,0);
-    VL_OUT8(&seg2,7,0);
-    VL_OUT8(&seg3,7,0);
-    VL_OUT8(&seg4,7,0);
-    VL_OUT8(&seg5,7,0);
-    VL_OUT8(&seg6,7,0);
-    VL_OUT8(&seg7,7,0);
-    VL_OUT8(&seg8,7,0);
+    VL_OUT64(&pc,63,0);
+    VL_OUT(&inst_data,31,0);
+    VL_IN64(&alu_a_i,63,0);
+    VL_IN64(&alu_b_i,63,0);
+    VL_IN8(&alu_op_i,3,0);
+    VL_OUT64(&alu_out,63,0);
+    VL_OUT8(&OF,0,0);
+    VL_OUT8(&ZF,0,0);
+    VL_OUT8(&SLT,0,0);
 
     // CELLS
     // Public to allow access to /* verilator public */ items.
@@ -46,19 +45,19 @@ class Vlab08keyboard VL_NOT_FINAL {
 
     // Root instance pointer to allow access to model internals,
     // including inlined /* verilator public_flat_* */ items.
-    Vlab08keyboard___024root* const rootp;
+    Vtop___024root* const rootp;
 
     // CONSTRUCTORS
     /// Construct the model; called by application code
     /// If contextp is null, then the model will use the default global context
     /// If name is "", then makes a wrapper with a
     /// single model invisible with respect to DPI scope names.
-    explicit Vlab08keyboard(VerilatedContext* contextp, const char* name = "TOP");
-    explicit Vlab08keyboard(const char* name = "TOP");
+    explicit Vtop(VerilatedContext* contextp, const char* name = "TOP");
+    explicit Vtop(const char* name = "TOP");
     /// Destroy the model; called (often implicitly) by application code
-    virtual ~Vlab08keyboard();
+    virtual ~Vtop();
   private:
-    VL_UNCOPYABLE(Vlab08keyboard);  ///< Copying not allowed
+    VL_UNCOPYABLE(Vtop);  ///< Copying not allowed
 
   public:
     // API METHODS

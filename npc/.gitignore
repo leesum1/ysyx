@@ -5,7 +5,7 @@ build/
 !Makefile
 !*.mk
 !*.[cSh]
-!*lab*.v
+!*.v
 !*lab*.cc
 !*lab*.cpp
 !.gitignore
