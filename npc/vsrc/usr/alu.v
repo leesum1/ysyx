@@ -11,7 +11,7 @@ module alu (
 );
 
   wire isSUBop = (alu_op_i == `ALUOP_SUB);
-  wire [`XLEN:0] _cin = {65{isSUBop}};
+  wire [`XLEN:0] _cin = {{64{1'b0}}, isSUBop};
   //采用双符号位
   wire [`XLEN:0] _alu_a = {{1{alu_a_i[`XLEN-1]}}, alu_a_i};
   wire [`XLEN:0] _alu_b = {{1{alu_b_i[`XLEN-1]}}, alu_b_i} ^ _cin;
