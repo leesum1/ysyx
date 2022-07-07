@@ -9,7 +9,8 @@ module alu (
     output OF,
     output ZF,
     output SLT,
-    output CF
+    output CF,
+    output SF
 
 );
 
@@ -36,6 +37,7 @@ module alu (
   assign OF = _isOF;
   assign SLT = _isSLT;
   assign CF = _isCF;
+  assign SF = _isSF;
   assign alu_out = _alu_out[`XLEN-1:0];
 endmodule
 

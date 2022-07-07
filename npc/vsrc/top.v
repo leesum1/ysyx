@@ -15,7 +15,8 @@ module top (
     output OF,
     output ZF,
     output SLT,
-    output CF
+    output CF,
+    output SF
 );
 
 
@@ -41,7 +42,8 @@ module top (
       .OF      (OF),
       .ZF      (ZF),
       .SLT     (SLT),
-      .CF      (CF)
+      .CF      (CF),
+      .SF      (SF)
   );
 
 endmodule

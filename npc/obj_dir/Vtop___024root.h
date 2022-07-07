@@ -26,6 +26,7 @@ VL_MODULE(Vtop___024root) {
     VL_OUT8(ZF,0,0);
     VL_OUT8(SLT,0,0);
     VL_OUT8(CF,0,0);
+    VL_OUT8(SF,0,0);
     VL_OUT(inst_data,31,0);
     VL_OUT64(pc,63,0);
     VL_IN64(alu_a_i,63,0);
