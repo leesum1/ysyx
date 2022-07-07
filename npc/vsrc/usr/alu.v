@@ -27,7 +27,7 @@ module alu (
   wire _isZero = (_add_out == 65'd0);
   wire _isOF = _alu_out[`XLEN] ^ _alu_out[`XLEN-1];
   wire _isSF = _alu_out[`XLEN-1];
-  wire _isCF = _isSUBop ^ _isSF;
+  wire _isCF = _isSUBop ^ _alu_out[`XLEN];
   wire _isSLT = _isOF ^ _add_out[`XLEN-1];
 
 
