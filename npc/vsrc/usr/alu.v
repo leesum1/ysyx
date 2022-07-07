@@ -25,8 +25,8 @@ module alu (
   //溢出标志位
   wire _isOF = _add_out[`XLEN] ^ _add_out[`XLEN-1];
   // A<B
-  wire _isSLT = ~_isOF & _add_out[`XLEN-1] | _isOF & _add_out[`XLEN-1];
-
+  //   wire _isSLT = ~_isOF & _add_out[`XLEN-1] | _isOF & _add_out[`XLEN-1];
+  wire _isSLT = _isOF ^ _add_out[`XLEN-1];
 
   assign ZF = _isZero;
   assign OF = _isOF;
