@@ -1,36 +1,44 @@
 `include "./../sysconfig.v"
 module alu (
+    /* ALU 端口 */
     input [`XLEN-1:0] alu_a_i,
     input [`XLEN-1:0] alu_b_i,
-    input [3:0] alu_op_i,
     output [`XLEN-1:0] alu_out,
+    input [3:0] alu_op_i,
+    /* 标志位 */
     output OF,
-    ZF,
-    SLT
+    output ZF,
+    output SLT,
+    output CF,
+    output SF
 
 );
 
-  wire isSUBop = (alu_op_i == `ALUOP_SUB);
-  wire [`XLEN:0] _cin = {{64{1'b0}}, isSUBop};
+  wire _isSUBop = (alu_op_i == `ALUOP_SUB);
+  wire [`XLEN:0] _cin = {{64{1'b0}}, _isSUBop};
   //采用双符号位
   wire [`XLEN:0] _alu_a = {{1{alu_a_i[`XLEN-1]}}, alu_a_i};
-  wire [`XLEN:0] _alu_b = {{1{alu_b_i[`XLEN-1]}}, alu_b_i} ^ {65{isSUBop}};
-  wire [`XLEN:0] _add_out;
+  wire [`XLEN:0] _alu_b = {{1{alu_b_i[`XLEN-1]}}, alu_b_i} ^ {65{_isSUBop}};
+  wire [`XLEN:0] _alu_out, _add_out;
   //加减法
   assign _add_out = _alu_a + _alu_b + _cin;
 
-  // 0标志位
+  /* 标志位生成  具体看https://blog.csdn.net/mariodf/article/details/125334271*/
   wire _isZero = (_add_out == 65'd0);
-
-  //溢出标志位
-  wire _isOF = _add_out[`XLEN] ^ _add_out[`XLEN-1];
-
+  wire _isOF = _alu_out[`XLEN] ^ _alu_out[`XLEN-1];
+  wire _isSF = _alu_out[`XLEN-1];
+  wire _isCF = _isSUBop ^ _alu_out[`XLEN];
   wire _isSLT = _isOF ^ _add_out[`XLEN-1];
 
+
+  /* 输出指定 */
+  assign _alu_out = _add_out;
   assign ZF = _isZero;
   assign OF = _isOF;
   assign SLT = _isSLT;
-  assign alu_out = _add_out[`XLEN-1:0];
+  assign CF = _isCF;
+  assign SF = _isSF;
+  assign alu_out = _alu_out[`XLEN-1:0];
 endmodule
 
 
