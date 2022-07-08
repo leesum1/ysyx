@@ -30,7 +30,8 @@ class Vtop VL_NOT_FINAL {
     VL_IN8(&clk,0,0);
     VL_IN8(&rst,0,0);
     VL_OUT64(&pc,63,0);
-    VL_OUT(&inst_data,31,0);
+    VL_IN(&inst_data,31,0);
+    VL_OUT8(&inst_en,0,0);
     VL_IN64(&alu_a_i,63,0);
     VL_IN64(&alu_b_i,63,0);
     VL_IN8(&alu_op_i,3,0);
@@ -38,6 +39,11 @@ class Vtop VL_NOT_FINAL {
     VL_OUT8(&OF,0,0);
     VL_OUT8(&ZF,0,0);
     VL_OUT8(&SLT,0,0);
+    VL_OUT8(&CF,0,0);
+    VL_OUT8(&SF,0,0);
+    VL_OUT64(&sra_out,63,0);
+    VL_OUT64(&srl_out,63,0);
+    VL_OUT64(&sll_out,63,0);
 
     // CELLS
     // Public to allow access to /* verilator public */ items.

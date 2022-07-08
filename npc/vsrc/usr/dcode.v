@@ -2,8 +2,12 @@
 
 
 module dcode (
-    input wire [`INST_LEN-1:0] inst_data
+    input [`INST_LEN-1:0] inst_data,
+    output inst_out
 );
+
+
+
 
   wire [`INST_LEN-1:0] _inst = inst_data;
   // 指令分解
@@ -154,7 +158,6 @@ module dcode (
   wire _inst_ori = _type_op_imm & _func3_110;
   wire _inst_andi = _type_op_imm & _func3_111;
 
-
   // rv64 only 
   wire _inst_slli = _type_op_imm & _func3_001 & (_func7[6:1] == 6'b000000);
   wire _inst_srli = _type_op_imm & _func3_101 & (_func7[6:1] == 6'b000000);
@@ -233,8 +236,5 @@ module dcode (
   wire _inst_remuw = _type_op_32 & _func3_111 & _func7_0000001;
 
 
-
-
-
-
+  assign inst_out = _inst_addi;
 endmodule

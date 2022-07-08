@@ -35,4 +35,4 @@ clean:
 	$(RM) ./obj_dir/*
 	rm -rf $(BUILD_DIR)
 
-include ../Makefile
+include ./../Makefile

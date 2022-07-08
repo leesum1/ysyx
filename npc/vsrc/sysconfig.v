@@ -9,3 +9,7 @@
 
 `define ALUOP_ADD 4'd0
 `define ALUOP_SUB 4'd1
+/* 移位操作 */
+`define ALUOP_SRA 4'd2
+`define ALUOP_SRL 4'd3
+`define ALUOP_SLL 4'd4
