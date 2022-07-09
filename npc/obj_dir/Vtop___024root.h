@@ -21,30 +21,23 @@ VL_MODULE(Vtop___024root) {
     // PORTS
     VL_IN8(clk,0,0);
     VL_IN8(rst,0,0);
-    VL_OUT8(inst_en,0,0);
-    VL_IN8(alu_op_i,3,0);
-    VL_OUT8(OF,0,0);
-    VL_OUT8(ZF,0,0);
-    VL_OUT8(SLT,0,0);
-    VL_OUT8(CF,0,0);
-    VL_OUT8(SF,0,0);
+    VL_IN8(w_idx,4,0);
+    VL_OUT8(inst_out,0,0);
     VL_IN(inst_data,31,0);
     VL_OUT64(pc,63,0);
-    VL_IN64(alu_a_i,63,0);
-    VL_IN64(alu_b_i,63,0);
-    VL_OUT64(alu_out,63,0);
-    VL_OUT64(sra_out,63,0);
-    VL_OUT64(srl_out,63,0);
-    VL_OUT64(sll_out,63,0);
+    VL_IN64(w_data,63,0);
 
     // LOCAL SIGNALS
-    CData/*5:0*/ top__DOT__u_alu__DOT__shifter_in2;
-    CData/*0:0*/ top__DOT__u_alu__DOT___op_shift;
+    CData/*3:0*/ top__DOT__alu_op;
+    CData/*0:0*/ top__DOT__u_dcode__DOT___type_store;
+    CData/*0:0*/ top__DOT__u_dcode__DOT___type_branch;
+    CData/*0:0*/ top__DOT__u_dcode__DOT___type_jal;
+    CData/*0:0*/ top__DOT__u_dcode__DOT___R_type;
+    CData/*0:0*/ top__DOT__u_dcode__DOT___I_type;
+    CData/*0:0*/ top__DOT__u_dcode__DOT___U_type;
     QData/*63:0*/ top__DOT__u_pc__DOT___pc_in;
     QData/*63:0*/ top__DOT__u_pc__DOT___pc_out;
-    QData/*63:0*/ top__DOT__u_alu__DOT__shifter_in1_inv;
-    QData/*63:0*/ top__DOT__u_alu__DOT__shifter_res;
-    QData/*63:0*/ top__DOT__u_alu__DOT__srl_res;
+    VlUnpacked<QData/*63:0*/, 32> top__DOT__u_rv64reg__DOT__rf;
 
     // LOCAL VARIABLES
     CData/*0:0*/ __Vclklast__TOP__clk;

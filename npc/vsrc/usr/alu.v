@@ -44,7 +44,7 @@ module alu (
   assign SF = _isSF;
   assign alu_out = _alu_out[`XLEN-1:0];
 
-  /* 移位操作 */
+  /************************************* 移位器实现 *********************************************/
   wire                                          [`XLEN-1:0] shifter_in1;  //要移位的数
   wire                                          [`XLEN-1:0] shifter_in1_inv;  //要移位的数
   wire                                          [    6-1:0] shifter_in2;  //移动次数
@@ -54,7 +54,6 @@ module alu (
   wire _op_sll = (alu_op_i == `ALUOP_SLL);
   wire _op_srl = (alu_op_i == `ALUOP_SRL);
   wire _op_shift = _op_sra | _op_sll | _op_srl;
-
 
   /* 位颠倒 */
   Vectorinvert #(
@@ -84,6 +83,10 @@ module alu (
   assign sra_out = sra_res;
   assign srl_out = srl_res;
   assign sll_out = sll_res;
+
+
+  /*****************************比较器实现************************************/
+
 
 endmodule
 

@@ -2,20 +2,36 @@
 
 
 module dcode (
-    input [`INST_LEN-1:0] inst_data,
-    output inst_out
+    /* 输入信号 */
+    input  [     `INST_LEN-1:0] inst_data,
+    /*输出信号： */
+    output [`REG_ADDRWIDTH-1:0] rs1_idx,
+    output [`REG_ADDRWIDTH-1:0] rs2_idx,
+    output [`REG_ADDRWIDTH-1:0] rd_idx,
+    output [      `IMM_LEN-1:0] imm_data,
+    output [    `ALUOP_LEN-1:0] alu_op,
+    /* 测试信号 */
+    output                      inst_out
 );
 
-
-
-
   wire [`INST_LEN-1:0] _inst = inst_data;
-  // 指令分解
+  /* 指令分解 */
   wire [4:0] _rd = _inst[11:7];
   wire [2:0] _func3 = _inst[14:12];
   wire [4:0] _rs1 = _inst[19:15];
   wire [4:0] _rs2 = _inst[24:20];
   wire [6:0] _func7 = _inst[31:25];
+
+  // 不同指令类型的立即数
+  wire [`IMM_LEN-1:0] _immI = {{21{_inst[31]}}, _inst[30:20]};
+  wire [`IMM_LEN-1:0] _immS = {{21{_inst[31]}}, _inst[30:25], _inst[11:8], _inst[7]};
+  wire [`IMM_LEN-1:0] _immB = {{20{_inst[31]}}, _inst[7], _inst[30:25], _inst[11:8], 1'b0};
+  wire [`IMM_LEN-1:0] _immU = {{1{_inst[31]}}, _inst[30:20], _inst[19:12], 12'b0};
+  wire [`IMM_LEN-1:0] _immJ = {
+    {12{_inst[31]}}, _inst[19:12], _inst[20], _inst[30:25], _inst[24:21], 1'b0
+  };
+
+
 
   /* 分解_opcode */
   wire [6:0] _opcode = _inst[6:0];
@@ -235,6 +251,36 @@ module dcode (
   wire _inst_remw = _type_op_32 & _func3_110 & _func7_0000001;
   wire _inst_remuw = _type_op_32 & _func3_111 & _func7_0000001;
 
+
+  /* 将指令分为 R I S B U J 六类，便于获得操作数 */
+  wire _R_type = _type_op | _type_op_32;
+  wire _I_type = _type_load | _type_op_imm | _type_op_imm_32 | _type_jalr;
+  wire _S_type = _type_store;
+  wire _B_type = _type_branch;
+  wire _U_type = _type_auipc | _type_lui;
+  wire _J_type = _type_jal;
+
+
+
+  wire _isNeed_sr1 = (_R_type | _I_type | _S_type | _B_type);
+  wire _isNeed_sr2 = (_R_type | _S_type | _B_type);
+  wire _isNeed_rd = (_R_type | _I_type | _U_type | _J_type);
+  wire [4:0] _rs1_idx = (_isNeed_sr1) ? _rs1 : 5'b0;
+  wire [4:0] _rs2_idx = (_isNeed_sr2) ? _rs2 : 5'b0;
+  wire [4:0] _rd_idx = (_isNeed_rd) ? _rd : 5'b0;
+
+  /* assign 实现多路选择器：根据指令类型选立即数 */
+  wire [`IMM_LEN-1:0] _imm_data = (_I_type)?_immI:
+                                  (_S_type)?_immS:
+                                  (_B_type)?_immB:
+                                  (_U_type)?_immU:
+                                  (_J_type)?_immJ:
+                                  `IMM_LEN'b0;
+
+  assign rs1_idx  = _rs1_idx;
+  assign rs2_idx  = _rs2_idx;
+  assign rd_idx   = _rd_idx;
+  assign imm_data = _imm_data;
 
   assign inst_out = _inst_addi;
 endmodule

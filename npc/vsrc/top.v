@@ -3,26 +3,19 @@
 
 /* 需要设为为input熟悉才能才仿真中改变值 */
 module top (
-    input                      clk,
-    input                      rst,
-    output reg [    `XLEN-1:0] pc,
-    input      [`INST_LEN-1:0] inst_data,
-    output                     inst_en,
-    // ALU
-    input      [    `XLEN-1:0] alu_a_i,
-    input      [    `XLEN-1:0] alu_b_i,
-    input      [          3:0] alu_op_i,
-    output     [    `XLEN-1:0] alu_out,
-    output                     OF,
-    output                     ZF,
-    output                     SLT,
-    output                     CF,
-    output                     SF,
+    input                  clk,
+    input                  rst,
+    output reg [`XLEN-1:0] pc,
 
-    /* 测试用 */
-    output [`XLEN-1:0] sra_out,
-    output [`XLEN-1:0] srl_out,
-    output [`XLEN-1:0] sll_out
+
+    /****************decode******************/
+    // 手动指定指令
+    input [`INST_LEN-1:0] inst_data,
+    // 改变寄存器组值
+    input wire [`REG_ADDRWIDTH-1:0] w_idx,
+    input wire [`XLEN-1:0] w_data,
+    /* 测试信号 */
+    output inst_out
 );
 
 
@@ -40,28 +33,62 @@ module top (
   //       .inst_data(inst_data)
   //   );
 
-  alu u_alu (
-      /* ALU 端口 */
-      .alu_a_i (alu_a_i),
-      .alu_b_i (alu_b_i),
-      .alu_out (alu_out),
-      .alu_op_i(alu_op_i),
-      /* 标志位 */
-      .OF      (OF),
-      .ZF      (ZF),
-      .SLT     (SLT),
-      .CF      (CF),
-      .SF      (SF),
-      /* 测试用 */
-      .sra_out (sra_out),
-      .srl_out (srl_out),
-      .sll_out (sll_out)
+
+  wire [`REG_ADDRWIDTH-1:0] rs1_idx;
+  wire [`REG_ADDRWIDTH-1:0] rs2_idx;
+  wire [`REG_ADDRWIDTH-1:0] rd_idx;
+  wire [      `IMM_LEN-1:0] imm_data;
+  wire [    `ALUOP_LEN-1:0] alu_op;
+  dcode u_dcode (
+      /* 输入信号 */
+      .inst_data(inst_data),
+      /*输出信号： */
+      .rs1_idx  (rs1_idx),
+      .rs2_idx  (rs2_idx),
+      .rd_idx   (rd_idx),
+      .imm_data (imm_data),
+      .alu_op   (alu_op),
+      /* 测试信号 */
+      .inst_out (inst_out)
   );
 
-  dcode u_dcode (
-      .inst_data(inst_data),
-      .inst_out (inst_en)
+  wire [`XLEN-1:0] rs1_data;
+  wire [`XLEN-1:0] rs2_data;
+
+  rv64reg u_rv64reg (
+      .clk       (clk),
+      /* 读取数据 */
+      .rs1_idx   (rs1_idx),
+      .rs2_idx   (rs2_idx),
+      .rs1_data  (rs1_data),
+      .rs2_data  (rs2_data),
+      /* 写入数据 */
+      .write_idx (w_idx),
+      .write_data(w_data),
+      .wen       (1'b1)
   );
+
+
+  //   alu u_alu (
+  //       /* ALU 端口 */
+  //       .alu_a_i (rs1_data),
+  //       .alu_b_i (rs2_data),
+  //       .alu_out (alu_out),
+  //       .alu_op_i(alu_op),
+  //       /* 标志位 */
+  //       .OF      (OF),
+  //       .ZF      (ZF),
+  //       .SLT     (SLT),
+  //       .CF      (CF),
+  //       .SF      (SF),
+  //       /* 测试用 */
+  //       .sra_out (sra_out),
+  //       .srl_out (srl_out),
+  //       .sll_out (sll_out)
+  //   );
+
+
+
 
 endmodule
 
