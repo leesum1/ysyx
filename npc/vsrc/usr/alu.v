@@ -4,7 +4,7 @@ module alu (
     input [`XLEN-1:0] alu_a_i,
     input [`XLEN-1:0] alu_b_i,
     output [`XLEN-1:0] alu_out,
-    input [3:0] alu_op_i,
+    input [`ALUOP_LEN-1:0] alu_op_i,
     /* 标志位 */
     output OF,
     output ZF,

@@ -9,7 +9,13 @@ module dcode (
     output [`REG_ADDRWIDTH-1:0] rs2_idx,
     output [`REG_ADDRWIDTH-1:0] rd_idx,
     output [      `IMM_LEN-1:0] imm_data,
-    output [    `ALUOP_LEN-1:0] alu_op,
+    output                      isNeed_rs1,
+    output                      isNeed_rs2,
+    output                      isNeed_rd,
+    output                      isNeed_imm,
+    output [    `ALUOP_LEN-1:0] alu_op,      // alu 操作码
+    output [    `MEMOP_LEN-1:0] mem_op,      // 访存操作码
+    output [    `EXCOP_LEN-1:0] exc_op,      // exc 操作码
     /* 测试信号 */
     output                      inst_out
 );
@@ -23,12 +29,12 @@ module dcode (
   wire [6:0] _func7 = _inst[31:25];
 
   // 不同指令类型的立即数
-  wire [`IMM_LEN-1:0] _immI = {{21{_inst[31]}}, _inst[30:20]};
-  wire [`IMM_LEN-1:0] _immS = {{21{_inst[31]}}, _inst[30:25], _inst[11:8], _inst[7]};
-  wire [`IMM_LEN-1:0] _immB = {{20{_inst[31]}}, _inst[7], _inst[30:25], _inst[11:8], 1'b0};
-  wire [`IMM_LEN-1:0] _immU = {{1{_inst[31]}}, _inst[30:20], _inst[19:12], 12'b0};
+  wire [`IMM_LEN-1:0] _immI = {{21 + 32{_inst[31]}}, _inst[30:20]};
+  wire [`IMM_LEN-1:0] _immS = {{21 + 32{_inst[31]}}, _inst[30:25], _inst[11:8], _inst[7]};
+  wire [`IMM_LEN-1:0] _immB = {{20 + 32{_inst[31]}}, _inst[7], _inst[30:25], _inst[11:8], 1'b0};
+  wire [`IMM_LEN-1:0] _immU = {{1 + 32{_inst[31]}}, _inst[30:20], _inst[19:12], 12'b0};
   wire [`IMM_LEN-1:0] _immJ = {
-    {12{_inst[31]}}, _inst[19:12], _inst[20], _inst[30:25], _inst[24:21], 1'b0
+    {12 + 32{_inst[31]}}, _inst[19:12], _inst[20], _inst[30:25], _inst[24:21], 1'b0
   };
 
 
@@ -251,7 +257,6 @@ module dcode (
   wire _inst_remw = _type_op_32 & _func3_110 & _func7_0000001;
   wire _inst_remuw = _type_op_32 & _func3_111 & _func7_0000001;
 
-
   /* 将指令分为 R I S B U J 六类，便于获得操作数 */
   wire _R_type = _type_op | _type_op_32;
   wire _I_type = _type_load | _type_op_imm | _type_op_imm_32 | _type_jalr;
@@ -260,13 +265,14 @@ module dcode (
   wire _U_type = _type_auipc | _type_lui;
   wire _J_type = _type_jal;
 
-
-
-  wire _isNeed_sr1 = (_R_type | _I_type | _S_type | _B_type);
-  wire _isNeed_sr2 = (_R_type | _S_type | _B_type);
+  /*获取操作数  */
+  wire _isNeed_rs1 = (_R_type | _I_type | _S_type | _B_type);
+  wire _isNeed_rs2 = (_R_type | _S_type | _B_type);
   wire _isNeed_rd = (_R_type | _I_type | _U_type | _J_type);
-  wire [4:0] _rs1_idx = (_isNeed_sr1) ? _rs1 : 5'b0;
-  wire [4:0] _rs2_idx = (_isNeed_sr2) ? _rs2 : 5'b0;
+  wire _isNeed_imm = (_I_type | _S_type | _B_type | _U_type | _J_type);
+
+  wire [4:0] _rs1_idx = (_isNeed_rs1) ? _rs1 : 5'b0;
+  wire [4:0] _rs2_idx = (_isNeed_rs2) ? _rs2 : 5'b0;
   wire [4:0] _rd_idx = (_isNeed_rd) ? _rd : 5'b0;
 
   /* assign 实现多路选择器：根据指令类型选立即数 */
@@ -277,10 +283,71 @@ module dcode (
                                   (_J_type)?_immJ:
                                   `IMM_LEN'b0;
 
-  assign rs1_idx  = _rs1_idx;
-  assign rs2_idx  = _rs2_idx;
-  assign rd_idx   = _rd_idx;
+
+  /* 输出指定 */
+  assign rs1_idx = _rs1_idx;
+  assign rs2_idx = _rs2_idx;
+  assign rd_idx = _rd_idx;
   assign imm_data = _imm_data;
+  assign isNeed_rs1 = _isNeed_rs1;
+  assign isNeed_rs2 = _isNeed_rs2;
+  assign isNeed_rd = _isNeed_rd;
+  assign isNeed_imm = _isNeed_imm;
+
+
+  /* ALU_OP */
+  wire _alu_add = _inst_add |_inst_addw |_inst_addi |_inst_addiw| _type_load 
+                  | _type_store | _inst_jal |_inst_jalr |_inst_auipc;
+  wire _alu_sub = _inst_sub | _inst_subw;
+  wire _alu_xor = _inst_xor | _inst_xori;
+  wire _alu_and = _inst_and | _inst_andi;
+  wire _alu_or = _inst_or | _inst_ori;
+  wire _alu_sll = _inst_sll | _inst_slli | _inst_slliw | _inst_sllw;
+  wire _alu_srl = _inst_srl | _inst_srli | _inst_srliw | _inst_srlw;
+  wire _alu_sra = _inst_sra | _inst_srai | _inst_sraiw | _inst_sraw;
+  //比较操作未添加。
+
+
+  wire [`ALUOP_LEN-1:0] _alu_op = (_alu_add)?`ALUOP_ADD:
+                                  (_alu_sub)?`ALUOP_SUB:
+                                  (_alu_xor)?`ALUOP_XOR:
+                                  (_alu_and)?`ALUOP_AND:
+                                  (_alu_or)?`ALUOP_OR:
+                                  (_alu_sll)?`ALUOP_SLL:
+                                  (_alu_srl)?`ALUOP_SRL:
+                                  (_alu_sra)?`ALUOP_SRA:
+                                  `ALUOP_ADD;
+
+  assign alu_op = _alu_op;
+
+  /* EXC_OP */
+  wire [`EXCOP_LEN-1:0] _exc_op = (_inst_jal)?`EXCOP_JAL:
+                                  (_inst_jalr)?`EXCOP_JALR:
+                                  (_inst_lui)?`EXCOP_LUI:
+                                  (_inst_auipc)?`EXCOP_AUIPC:
+                                  (_inst_ecall)?`EXCOP_ECALL:
+                                  (_inst_ebreak)?`EXCOP_EBREAK:
+                                  `EXCOP_ALU;
+
+  assign exc_op = _exc_op;
+
+
+
+  /* MEM_OP */
+  wire [`MEMOP_LEN-1:0] _mem_op = (_inst_lb)?`MEMOP_LB:
+                                  (_inst_lh)?`MEMOP_LH:
+                                  (_inst_lw)?`MEMOP_LW:
+                                  (_inst_lbu)?`MEMOP_LBU:
+                                  (_inst_lhu)?`MEMOP_LHU:
+                                  (_inst_sd)?`MEMOP_SB:
+                                  (_inst_sh)?`MEMOP_SH:
+                                  (_inst_sw)?`MEMOP_SW:
+                                  (_inst_lwu)?`MEMOP_LWU:
+                                  (_inst_ld)?`MEMOP_LD:
+                                  (_inst_sd)?`MEMOP_SD:
+                                  `MEMOP_LB;
+  assign mem_op   = _mem_op;
+
 
   assign inst_out = _inst_addi;
 endmodule
