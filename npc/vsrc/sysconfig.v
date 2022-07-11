@@ -7,17 +7,23 @@
 `define PC_RESET_ADDR `XLEN'h0000000080000000
 
 /* exc 操作码 */
-`define EXCOP_LEN 4
+`define EXCOP_LEN 5
 
-`define EXCOP_ALU `EXCOP_LEN'd0
+`define EXCOP_NONE `EXCOP_LEN'd0
 `define EXCOP_AUIPC `EXCOP_LEN'd1
 `define EXCOP_LUI `EXCOP_LEN'd2
 `define EXCOP_JAL `EXCOP_LEN'd3
 `define EXCOP_JALR `EXCOP_LEN'd4
-`define EXCOP_ECALL `EXCOP_LEN'd5
-`define EXCOP_EBREAK `EXCOP_LEN'd6
-`define EXCOP_REG_REG `EXCOP_LEN'd7
-`define EXCOP_REG_IMM `EXCOP_LEN'd8
+`define EXCOP_LOAD `EXCOP_LEN'd5
+`define EXCOP_STORE `EXCOP_LEN'd6
+`define EXCOP_BRANCH `EXCOP_LEN'd7
+`define EXCOP_OPIMM `EXCOP_LEN'd8
+`define EXCOP_OPIMM32 `EXCOP_LEN'd9
+`define EXCOP_OP `EXCOP_LEN'd10
+`define EXCOP_OP32 `EXCOP_LEN'd11
+
+`define EXCOP_EBREAK `EXCOP_LEN'd12
+
 
 /* ALU 操作码 */
 `define ALUOP_LEN 5
@@ -47,19 +53,23 @@
 `define MEMOP_LEN 4
 
 /* 读取 */
-`define MEMOP_LB `MEMOP_LEN'd0
-`define MEMOP_LH `MEMOP_LEN'd1
-`define MEMOP_LW `MEMOP_LEN'd2
-`define MEMOP_LBU `MEMOP_LEN'd3
-`define MEMOP_LHU `MEMOP_LEN'd4
-`define MEMOP_LD `MEMOP_LEN'd5
-`define MEMOP_LWU `MEMOP_LEN'd6
+
+`define MEMOP_NONE `MEMOP_LEN'd0 //空操作
+
+`define MEMOP_LB `MEMOP_LEN'd1
+`define MEMOP_LH `MEMOP_LEN'd2
+`define MEMOP_LW `MEMOP_LEN'd3
+`define MEMOP_LBU `MEMOP_LEN'd4
+`define MEMOP_LHU `MEMOP_LEN'd5
+`define MEMOP_LD `MEMOP_LEN'd6
+`define MEMOP_LWU `MEMOP_LEN'd7
 
 /* 写入 */
-`define MEMOP_SB `MEMOP_LEN'd7
-`define MEMOP_SH `MEMOP_LEN'd8
-`define MEMOP_SW `MEMOP_LEN'd9
-`define MEMOP_SD `MEMOP_LEN'd10
+`define MEMOP_SB `MEMOP_LEN'd8
+`define MEMOP_SH `MEMOP_LEN'd9
+`define MEMOP_SW `MEMOP_LEN'd10
+`define MEMOP_SD `MEMOP_LEN'd11
+
 
 /* writeback 操作码 */
 `define WBOP_LEN 4
@@ -67,6 +77,15 @@
 /* 读取 */
 `define WBOP_RD `WBOP_LEN'd0
 `define WBOP_NONE `WBOP_LEN'd1
+
+/* PC操作码 */
+`define PCOP_LEN 3
+
+`define PCOP_NONE `PCOP_LEN'd0 //空操作
+`define PCOP_BRANCH `PCOP_LEN'd1
+`define PCOP_JAL `PCOP_LEN'd2
+`define PCOP_JALR `PCOP_LEN'd3
+`define PCOP_INC4 `PCOP_LEN'd4
 
 
 

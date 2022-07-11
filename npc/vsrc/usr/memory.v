@@ -14,8 +14,10 @@ module memory (
 
     input [`XLEN-1:0] exc_in,
 
-    output [`XLEN-1:0] mem_out
+    output [`XLEN-1:0] mem_out,
+    output isloadEnable
 );
+  wire _memop_none = (mem_op == `MEMOP_NONE);
   wire _memop_lb = (mem_op == `MEMOP_LB);
   wire _memop_lbu = (mem_op == `MEMOP_LBU);
   wire _memop_sb = (mem_op == `MEMOP_SB);
@@ -38,6 +40,12 @@ module memory (
   wire _unsigned = _memop_lhu | _memop_lbu | _memop_lwu;
   wire _signed = _memop_lh | _memop_lb | _memop_lw | _memop_ld;
 
+
+  /* 输出使能端口 */
+  wire _isloadEnable = _unsigned | _signed;
+  assign isloadEnable = _isloadEnable;
+
+
   wire [`XLEN-1:0] _mem_read;
 
   /* 符号扩展后的结果 */
@@ -51,7 +59,10 @@ module memory (
                                    (_ls32byte)?{{`XLEN-32{1'b0}},_mem_read[31:0]}:
                                    _mem_read;
   /* 读取数据：选择最终结果 */
-  wire [`XLEN-1:0] _mem_out = (_signed) ? _mem__signed_out : _mem__unsigned_out;
+  wire [`XLEN-1:0] _mem_out = (_signed) ? _mem__signed_out: 
+                               (_unsigned)? _mem__unsigned_out:
+                               `XLEN'b0;
+
   assign mem_out = _mem_out;
 
 
@@ -61,6 +72,31 @@ module memory (
                                 (_ls16byte) ? {48'b0, rs2_data[15:0]}:
                                 (_ls32byte) ? {32'b0, rs2_data[31:0]}:
                                  rs2_data;
+  /* 掩码 */
+  wire [7:0] _wmask = (_ls8byte)?8'b0000_0001:
+                      (_ls16byte)?8'b0000_0011:
+                      (_ls32byte)?8'b0000_1111:
+                      (_ls64byte)?8'b1111_1111:
+                      8'b0000_0000;
   /* 地址 */
-  wire [`XLEN-1:0] addr = exc_in;
+  wire [`XLEN-1:0] _addr = (_memop_none) ? `PC_RESET_ADDR : exc_in;
+  wire [`XLEN-1:0] _raddr = _addr;
+  wire [`XLEN-1:0] _waddr = _addr;
+
+  /***************************内存读写**************************/
+  import "DPI-C" function void pmem_read(
+    input  longint raddr,
+    output longint rdata
+  );
+  import "DPI-C" function void pmem_write(
+    input longint waddr,
+    input longint wdata,
+    input byte wmask
+  );
+
+  always @(*) begin
+    pmem_read(_raddr, _mem_read);
+    pmem_write(_waddr, _mem_write, _wmask);
+  end
+
 endmodule

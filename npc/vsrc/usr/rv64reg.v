@@ -27,6 +27,11 @@ module rv64reg (
   /* 读取数据 */
   assign rs1_data = rf[rs1_idx];
   assign rs2_data = rf[rs2_idx];
+
+
+  /************仿真使用：传递二维数组指针************/
+  import "DPI-C" function void set_gpr_ptr(input logic [63:0] a[]);
+  initial set_gpr_ptr(rf);  // rf为通用寄存器的二维数组变量
 endmodule
 
 

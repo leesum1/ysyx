@@ -15,7 +15,10 @@ module execute (
     output [         `XLEN-1:0] exc_out
 );
 
-  wire [`IMM_LEN-1:0] _imm_aui_auipc = imm_data << 12;
+
+  /* 拼接代替左移 */
+  // wire [`IMM_LEN-1:0] _imm_aui_auipc = imm_data << 12;
+  wire [`IMM_LEN-1:0] _imm_aui_auipc = {imm_data[`IMM_LEN-1:12], 12'b0};
 
   wire [         `XLEN-1:0] _alu_in1 = (exc_op==`EXCOP_REG_REG)?rs1_data:
                                        (exc_op==`EXCOP_REG_IMM)?rs1_data:
@@ -25,7 +28,7 @@ module execute (
                                        (exc_op==`EXCOP_LUI)?`XLEN'b0:
                                         `XLEN'b0;
 
-  wire [         `XLEN-1:0] _alu_in2 = (exc_op==`EXCOP_REG_REG)?rs1_data:
+  wire [         `XLEN-1:0] _alu_in2 = (exc_op==`EXCOP_REG_REG)?rs2_data:
                                        (exc_op==`EXCOP_REG_IMM)?imm_data:
                                        (exc_op==`EXCOP_AUIPC)?_imm_aui_auipc:
                                        (exc_op==`EXCOP_JAL)?`XLEN'd4:
@@ -33,13 +36,25 @@ module execute (
                                        (exc_op==`EXCOP_LUI)?_imm_aui_auipc:
                                        `XLEN'b0;
   wire [`XLEN-1:0] _alu_out;
+  wire _compare_out;
   alu u_alu (
       /* ALU 端口 */
-      .alu_a_i (_alu_in1),
-      .alu_b_i (_alu_in2),
-      .alu_out (_alu_out),
-      .alu_op_i(alu_op)
+      .alu_a_i(_alu_in1),
+      .alu_b_i(_alu_in2),
+      .alu_out(_alu_out),
+      .alu_op_i(alu_op),
+      .compare_out(_compare_out)
   );
 
   assign exc_out = _alu_out;
+
+
+
+  /*************ebreak仿真使用**************************/
+  wire _excop_ebreak = (exc_op == `EXCOP_EBREAK);
+  always @(*) begin
+    if (_excop_ebreak) begin
+      $finish;
+    end
+  end
 endmodule

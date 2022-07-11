@@ -9,6 +9,7 @@
 #define VERILATED_VTOP_H_  // guard
 
 #include "verilated_heavy.h"
+#include "svdpi.h"
 
 class Vtop__Syms;
 class Vtop___024root;
@@ -31,8 +32,6 @@ class Vtop VL_NOT_FINAL {
     VL_IN8(&rst,0,0);
     VL_OUT64(&pc,63,0);
     VL_IN(&inst_data,31,0);
-    VL_IN8(&w_idx,4,0);
-    VL_IN64(&w_data,63,0);
     VL_OUT8(&inst_out,0,0);
 
     // CELLS

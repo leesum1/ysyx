@@ -14,8 +14,9 @@ module dcode (
     output                      isNeed_rd,
     output                      isNeed_imm,
     output [    `ALUOP_LEN-1:0] alu_op,      // alu 操作码
-    output [    `MEMOP_LEN-1:0] mem_op,      // 访存操作码
+    output [    `MEMOP_LEN-1:0] mem_op,      // mem 操作码
     output [    `EXCOP_LEN-1:0] exc_op,      // exc 操作码
+    output [     `PCOP_LEN-1:0] pc_op,       // pc 操作码
     /* 测试信号 */
     output                      inst_out
 );
@@ -305,8 +306,6 @@ module dcode (
   wire _alu_sll = _inst_sll | _inst_slli | _inst_slliw | _inst_sllw;
   wire _alu_srl = _inst_srl | _inst_srli | _inst_srliw | _inst_srlw;
   wire _alu_sra = _inst_sra | _inst_srai | _inst_sraiw | _inst_sraw;
-  //比较操作未添加。
-
 
   wire [`ALUOP_LEN-1:0] _alu_op = (_alu_add)?`ALUOP_ADD:
                                   (_alu_sub)?`ALUOP_SUB:
@@ -320,14 +319,34 @@ module dcode (
 
   assign alu_op = _alu_op;
 
+
+
+  wire _I_type_special = _inst_jalr | _type_system;
+  wire _exc_op_reg_imm = (_I_type & (~_I_type_special)) | _S_type;
+  wire _exc_op_reg_reg = _R_type | _B_type;
   /* EXC_OP */
-  wire [`EXCOP_LEN-1:0] _exc_op = (_inst_jal)?`EXCOP_JAL:
-                                  (_inst_jalr)?`EXCOP_JALR:
-                                  (_inst_lui)?`EXCOP_LUI:
-                                  (_inst_auipc)?`EXCOP_AUIPC:
-                                  (_inst_ecall)?`EXCOP_ECALL:
-                                  (_inst_ebreak)?`EXCOP_EBREAK:
-                                  `EXCOP_ALU;
+  // wire [`EXCOP_LEN-1:0] _exc_op = (_exc_op_reg_reg)?`EXCOP_REG_REG:
+  //                                 (_I_type|_S_type)?`EXCOP_REG_IMM:
+  //                                 (_inst_jal)?`EXCOP_JAL:
+  //                                 (_inst_jalr)?`EXCOP_JALR:
+  //                                 (_inst_lui)?`EXCOP_LUI:
+  //                                 (_inst_auipc)?`EXCOP_AUIPC:
+  //                                 (_inst_ecall)?`EXCOP_ECALL:
+  //                                 (_inst_ebreak)?`EXCOP_EBREAK:
+  //                                 `EXCOP_ALU;
+
+  wire [`EXCOP_LEN-1:0] _exc_op = (_type_auipc)?`EXCOP_AUIPC:
+                                  (_type_lui)?`EXCOP_LUI:
+                                  (_type_jal)?`EXCOP_JAL:
+                                  (_type_jalr)?`EXCOP_JALR:
+                                  (_type_load)?`EXCOP_LOAD:
+                                  (_type_store)?`EXCOP_STORE:
+                                  (_type_branch)?`EXCOP_BRANCH:
+                                  (_type_op_imm)?`EXCOP_OPIMM:
+                                  (_type_op_imm_32)?`EXCOP_OPIMM32:
+                                  (_type_op)?`EXCOP_OP:
+                                  (_type_op_32)?`EXCOP_OP32:
+                                  `EXCOP_NONE;
 
   assign exc_op = _exc_op;
 
@@ -345,8 +364,15 @@ module dcode (
                                   (_inst_lwu)?`MEMOP_LWU:
                                   (_inst_ld)?`MEMOP_LD:
                                   (_inst_sd)?`MEMOP_SD:
-                                  `MEMOP_LB;
-  assign mem_op   = _mem_op;
+                                  `MEMOP_NONE;
+  assign mem_op = _mem_op;
+
+  /* PC_OP  */
+  wire [`PCOP_LEN-1:0] _pc_op = (_B_type)?`PCOP_BRANCH:
+                                (_inst_jal)?`PCOP_JAL:
+                                (_inst_jalr)?`PCOP_JALR:
+                                `PCOP_INC4;
+  assign pc_op = _pc_op;
 
 
   assign inst_out = _inst_addi;
