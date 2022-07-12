@@ -1,9 +1,10 @@
-#include <iostream>
-#include <fstream>
-#include <sys/stat.h> // struct stat
 #ifndef __SIMMEM_H__
 #define __SIMMEM_H__
 
+#include <iostream>
+#include <fstream>
+#include <sys/stat.h> // struct stat
+#include <string.h>
 
 using namespace std;
 #define MEMSIZE 0x8000000
@@ -14,8 +15,9 @@ typedef uint64_t word_t;
 
 class SimMem {
 private:
+
     /* 实际内存 4k对齐*/
-    const char* imgpath = "/home/leesum/ysyx-workbench/npc/sim.vcd";
+    const char* imgpath = "/home/leesum/ysyx-workbench/npc/sim.vc";
     uint8_t pmem[MEMSIZE] PG_ALIGN = {};
 private:
     bool in_pmem(paddr_t addr);

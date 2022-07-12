@@ -262,7 +262,7 @@ module dcode (
   wire _U_type = _type_auipc | _type_lui;
   wire _J_type = _type_jal;
   // 无效指令
-  wire _NONE_type = _R_type | _I_type | _S_type | _U_type | _J_type;
+  wire _NONE_type = ~(_R_type | _I_type | _S_type | _U_type | _J_type | _B_type);
 
   /*获取操作数  */
   wire _isNeed_rs1 = (_R_type | _I_type | _S_type | _B_type);
@@ -346,7 +346,8 @@ module dcode (
 
 
   /* MEM_OP */
-  wire [`MEMOP_LEN-1:0] _mem_op = ({`MEMOP_LEN{_inst_lb}}&`MEMOP_LB)|
+  wire [`MEMOP_LEN-1:0] _mem_op =  ({`MEMOP_LEN{_inst_lb}}&`MEMOP_LB)|
+                                   ({`MEMOP_LEN{_inst_lbu}}&`MEMOP_LBU)|
                                    ({`MEMOP_LEN{_inst_lh}}&`MEMOP_LH)|
                                    ({`MEMOP_LEN{_inst_lw}}&`MEMOP_LW)|
                                    ({`MEMOP_LEN{_inst_lhu}}&`MEMOP_LHU)|
