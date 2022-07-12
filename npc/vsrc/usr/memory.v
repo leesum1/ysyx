@@ -5,12 +5,7 @@ module memory (
     input [         `XLEN-1:0] rs1_data,
     input [         `XLEN-1:0] rs2_data,
     input [      `IMM_LEN-1:0] imm_data,
-    input                      isNeed_rs1,
-    input                      isNeed_rs2,
-    input                      isNeed_rd,
-    input                      isNeed_imm,
-
-    input [`MEMOP_LEN-1:0] mem_op,  // 访存操作码
+    input [    `MEMOP_LEN-1:0] mem_op,    // 访存操作码
 
     input [`XLEN-1:0] exc_in,
 

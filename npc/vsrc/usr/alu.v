@@ -31,6 +31,8 @@ module alu (
   wire _aluop_sub = (alu_op_i == `ALUOP_SUB);
   wire _aluop_slt = (alu_op_i == `ALUOP_SLT);
   wire _aluop_sltu = (alu_op_i == `ALUOP_SLTU);
+  wire _aluop_slti = (alu_op_i == `ALUOP_SLTI);
+  wire _aluop_sltiu = (alu_op_i == `ALUOP_SLTIU);
   wire _aluop_beq = (alu_op_i == `ALUOP_BEQ);
   wire _aluop_bne = (alu_op_i == `ALUOP_BNE);
   wire _aluop_blt = (alu_op_i == `ALUOP_BLT);
@@ -40,12 +42,15 @@ module alu (
 
   /*********************************加法-减法-比较器实现*************************************/
 
-  /* 如果是减法、比较操作则进行减法 */
-  wire _isSUBop = _aluop_sub | _aluop_slt | 
+
+
+  wire _isCMP =   _aluop_slt | _aluop_bgeu |
+                  _aluop_slti | _aluop_sltiu|
                   _aluop_sltu |_aluop_beq |
                   _aluop_bne |_aluop_blt  |
-                  _aluop_bge|_aluop_bltu  |
-                  _aluop_bgeu;
+                  _aluop_bge|_aluop_bltu  ;
+  /* 如果是减法、比较操作则进行减法 */
+  wire _isSUBop = _aluop_sub | _isCMP;
   /* 进位 */
   wire [`XLEN:0] _cin = {{64{1'b0}}, _isSUBop};  //减法的加1
   /* 扩展为双符号位 */
@@ -74,14 +79,13 @@ module alu (
   wire _isBEQ = _isZero;  //a==b
   wire _isBNE = ~_isZero;  //a!=b
 
-  /* 多路选择器 */
-  wire _compare_out = (_aluop_slt|_aluop_blt)?_isSLT:
-                      (_aluop_sltu|_aluop_bltu)?_isSLTU:
-                      (_aluop_beq)?_isBEQ:
-                      (_aluop_bne)?_isBNE:
-                      (_aluop_bge)?_isBGE:
-                      (_aluop_bgeu)?_isBGEU:
-                      1'b0;
+  /* 并行多路选择器 */
+  wire _compare_out = ((_aluop_slt|_aluop_blt)&_isSLT)|
+                      ((_aluop_sltu|_aluop_bltu)&_isSLTU)|
+                      ((_aluop_beq)&_isBEQ)|
+                      ((_aluop_bne)&_isBNE)|
+                      ((_aluop_bge)&_isBGE)|
+                      ((_aluop_bgeu)&_isBGEU);
 
   /************************************* 移位器实现 *********************************************/
   wire [`XLEN-1:0] _shifter_in1;  //要移位的数
@@ -132,7 +136,9 @@ module alu (
                     (_aluop_srl)?_srl_res:
                     (_aluop_sra)?_sra_res:
                     `XLEN'b0;
-  assign alu_out = _alu_out;
+
+  /* 选择最后输出 */
+  assign alu_out = (_isCMP) ? {`XLEN{_compare_out}} : _alu_out;
   assign compare_out = _compare_out;
 
 endmodule

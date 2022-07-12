@@ -15,7 +15,7 @@ typedef uint64_t word_t;
 class SimMem {
 private:
     /* 实际内存 4k对齐*/
-    char* imgpath = "/home/leesum/ysyx-workbench/npc/sim.vcd";
+    const char* imgpath = "/home/leesum/ysyx-workbench/npc/sim.vcd";
     uint8_t pmem[MEMSIZE] PG_ALIGN = {};
 private:
     bool in_pmem(paddr_t addr);

@@ -7,7 +7,8 @@ module test_invert (
     input wire _S_type,
     _B_type,
     _U_type,
-    _I_type
+    _I_type,
+    _test_type
 );
   // invertTem #(
   //     .DATA_LEN(16)
@@ -16,7 +17,11 @@ module test_invert (
   //     .out(out)
   // );
 
-  assign out = (_I_type) ? in4 : (_S_type) ? in1 : (_B_type) ? in2 : (_U_type) ? in3 : 16'b0;
+  // assign out = (_I_type) ? in4 : (_S_type) ? in1 : (_B_type) ? in2 : (_U_type) ? in3 : 16'b0;
+  assign out = ({16{_I_type|_test_type}} & in1) |
+               ({16{_U_type}} & in2) |
+               ({16{_B_type}} & in3) |
+               ({16{_S_type}} & in4);
   // assign out = _imm_data;
 endmodule
 

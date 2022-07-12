@@ -28,26 +28,29 @@
 /* ALU 操作码 */
 `define ALUOP_LEN 5
 
-`define ALUOP_ADD `ALUOP_LEN'd0
-`define ALUOP_SUB `ALUOP_LEN'd1
+`define ALUOP_NONE `ALUOP_LEN'd0
+`define ALUOP_ADD `ALUOP_LEN'd1
+`define ALUOP_SUB `ALUOP_LEN'd2
 /* 逻辑操作 */
-`define ALUOP_XOR `ALUOP_LEN'd2
-`define ALUOP_OR `ALUOP_LEN'd3
-`define ALUOP_AND `ALUOP_LEN'd4
+`define ALUOP_XOR `ALUOP_LEN'd3
+`define ALUOP_OR `ALUOP_LEN'd4
+`define ALUOP_AND `ALUOP_LEN'd5
 /* 移位操作 */
-`define ALUOP_SLL `ALUOP_LEN'd5
-`define ALUOP_SRL `ALUOP_LEN'd6
-`define ALUOP_SRA `ALUOP_LEN'd7
+`define ALUOP_SLL `ALUOP_LEN'd6
+`define ALUOP_SRL `ALUOP_LEN'd7
+`define ALUOP_SRA `ALUOP_LEN'd8
 /* 比较操作 */
-`define ALUOP_SLT `ALUOP_LEN'd8
-`define ALUOP_SLTU `ALUOP_LEN'd9
+`define ALUOP_SLT `ALUOP_LEN'd9
+`define ALUOP_SLTU `ALUOP_LEN'd10
+`define ALUOP_SLTI `ALUOP_LEN'd11
+`define ALUOP_SLTIU `ALUOP_LEN'd12
 
-`define ALUOP_BEQ `ALUOP_LEN'd10
-`define ALUOP_BNE `ALUOP_LEN'd11
-`define ALUOP_BLT `ALUOP_LEN'd12
-`define ALUOP_BGE `ALUOP_LEN'd13
-`define ALUOP_BLTU `ALUOP_LEN'd14
-`define ALUOP_BGEU `ALUOP_LEN'd15
+`define ALUOP_BEQ `ALUOP_LEN'd13
+`define ALUOP_BNE `ALUOP_LEN'd14
+`define ALUOP_BLT `ALUOP_LEN'd15
+`define ALUOP_BGE `ALUOP_LEN'd16
+`define ALUOP_BLTU `ALUOP_LEN'd17
+`define ALUOP_BGEU `ALUOP_LEN'd18
 
 /* mem操作码 */
 `define MEMOP_LEN 4

@@ -11,8 +11,6 @@ module fetch (
     output wire [`INST_LEN-1:0] inst_data
 );
 
-
-
   wire [`XLEN-1:0] mem_data;
   import "DPI-C" function void pmem_read(
     input  longint raddr,

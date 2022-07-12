@@ -9,16 +9,12 @@ module dcode (
     output [`REG_ADDRWIDTH-1:0] rs2_idx,
     output [`REG_ADDRWIDTH-1:0] rd_idx,
     output [      `IMM_LEN-1:0] imm_data,
-    output                      isNeed_rs1,
-    output                      isNeed_rs2,
-    output                      isNeed_rd,
-    output                      isNeed_imm,
-    output [    `ALUOP_LEN-1:0] alu_op,      // alu 操作码
-    output [    `MEMOP_LEN-1:0] mem_op,      // mem 操作码
-    output [    `EXCOP_LEN-1:0] exc_op,      // exc 操作码
-    output [     `PCOP_LEN-1:0] pc_op,       // pc 操作码
+    output [    `ALUOP_LEN-1:0] alu_op,     // alu 操作码
+    output [    `MEMOP_LEN-1:0] mem_op,     // mem 操作码
+    output [    `EXCOP_LEN-1:0] exc_op,     // exc 操作码
+    output [     `PCOP_LEN-1:0] pc_op       // pc 操作码
     /* 测试信号 */
-    output                      inst_out
+
 );
 
   wire [`INST_LEN-1:0] _inst = inst_data;
@@ -265,6 +261,8 @@ module dcode (
   wire _B_type = _type_branch;
   wire _U_type = _type_auipc | _type_lui;
   wire _J_type = _type_jal;
+  // 无效指令
+  wire _NONE_type = _R_type | _I_type | _S_type | _U_type | _J_type;
 
   /*获取操作数  */
   wire _isNeed_rs1 = (_R_type | _I_type | _S_type | _B_type);
@@ -286,14 +284,10 @@ module dcode (
 
 
   /* 输出指定 */
-  assign rs1_idx = _rs1_idx;
-  assign rs2_idx = _rs2_idx;
-  assign rd_idx = _rd_idx;
+  assign rs1_idx  = _rs1_idx;
+  assign rs2_idx  = _rs2_idx;
+  assign rd_idx   = _rd_idx;
   assign imm_data = _imm_data;
-  assign isNeed_rs1 = _isNeed_rs1;
-  assign isNeed_rs2 = _isNeed_rs2;
-  assign isNeed_rd = _isNeed_rd;
-  assign isNeed_imm = _isNeed_imm;
 
 
   /* ALU_OP */
@@ -306,65 +300,62 @@ module dcode (
   wire _alu_sll = _inst_sll | _inst_slli | _inst_slliw | _inst_sllw;
   wire _alu_srl = _inst_srl | _inst_srli | _inst_srliw | _inst_srlw;
   wire _alu_sra = _inst_sra | _inst_srai | _inst_sraiw | _inst_sraw;
-
-  wire [`ALUOP_LEN-1:0] _alu_op = (_alu_add)?`ALUOP_ADD:
-                                  (_alu_sub)?`ALUOP_SUB:
-                                  (_alu_xor)?`ALUOP_XOR:
-                                  (_alu_and)?`ALUOP_AND:
-                                  (_alu_or)?`ALUOP_OR:
-                                  (_alu_sll)?`ALUOP_SLL:
-                                  (_alu_srl)?`ALUOP_SRL:
-                                  (_alu_sra)?`ALUOP_SRA:
-                                  `ALUOP_ADD;
-
+  wire _alu_slt = _inst_slt | _inst_slti;
+  wire _alu_sltu = _inst_sltu | _inst_sltiu;
+  wire _alu_beq = _inst_beq;
+  wire _alu_bne = _inst_bne;
+  wire _alu_blt = _inst_blt;
+  wire _alu_bge = _inst_bge;
+  wire _alu_bltu = _inst_bltu;
+  wire _alu_bgeu = _inst_bgeu;
+  //多路选择器
+  wire [`ALUOP_LEN-1:0] _alu_op = ({`ALUOP_LEN{_alu_add}} & `ALUOP_ADD)|
+                                  ({`ALUOP_LEN{_alu_sub}} & `ALUOP_SUB)|
+                                  ({`ALUOP_LEN{_alu_xor}} & `ALUOP_XOR)|
+                                  ({`ALUOP_LEN{_alu_and}} & `ALUOP_AND)|
+                                  ({`ALUOP_LEN{_alu_or}} & `ALUOP_OR)|
+                                  ({`ALUOP_LEN{_alu_sll}} & `ALUOP_SLL)|
+                                  ({`ALUOP_LEN{_alu_srl}} & `ALUOP_SRL)|
+                                  ({`ALUOP_LEN{_alu_sra}} & `ALUOP_SRA)|
+                                  ({`ALUOP_LEN{_alu_slt}} & `ALUOP_SLT)|
+                                  ({`ALUOP_LEN{_alu_sltu}} & `ALUOP_SLTU)|
+                                  ({`ALUOP_LEN{_alu_beq}} & `ALUOP_BEQ)|
+                                  ({`ALUOP_LEN{_alu_bne}} & `ALUOP_BNE)|
+                                  ({`ALUOP_LEN{_alu_blt}} & `ALUOP_BLT)|
+                                  ({`ALUOP_LEN{_alu_bge}} & `ALUOP_BGE)|
+                                  ({`ALUOP_LEN{_alu_bltu}} & `ALUOP_BLTU)|
+                                  ({`ALUOP_LEN{_alu_bgeu}} & `ALUOP_BGEU);
   assign alu_op = _alu_op;
 
-
-
-  wire _I_type_special = _inst_jalr | _type_system;
-  wire _exc_op_reg_imm = (_I_type & (~_I_type_special)) | _S_type;
-  wire _exc_op_reg_reg = _R_type | _B_type;
-  /* EXC_OP */
-  // wire [`EXCOP_LEN-1:0] _exc_op = (_exc_op_reg_reg)?`EXCOP_REG_REG:
-  //                                 (_I_type|_S_type)?`EXCOP_REG_IMM:
-  //                                 (_inst_jal)?`EXCOP_JAL:
-  //                                 (_inst_jalr)?`EXCOP_JALR:
-  //                                 (_inst_lui)?`EXCOP_LUI:
-  //                                 (_inst_auipc)?`EXCOP_AUIPC:
-  //                                 (_inst_ecall)?`EXCOP_ECALL:
-  //                                 (_inst_ebreak)?`EXCOP_EBREAK:
-  //                                 `EXCOP_ALU;
-
-  wire [`EXCOP_LEN-1:0] _exc_op = (_type_auipc)?`EXCOP_AUIPC:
-                                  (_type_lui)?`EXCOP_LUI:
-                                  (_type_jal)?`EXCOP_JAL:
-                                  (_type_jalr)?`EXCOP_JALR:
-                                  (_type_load)?`EXCOP_LOAD:
-                                  (_type_store)?`EXCOP_STORE:
-                                  (_type_branch)?`EXCOP_BRANCH:
-                                  (_type_op_imm)?`EXCOP_OPIMM:
-                                  (_type_op_imm_32)?`EXCOP_OPIMM32:
-                                  (_type_op)?`EXCOP_OP:
-                                  (_type_op_32)?`EXCOP_OP32:
-                                  `EXCOP_NONE;
+  //多路选择器
+  wire [`EXCOP_LEN-1:0] _exc_op = ({`EXCOP_LEN{_type_auipc}}&`EXCOP_AUIPC) |
+                                  ({`EXCOP_LEN{_type_lui}}&`EXCOP_LUI) |
+                                  ({`EXCOP_LEN{_type_jal}}&`EXCOP_JAL) |
+                                  ({`EXCOP_LEN{_type_jalr}}&`EXCOP_JALR) |
+                                  ({`EXCOP_LEN{_type_load}}&`EXCOP_LOAD) |
+                                  ({`EXCOP_LEN{_type_store}}&`EXCOP_STORE) |
+                                  ({`EXCOP_LEN{_type_branch}}&`EXCOP_BRANCH) |
+                                  ({`EXCOP_LEN{_type_op_imm}}&`EXCOP_OPIMM) |
+                                  ({`EXCOP_LEN{_type_op_imm_32}}&`EXCOP_OPIMM32) |
+                                  ({`EXCOP_LEN{_type_op}}&`EXCOP_OP) |
+                                  ({`EXCOP_LEN{_type_op_32}}&`EXCOP_OP32) |
+                                  ({`EXCOP_LEN{_inst_ebreak}}&`EXCOP_EBREAK) |
+                                  ({`EXCOP_LEN{_NONE_type}}&`EXCOP_NONE);
 
   assign exc_op = _exc_op;
 
 
-
   /* MEM_OP */
-  wire [`MEMOP_LEN-1:0] _mem_op = (_inst_lb)?`MEMOP_LB:
-                                  (_inst_lh)?`MEMOP_LH:
-                                  (_inst_lw)?`MEMOP_LW:
-                                  (_inst_lbu)?`MEMOP_LBU:
-                                  (_inst_lhu)?`MEMOP_LHU:
-                                  (_inst_sd)?`MEMOP_SB:
-                                  (_inst_sh)?`MEMOP_SH:
-                                  (_inst_sw)?`MEMOP_SW:
-                                  (_inst_lwu)?`MEMOP_LWU:
-                                  (_inst_ld)?`MEMOP_LD:
-                                  (_inst_sd)?`MEMOP_SD:
-                                  `MEMOP_NONE;
+  wire [`MEMOP_LEN-1:0] _mem_op = ({`MEMOP_LEN{_inst_lb}}&`MEMOP_LB)|
+                                   ({`MEMOP_LEN{_inst_lh}}&`MEMOP_LH)|
+                                   ({`MEMOP_LEN{_inst_lw}}&`MEMOP_LW)|
+                                   ({`MEMOP_LEN{_inst_lhu}}&`MEMOP_LHU)|
+                                   ({`MEMOP_LEN{_inst_sb}}&`MEMOP_SB)|
+                                   ({`MEMOP_LEN{_inst_sh}}&`MEMOP_SH)|
+                                   ({`MEMOP_LEN{_inst_sw}}&`MEMOP_SW)|
+                                   ({`MEMOP_LEN{_inst_lwu}}&`MEMOP_LWU)|
+                                   ({`MEMOP_LEN{_inst_ld}}&`MEMOP_LD)|
+                                   ({`MEMOP_LEN{_inst_sd}}&`MEMOP_SD);
   assign mem_op = _mem_op;
 
   /* PC_OP  */
@@ -372,8 +363,10 @@ module dcode (
                                 (_inst_jal)?`PCOP_JAL:
                                 (_inst_jalr)?`PCOP_JALR:
                                 `PCOP_INC4;
+  // wire [`PCOP_LEN-1:0] _pc_op = ({`MEMOP_LEN{_B_type}}&`PCOP_BRANCH)|
+  //                               ({`MEMOP_LEN{_inst_jal}}&`PCOP_JAL)|
+  //                               ({`MEMOP_LEN{_inst_jalr}}&`PCOP_JALR)|
+  //                               ({`MEMOP_LEN{_inst_ld}}&`MEMOP_LD)|
   assign pc_op = _pc_op;
 
-
-  assign inst_out = _inst_addi;
 endmodule

@@ -5,10 +5,6 @@ module execute (
     input  [         `XLEN-1:0] rs1_data,
     input  [         `XLEN-1:0] rs2_data,
     input  [      `IMM_LEN-1:0] imm_data,
-    input                       isNeed_rs1,
-    input                       isNeed_rs2,
-    input                       isNeed_rd,
-    input                       isNeed_imm,
     input  [    `ALUOP_LEN-1:0] alu_op,      // alu 操作码
     input  [    `MEMOP_LEN-1:0] mem_op,      // 访存操作码
     input  [    `EXCOP_LEN-1:0] exc_op,      // exc 操作码
@@ -16,25 +12,41 @@ module execute (
 );
 
 
+  wire _excop_auipc = (exc_op==`EXCOP_AUIPC);
+  wire _excop_lui = (exc_op==`EXCOP_LUI);
+  wire _excop_jal = (exc_op==`EXCOP_JAL);
+  wire _excop_jalr = (exc_op==`EXCOP_JALR);
+  wire _excop_load = (exc_op==`EXCOP_LOAD);
+  wire _excop_store = (exc_op==`EXCOP_STORE);
+  wire _excop_branch = (exc_op==`EXCOP_BRANCH);
+  wire _excop_opimm = (exc_op==`EXCOP_OPIMM);
+  wire _excop_opimm32 = (exc_op==`EXCOP_OPIMM32);
+  wire _excop_op = (exc_op==`EXCOP_OP);
+  wire _excop_op32 = (exc_op==`EXCOP_OP32);
+  wire _excop_ebreak = (exc_op == `EXCOP_EBREAK);
+  wire _excop_none = (exc_op==`EXCOP_NONE);
+
+
+  wire _rs1_rs2 = _excop_op32 | _excop_op  | _excop_branch;
+  wire _rs1_imm = _excop_opimm | _excop_opimm32 | _excop_load |_excop_store;
+  wire _pc_4 = _excop_jal |_excop_jalr;
+  wire _pc_imm12 = _excop_auipc;
+  wire _none_imm12 = _excop_lui;
+
+  /* jal jalr lui auipc ecall ebreak 需要单独处理 */
   /* 拼接代替左移 */
   // wire [`IMM_LEN-1:0] _imm_aui_auipc = imm_data << 12;
   wire [`IMM_LEN-1:0] _imm_aui_auipc = {imm_data[`IMM_LEN-1:12], 12'b0};
-
-  wire [         `XLEN-1:0] _alu_in1 = (exc_op==`EXCOP_REG_REG)?rs1_data:
-                                       (exc_op==`EXCOP_REG_IMM)?rs1_data:
-                                       (exc_op==`EXCOP_AUIPC)?pc:
-                                       (exc_op==`EXCOP_JAL)?pc:
-                                       (exc_op==`EXCOP_JALR)?pc:
-                                       (exc_op==`EXCOP_LUI)?`XLEN'b0:
-                                        `XLEN'b0;
-
-  wire [         `XLEN-1:0] _alu_in2 = (exc_op==`EXCOP_REG_REG)?rs2_data:
-                                       (exc_op==`EXCOP_REG_IMM)?imm_data:
-                                       (exc_op==`EXCOP_AUIPC)?_imm_aui_auipc:
-                                       (exc_op==`EXCOP_JAL)?`XLEN'd4:
-                                       (exc_op==`EXCOP_JALR)?`XLEN'd4:
-                                       (exc_op==`EXCOP_LUI)?_imm_aui_auipc:
-                                       `XLEN'b0;
+  // ALU 第一个操作数
+  wire [         `XLEN-1:0] _alu_in1 = ({`XLEN{_rs1_rs2 | _rs1_imm}}&rs1_data) |
+                                       ({`XLEN{_pc_4 | _pc_imm12}}&pc) |
+                                       ({`XLEN{_none_imm12}}&`XLEN'b0);
+  // ALU 第二个操作数
+  wire [         `XLEN-1:0] _alu_in2 = ({`XLEN{_rs1_rs2}}&rs2_data) |
+                                       ({`XLEN{_rs1_imm}}&imm_data) |
+                                       ({`XLEN{_pc_4}}&`XLEN'd4)   |
+                                       ({`XLEN{_pc_imm12|_none_imm12}}&_imm_aui_auipc);
+                                                     
   wire [`XLEN-1:0] _alu_out;
   wire _compare_out;
   alu u_alu (
@@ -49,9 +61,7 @@ module execute (
   assign exc_out = _alu_out;
 
 
-
   /*************ebreak仿真使用**************************/
-  wire _excop_ebreak = (exc_op == `EXCOP_EBREAK);
   always @(*) begin
     if (_excop_ebreak) begin
       $finish;
