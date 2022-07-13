@@ -9,6 +9,7 @@
 #define VERILATED_VTOP_H_  // guard
 
 #include "verilated_heavy.h"
+#include "svdpi.h"
 
 class Vtop__Syms;
 class Vtop___024root;
@@ -29,17 +30,6 @@ class Vtop VL_NOT_FINAL {
     // propagate new values into/out from the Verilated model.
     VL_IN8(&clk,0,0);
     VL_IN8(&rst,0,0);
-    VL_OUT64(&pc,63,0);
-    VL_OUT(&inst_data,31,0);
-    VL_IN64(&alu_a_i,63,0);
-    VL_IN64(&alu_b_i,63,0);
-    VL_IN8(&alu_op_i,3,0);
-    VL_OUT64(&alu_out,63,0);
-    VL_OUT8(&OF,0,0);
-    VL_OUT8(&ZF,0,0);
-    VL_OUT8(&SLT,0,0);
-    VL_OUT8(&CF,0,0);
-    VL_OUT8(&SF,0,0);
 
     // CELLS
     // Public to allow access to /* verilator public */ items.

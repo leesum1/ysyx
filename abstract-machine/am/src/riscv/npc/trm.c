@@ -2,7 +2,7 @@
 #include <klib-macros.h>
 
 extern char _heap_start;
-int main(const char *args);
+int main(const char* args);
 
 extern char _pmem_start;
 #define PMEM_SIZE (128 * 1024 * 1024)
@@ -18,6 +18,10 @@ void putch(char ch) {
 }
 
 void halt(int code) {
+
+  asm volatile("mv a0, %0; ebreak" : : "r"(code));
+
+  /* 不应该到这里来 */
   while (1);
 }
 

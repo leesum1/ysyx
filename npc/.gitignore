@@ -8,5 +8,6 @@ build/
 !*.v
 !*lab*.cc
 !*lab*.cpp
+!*.cpp
 !.gitignore
 !README.md

@@ -1,19 +1,37 @@
 `include "./../sysconfig.v"
 
-
 module rv64reg (
+    input clk,
     /* 读取数据 */
-    input wire [`REG_ADDRWIDTH-1:0] rs1addr,
-    input wire [`REG_ADDRWIDTH-1:0] rs2addr,
-    output wire [`XLEN-1:0] rs1data,
-    output wire [`XLEN-1:0] rs2data,
+    input wire [`REG_ADDRWIDTH-1:0] rs1_idx,
+    input wire [`REG_ADDRWIDTH-1:0] rs2_idx,
+    output wire [`XLEN-1:0] rs1_data,
+    output wire [`XLEN-1:0] rs2_data,
     /* 写入数据 */
-    input wire [`REG_ADDRWIDTH-1:0] rdaddr,
-    input wire [`XLEN-1:0] rddata
+    input wire [`REG_ADDRWIDTH-1:0] write_idx,
+    input wire [`XLEN-1:0] write_data,
+    input wire wen
 );
-  reg [`XLEN-1:0] riscvreg[`REG_NUM-1:0];
-  assign rs1data = riscvreg[rs1addr];
-  assign rs2data = riscvreg[rs2addr];
 
-  assign riscvreg[rdaddr] = rddata;
+  /* 寄存器组 */
+  reg [`XLEN-1:0] rf[`REG_NUM-1:0];
+
+  /* 写入数据 */
+  wire _isX0 = (write_idx == `REG_ADDRWIDTH'b0);
+  wire [`XLEN-1:0] _write_data = (_isX0) ? `XLEN'b0 : write_data;  // x0 恒为0
+  wire _wen = wen;
+  always @(posedge clk) begin
+    if (_wen) rf[write_idx] <= _write_data;
+  end
+
+  /* 读取数据 */
+  assign rs1_data = rf[rs1_idx];
+  assign rs2_data = rf[rs2_idx];
+
+
+  /************仿真使用：传递二维数组指针************/
+  import "DPI-C" function void set_gpr_ptr(input logic [63:0] a[]);
+  initial set_gpr_ptr(rf);  // rf为通用寄存器的二维数组变量
 endmodule
+
+

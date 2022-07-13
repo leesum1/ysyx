@@ -21,24 +21,45 @@ VL_MODULE(Vtop___024root) {
     // PORTS
     VL_IN8(clk,0,0);
     VL_IN8(rst,0,0);
-    VL_IN8(alu_op_i,3,0);
-    VL_OUT8(OF,0,0);
-    VL_OUT8(ZF,0,0);
-    VL_OUT8(SLT,0,0);
-    VL_OUT8(CF,0,0);
-    VL_OUT8(SF,0,0);
-    VL_OUT(inst_data,31,0);
-    VL_OUT64(pc,63,0);
-    VL_IN64(alu_a_i,63,0);
-    VL_IN64(alu_b_i,63,0);
-    VL_OUT64(alu_out,63,0);
 
     // LOCAL SIGNALS
-    QData/*63:0*/ top__DOT__u_pc__DOT___pc_in;
-    QData/*63:0*/ top__DOT__u_pc__DOT___pc_out;
+    CData/*0:0*/ top__DOT__u_dcode__DOT___type_store;
+    CData/*0:0*/ top__DOT__u_dcode__DOT___type_branch;
+    CData/*0:0*/ top__DOT__u_dcode__DOT___R_type;
+    CData/*0:0*/ top__DOT__u_dcode__DOT___I_type;
+    CData/*4:0*/ top__DOT__u_dcode__DOT___rd_idx;
+    CData/*4:0*/ top__DOT__u_dcode__DOT___alu_op;
+    CData/*4:0*/ top__DOT__u_dcode__DOT___exc_op;
+    CData/*3:0*/ top__DOT__u_dcode__DOT___mem_op;
+    CData/*2:0*/ top__DOT__u_dcode__DOT___pc_op;
+    CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___isCF;
+    CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___isSLT;
+    CData/*0:0*/ top__DOT__u_memory__DOT___ls8byte;
+    CData/*0:0*/ top__DOT__u_memory__DOT___ls16byte;
+    CData/*0:0*/ top__DOT__u_memory__DOT___ls32byte;
+    CData/*0:0*/ top__DOT__u_memory__DOT___unsigned;
+    CData/*0:0*/ top__DOT__u_memory__DOT___signed;
+    VlWide<3>/*64:0*/ top__DOT__u_execute__DOT__u_alu__DOT___add_out;
+    QData/*63:0*/ top__DOT__rs1_data;
+    QData/*63:0*/ top__DOT__rs2_data;
+    QData/*63:0*/ top__DOT__u_pc__DOT___pc_next;
+    QData/*63:0*/ top__DOT__u_pc__DOT___pc_current;
+    QData/*63:0*/ top__DOT__u_fetch__DOT__mem_data;
+    QData/*63:0*/ top__DOT__u_dcode__DOT___imm_data;
+    QData/*63:0*/ top__DOT__u_execute__DOT___alu_in1;
+    QData/*63:0*/ top__DOT__u_execute__DOT___alu_in2;
+    QData/*63:0*/ top__DOT__u_execute__DOT___alu_out;
+    QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT___shifter_in1_inv;
+    QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT___shifter_res;
+    QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT___srl_res;
+    QData/*63:0*/ top__DOT__u_memory__DOT___mem_read;
+    VlUnpacked<QData/*63:0*/, 32> top__DOT__u_rv64reg__DOT__rf;
 
     // LOCAL VARIABLES
     CData/*0:0*/ __Vclklast__TOP__clk;
+    QData/*63:0*/ __Vtask_top__DOT__u_fetch__DOT__pmem_read__0__rdata;
+    QData/*63:0*/ __Vtask_top__DOT__u_memory__DOT__pmem_read__3__rdata;
+    VlUnpacked<CData/*0:0*/, 2> __Vm_traceActivity;
 
     // INTERNAL VARIABLES
     Vtop__Syms* vlSymsp;  // Symbol table
