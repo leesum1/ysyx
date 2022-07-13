@@ -21,17 +21,20 @@ private:
     VerilatedVcdC* tfp;
     uint64_t* registerfile;
     uint64_t pc;
+private:
+    void stepCycle(bool val);
+    const char* getRegName(int idx);
+    void changeCLK();
+    void dampWave();
 public:
     SimMem* mem;
     Simtop();
     ~Simtop();
     Vtop* getTop();
     void reset();
-    void changeCLK();
-    void dampWave();
-    void stepCycle();
-    const char* getRegName(int idx);
     void npcTrap();
+    uint64_t getRegVal(int idx);
+    uint64_t getRegVal(const char* str);
     void printRegisterFile();
     void scanMem(paddr_t addr, uint32_t len);
     void excute(int32_t t);

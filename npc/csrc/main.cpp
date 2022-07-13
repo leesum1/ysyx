@@ -18,10 +18,11 @@ int main() {
   /* 不知道为什么将 Simtop mysim 声明为全局变量会崩溃*/
   mysim_p = new Simtop;
 
-  cr::Console c(">:");
+
   static Vtop* top = mysim_p->getTop();
   mysim_p->reset();
-
+  /* 注册命令 */
+  cr::Console c(">:");
   c.registerCommand("info", cmd_info);
   c.registerCommand("x", cmd_x);
   c.registerCommand("si", cmd_si);
@@ -46,6 +47,7 @@ int main() {
     }
   } while (retCode != ret::Quit);
 
+  mysim_p->npcTrap();
   return 0;
 }
 

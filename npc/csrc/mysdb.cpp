@@ -32,27 +32,30 @@ unsigned cmd_x(const std::vector<std::string>& input) {
     sscanf(input[1].c_str(), "%d", &len);
     sscanf(input[2].c_str(), "%lx", &addr);
     mysim_p->scanMem(addr, len);
-
     return 0;
 }
 
+/**
+ * @brief 单步执行
+ *
+ * @param input
+ * @return unsigned
+ */
 unsigned cmd_si(const std::vector<std::string>& input) {
-
-    if (input.size() != 2) {
-        // The first element of the input array is always the name of the
-        // command as registered in the console.
-        std::cout << "Usage: " << input[0] << " si n\n";
-        // We can return an arbitrary error code, which we can catch later
-        // as Console will return it.
-        return 1;
-    }
     uint32_t n;
-    sscanf(input[1].c_str(), "%d", &n);
-    mysim_p->excute(n);
-
+    if (input.size() == 2) {
+        sscanf(input[1].c_str(), "%d", &n);
+        mysim_p->excute(n);
+    }
+    else {
+        mysim_p->excute(1);
+    }
     return 0;
 }
-
+/**
+ * @brief 连续执行
+ *
+ */
 unsigned cmd_c(const std::vector<std::string>& input) {
     if (input.size() != 1) {
         // The first element of the input array is always the name of the
@@ -65,7 +68,12 @@ unsigned cmd_c(const std::vector<std::string>& input) {
     mysim_p->excute();
     return 0;
 }
-
+/**
+ * @brief 显示寄存器 r 或者监视点 w
+ *
+ * @param input
+ * @return unsigned
+ */
 unsigned cmd_info(const std::vector<std::string>& input) {
     if (input.size() != 2) {
         // The first element of the input array is always the name of the

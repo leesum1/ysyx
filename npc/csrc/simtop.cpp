@@ -30,7 +30,7 @@ void Simtop::reset() {
     int i = 5;
     top->rst = 1;
     while (i-- > 0) {
-        stepCycle();
+        stepCycle(false);
     }
     top->rst = 0;
 }
@@ -46,18 +46,62 @@ void Simtop::dampWave() {
     tfp->dump(contextp->time());
 }
 
-void Simtop::stepCycle() {
+/**
+ * @brief cpu 时钟跳动一个周期(一个上升沿和一个下降沿)
+ *
+ * @param val 是否打印寄存器值
+ */
+void Simtop::stepCycle(bool val) {
     changeCLK();
     dampWave();
     changeCLK();
     dampWave();
-    printRegisterFile();
+    if (val) {
+        printRegisterFile();
+    }
 }
 
 const char* Simtop::getRegName(int idx) {
     return regs[idx];
 }
 
+/**
+ * @brief 获取寄存器值,下表方式
+ *
+ * @param idx
+ * @return uint64_t
+ */
+uint64_t Simtop::getRegVal(int idx) {
+    this->registerfile = cpu_gpr;
+    return registerfile[idx];
+}
+/**
+ * @brief 获取寄存器值,名称方式
+ *
+ * @param str
+ * @return uint64_t
+ */
+uint64_t Simtop::getRegVal(const char* str) {
+    this->registerfile = cpu_gpr;
+    uint64_t val;
+    if (!strcmp(str, "pc")) {
+        val = this->pc;
+        return val;
+    }
+    for (int i = 0; i < 32; i++) {
+        /*对比寄存器名字*/
+        if (!strcmp(str, regs[i])) {
+            val = registerfile[i];
+            return val;
+        }
+    }
+
+    return -1;
+}
+/**
+ * @brief 打印所有寄存器的值,包括pc
+ *
+ */
 void  Simtop::printRegisterFile() {
 
     this->registerfile = cpu_gpr;
@@ -65,15 +109,19 @@ void  Simtop::printRegisterFile() {
     /* 格式化输出 */
     for (size_t i = 0; i < 16; i++) {
         cout << setw(5) << left << getRegName(i)
-            << setw(15) << left << hex << registerfile[i]
+            << setw(15) << left << hex << getRegVal(i)
             << setw(5) << left << getRegName(i + 16)
-            << setw(15) << left << registerfile[i + 16]
+            << setw(15) << left << getRegVal(i + 16)
             << endl;
     }
     cout << "\npc:" << "\t" << hex << cpu_pc << endl;
 }
 
 
+/**
+ * @brief HIT GOOD / BAD TRAP
+ * 在程序退出时调用
+ */
 void Simtop::npcTrap() {
     this->registerfile = cpu_gpr;
     this->pc = cpu_pc;
@@ -87,7 +135,12 @@ void Simtop::npcTrap() {
     }
 }
 
-/* 扫描内存 */
+/**
+ * @brief 扫描内存并显示
+ *
+ * @param addr 地址 16进制
+ * @param len 长度
+ */
 void Simtop::scanMem(paddr_t addr, uint32_t len) {
 
     /* 每次读取 4byte */
@@ -97,16 +150,25 @@ void Simtop::scanMem(paddr_t addr, uint32_t len) {
         addr += 4;
     }
 }
-/* 执行 t 次 */
+/**
+ * @brief 执行指令,执行次数效于4时,打印寄存器值
+ *
+ * @param t 执行的次数
+ */
 void Simtop::excute(int32_t t) {
+    bool val;
+    val = (t > 4) ? false : true;
     while ((!top->contextp()->gotFinish()) && (t--)) {
-        stepCycle();
+        stepCycle(val);
     }
 }
-/* 无限执行 */
+/**
+ * @brief 连续运行,直到退出
+ *
+ */
 void Simtop::excute() {
     while ((!top->contextp()->gotFinish())) {
-        stepCycle();
+        stepCycle(false);
     }
 }
 
