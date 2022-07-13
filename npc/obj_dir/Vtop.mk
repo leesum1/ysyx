@@ -38,18 +38,21 @@ VM_USER_CFLAGS = \
 
 # User LDLIBS (from -LDFLAGS on Verilator command line)
 VM_USER_LDLIBS = \
-	-ldl \
+	-lreadline \
 
 # User .cpp files (from .cpp's on Verilator command line)
 VM_USER_CLASSES = \
+	Console \
 	main \
 	mydpic \
+	mysdb \
 	simMem \
 	simtop \
 
 # User .cpp directories (from .cpp's on Verilator command line)
 VM_USER_DIR = \
 	/home/leesum/ysyx-workbench/npc/csrc \
+	/home/leesum/ysyx-workbench/npc/csrc/cppreadline \
 
 
 ### Default rules...
@@ -61,9 +64,13 @@ include $(VERILATOR_ROOT)/include/verilated.mk
 ### Executable rules... (from --exe)
 VPATH += $(VM_USER_DIR)
 
+Console.o: /home/leesum/ysyx-workbench/npc/csrc/cppreadline/Console.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 main.o: /home/leesum/ysyx-workbench/npc/csrc/main.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 mydpic.o: /home/leesum/ysyx-workbench/npc/csrc/mydpic.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+mysdb.o: /home/leesum/ysyx-workbench/npc/csrc/mysdb.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 simMem.o: /home/leesum/ysyx-workbench/npc/csrc/simMem.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<

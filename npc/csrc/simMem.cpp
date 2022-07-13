@@ -24,12 +24,12 @@ word_t SimMem::pmem_read(paddr_t addr, int len) {
 }
 
 void SimMem::pmem_write(paddr_t addr, int len, word_t data) {
-    printf("pmem_write:%d\n", len);
+    // printf("pmem_write:%d\n", len);
     host_write(guest_to_host(addr), len, data);
 }
 
 word_t SimMem::host_read(void* addr, int len) {
-    printf("host_read:%d\n", len);
+    // printf("host_read:%d\n", len);
     switch (len) {
     case 1:
         return *(uint8_t*)addr;
@@ -57,7 +57,6 @@ void SimMem::host_write(void* addr, int len, word_t data) {
         *(uint32_t*)addr = data;
         return;
     case 8: *(uint64_t*)addr = data;
-        printf("选择8成功\n");
         return;
     default:
         break;
@@ -69,7 +68,7 @@ bool SimMem::in_pmem(paddr_t addr) {
 }
 
 void SimMem::out_of_bound(paddr_t addr) {
-    cout << "addr:\t" << hex << addr << "not in pmem!" << endl;
+    cout << "addr:\t" << hex << addr << " not in pmem!" << endl;
 }
 word_t SimMem::paddr_read(paddr_t addr, int len) {
     if (in_pmem(addr)) {

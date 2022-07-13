@@ -6,8 +6,7 @@ build/
 !*.mk
 !*.[cSh]
 !*.v
-!*lab*.cc
-!*lab*.cpp
 !*.cpp
+!*.hpp
 !.gitignore
 !README.md

@@ -7,18 +7,21 @@ INC_PATH := -I./vsrc \
 			-I./vsrc/usr \
 			-I./vsrc/lib \
 
+
 # 2.verilator flags:
 VERILATOR_FLAGS +=  --trace --cc --exe --build 
 VERILATOR_FLAGS += ${INC_PATH}
 VERILATOR_FLAGS += --top ${TOP_MODULE}
-GCC_LDFLAGS := -LDFLAGS -ldl
+# gcc 链接库
+GCC_LDFLAGS := -LDFLAGS "-lreadline"
+# GCC_CFLAGS := -CFLAGS 
 
 # 3.run info:
 OBJ_DIR := ./obj_dir
 BIN := ${OBJ_DIR}/V${TOP_MODULE}
 
 com:${CSRC} ${VSRC}
-	@verilator ${VERILATOR_FLAGS} ${CSRC} ${VSRC} ${GCC_LDFLAGS}
+	@verilator ${VERILATOR_FLAGS} ${CSRC} ${VSRC} ${GCC_LDFLAGS} 
 
 all: default
 	@echo "Write this Makefile by your self."

@@ -10,20 +10,19 @@ const char* regs[] = {
 
 Simtop::Simtop() {
     cout << "SimtopStart!" << endl;
+    mem = new SimMem;
     contextp = new VerilatedContext;
     top = new Vtop;
     tfp = new VerilatedVcdC;
     contextp->traceEverOn(true);
     top->trace(tfp, 0);
     tfp->open("sim.vcd");
-    top->clk = 0;
-    top->rst = 0;
 }
 
 Simtop::~Simtop() {
     tfp->close();
     delete tfp;
-    delete contextp;
+    delete top;
     cout << "SimtopEnd!" << endl;
 }
 
@@ -73,6 +72,45 @@ void  Simtop::printRegisterFile() {
     }
     cout << "\npc:" << "\t" << hex << cpu_pc << endl;
 }
+
+
+void Simtop::npcTrap() {
+    this->registerfile = cpu_gpr;
+    this->pc = cpu_pc;
+    uint64_t a0 = registerfile[10];
+    cout << "a0:" << a0 << endl;
+    if (a0 == 0) {
+        cout << "PC:" << hex << pc << "\tHIT GOOD" << endl;
+    }
+    else {
+        cout << "PC:" << hex << pc << "\tBAD TRAP" << endl;
+    }
+}
+
+/* 扫描内存 */
+void Simtop::scanMem(paddr_t addr, uint32_t len) {
+
+    /* 每次读取 4byte */
+    for (size_t i = 0; i < len; i++) {
+        printf("addr:0x%08lx\tData: %08lx\n", addr,
+            mem->paddr_read(addr, 4));
+        addr += 4;
+    }
+}
+/* 执行 t 次 */
+void Simtop::excute(int32_t t) {
+    while ((!top->contextp()->gotFinish()) && (t--)) {
+        stepCycle();
+    }
+}
+/* 无限执行 */
+void Simtop::excute() {
+    while ((!top->contextp()->gotFinish())) {
+        stepCycle();
+    }
+}
+
+
 
 Vtop* Simtop::getTop() {
 
