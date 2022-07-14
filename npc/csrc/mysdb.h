@@ -13,6 +13,6 @@ extern unsigned cmd_x(const std::vector<std::string>& input);
 extern unsigned cmd_si(const std::vector<std::string>& input);
 extern unsigned cmd_c(const std::vector<std::string>& input);
 extern unsigned cmd_info(const std::vector<std::string>& input);
-
+extern unsigned cmd_p(const std::vector<std::string>& input);
 
 #endif

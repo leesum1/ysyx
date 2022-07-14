@@ -1,6 +1,6 @@
 #include "mysdb.h"
 #include "stdio.h"
-
+#include "expr.h"
 extern Simtop* mysim_p;
 
 
@@ -92,5 +92,23 @@ unsigned cmd_info(const std::vector<std::string>& input) {
     else if (0 == strcmp(val, "w")) {
 
     }
+    return 0;
+}
+
+unsigned cmd_p(const std::vector<std::string>& input) {
+
+    string inputall;
+    for (size_t i = 1; i < input.size(); i++) {
+        inputall.append(input[i]);
+    }
+
+    cout << "cmd_p\t" << inputall << endl;
+
+    bool ret;
+    static  expr_namespace::Expr* u_expr = new expr_namespace::Expr;
+    /* const char * 转 char * */
+
+    char* c = const_cast<char*>(inputall.c_str());
+    uint64_t exprret = u_expr->getResult(c, &ret);
     return 0;
 }

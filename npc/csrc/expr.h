@@ -57,16 +57,18 @@ namespace expr_namespace {
             {"&&",TK_AND},                  // and
         };
         /* 经过处理后的规则 */
-        vector<regex_t> re;
-
-        vector<Token> tokens;
+        regex_t re[32];
+        Token tokens[32];
 
         int nr_token = 0;
+
+
+    private:
+        void init_regex();
+        bool make_token(char* e);
     public:
         Expr(/* args */);
         ~Expr();
-        void init_regex();
-        bool make_token(char* e);
         word_t getResult(char* e, bool* success);
     };
 

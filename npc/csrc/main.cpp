@@ -27,6 +27,7 @@ int main() {
   c.registerCommand("x", cmd_x);
   c.registerCommand("si", cmd_si);
   c.registerCommand("c", cmd_c);
+  c.registerCommand("p", cmd_p);
   c.registerCommand("help", cmd_help);
 
 

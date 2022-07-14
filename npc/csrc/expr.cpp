@@ -1,7 +1,19 @@
 #include "expr.h"
-
+#include "exprinternal.h"
 
 using namespace expr_namespace;
+
+
+Expr::Expr() {
+
+    cout << "表达式求值模块初始化" << endl;
+    init_regex();
+}
+
+Expr::~Expr() {
+    cout << "表达式求值模块销毁" << endl;
+}
+
 
 /* Rules are used for many times.
  * Therefore we compile them only once before any usage.
@@ -10,7 +22,6 @@ void Expr::init_regex() {
     int i;
     char error_msg[128];
     int ret;
-
     for (i = 0; i < rules.size(); i++) {
         ret = regcomp(&re[i], rules[i].regex, REG_EXTENDED);
         if (ret != 0) {
@@ -55,14 +66,14 @@ bool Expr::make_token(char* e) {
 }
 
 Expr::word_t Expr::getResult(char* e, bool* success) {
+    printf("e:%s\n", e);
     if (!make_token(e)) {
         *success == false;
         printf("make_token fail!\n");
         exit(0);
         return 0;
     }
-    //   extern uint64_t exprcpp(void* tokens_addr, int num);
-    //   uint64_t result = exprcpp(tokens, nr_token);
-    uint64_t result;
-    return result;
+    expr_namespace::Exprinternal test(tokens, nr_token);
+    uint64_t ret = test.getResult();
+    return ret;
 }
