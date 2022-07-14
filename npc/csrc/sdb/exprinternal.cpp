@@ -1,10 +1,17 @@
 #include "exprinternal.h"
-
+#include "simtop.h"
 
 using namespace expr_namespace;
 
 extern Simtop* mysim_p;
 
+/**
+ * @brief Construct a new Exprinternal:: Exprinternal object
+ *        保存正则表达式解析出来的结果,用于后续计算
+ *
+ * @param tokens_addr Token数组地址
+ * @param num
+ */
 Exprinternal::Exprinternal(void* tokens_addr, int num) {
     Token* p = (Token*)tokens_addr;
     for (int i = 0; i < num; i++) {
@@ -12,7 +19,11 @@ Exprinternal::Exprinternal(void* tokens_addr, int num) {
     }
     ParseAll();
 }
-
+/**
+ * @brief Construct a new Exprinternal:: Exprinternal object
+ *        保存正则表达式解析出来的结果,用于后续计算
+ * @param val vector<Token>
+ */
 Exprinternal::Exprinternal(vector<Token> val) {
     /* 赋值 */
     tokens.assign(val.begin(), val.end());
@@ -20,6 +31,11 @@ Exprinternal::Exprinternal(vector<Token> val) {
     printTokens();
 }
 
+/**
+ * @brief 得到表达式结果
+ *         如果是比较运算,true:1 false:0
+ * @return uint64_t
+ */
 uint64_t Exprinternal::getResult() {
     auto iter = tokens.begin();
     vector<Token> vector_l, vector_r;
@@ -38,7 +54,10 @@ uint64_t Exprinternal::getResult() {
     }
     return run1();
 }
-/* 处理完毕后,所有数据都是 64位 无符号数 */
+/**
+ * @brief 将十六进制,寄存器,指针,负数等.全部转换为无符号数
+ *
+ */
 void Exprinternal::ParseAll() {
     printTokens();
     negNum();               //负数处理
@@ -60,7 +79,11 @@ void Exprinternal::printTokens() {
             << " type: " << tokens.at(i).type << endl;
     }
 }
-
+/**
+ * @brief 中缀表达式求值
+ *
+ * @return uint64_t
+ */
 uint64_t Exprinternal::run1() {
     bool ret;
     for (size_t i = 0; i < tokens.size(); i++) {
@@ -105,7 +128,13 @@ uint64_t Exprinternal::run1() {
 
     return stackNum.top();
 }
-
+/**
+ * @brief 检查当前 Token 是否是运算符
+ *
+ * @param val
+ * @return true
+ * @return false
+ */
 bool Exprinternal::isOperator(Token val) {
     if (val.type == '+'
         || val.type == '-'
@@ -128,7 +157,15 @@ bool Exprinternal::isCompare(Token val) {
     }
     return false;
 }
-
+/**
+ * @brief 比较计算
+ *
+ * @param leftVal
+ * @param rightVal
+ * @param cmp
+ * @return true
+ * @return false
+ */
 bool Exprinternal::getCompare(uint64_t leftVal, uint64_t rightVal, Token cmp) {
     bool ret = false;
     switch (cmp.type) {
@@ -185,11 +222,16 @@ bool Exprinternal::isPriority(Token val) {
     }
     return ret;
 }
-
+/**
+ * @brief 基础的计算
+ *
+ * @return uint64_t
+ */
 uint64_t Exprinternal::calculate() {
     /* 运算符出栈 */
     uint64_t op = stackOpre.top();
     stackOpre.pop();
+    /* 操作数出栈 */
     uint64_t numright = stackNum.top();
     stackNum.pop();
     uint64_t numleft = stackNum.top();
@@ -283,10 +325,10 @@ void Exprinternal::reg() {
         /* 读取寄存器 */
         if (tokens.at(i).type == TK_REG) {
             char* regname = tokens.at(i).str;
-
-            uint64_t val = mysim_p->getRegVal(&regname[1]);
+            /* regname[0] 为 $ ,例如 $pc */
+            uint64_t val = mysim_p->getRegVal(&regname[1]); //获取寄存器的值
             tokens[i].type = TK_NUM;
-            sprintf(tokens[i].str, "%lu", val);
+            sprintf(tokens[i].str, "%lu", val);             //写入寄存器值
         }
     }
 }
@@ -295,10 +337,9 @@ void Exprinternal::reg() {
 void Exprinternal::hex() {
     uint64_t ret;
     for (size_t i = 0; i < tokens.size(); i++) {
-        /* 读取寄存器 */
+        /* 十六进制转10进制,去除 0x 前缀 */
         if (tokens.at(i).type == TK_HEX) {
             sscanf(tokens.at(i).str, "%lx", &ret);
-            cout << "hexret:" << ret << endl;
             sprintf(tokens[i].str, "%lu", ret);
             tokens[i].type = TK_NUM;
         }
@@ -307,13 +348,12 @@ void Exprinternal::hex() {
 
 
 
-/* 供外部调用 */
-extern "C" uint64_t exprcpp(void* tokens_addr, int num) {
+// /* C语言混合编程使用,供外部调用 */
+// extern "C" uint64_t exprcpp(void* tokens_addr, int num) {
 
-    Exprinternal test(tokens_addr, num);
+//     Exprinternal test(tokens_addr, num);
 
-    uint64_t ret = test.getResult();
-    return ret;
-    //return 0;
-}
+//     uint64_t ret = test.getResult();
+//     return ret;
+// }
 

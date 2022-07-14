@@ -29,8 +29,7 @@ int main() {
   c.registerCommand("c", cmd_c);
   c.registerCommand("p", cmd_p);
   c.registerCommand("help", cmd_help);
-
-
+  c.registerCommand("w", cmd_w);
   int retCode;
   do {
     retCode = c.readLine();
@@ -47,7 +46,6 @@ int main() {
       std::cout << "Received error code 2\n";
     }
   } while (retCode != ret::Quit);
-
   mysim_p->npcTrap();
   return 0;
 }

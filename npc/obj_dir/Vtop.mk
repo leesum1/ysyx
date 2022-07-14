@@ -35,6 +35,7 @@ VM_PREFIX = Vtop
 VM_MODPREFIX = Vtop
 # User CFLAGS (from -CFLAGS on Verilator command line)
 VM_USER_CFLAGS = \
+	-I/home/leesum/ysyx-workbench/npc/csrc/include \
 
 # User LDLIBS (from -LDFLAGS on Verilator command line)
 VM_USER_LDLIBS = \
@@ -43,11 +44,12 @@ VM_USER_LDLIBS = \
 # User .cpp files (from .cpp's on Verilator command line)
 VM_USER_CLASSES = \
 	Console \
-	expr \
-	exprinternal \
 	main \
 	mydpic \
+	expr \
+	exprinternal \
 	mysdb \
+	watchpoint \
 	simMem \
 	simtop \
 
@@ -55,6 +57,7 @@ VM_USER_CLASSES = \
 VM_USER_DIR = \
 	/home/leesum/ysyx-workbench/npc/csrc \
 	/home/leesum/ysyx-workbench/npc/csrc/cppreadline \
+	/home/leesum/ysyx-workbench/npc/csrc/sdb \
 
 
 ### Default rules...
@@ -68,15 +71,17 @@ VPATH += $(VM_USER_DIR)
 
 Console.o: /home/leesum/ysyx-workbench/npc/csrc/cppreadline/Console.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-expr.o: /home/leesum/ysyx-workbench/npc/csrc/expr.cpp
-	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-exprinternal.o: /home/leesum/ysyx-workbench/npc/csrc/exprinternal.cpp
-	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 main.o: /home/leesum/ysyx-workbench/npc/csrc/main.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 mydpic.o: /home/leesum/ysyx-workbench/npc/csrc/mydpic.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-mysdb.o: /home/leesum/ysyx-workbench/npc/csrc/mysdb.cpp
+expr.o: /home/leesum/ysyx-workbench/npc/csrc/sdb/expr.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+exprinternal.o: /home/leesum/ysyx-workbench/npc/csrc/sdb/exprinternal.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+mysdb.o: /home/leesum/ysyx-workbench/npc/csrc/sdb/mysdb.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+watchpoint.o: /home/leesum/ysyx-workbench/npc/csrc/sdb/watchpoint.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 simMem.o: /home/leesum/ysyx-workbench/npc/csrc/simMem.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<

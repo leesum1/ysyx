@@ -17,6 +17,8 @@ Simtop::Simtop() {
     contextp->traceEverOn(true);
     top->trace(tfp, 0);
     tfp->open("sim.vcd");
+
+    this->top_status = TOP_RUNNING;
 }
 
 Simtop::~Simtop() {
@@ -52,6 +54,10 @@ void Simtop::dampWave() {
  * @param val 是否打印寄存器值
  */
 void Simtop::stepCycle(bool val) {
+    if (top_status != TOP_RUNNING) {
+        return;
+    }
+
     changeCLK();
     dampWave();
     changeCLK();
@@ -59,6 +65,10 @@ void Simtop::stepCycle(bool val) {
     if (val) {
         printRegisterFile();
     }
+    if (1) {
+        this->u_wp.praseAllwp();
+    }
+
 }
 
 const char* Simtop::getRegName(int idx) {
@@ -83,6 +93,7 @@ uint64_t Simtop::getRegVal(int idx) {
  */
 uint64_t Simtop::getRegVal(const char* str) {
     this->registerfile = cpu_gpr;
+    this->pc = cpu_pc;
     uint64_t val;
     if (!strcmp(str, "pc")) {
         val = this->pc;
@@ -95,7 +106,6 @@ uint64_t Simtop::getRegVal(const char* str) {
             return val;
         }
     }
-
     return -1;
 }
 /**
@@ -158,7 +168,12 @@ void Simtop::scanMem(paddr_t addr, uint32_t len) {
 void Simtop::excute(int32_t t) {
     bool val;
     val = (t > 4) ? false : true;
+    top_status = TOP_RUNNING;
     while ((!top->contextp()->gotFinish()) && (t--)) {
+        if (top_status != TOP_RUNNING) {
+            cout << "top_status:STOP" << endl;
+            break;
+        }
         stepCycle(val);
     }
 }
@@ -167,13 +182,15 @@ void Simtop::excute(int32_t t) {
  *
  */
 void Simtop::excute() {
+    top_status = TOP_RUNNING;
     while ((!top->contextp()->gotFinish())) {
+        if (top_status != TOP_RUNNING) {
+            cout << "top_status:STOP" << endl;
+            break;
+        }
         stepCycle(false);
     }
 }
-
-
-
 Vtop* Simtop::getTop() {
 
     return this->top;

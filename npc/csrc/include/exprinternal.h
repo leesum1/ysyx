@@ -7,7 +7,6 @@
 #include <iostream>
 namespace expr_namespace {
 
-
     class Exprinternal {
     private:
         vector<Token> tokens;

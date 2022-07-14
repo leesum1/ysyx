@@ -1,9 +1,10 @@
 #include "mysdb.h"
 #include "stdio.h"
+#include "simtop.h"
 #include "expr.h"
+#include "watchpoint.h"
+
 extern Simtop* mysim_p;
-
-
 unsigned cmd_help(const std::vector<std::string>&) {
     std::cout << "Welcome to the example console. This command does not really\n"
         << "do anything aside from printing this statement. Thus it does\n"
@@ -90,7 +91,7 @@ unsigned cmd_info(const std::vector<std::string>& input) {
         mysim_p->printRegisterFile();
     }
     else if (0 == strcmp(val, "w")) {
-
+        mysim_p->u_wp.showAllwp();
     }
     return 0;
 }
@@ -101,14 +102,43 @@ unsigned cmd_p(const std::vector<std::string>& input) {
     for (size_t i = 1; i < input.size(); i++) {
         inputall.append(input[i]);
     }
-
     cout << "cmd_p\t" << inputall << endl;
-
     bool ret;
-    static  expr_namespace::Expr* u_expr = new expr_namespace::Expr;
-    /* const char * 转 char * */
 
+
+    // extern uint64_t exprgetResult(char* e, bool* success);
     char* c = const_cast<char*>(inputall.c_str());
-    uint64_t exprret = u_expr->getResult(c, &ret);
+    // exprgetResult(c, &ret);
+    mysim_p->u_expr.getResult(c, &ret);
     return 0;
 }
+
+
+unsigned cmd_w(const std::vector<std::string>& input) {
+
+    string inputall;
+    for (size_t i = 1; i < input.size(); i++) {
+        inputall.append(input[i]);
+    }
+    cout << inputall << endl;
+    bool ret;
+    mysim_p->u_wp.newWp(inputall);
+    return 0;
+}
+
+unsigned cmd_d(const std::vector<std::string>& input) {
+
+    if (input.size() != 2) {
+        // The first element of the input array is always the name of the
+        // command as registered in the console.
+        std::cout << "Usage: " << input[0] << " d n\n";
+        // We can return an arbitrary error code, which we can catch later
+        // as Console will return it.
+        return 1;
+    }
+    uint32_t val;
+    sscanf(input[1].c_str(), "%u", &val);
+    mysim_p->u_wp.delWp(val);
+    return 0;
+}
+

@@ -8,11 +8,12 @@
 #include <iomanip>
 #include "verilated_dpi.h"
 #include "simMem.h"
-
-
+#include "watchpoint.h"
+#include "expr.h"
 
 extern uint64_t* cpu_gpr;
 extern uint64_t cpu_pc;
+
 class Simtop {
 private:
     Vtop* top;
@@ -21,13 +22,21 @@ private:
     VerilatedVcdC* tfp;
     uint64_t* registerfile;
     uint64_t pc;
+
 private:
     void stepCycle(bool val);
     const char* getRegName(int idx);
     void changeCLK();
     void dampWave();
 public:
+    uint32_t top_status;
+    enum {
+        TOP_STOP,
+        TOP_RUNNING
+    };
     SimMem* mem;
+    Watchpoint u_wp;
+    expr_namespace::Expr u_expr;
     Simtop();
     ~Simtop();
     Vtop* getTop();

@@ -4,13 +4,10 @@
 #include <iostream>
 #include <regex.h>
 #include <vector>
-#include "simtop.h"
+
 using namespace std;
 
 namespace expr_namespace {
-
-
-
     enum {
         TK_NOTYPE = 256,
         TK_EQ,     // ==
@@ -33,8 +30,6 @@ namespace expr_namespace {
     } Token;
     class Expr {
     private:
-
-
         typedef uint64_t word_t;
         /* 正则表达式规则 */
         vector<struct rule> rules = {
@@ -71,7 +66,6 @@ namespace expr_namespace {
         ~Expr();
         word_t getResult(char* e, bool* success);
     };
-
 } // namespace expr_namespace
 
 
