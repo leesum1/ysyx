@@ -46,6 +46,7 @@ VM_USER_CLASSES = \
 	Console \
 	main \
 	mydpic \
+	difftest \
 	expr \
 	exprinternal \
 	mysdb \
@@ -74,6 +75,8 @@ Console.o: /home/leesum/ysyx-workbench/npc/csrc/cppreadline/Console.cpp
 main.o: /home/leesum/ysyx-workbench/npc/csrc/main.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 mydpic.o: /home/leesum/ysyx-workbench/npc/csrc/mydpic.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+difftest.o: /home/leesum/ysyx-workbench/npc/csrc/sdb/difftest.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 expr.o: /home/leesum/ysyx-workbench/npc/csrc/sdb/expr.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
