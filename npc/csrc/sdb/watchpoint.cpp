@@ -13,39 +13,9 @@
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
 
-#include <stack>
-#include <iostream>
-#include <vector>
-#include <list>
-#include <string>
-
-extern "C" {
-#include "sdb.h"
-#include "utils.h"
-}
-
-using namespace std;
-
-class Watchpoint {
-private:
-#define WPNUM 32
-  struct wpdata {
-    uint32_t NO;  //序号
-    string exp;   //表达式
-  };
-  list<wpdata> wp_pool;
-  bool numflag[WPNUM]; //标记数组，自动分配序号
-public:
-  Watchpoint(/* args */);
-  ~Watchpoint();
-  bool newWp(string exp);
-  bool delWp(uint32_t NO);
-  uint32_t getNum();
-  bool delNum(uint32_t NO);
-  void praseAllwp();
-  void showAllwp();
-  void printwp();
-};
+#include "watchpoint.h"
+#include "simtop.h"
+extern Simtop* mysim_p;
 /**
  * @brief 标记数组清空
  *
@@ -153,12 +123,15 @@ void Watchpoint::praseAllwp() {
   bool ret;
   uint64_t exprResult;
   for (auto it = wp_pool.begin(); it != wp_pool.end();it++) {
-    exprResult = expr((char*)it.operator*().exp.c_str(), &ret);
+    /* 表达式求值 */
+    exprResult = mysim_p->u_expr.getResult((char*)it.operator*().exp.c_str(), &ret);
+    /* 表达式成立则暂停执行 */
     if (true == exprResult) {
-      nemu_state.state = NEMU_STOP;
+      mysim_p->top_status = mysim_p->TOP_STOP;
+      // nemu_state.state = NEMU_STOP;
       cout << "NUM:" << it.operator*().NO <<
         "\twpexp: " << it.operator*().exp <<
-        "\texprResult" << exprResult << endl;
+        "\texprResult:\t" << exprResult << endl;
     }
   }
 }
@@ -166,17 +139,18 @@ void Watchpoint::praseAllwp() {
  * @brief 打印所有的监视点表达式,并解析结果
  *
  */
+
 void Watchpoint::showAllwp() {
   bool ret;
   uint64_t exprResult;
   for (auto it = wp_pool.begin(); it != wp_pool.end();it++) {
-    exprResult = expr((char*)it.operator*().exp.c_str(), &ret);
+    /* 表达式求值 */
+    exprResult = mysim_p->u_expr.getResult((char*)it.operator*().exp.c_str(), &ret);
     cout << "NUM:" << it.operator*().NO <<
       "\twpexp:" << it.operator*().exp <<
-      "\texprResult" << exprResult << endl;
+      "\texprResult:\t" << exprResult << endl;
   }
 }
-
 
 
 /* 供c函数调用 */
