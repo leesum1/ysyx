@@ -50,6 +50,7 @@ void difftest_regcpy(void* dut, bool direction) {
     reg_p->pc = cpu.pc;
   }
 }
+
 // 让REF执行`n`条指令
 void difftest_exec(uint64_t n) {
   cpu_exec(n);
