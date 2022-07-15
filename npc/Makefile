@@ -13,15 +13,17 @@ VERILATOR_FLAGS +=  --trace --cc --exe --build
 VERILATOR_FLAGS += ${INC_PATH}
 VERILATOR_FLAGS += --top ${TOP_MODULE}
 # gcc 链接库
-GCC_LDFLAGS := -LDFLAGS "-lreadline"
+GCC_LDFLAGS := -LDFLAGS "-lasan -lreadline -ldl -lnemu"
 GCC_CFLAGS := -CFLAGS -I/home/leesum/ysyx-workbench/npc/csrc/include
+# NEMU_LIB := /home/leesum/ysyx-workbench/npc/riscv64-nemu-interpreter-so
+
 
 # 3.run info:
 OBJ_DIR := ./obj_dir
 BIN := ${OBJ_DIR}/V${TOP_MODULE}
 
 com:${CSRC} ${VSRC}
-	@verilator ${VERILATOR_FLAGS} ${CSRC} ${VSRC} ${GCC_LDFLAGS} ${GCC_CFLAGS}
+	@verilator ${VERILATOR_FLAGS} ${CSRC} ${VSRC} ${GCC_LDFLAGS} ${GCC_CFLAGS} 
 
 all: default
 	@echo "Write this Makefile by your self."

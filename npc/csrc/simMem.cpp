@@ -1,6 +1,17 @@
 #include "simMem.h"
 
 
+
+/* 默认程序 */
+const uint32_t defimg[] = {
+0x00000297, // auipc t0,0 ,        (pc+0) 写入 t0
+0x0002b823, // sd  zero,16(t0)     (t0+16)8byte 内存清0
+0x0102b503, // ld  a0,16(t0)       a0 写 (t0+16)8byte
+0x00100073, // ebreak (used as nemu_trap)
+0xdeadbeef // some data
+};
+
+
 SimMem::SimMem(/* args */) {
     cout << "npc内存初始化开始" << endl;
     loadImage(imgpath);
@@ -99,20 +110,20 @@ void SimMem::paddr_write(paddr_t addr, int len, word_t data) {
 /**
  * @brief 获取 bin 文件大小
  *
- * @param img
- * @return size_t
+ * @param img 文件路径
+ * @return size_t 若文件存在返回文件大小,负责返回默认镜像大小
  */
 size_t SimMem::getImgSize(const char* img) {
-    if (img == NULL) {
-        return -1;
-    }
     // 这是一个存储文件(夹)信息的结构体，其中有文件大小和创建时间、访问时间、修改时间等
     struct stat statbuf;
     // 提供文件名字符串，获得文件属性结构体
-    stat(img, &statbuf);
+    int ret = stat(img, &statbuf);
     // 获取文件大小
-    size_t filesize = statbuf.st_size;
-    return filesize;
+    if (0 == ret) {
+        size_t filesize = statbuf.st_size;
+        return filesize;
+    }
+    return sizeof(defimg);
 }
 
 /**
@@ -123,14 +134,6 @@ size_t SimMem::getImgSize(const char* img) {
  * @return false
  */
 bool SimMem::loadImage(const char* img) {
-    /* 默认程序 */
-    const uint32_t defimg[] = {
-    0x00000297, // auipc t0,0 ,        (pc+0) 写入 t0
-    0x0002b823, // sd  zero,16(t0)     (t0+16)8byte 内存清0
-    0x0102b503, // ld  a0,16(t0)       a0 写 (t0+16)8byte
-    0x00100073, // ebreak (used as nemu_trap)
-    0xdeadbeef // some data
-    };
     ifstream binaryimg;
     size_t img_size = getImgSize(img);
     binaryimg.open(img, ios::in | ios::binary);
@@ -144,5 +147,9 @@ bool SimMem::loadImage(const char* img) {
     return true;
 }
 
+
+paddr_t SimMem::getMEMBASE() {
+    return MEMBASE;
+}
 
 
