@@ -10,6 +10,7 @@
 #include "simMem.h"
 #include "watchpoint.h"
 #include "expr.h"
+#include "difftest.h"
 
 extern uint64_t* cpu_gpr;
 extern uint64_t cpu_pc;
@@ -37,6 +38,7 @@ public:
     SimMem* mem;
     Watchpoint u_wp;
     expr_namespace::Expr u_expr;
+    Difftest u_difftest;
     Simtop();
     ~Simtop();
     Vtop* getTop();

@@ -13,7 +13,7 @@ VERILATOR_FLAGS +=  --trace --cc --exe --build
 VERILATOR_FLAGS += ${INC_PATH}
 VERILATOR_FLAGS += --top ${TOP_MODULE}
 # gcc 链接库
-GCC_LDFLAGS := -LDFLAGS "-lreadline"
+GCC_LDFLAGS := -LDFLAGS "-lreadline -ldl"
 GCC_CFLAGS := -CFLAGS -I/home/leesum/ysyx-workbench/npc/csrc/include
 
 # 3.run info:

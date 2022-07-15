@@ -20,6 +20,7 @@ int main() {
 
 
   static Vtop* top = mysim_p->getTop();
+  // mysim_p->u_difftest.init()
   mysim_p->reset();
   /* 注册命令 */
   cr::Console c(">:");

@@ -18,17 +18,14 @@
 
 #include <common.h>
 
-typedef struct
-{
+typedef struct {
   word_t gpr[32]; // 64位
   vaddr_t pc;     // 64位
 } riscv64_CPU_state;
 
 // decode
-typedef struct
-{
-  union
-  {
+typedef struct {
+  union {
     uint32_t val;
   } inst;
 } riscv64_ISADecodeInfo;

@@ -23,7 +23,7 @@ unsigned cmd_x(const std::vector<std::string>& input) {
     if (input.size() != 3) {
         // The first element of the input array is always the name of the
         // command as registered in the console.
-        std::cout << "Usage: " << input[0] << " x len addr\n";
+        std::cout << "Usage: " << input[0] << " len addr\n";
         // We can return an arbitrary error code, which we can catch later
         // as Console will return it.
         return 1;
@@ -115,7 +115,14 @@ unsigned cmd_p(const std::vector<std::string>& input) {
 
 
 unsigned cmd_w(const std::vector<std::string>& input) {
-
+    if (input.size() == 1) {
+        // The first element of the input array is always the name of the
+        // command as registered in the console.
+        std::cout << "Usage: " << input[0] << " expr\n";
+        // We can return an arbitrary error code, which we can catch later
+        // as Console will return it.
+        return 1;
+    }
     string inputall;
     for (size_t i = 1; i < input.size(); i++) {
         inputall.append(input[i]);

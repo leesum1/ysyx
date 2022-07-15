@@ -40,6 +40,8 @@ void Simtop::reset() {
 void Simtop::changeCLK() {
     top->clk = !top->clk;
     top->eval();
+    this->registerfile = cpu_gpr;
+    this->pc = cpu_pc;
 }
 
 
@@ -57,7 +59,6 @@ void Simtop::stepCycle(bool val) {
     if (top_status != TOP_RUNNING) {
         return;
     }
-
     changeCLK();
     dampWave();
     changeCLK();
@@ -92,8 +93,6 @@ uint64_t Simtop::getRegVal(int idx) {
  * @return uint64_t
  */
 uint64_t Simtop::getRegVal(const char* str) {
-    this->registerfile = cpu_gpr;
-    this->pc = cpu_pc;
     uint64_t val;
     if (!strcmp(str, "pc")) {
         val = this->pc;
@@ -113,9 +112,6 @@ uint64_t Simtop::getRegVal(const char* str) {
  *
  */
 void  Simtop::printRegisterFile() {
-
-    this->registerfile = cpu_gpr;
-    this->pc = cpu_pc;
     /* 格式化输出 */
     for (size_t i = 0; i < 16; i++) {
         cout << setw(5) << left << getRegName(i)
@@ -133,8 +129,6 @@ void  Simtop::printRegisterFile() {
  * 在程序退出时调用
  */
 void Simtop::npcTrap() {
-    this->registerfile = cpu_gpr;
-    this->pc = cpu_pc;
     uint64_t a0 = registerfile[10];
     cout << "a0:" << a0 << endl;
     if (a0 == 0) {
