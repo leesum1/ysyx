@@ -53,6 +53,7 @@ int main() {
     }
   } while (retCode != ret::Quit);
   mysim_p->npcTrap();
+  delete mysim_p;
   return 0;
 }
 

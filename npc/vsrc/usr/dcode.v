@@ -264,7 +264,7 @@ module dcode (
   // 无效指令
   wire _NONE_type = ~(_R_type | _I_type | _S_type | _U_type | _J_type | _B_type);
 
-  /*获取操作数  */
+  /*获取操作数  */  //TODO:一些特殊指令没有归类ecall,ebreak
   wire _isNeed_rs1 = (_R_type | _I_type | _S_type | _B_type);
   wire _isNeed_rs2 = (_R_type | _S_type | _B_type);
   wire _isNeed_rd = (_R_type | _I_type | _U_type | _J_type);
@@ -274,14 +274,13 @@ module dcode (
   wire [4:0] _rs2_idx = (_isNeed_rs2) ? _rs2 : 5'b0;
   wire [4:0] _rd_idx = (_isNeed_rd) ? _rd : 5'b0;
 
-  /* assign 实现多路选择器：根据指令类型选立即数 */
-  wire [`IMM_LEN-1:0] _imm_data = (_I_type)?_immI:
-                                  (_S_type)?_immS:
-                                  (_B_type)?_immB:
-                                  (_U_type)?_immU:
-                                  (_J_type)?_immJ:
-                                  `IMM_LEN'b0;
 
+  /* assign 实现多路选择器：根据指令类型选立即数 */
+  wire [`IMM_LEN-1:0] _imm_data = ({`IMM_LEN{_I_type}}&_immI) |
+                                  ({`IMM_LEN{_S_type}}&_immS) |
+                                  ({`IMM_LEN{_B_type}}&_immB) |
+                                  ({`IMM_LEN{_U_type}}&_immU) |
+                                  ({`IMM_LEN{_J_type}}&_immJ);
 
   /* 输出指定 */
   assign rs1_idx  = _rs1_idx;
@@ -359,15 +358,11 @@ module dcode (
                                    ({`MEMOP_LEN{_inst_sd}}&`MEMOP_SD);
   assign mem_op = _mem_op;
 
-  /* PC_OP  */
+  /* PC_OP  */  //TODO:这里是优先选择器,怎么改还没想好
   wire [`PCOP_LEN-1:0] _pc_op = (_B_type)?`PCOP_BRANCH:
                                 (_inst_jal)?`PCOP_JAL:
                                 (_inst_jalr)?`PCOP_JALR:
                                 `PCOP_INC4;
-  // wire [`PCOP_LEN-1:0] _pc_op = ({`MEMOP_LEN{_B_type}}&`PCOP_BRANCH)|
-  //                               ({`MEMOP_LEN{_inst_jal}}&`PCOP_JAL)|
-  //                               ({`MEMOP_LEN{_inst_jalr}}&`PCOP_JALR)|
-  //                               ({`MEMOP_LEN{_inst_ld}}&`MEMOP_LD)|
   assign pc_op = _pc_op;
 
 endmodule

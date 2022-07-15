@@ -40,7 +40,7 @@ module memory (
   wire _isloadEnable = _unsigned | _signed;
   assign isloadEnable = _isloadEnable;
 
-
+  /* 从内存中读取的数据 */
   wire [`XLEN-1:0] _mem_read;
 
   /* 符号扩展后的结果 */

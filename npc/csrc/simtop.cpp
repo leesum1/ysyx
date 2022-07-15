@@ -66,6 +66,7 @@ void Simtop::stepCycle(bool val) {
     if (val) {
         printRegisterFile();
     }
+    /* 监视点 */
     if (1) {
         this->u_wp.praseAllwp();
     }

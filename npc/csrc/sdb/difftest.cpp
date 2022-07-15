@@ -42,6 +42,7 @@ void Difftest::init(const char* ref_so_file, long img_size, int port) {
     /* 将程序镜像文件拷贝过去 */
     diff_memcpy(membase, mysim_p->mem->guest_to_host(membase), img_size, DIFFTEST_TO_REF);
     CPU_state regs = getDutregs();
+    /* 让 dut 和 ref 寄存器初始值一样 */
     diff_regcpy(&regs, DIFFTEST_TO_REF);
 }
 
