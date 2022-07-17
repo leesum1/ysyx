@@ -17,7 +17,7 @@ public:
 #define MEMSIZE 0x8000000
 #define MEMBASE 0x80000000
     /* 实际内存 4k对齐*/
-    const char* imgpath = "/home/leesum/ysyx-workbench/am-kernels/tests/cpu-tests/build/dummy-riscv64-npc.bin";
+    string imgpath;
     uint8_t pmem[MEMSIZE] PG_ALIGN = {};
 private:
     bool in_pmem(paddr_t addr);

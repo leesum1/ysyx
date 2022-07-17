@@ -28,10 +28,10 @@ com:${CSRC} ${VSRC}
 all: default
 	@echo "Write this Makefile by your self."
 
-run: $(BIN)
+run: com
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	@$^
-
+# 运行 bin文件,传入 img 参数
+	${BIN} ${IMG} 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by your self."

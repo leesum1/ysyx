@@ -17,14 +17,22 @@ using ret = cr::Console::ReturnCode;
 const char* nemu_so_path = "/lib/libnemu.so";
 
 Simtop* mysim_p;
-int main() {
+int main(int argc, char* argv[]) {
+
+  int i;
+  printf("argc:%d\n", argc);
+  for (i = 1;i < argc;i++) {
+    printf("argv:%s\n", argv[i]);
+  }
+
   /* 不知道为什么将 Simtop mysim 声明为全局变量会崩溃*/
   mysim_p = new Simtop;
-
+  /* 加载镜像 */
+  mysim_p->mem->imgpath.append(argv[1]);
+  mysim_p->mem->loadImage(mysim_p->mem->imgpath.c_str());
 
   static Vtop* top = mysim_p->getTop();
-  uint32_t imgsize = mysim_p->mem->getImgSize(mysim_p->mem->imgpath);
-  cout << "testsizd:" << imgsize << endl;
+
   mysim_p->reset();
   mysim_p->u_difftest.init(nemu_so_path, imgsize, 0);
   /* 注册命令 */
