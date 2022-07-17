@@ -17,7 +17,13 @@ using ret = cr::Console::ReturnCode;
 const char* nemu_so_path = "/lib/libnemu.so";
 
 Simtop* mysim_p;
-int main() {
+int main(int argc, char* argv[]) {
+
+  int i;
+  printf("argc:%d\n", argc);
+  for (i = 1;i < argc;i++) {
+    printf("argv:%s\n", argv[i]);
+  }
   /* 不知道为什么将 Simtop mysim 声明为全局变量会崩溃*/
   mysim_p = new Simtop;
 
