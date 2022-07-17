@@ -94,6 +94,7 @@ static int parse_args(int argc, char* argv[]) {
       break;
     case 1:
       img_file = optarg;
+      sdb_set_batch_mode();
       return 0;
     default:
       printf("Usage: %s [OPTION...] IMAGE [args]\n\n", argv[0]);

@@ -27,10 +27,9 @@ int main(int argc, char* argv[]) {
 
   /* 不知道为什么将 Simtop mysim 声明为全局变量会崩溃*/
   mysim_p = new Simtop;
+  /* 加载镜像 */
   mysim_p->mem->imgpath.append(argv[1]);
   mysim_p->mem->loadImage(mysim_p->mem->imgpath.c_str());
-  uint32_t imgsize = mysim_p->mem->getImgSize(mysim_p->mem->imgpath.c_str());
-  cout << "testsizd:" << imgsize << endl;
 
   static Vtop* top = mysim_p->getTop();
 
