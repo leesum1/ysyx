@@ -66,6 +66,7 @@ void Simtop::stepCycle(bool val) {
     if (val) {
         printRegisterFile();
     }
+    /* 监视点 */
     if (1) {
         this->u_wp.praseAllwp();
     }
@@ -169,6 +170,7 @@ void Simtop::excute(int32_t t) {
             break;
         }
         stepCycle(val);
+        this->u_difftest.difftest_step();
     }
 }
 /**
@@ -183,6 +185,7 @@ void Simtop::excute() {
             break;
         }
         stepCycle(false);
+        this->u_difftest.difftest_step();
     }
 }
 Vtop* Simtop::getTop() {

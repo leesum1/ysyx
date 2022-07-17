@@ -44,7 +44,7 @@ VL_MODULE(Vtop___024root) {
     QData/*63:0*/ top__DOT__rs2_data;
     QData/*63:0*/ top__DOT__u_pc__DOT___pc_next;
     QData/*63:0*/ top__DOT__u_pc__DOT___pc_current;
-    QData/*63:0*/ top__DOT__u_fetch__DOT__mem_data;
+    QData/*63:0*/ top__DOT__u_fetch__DOT___mem_data;
     QData/*63:0*/ top__DOT__u_dcode__DOT___imm_data;
     QData/*63:0*/ top__DOT__u_execute__DOT___alu_in1;
     QData/*63:0*/ top__DOT__u_execute__DOT___alu_in2;

@@ -13,6 +13,9 @@ namespace cr = CppReadline;
 using ret = cr::Console::ReturnCode;
 
 
+
+const char* nemu_so_path = "/lib/libnemu.so";
+
 Simtop* mysim_p;
 int main() {
   /* 不知道为什么将 Simtop mysim 声明为全局变量会崩溃*/
@@ -20,8 +23,10 @@ int main() {
 
 
   static Vtop* top = mysim_p->getTop();
-  // mysim_p->u_difftest.init()
+  uint32_t imgsize = mysim_p->mem->getImgSize(mysim_p->mem->imgpath);
+  cout << "testsizd:" << imgsize << endl;
   mysim_p->reset();
+  mysim_p->u_difftest.init(nemu_so_path, imgsize, 0);
   /* 注册命令 */
   cr::Console c(">:");
   c.registerCommand("info", cmd_info);
@@ -48,6 +53,7 @@ int main() {
     }
   } while (retCode != ret::Quit);
   mysim_p->npcTrap();
+  delete mysim_p;
   return 0;
 }
 

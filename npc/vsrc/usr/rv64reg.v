@@ -16,9 +16,10 @@ module rv64reg (
   /* 寄存器组 */
   reg [`XLEN-1:0] rf[`REG_NUM-1:0];
 
-  /* 写入数据 */
+  /* 写入数据,若目的寄存器为 x0,写入数据永远为0 */
   wire _isX0 = (write_idx == `REG_ADDRWIDTH'b0);
   wire [`XLEN-1:0] _write_data = (_isX0) ? `XLEN'b0 : write_data;  // x0 恒为0
+  /* 写入使能 */
   wire _wen = wen;
   always @(posedge clk) begin
     if (_wen) rf[write_idx] <= _write_data;

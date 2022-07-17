@@ -20,7 +20,7 @@ Difftest::~Difftest() {
  * @param img_size 程序镜像大小
  * @param port 未使用
  */
-void Difftest::init(char* ref_so_file, long img_size, int port) {
+void Difftest::init(const char* ref_so_file, long img_size, int port) {
     assert(ref_so_file != NULL);
     void* handle;
     handle = dlopen(ref_so_file, RTLD_LAZY);
@@ -37,14 +37,17 @@ void Difftest::init(char* ref_so_file, long img_size, int port) {
     assert(diff_init);
 
     diff_init(port);
+
     uint64_t membase = mysim_p->mem->getMEMBASE();
+    /* 将程序镜像文件拷贝过去 */
     diff_memcpy(membase, mysim_p->mem->guest_to_host(membase), img_size, DIFFTEST_TO_REF);
     CPU_state regs = getDutregs();
+    /* 让 dut 和 ref 寄存器初始值一样 */
     diff_regcpy(&regs, DIFFTEST_TO_REF);
 }
 
 /**
- * @brief 获取 npc 寄存器组
+ * @brief 获取 dut 寄存器组
  *
  * @return Difftest::CPU_state
  */
@@ -56,7 +59,11 @@ Difftest::CPU_state Difftest::getDutregs() {
     regs.pc = mysim_p->getRegVal("pc");
     return regs;
 }
-
+/**
+ * @brief 获取 nemu 寄存器组
+ *
+ * @return Difftest::CPU_state
+ */
 Difftest::CPU_state Difftest::getRefregs() {
     CPU_state regs;
     diff_regcpy(&regs, DIFFTEST_TO_DUT);
@@ -75,16 +82,21 @@ bool Difftest::checkregs() {
     CPU_state refregs = getRefregs();
     for (size_t i = 0; i < 32; i++) {
         if (dutregs.gpr[i] != refregs.gpr[i]) {
-            return false;
             cout << "num:" << i << "err!!" << endl;
+            return false;
+
         }
     }
     if (dutregs.pc != refregs.pc) {
-        return false;
         cout << "pc:err" << endl;
+        return false;
     }
     return true;
 }
+/**
+ * @brief 让 nemu 执行一条指令,并且进行 difftest
+ *
+ */
 void Difftest::difftest_step() {
     /* 寄存器不一样 */
     diff_exec(1);

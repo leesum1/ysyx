@@ -33,7 +33,7 @@ private:
 public:
     Difftest(/* args */);
     ~Difftest();
-    void init(char* ref_so_file, long img_size, int port);
+    void init(const char* ref_so_file, long img_size, int port);
     CPU_state getDutregs();
     CPU_state getRefregs();
     bool checkregs();

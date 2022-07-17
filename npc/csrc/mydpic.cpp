@@ -28,7 +28,6 @@ extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
     // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
     /* 隐式格式转换很坑 */
     uint32_t temp = (uint8_t)wmask;
-    cout << "addr:" << hex << waddr << "data:" << wdata << "wmast:" << dec << temp << endl;
     switch (temp) {
     case 1:   mysim_p->mem->paddr_write(waddr, 1, wdata); printf("pmem_write:1\n");break; // 0000_0001, 1byte.
     case 3:   mysim_p->mem->paddr_write(waddr, 2, wdata); printf("pmem_write:2\n");break; // 0000_0011, 2byte.

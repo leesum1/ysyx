@@ -142,61 +142,61 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
     vlSelf->top__DOT__u_rv64reg__DOT__rf[__Vdlyvdim0__top__DOT__u_rv64reg__DOT__rf__v0] 
         = __Vdlyvval__top__DOT__u_rv64reg__DOT__rf__v0;
     Vtop___024root____Vdpiimwrap_top__DOT__u_fetch__DOT__pmem_read_TOP(vlSelf->top__DOT__u_pc__DOT___pc_current, vlSelf->__Vtask_top__DOT__u_fetch__DOT__pmem_read__0__rdata);
-    vlSelf->top__DOT__u_fetch__DOT__mem_data = vlSelf->__Vtask_top__DOT__u_fetch__DOT__pmem_read__0__rdata;
+    vlSelf->top__DOT__u_fetch__DOT___mem_data = vlSelf->__Vtask_top__DOT__u_fetch__DOT__pmem_read__0__rdata;
     Vtop___024root____Vdpiimwrap_top__DOT__u_fetch__DOT__get_pc_TOP(vlSelf->top__DOT__u_pc__DOT___pc_current);
     top__DOT__u_dcode__DOT___type_system = (IData)(
                                                    (0x73ULL 
                                                     == 
                                                     (0x7fULL 
-                                                     & vlSelf->top__DOT__u_fetch__DOT__mem_data)));
+                                                     & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
     top__DOT__u_dcode__DOT___type_lui = (IData)((0x37ULL 
                                                  == 
                                                  (0x7fULL 
-                                                  & vlSelf->top__DOT__u_fetch__DOT__mem_data)));
+                                                  & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
     top__DOT__u_dcode__DOT___type_jal = (IData)((0x6fULL 
                                                  == 
                                                  (0x7fULL 
-                                                  & vlSelf->top__DOT__u_fetch__DOT__mem_data)));
+                                                  & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
     top__DOT__u_dcode__DOT___type_op = (IData)((0x33ULL 
                                                 == 
                                                 (0x7fULL 
-                                                 & vlSelf->top__DOT__u_fetch__DOT__mem_data)));
+                                                 & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
     top__DOT__u_dcode__DOT___type_auipc = (IData)((0x17ULL 
                                                    == 
                                                    (0x7fULL 
-                                                    & vlSelf->top__DOT__u_fetch__DOT__mem_data)));
+                                                    & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
     vlSelf->top__DOT__u_dcode__DOT___type_branch = (IData)(
                                                            (0x63ULL 
                                                             == 
                                                             (0x7fULL 
-                                                             & vlSelf->top__DOT__u_fetch__DOT__mem_data)));
+                                                             & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
     vlSelf->top__DOT__u_dcode__DOT___type_store = (IData)(
                                                           (0x23ULL 
                                                            == 
                                                            (0x7fULL 
-                                                            & vlSelf->top__DOT__u_fetch__DOT__mem_data)));
+                                                            & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
     top__DOT__u_dcode__DOT___type_op_imm = (IData)(
                                                    (0x13ULL 
                                                     == 
                                                     (0x7fULL 
-                                                     & vlSelf->top__DOT__u_fetch__DOT__mem_data)));
+                                                     & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
     top__DOT__u_dcode__DOT___type_op_imm_32 = (IData)(
                                                       (0x1bULL 
                                                        == 
                                                        (0x7fULL 
-                                                        & vlSelf->top__DOT__u_fetch__DOT__mem_data)));
+                                                        & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
     top__DOT__u_dcode__DOT___type_op_32 = (IData)((0x3bULL 
                                                    == 
                                                    (0x7fULL 
-                                                    & vlSelf->top__DOT__u_fetch__DOT__mem_data)));
+                                                    & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
     top__DOT__u_dcode__DOT___type_load = (IData)((3ULL 
                                                   == 
                                                   (0x7fULL 
-                                                   & vlSelf->top__DOT__u_fetch__DOT__mem_data)));
+                                                   & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
     top__DOT__u_dcode__DOT___type_jalr = (IData)((0x67ULL 
                                                   == 
                                                   (0x7fULL 
-                                                   & vlSelf->top__DOT__u_fetch__DOT__mem_data)));
+                                                   & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
     top__DOT__u_dcode__DOT___U_type = ((IData)(top__DOT__u_dcode__DOT___type_auipc) 
                                        | (IData)(top__DOT__u_dcode__DOT___type_lui));
     vlSelf->top__DOT__u_dcode__DOT___R_type = ((IData)(top__DOT__u_dcode__DOT___type_op) 
@@ -209,7 +209,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                           == 
                                                                           (7U 
                                                                            & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU)))))))) 
                                                         | (4U 
                                                            & (- (IData)(
@@ -218,7 +218,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                             == 
                                                                             (7U 
                                                                              & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU))))))))) 
                                                        | (2U 
                                                           & (- (IData)(
@@ -227,7 +227,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                            == 
                                                                            (7U 
                                                                             & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU))))))))) 
                                                       | (3U 
                                                          & (- (IData)(
@@ -236,7 +236,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                           == 
                                                                           (7U 
                                                                            & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU))))))))) 
                                                      | (5U 
                                                         & (- (IData)(
@@ -245,7 +245,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                          == 
                                                                          (7U 
                                                                           & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU))))))))) 
                                                     | (8U 
                                                        & (- (IData)(
@@ -254,7 +254,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                         == 
                                                                         (7U 
                                                                          & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU))))))))) 
                                                    | (9U 
                                                       & (- (IData)(
@@ -263,7 +263,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                        == 
                                                                        (7U 
                                                                         & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU))))))))) 
                                                   | (0xaU 
                                                      & (- (IData)(
@@ -272,7 +272,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                       == 
                                                                       (7U 
                                                                        & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU))))))))) 
                                                  | (7U 
                                                     & (- (IData)(
@@ -281,7 +281,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                      == 
                                                                      (7U 
                                                                       & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU))))))))) 
                                                 | (6U 
                                                    & (- (IData)(
@@ -290,7 +290,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                     == 
                                                                     (7U 
                                                                      & (IData)(
-                                                                               (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                               (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU))))))))) 
                                                | (0xbU 
                                                   & (- (IData)(
@@ -299,7 +299,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                    == 
                                                                    (7U 
                                                                     & (IData)(
-                                                                              (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                              (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                >> 0xcU)))))))));
     vlSelf->top__DOT__u_dcode__DOT___I_type = ((((IData)(top__DOT__u_dcode__DOT___type_load) 
                                                  | (IData)(top__DOT__u_dcode__DOT___type_op_imm)) 
@@ -308,7 +308,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
     top__DOT__u_dcode__DOT___inst_jalr = ((IData)(top__DOT__u_dcode__DOT___type_jalr) 
                                           & (0U == 
                                              (7U & (IData)(
-                                                           (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                           (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                             >> 0xcU)))));
     vlSelf->top__DOT__u_dcode__DOT___exc_op = (((((
                                                    (((((((1U 
@@ -342,12 +342,12 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                         & (0x100000ULL 
                                                                            == 
                                                                            (0xfff07000ULL 
-                                                                            & vlSelf->top__DOT__u_fetch__DOT__mem_data))))))));
+                                                                            & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))));
     vlSelf->top__DOT__rs2_data = vlSelf->top__DOT__u_rv64reg__DOT__rf
         [((((IData)(vlSelf->top__DOT__u_dcode__DOT___R_type) 
             | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_store)) 
            | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_branch))
-           ? (0x1fU & (IData)((vlSelf->top__DOT__u_fetch__DOT__mem_data 
+           ? (0x1fU & (IData)((vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                >> 0x14U))) : 0U)];
     vlSelf->top__DOT__u_memory__DOT___unsigned = ((
                                                    (5U 
@@ -387,123 +387,114 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                 | (IData)(top__DOT__u_dcode__DOT___type_jal))
                                                 ? (0x1fU 
                                                    & (IData)(
-                                                             (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                             (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                               >> 7U)))
                                                 : 0U);
-    vlSelf->top__DOT__u_dcode__DOT___imm_data = ((IData)(vlSelf->top__DOT__u_dcode__DOT___I_type)
-                                                  ? 
-                                                 (((- (QData)((IData)(
-                                                                      (1U 
-                                                                       & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+    vlSelf->top__DOT__u_dcode__DOT___imm_data = (((
+                                                   (((- (QData)((IData)(vlSelf->top__DOT__u_dcode__DOT___I_type))) 
+                                                     & (((- (QData)((IData)(
+                                                                            (1U 
+                                                                             & (IData)(
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0x1fU)))))) 
-                                                   << 0xbU) 
-                                                  | (QData)((IData)(
-                                                                    (0x7ffU 
-                                                                     & (IData)(
-                                                                               (vlSelf->top__DOT__u_fetch__DOT__mem_data 
-                                                                                >> 0x14U))))))
-                                                  : 
-                                                 ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_store)
-                                                   ? 
-                                                  (((- (QData)((IData)(
-                                                                       (1U 
-                                                                        & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
-                                                                                >> 0x1fU)))))) 
-                                                    << 0xbU) 
-                                                   | (QData)((IData)(
-                                                                     ((0x7e0U 
-                                                                       & ((IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
-                                                                                >> 0x19U)) 
-                                                                          << 5U)) 
-                                                                      | (0x1fU 
-                                                                         & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
-                                                                                >> 7U)))))))
-                                                   : 
-                                                  ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_branch)
-                                                    ? 
-                                                   (((- (QData)((IData)(
-                                                                        (1U 
-                                                                         & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
-                                                                                >> 0x1fU)))))) 
-                                                     << 0xcU) 
-                                                    | (QData)((IData)(
-                                                                      ((0x800U 
-                                                                        & ((IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
-                                                                                >> 7U)) 
-                                                                           << 0xbU)) 
-                                                                       | ((0x7e0U 
-                                                                           & ((IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
-                                                                                >> 0x19U)) 
-                                                                              << 5U)) 
-                                                                          | (0x1eU 
-                                                                             & ((IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
-                                                                                >> 8U)) 
-                                                                                << 1U)))))))
-                                                    : 
-                                                   ((IData)(top__DOT__u_dcode__DOT___U_type)
-                                                     ? 
-                                                    (((- (QData)((IData)(
-                                                                         (1U 
-                                                                          & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
-                                                                                >> 0x1fU)))))) 
-                                                      << 0x1fU) 
-                                                     | (QData)((IData)(
-                                                                       ((0x7ff00000U 
-                                                                         & ((IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
-                                                                                >> 0x14U)) 
-                                                                            << 0x14U)) 
-                                                                        | (0xff000U 
-                                                                           & ((IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
-                                                                                >> 0xcU)) 
-                                                                              << 0xcU))))))
-                                                     : 
-                                                    ((IData)(top__DOT__u_dcode__DOT___type_jal)
-                                                      ? 
-                                                     (((- (QData)((IData)(
-                                                                          (1U 
+                                                         << 0xbU) 
+                                                        | (QData)((IData)(
+                                                                          (0x7ffU 
                                                                            & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
+                                                                                >> 0x14U))))))) 
+                                                    | ((- (QData)((IData)(vlSelf->top__DOT__u_dcode__DOT___type_store))) 
+                                                       & (((- (QData)((IData)(
+                                                                              (1U 
+                                                                               & (IData)(
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0x1fU)))))) 
-                                                       << 0x14U) 
-                                                      | (QData)((IData)(
-                                                                        ((0xff000U 
-                                                                          & ((IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
-                                                                                >> 0xcU)) 
-                                                                             << 0xcU)) 
-                                                                         | ((0x800U 
+                                                           << 0xbU) 
+                                                          | (QData)((IData)(
+                                                                            ((0x7e0U 
+                                                                              & ((IData)(
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
+                                                                                >> 0x19U)) 
+                                                                                << 5U)) 
+                                                                             | (0x1fU 
+                                                                                & (IData)(
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
+                                                                                >> 7U))))))))) 
+                                                   | ((- (QData)((IData)(vlSelf->top__DOT__u_dcode__DOT___type_branch))) 
+                                                      & (((- (QData)((IData)(
+                                                                             (1U 
+                                                                              & (IData)(
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
+                                                                                >> 0x1fU)))))) 
+                                                          << 0xcU) 
+                                                         | (QData)((IData)(
+                                                                           ((0x800U 
                                                                              & ((IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
-                                                                                >> 0x14U)) 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
+                                                                                >> 7U)) 
                                                                                 << 0xbU)) 
                                                                             | ((0x7e0U 
                                                                                 & ((IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0x19U)) 
                                                                                 << 5U)) 
                                                                                | (0x1eU 
                                                                                 & ((IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
+                                                                                >> 8U)) 
+                                                                                << 1U))))))))) 
+                                                  | ((- (QData)((IData)(top__DOT__u_dcode__DOT___U_type))) 
+                                                     & (((- (QData)((IData)(
+                                                                            (1U 
+                                                                             & (IData)(
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
+                                                                                >> 0x1fU)))))) 
+                                                         << 0x1fU) 
+                                                        | (QData)((IData)(
+                                                                          ((0x7ff00000U 
+                                                                            & ((IData)(
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
+                                                                                >> 0x14U)) 
+                                                                               << 0x14U)) 
+                                                                           | (0xff000U 
+                                                                              & ((IData)(
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
+                                                                                >> 0xcU)) 
+                                                                                << 0xcU)))))))) 
+                                                 | ((- (QData)((IData)(top__DOT__u_dcode__DOT___type_jal))) 
+                                                    & (((- (QData)((IData)(
+                                                                           (1U 
+                                                                            & (IData)(
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
+                                                                                >> 0x1fU)))))) 
+                                                        << 0x14U) 
+                                                       | (QData)((IData)(
+                                                                         ((0xff000U 
+                                                                           & ((IData)(
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
+                                                                                >> 0xcU)) 
+                                                                              << 0xcU)) 
+                                                                          | ((0x800U 
+                                                                              & ((IData)(
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
+                                                                                >> 0x14U)) 
+                                                                                << 0xbU)) 
+                                                                             | ((0x7e0U 
+                                                                                & ((IData)(
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
+                                                                                >> 0x19U)) 
+                                                                                << 5U)) 
+                                                                                | (0x1eU 
+                                                                                & ((IData)(
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0x15U)) 
-                                                                                << 1U))))))))
-                                                      : 0ULL)))));
+                                                                                << 1U))))))))));
     vlSelf->top__DOT__rs1_data = vlSelf->top__DOT__u_rv64reg__DOT__rf
         [(((((IData)(vlSelf->top__DOT__u_dcode__DOT___R_type) 
              | (IData)(vlSelf->top__DOT__u_dcode__DOT___I_type)) 
             | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_store)) 
            | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_branch))
-           ? (0x1fU & (IData)((vlSelf->top__DOT__u_fetch__DOT__mem_data 
+           ? (0x1fU & (IData)((vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                >> 0xfU))) : 0U)];
     vlSelf->top__DOT__u_dcode__DOT___pc_op = ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_branch)
                                                ? 1U
@@ -524,7 +515,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 & (0ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT__mem_data)))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
                                                                                 | (IData)(
                                                                                 ((1U 
                                                                                 == 
@@ -533,20 +524,20 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 & (0ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT__mem_data))))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))) 
                                                                                 | ((IData)(top__DOT__u_dcode__DOT___type_op_imm) 
                                                                                 & (0U 
                                                                                 == 
                                                                                 (7U 
                                                                                 & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU)))))) 
                                                                                 | ((IData)(top__DOT__u_dcode__DOT___type_op_imm_32) 
                                                                                 & (0U 
                                                                                 == 
                                                                                 (7U 
                                                                                 & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU)))))) 
                                                                                 | (IData)(top__DOT__u_dcode__DOT___type_load)) 
                                                                                | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_store)) 
@@ -563,7 +554,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 & (0x40000000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT__mem_data)))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
                                                                               | (IData)(
                                                                                 ((1U 
                                                                                 == 
@@ -572,7 +563,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 & (0x40000000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT__mem_data))))))))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))))) 
                                                             | (3U 
                                                                & (- (IData)(
                                                                             ((IData)(
@@ -583,13 +574,13 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 & (0x4000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT__mem_data)))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
                                                                              | ((IData)(top__DOT__u_dcode__DOT___type_op_imm) 
                                                                                 & (4U 
                                                                                 == 
                                                                                 (7U 
                                                                                 & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU)))))))))) 
                                                            | (5U 
                                                               & (- (IData)(
@@ -601,13 +592,13 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 & (0x7000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT__mem_data)))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
                                                                             | ((IData)(top__DOT__u_dcode__DOT___type_op_imm) 
                                                                                & (7U 
                                                                                 == 
                                                                                 (7U 
                                                                                 & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU)))))))))) 
                                                           | (4U 
                                                              & (- (IData)(
@@ -619,13 +610,13 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 & (0x6000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT__mem_data)))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
                                                                            | ((IData)(top__DOT__u_dcode__DOT___type_op_imm) 
                                                                               & (6U 
                                                                                 == 
                                                                                 (7U 
                                                                                 & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU)))))))))) 
                                                          | (6U 
                                                             & (- (IData)(
@@ -637,7 +628,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 & (0x1000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT__mem_data)))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
                                                                             | (IData)(
                                                                                 ((1U 
                                                                                 == 
@@ -646,7 +637,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 & (0x1000ULL 
                                                                                 == 
                                                                                 (0xfc007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT__mem_data))))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))) 
                                                                            | (IData)(
                                                                                 ((1U 
                                                                                 == 
@@ -655,7 +646,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 & (0x1000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT__mem_data))))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))) 
                                                                           | (IData)(
                                                                                 ((1U 
                                                                                 == 
@@ -664,7 +655,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 & (0x1000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT__mem_data))))))))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))))) 
                                                         | (7U 
                                                            & (- (IData)(
                                                                         ((((IData)(
@@ -675,7 +666,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 & (0x5000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT__mem_data)))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
                                                                            | (IData)(
                                                                                 ((1U 
                                                                                 == 
@@ -684,7 +675,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 & (0x5000ULL 
                                                                                 == 
                                                                                 (0xfc007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT__mem_data))))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))) 
                                                                           | (IData)(
                                                                                 ((1U 
                                                                                 == 
@@ -693,7 +684,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 & (0x5000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT__mem_data))))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))) 
                                                                          | (IData)(
                                                                                 ((1U 
                                                                                 == 
@@ -702,7 +693,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 & (0x5000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT__mem_data))))))))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))))) 
                                                        | (8U 
                                                           & (- (IData)(
                                                                        ((((IData)(
@@ -713,7 +704,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 & (0x40005000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT__mem_data)))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
                                                                           | (IData)(
                                                                                 ((1U 
                                                                                 == 
@@ -722,7 +713,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 & (0x40005000ULL 
                                                                                 == 
                                                                                 (0xfc007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT__mem_data))))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))) 
                                                                          | (IData)(
                                                                                 ((1U 
                                                                                 == 
@@ -731,7 +722,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 & (0x40005000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT__mem_data))))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))) 
                                                                         | (IData)(
                                                                                 ((1U 
                                                                                 == 
@@ -740,7 +731,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 & (0x40005000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT__mem_data))))))))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))))) 
                                                       | (9U 
                                                          & (- (IData)(
                                                                       ((IData)(
@@ -751,13 +742,13 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 & (0x2000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT__mem_data)))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
                                                                        | ((IData)(top__DOT__u_dcode__DOT___type_op_imm) 
                                                                           & (2U 
                                                                              == 
                                                                              (7U 
                                                                               & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU)))))))))) 
                                                      | (0xaU 
                                                         & (- (IData)(
@@ -769,13 +760,13 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                & (0x3000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT__mem_data)))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
                                                                       | ((IData)(top__DOT__u_dcode__DOT___type_op_imm) 
                                                                          & (3U 
                                                                             == 
                                                                             (7U 
                                                                              & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU)))))))))) 
                                                     | (0xdU 
                                                        & (- (IData)(
@@ -784,7 +775,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                         == 
                                                                         (7U 
                                                                          & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU))))))))) 
                                                    | (0xeU 
                                                       & (- (IData)(
@@ -793,7 +784,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                        == 
                                                                        (7U 
                                                                         & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU))))))))) 
                                                   | (0xfU 
                                                      & (- (IData)(
@@ -802,7 +793,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                       == 
                                                                       (7U 
                                                                        & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU))))))))) 
                                                  | (0x10U 
                                                     & (- (IData)(
@@ -811,7 +802,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                      == 
                                                                      (7U 
                                                                       & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU))))))))) 
                                                 | (0x11U 
                                                    & (- (IData)(
@@ -820,7 +811,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                     == 
                                                                     (7U 
                                                                      & (IData)(
-                                                                               (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                               (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU))))))))) 
                                                | (0x12U 
                                                   & (- (IData)(
@@ -829,7 +820,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                    == 
                                                                    (7U 
                                                                     & (IData)(
-                                                                              (vlSelf->top__DOT__u_fetch__DOT__mem_data 
+                                                                              (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                >> 0xcU)))))))));
     if (VL_UNLIKELY((0xcU == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op)))) {
         VL_FINISH_MT("/home/leesum/ysyx-workbench/npc/vsrc/usr/execute.v", 67, "");
@@ -844,21 +835,32 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                           | (6U == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op)));
     top__DOT__u_execute__DOT___pc_4 = ((3U == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op)) 
                                        | (4U == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op)));
-    vlSelf->top__DOT__u_pc__DOT___pc_next = (((3U == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))
-                                               ? vlSelf->top__DOT__rs1_data
-                                               : vlSelf->top__DOT__u_pc__DOT___pc_current) 
-                                             + ((4U 
-                                                 == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))
-                                                 ? 4ULL
-                                                 : 
-                                                ((((1U 
-                                                    == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op)) 
-                                                   | (2U 
-                                                      == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))) 
-                                                  | (3U 
-                                                     == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op)))
-                                                  ? vlSelf->top__DOT__u_dcode__DOT___imm_data
-                                                  : 0ULL)));
+    vlSelf->top__DOT__u_pc__DOT___pc_next = ((((- (QData)((IData)(
+                                                                  ((((1U 
+                                                                      == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op)) 
+                                                                     | (2U 
+                                                                        == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))) 
+                                                                    | (4U 
+                                                                       == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))) 
+                                                                   | (0U 
+                                                                      == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op)))))) 
+                                               & vlSelf->top__DOT__u_pc__DOT___pc_current) 
+                                              | ((- (QData)((IData)(
+                                                                    (3U 
+                                                                     == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))))) 
+                                                 & vlSelf->top__DOT__rs1_data)) 
+                                             + (((- (QData)((IData)(
+                                                                    (((1U 
+                                                                       == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op)) 
+                                                                      | (2U 
+                                                                         == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))) 
+                                                                     | (3U 
+                                                                        == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op)))))) 
+                                                 & vlSelf->top__DOT__u_dcode__DOT___imm_data) 
+                                                | (4ULL 
+                                                   & (- (QData)((IData)(
+                                                                        (4U 
+                                                                         == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))))))));
     top__DOT__u_execute__DOT__u_alu__DOT___op_shift 
         = (((8U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
             | (6U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
