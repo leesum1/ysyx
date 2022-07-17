@@ -28,10 +28,9 @@ com:${CSRC} ${VSRC}
 all: default
 	@echo "Write this Makefile by your self."
 
-run: $(BIN)
+run: com
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	@$^
-
+	${BIN}
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by your self."
