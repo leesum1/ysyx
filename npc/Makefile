@@ -30,8 +30,8 @@ all: default
 
 run: com
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	echo ${IMG}
-	${BIN} ${IMG}
+# 运行 bin文件,传入 img 参数
+	${BIN} ${IMG} 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by your self."
