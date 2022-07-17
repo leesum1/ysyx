@@ -111,9 +111,9 @@ static int parse_args(int argc, char* argv[]) {
 void init_monitor(int argc, char* argv[]) {
   /* Perform some global initialization. */
   int i;
-  printf("%d", argc);
+  printf("argc:%d\n", argc);
   for (i = 1;i < argc;i++) {
-    printf("%s", argv[i]);
+    printf("argv:%s\n", argv[i]);
   }
   /* Parse arguments. */
   parse_args(argc, argv);
