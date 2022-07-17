@@ -33,10 +33,8 @@
 #error Unsupport ISA
 #endif
 
-union isa_gdb_regs
-{
-  struct
-  {
+union isa_gdb_regs {
+  struct {
 #if defined(CONFIG_ISA_mips32)
     uint32_t gpr[32];
     uint32_t status, lo, hi, badvaddr, cause, pc;
@@ -53,8 +51,7 @@ union isa_gdb_regs
     uint32_t cs, ss, ds, es, fs, gs;
 #endif
   };
-  struct
-  {
+  struct {
     uint32_t array[77];
   };
 };

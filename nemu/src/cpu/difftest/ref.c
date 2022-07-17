@@ -18,22 +18,50 @@
 #include <difftest-def.h>
 #include <memory/paddr.h>
 
+
+
+// 在DUT host memory的`buf`和REF guest memory的`dest`之间拷贝`n`字节,
+// `direction`指定拷贝的方向, `DIFFTEST_TO_DUT`表示往DUT拷贝, `DIFFTEST_TO_REF`表示往REF拷贝
 void difftest_memcpy(paddr_t addr, void* buf, size_t n, bool direction) {
-  assert(0);
+  /* 一个一个字节拷贝,只需要实现 dut->ref 方向*/
+  if (direction == DIFFTEST_TO_REF) {
+    for (size_t i = 0; i < n; i++) {
+      paddr_write(addr + i, 1, *((uint8_t*)buf + i));
+    }
+  }
+  else {
+    assert(0);
+  }
 }
-
+// `direction`为`DIFFTEST_TO_DUT`时, 获取REF的寄存器状态到`dut`;
+// `direction`为`DIFFTEST_TO_REF`时, 设置REF的寄存器状态为`dut`;
+//riscv64_CPU_state
+// dut 为一个指针
 void difftest_regcpy(void* dut, bool direction) {
-  assert(0);
+  CPU_state* reg_p = dut;
+  if (DIFFTEST_TO_REF == direction) {
+    for (int i = 0; i < 32; i++) {
+      cpu.gpr[i] = reg_p->gpr[i];
+    }
+    cpu.pc = reg_p->pc;
+  }
+  else {
+    for (int i = 0; i < 32; i++) {
+      reg_p->gpr[i] = cpu.gpr[i];
+    }
+    reg_p->pc = cpu.pc;
+  }
 }
 
+// 让REF执行`n`条指令
 void difftest_exec(uint64_t n) {
-  assert(0);
+  cpu_exec(n);
 }
 
 void difftest_raise_intr(word_t NO) {
   assert(0);
 }
-
+// 初始化REF的DiffTest功能
 void difftest_init(int port) {
   /* Perform ISA dependent initialization. */
   init_isa();

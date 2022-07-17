@@ -46,7 +46,10 @@ public:
   void showAllwp();
   void printwp();
 };
-
+/**
+ * @brief 标记数组清空
+ *
+ */
 Watchpoint::Watchpoint(/* args */) {
 
   for (uint32_t i = 0; i < WPNUM; i++) {
@@ -60,7 +63,13 @@ Watchpoint::~Watchpoint() {
 }
 
 
-
+/**
+ * @brief 创建新的监视点
+ *
+ * @param exp 监视点表达式
+ * @return true
+ * @return false
+ */
 bool Watchpoint::newWp(string exp) {
   wpdata newdata;
   newdata.NO = getNum();
@@ -72,6 +81,13 @@ bool Watchpoint::newWp(string exp) {
   printwp();
   return true;
 }
+/**
+ * @brief 删除监视点
+ *
+ * @param NO 监视点序号
+ * @return true
+ * @return false
+ */
 bool Watchpoint::delWp(uint32_t NO) {
   for (auto it = wp_pool.begin(); it != wp_pool.end();) {
     if (it.operator->()->NO == NO) {
@@ -87,7 +103,11 @@ bool Watchpoint::delWp(uint32_t NO) {
   return false;
 }
 
-
+/**
+ * @brief 获取一个未使用的序号
+ *
+ * @return uint32_t
+ */
 uint32_t Watchpoint::getNum() {
   for (uint32_t i = 0; i < WPNUM; i++) {
     if (numflag[i] == false) {
@@ -97,6 +117,13 @@ uint32_t Watchpoint::getNum() {
   }
   return WPNUM;
 }
+/**
+ * @brief 删除一个序号
+ *
+ * @param NO
+ * @return true
+ * @return false
+ */
 bool Watchpoint::delNum(uint32_t NO) {
 
   if (numflag[NO] == true) {
@@ -106,7 +133,10 @@ bool Watchpoint::delNum(uint32_t NO) {
   return false;
 }
 
-
+/**
+ * @brief 打印所有的监视点表达式
+ *
+ */
 void Watchpoint::printwp() {
 
   for (auto it = wp_pool.begin(); it != wp_pool.end();it++) {
@@ -114,7 +144,10 @@ void Watchpoint::printwp() {
   }
 }
 
-
+/**
+ * @brief 解析所有的监视点
+ *
+ */
 void Watchpoint::praseAllwp() {
 
   bool ret;
@@ -129,7 +162,10 @@ void Watchpoint::praseAllwp() {
     }
   }
 }
-
+/**
+ * @brief 打印所有的监视点表达式,并解析结果
+ *
+ */
 void Watchpoint::showAllwp() {
   bool ret;
   uint64_t exprResult;
