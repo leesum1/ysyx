@@ -25,6 +25,11 @@ int main(int argc, char* argv[]) {
 #ifdef CONFIG_TARGET_AM
   am_init_monitor();
 #else
+  int i;
+  printf("argc:%d\n", argc);
+  for (i = 1;i < argc;i++) {
+    printf("argv:%s\n", argv[i]);
+  }
   init_monitor(argc, argv);
 #endif
 

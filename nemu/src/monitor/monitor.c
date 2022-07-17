@@ -94,6 +94,7 @@ static int parse_args(int argc, char* argv[]) {
       break;
     case 1:
       img_file = optarg;
+      printf("img:%s", optarg);
       return 0;
     default:
       printf("Usage: %s [OPTION...] IMAGE [args]\n\n", argv[0]);
@@ -110,11 +111,7 @@ static int parse_args(int argc, char* argv[]) {
 
 void init_monitor(int argc, char* argv[]) {
   /* Perform some global initialization. */
-  int i;
-  printf("argc:%d\n", argc);
-  for (i = 1;i < argc;i++) {
-    printf("argv:%s\n", argv[i]);
-  }
+
   /* Parse arguments. */
   parse_args(argc, argv);
 
