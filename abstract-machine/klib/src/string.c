@@ -39,11 +39,22 @@ char* strncpy(char* dst, const char* src, size_t n) {
 }
 
 char* strcat(char* dst, const char* src) {
-  panic("Not implemented");
+  assert(dst != NULL && src != NULL);
+  char* temp = dst;
+  while (*temp != '\0')
+    temp++;
+  while ((*temp++ = *src++) != '\0');
+  return dst;
 }
 
 int strcmp(const char* s1, const char* s2) {
-  panic("Not implemented");
+  while ((*s1 != '\0') && (*s1 == *s2)) {
+    s1++;
+    s2++;
+  }
+  int t;
+  t = *s1 - *s2;
+  return t;
 }
 
 int strncmp(const char* s1, const char* s2, size_t n) {
@@ -51,7 +62,13 @@ int strncmp(const char* s1, const char* s2, size_t n) {
 }
 
 void* memset(void* s, int c, size_t n) {
-  panic("Not implemented");
+  assert(s);
+  void* temp = s;
+  while (n--) {
+    *(char*)s = (char)c;
+    s = (char*)s + 1;
+  }
+  return temp;
 }
 
 void* memmove(void* dst, const void* src, size_t n) {
@@ -63,7 +80,13 @@ void* memcpy(void* out, const void* in, size_t n) {
 }
 
 int memcmp(const void* s1, const void* s2, size_t n) {
-  panic("Not implemented");
+  char* arr1 = (char*)s1;
+  char* arr2 = (char*)s2;
+  while (--n && *arr1 && *arr1 == *arr2) {
+    arr1++;
+    arr2++;
+  }
+  return *arr1 - *arr2;
 }
 
 #endif
