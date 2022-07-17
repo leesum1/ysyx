@@ -14,7 +14,6 @@ const uint32_t defimg[] = {
 
 SimMem::SimMem(/* args */) {
     cout << "npc内存初始化开始" << endl;
-    loadImage(imgpath);
 }
 
 SimMem::~SimMem() {
