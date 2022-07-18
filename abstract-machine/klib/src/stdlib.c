@@ -34,7 +34,8 @@ void* malloc(size_t size) {
   static int i = 0;
   if (i == 0) {
     i = 1;
-    init_memory_pool(heap.end - heap.start + 1, heap.start);
+    size_t s = heap.end - heap.start + 1;
+    init_memory_pool(s, heap.start);
   }
 
   // On native, malloc() will be called during initializaion of C runtime.
@@ -43,11 +44,11 @@ void* malloc(size_t size) {
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
   panic("Not implemented");
 #endif
-  // return tlsf_malloc(size);
+  return tlsf_malloc(size);
 }
 
 void free(void* ptr) {
-  // tlsf_free(ptr);
+  tlsf_free(ptr);
 }
 
 #endif
