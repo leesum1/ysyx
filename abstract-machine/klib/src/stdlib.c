@@ -32,7 +32,7 @@ int atoi(const char* nptr) {
 
 void* malloc(size_t size) {
   static int i = 0;
-  if (!i) {
+  if (i == 0) {
     i = 1;
     init_memory_pool(heap.end - heap.start + 1, heap.start);
   }
