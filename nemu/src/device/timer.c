@@ -27,7 +27,6 @@ static void rtc_io_handler(uint32_t offset, int len, bool is_write) {
     //*(uint64_t*)rtc_port_base = us;
     rtc_port_base[0] = (uint32_t)(us);
     rtc_port_base[1] = us >> 32;
-    printf("time:%d\n", (uint32_t)(*(uint64_t*)rtc_port_base / 1000000));
   }
 }
 
