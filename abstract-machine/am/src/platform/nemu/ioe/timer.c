@@ -8,7 +8,7 @@ static uint64_t read_time() {
   uint64_t us_low = inl(RTC_ADDR);
   uint64_t us_high = inl(RTC_ADDR + 4);
   uint64_t time = ((uint64_t)us_high << 32) | us_low;
-  return time / 10;
+  return time;
 }
 
 
