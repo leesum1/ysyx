@@ -43,11 +43,11 @@ void* malloc(size_t size) {
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
   panic("Not implemented");
 #endif
-  return tlsf_malloc(size);
+  // return tlsf_malloc(size);
 }
 
 void free(void* ptr) {
-  tlsf_free(ptr);
+  // tlsf_free(ptr);
 }
 
 #endif
