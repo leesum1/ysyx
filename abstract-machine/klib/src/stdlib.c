@@ -35,6 +35,7 @@ void* malloc(size_t size) {
   if (i == 0) {
     i = 1;
     size_t s = heap.end - heap.start + 1;
+    printf("size:%d\n", s);
     init_memory_pool(s, heap.start);
   }
 
