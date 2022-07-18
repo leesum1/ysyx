@@ -23,7 +23,7 @@ static void rtc_io_handler(uint32_t offset, int len, bool is_write) {
   assert(offset == 0 || offset == 4);
   if (!is_write && offset == 4) {
     uint64_t us = get_time();
-    printf("time:%d\n", us / 1000);
+    printf("time:%d\n", us / 1000000);
     //*(uint64_t*)rtc_port_base = us;
     rtc_port_base[0] = (uint32_t)(us);
     rtc_port_base[1] = us >> 32;
