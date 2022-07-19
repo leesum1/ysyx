@@ -2,16 +2,18 @@
 module pc (
     input                      clk,
     input                      rst,
-    input      [`PCOP_LEN-1:0] pc_op,     // pc 操作码
+    input      [`PCOP_LEN-1:0] pc_op,         // pc 操作码
     input      [    `XLEN-1:0] rs1_data,
     input      [    `XLEN-1:0] imm_data,
+    input      [    `XLEN-1:0] execute_data,
     output reg [    `XLEN-1:0] pc_out
 );
   /* pc 操作码 */
-  wire _pcop_branch = (pc_op == `PCOP_BRANCH);  // 分支指令: pc = pc + imm
+  wire _isready_branch = (execute_data == `XLEN'b1);  //跳转指令
+  wire _pcop_branch = (pc_op == `PCOP_BRANCH) & _isready_branch;  // 分支指令: pc = pc + imm
   wire _pcop_jal = (pc_op == `PCOP_JAL);  // jal 指令: pc = pc + imm
   wire _pcop_jalr = (pc_op == `PCOP_JALR);  // jalr 指令: pc = rs1 + imm
-  wire _pcop_inc4 = (pc_op == `PCOP_INC4);  // pc 自增: pc = pc +4
+  wire _pcop_inc4 = (pc_op == `PCOP_INC4) | (~_isready_branch);  // pc 自增: pc = pc +4
   wire _pcop_none = (pc_op == `PCOP_NONE);  // 暂停: pc = pc
 
 

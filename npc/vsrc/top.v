@@ -11,13 +11,14 @@ module top (
   /* PC 模块 */
   reg [`XLEN-1:0] pc;
   pc u_pc (
-      .clk     (clk),
-      .rst     (rst),
-      .pc_op   (pc_op),
+      .clk         (clk),
+      .rst         (rst),
+      .pc_op       (pc_op),
       // pc 操作码
-      .rs1_data(rs1_data),
-      .imm_data(imm_data),
-      .pc_out  (pc)
+      .rs1_data    (rs1_data),
+      .imm_data    (imm_data),
+      .pc_out      (pc),
+      .execute_data(exc_out)
   );
   /* 取指模块 */
   wire [`INST_LEN-1:0] inst_data;
