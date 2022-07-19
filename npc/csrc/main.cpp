@@ -31,6 +31,7 @@ int main(int argc, char* argv[]) {
   mysim_p->mem->imgpath.append(argv[1]);
   mysim_p->mem->loadImage(mysim_p->mem->imgpath.c_str());
 
+  size_t imgsize = mysim_p->mem->getImgSize(mysim_p->mem->imgpath.c_str());
   static Vtop* top = mysim_p->getTop();
 
   mysim_p->reset();
@@ -65,19 +66,6 @@ int main(int argc, char* argv[]) {
   return 0;
 }
 
-// //声明
-// static Vtop* top;
-// int main(int argc, char** argv, char** env) {
-
-//   Simtop mysim;
-//   top = mysim.getTop();
-//   int i = 50;
-//   mysim.reset();
-//   while (!top->contextp()->gotFinish()) {
-//     mysim.stepCycle();
-//   }
-//   mysim.npcTrap();
-// }
 
 
 

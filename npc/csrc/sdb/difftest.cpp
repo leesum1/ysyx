@@ -3,7 +3,11 @@
 #include "simtop.h"
 
 extern Simtop* mysim_p;
-
+static const char* regs[] = {
+    "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
+    "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
+    "a6", "a7", "s2", "s3", "s4", "s5", "s6", "s7",
+    "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6" };
 Difftest::Difftest(/* args */) {
 
     cout << "difftest start" << endl;
@@ -82,16 +86,39 @@ bool Difftest::checkregs() {
     CPU_state refregs = getRefregs();
     for (size_t i = 0; i < 32; i++) {
         if (dutregs.gpr[i] != refregs.gpr[i]) {
-            cout << "num:" << i << "err!!" << endl;
+            cout << "reg err!!" << endl;
+            cout << "----------------------------------dutregs----------------------------------" << endl;
+            printregs(dutregs);
+            cout << "----------------------------------refregs----------------------------------" << endl;
+            printregs(refregs);
             return false;
-
         }
     }
     if (dutregs.pc != refregs.pc) {
         cout << "pc:err" << endl;
+        cout << "----------------------------------dutregs----------------------------------" << endl;
+        printregs(dutregs);
+        cout << "----------------------------------refregs----------------------------------" << endl;
+        printregs(refregs);
         return false;
     }
     return true;
+}
+
+const char* Difftest::getRegName(int idx) {
+    return regs[idx];
+}
+
+void Difftest::printregs(CPU_state& cpu_regs) {
+    /* 格式化输出 */
+    for (size_t i = 0; i < 16; i++) {
+        cout << setw(5) << left << getRegName(i)
+            << setw(15) << left << hex << cpu_regs.gpr[i]
+            << setw(5) << left << getRegName(i + 16)
+            << setw(15) << left << cpu_regs.gpr[i + 16]
+            << endl;
+    }
+    cout << "\npc:" << "\t" << hex << cpu_regs.pc << endl;
 }
 /**
  * @brief 让 nemu 执行一条指令,并且进行 difftest

@@ -38,6 +38,8 @@ public:
     CPU_state getRefregs();
     bool checkregs();
     void difftest_step();
+    void printregs(CPU_state& cpu_regs);
+    const char* getRegName(int idx);
 };
 
 #endif
