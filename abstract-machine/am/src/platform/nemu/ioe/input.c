@@ -1,6 +1,6 @@
 #include <am.h>
 #include <nemu.h>
-
+#include <stdio.h>
 #define KEYDOWN_MASK 0x8000
 
 static AM_INPUT_KEYBRD_T read_key(void) {
@@ -14,6 +14,7 @@ static AM_INPUT_KEYBRD_T read_key(void) {
 
 void __am_input_keybrd(AM_INPUT_KEYBRD_T* kbd) {
   AM_INPUT_KEYBRD_T tempkb = read_key();
+  printf("down:%d", tempkb.keydown);
   kbd->keydown = tempkb.keydown;
   kbd->keycode = tempkb.keycode;
 }
