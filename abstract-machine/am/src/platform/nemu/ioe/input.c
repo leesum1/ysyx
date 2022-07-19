@@ -3,7 +3,17 @@
 
 #define KEYDOWN_MASK 0x8000
 
-void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
-  kbd->keydown = 0;
-  kbd->keycode = AM_KEY_NONE;
+static AM_INPUT_KEYBRD_T read_key(void) {
+  AM_INPUT_KEYBRD_T kb;
+  uint32_t kbVal = inl(KBD_ADDR);
+  kb.keydown = (KEYDOWN_MASK & kbVal) >> 31;
+  kb.keycode = (~KEYDOWN_MASK) & kbVal;
+  return kb;
+}
+
+
+void __am_input_keybrd(AM_INPUT_KEYBRD_T* kbd) {
+  AM_INPUT_KEYBRD_T tempkb = read_key();
+  kbd->keydown = tempkb.keydown;
+  kbd->keycode = tempkb.keycode;
 }
