@@ -2,7 +2,7 @@
 #include <nemu.h>
 #include <stdio.h>
 #define KEYDOWN_MASK 0x8000
-
+/* 最高位为 keydown*/
 static AM_INPUT_KEYBRD_T read_key(void) {
   AM_INPUT_KEYBRD_T kb;
   uint32_t kbVal = inl(KBD_ADDR);
