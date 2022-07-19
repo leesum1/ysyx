@@ -61,10 +61,22 @@ module alu (
   assign _add_out = _alu_a + _alu_b + _cin;
 
   /* 标志位生成  具体看https://blog.csdn.net/mariodf/article/details/125334271*/
+  wire _tb_A = _alu_a[`XLEN];
+  wire _tb_B = _alu_b[`XLEN];
+  wire _tb_C = _add_out[`XLEN];
+  wire _tb_NOTA = ~_tb_A;
+  wire _tb_NOTB = ~_tb_B;
+  wire _tb_NOTC = ~_tb_C;
+  // 最高位进位,(测试)
+  wire _isC64in = (_tb_A|_tb_B|_tb_C) &
+                  (_tb_A|_tb_NOTB|_tb_NOTC)&
+                  (_tb_NOTA|_tb_B|_tb_NOTC)&
+                  (_tb_NOTA|_tb_NOTB|_tb_C);
+
   wire _isZero = (_add_out == 65'd0);
   wire _isOF = _add_out[`XLEN] ^ _add_out[`XLEN-1];
   wire _isSF = _add_out[`XLEN-2];
-  wire _isCF = _isSUBop ^ _add_out[`XLEN];
+  wire _isCF = _isSUBop ^ _isC64in;
 
   /* 比较信息 具体看 obsidian 笔记 */
   //   wire _isSLT = _isOF ^ _add_out[`XLEN-1];
