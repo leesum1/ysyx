@@ -16,7 +16,7 @@ module pc (
   wire _pcop_none = (pc_op == `PCOP_NONE);  // 暂停: pc = pc
 
   wire _isready_branch = (execute_data == `XLEN'b1) & _pcop_branch;  //条件跳转指令
-  wire _isready_inc4 = (_pcop_inc4) & (~_isready_branch);
+  wire _isready_inc4 = (_pcop_inc4) | ((~_isready_branch) & _pcop_branch);
 
   /* 并行选择器:根据操作码选择跳转位置 */
   wire [`XLEN-1:0] _pc_a_in = ({`XLEN{_isready_branch | _pcop_jal | _isready_inc4|_pcop_none}} &  _pc_current) |
