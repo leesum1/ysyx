@@ -150,7 +150,7 @@ module alu (
                     `XLEN'b0;
 
   /* 选择最后输出 */
-  assign alu_out = (_isCMP) ? {63'b1, _compare_out} : _alu_out;
+  assign alu_out = (_isCMP) ? {63'b0, _compare_out} : _alu_out;
   assign compare_out = _compare_out;
 
 endmodule
