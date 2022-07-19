@@ -1484,8 +1484,7 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                         | (~ top__DOT__u_execute__DOT__u_alu__DOT___alu_b[2U])) 
                        | vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[2U]))));
     vlSelf->top__DOT__u_execute__DOT___alu_out = ((IData)(top__DOT__u_execute__DOT__u_alu__DOT___isCMP)
-                                                   ? 
-                                                  (- (QData)((IData)(
+                                                   ? (QData)((IData)(
                                                                      ((((((((9U 
                                                                              == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
                                                                             | (0xfU 
@@ -1515,7 +1514,7 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                                                                           & (~ (IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isSLT)))) 
                                                                       | ((0x12U 
                                                                           == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
-                                                                         & (~ (IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isCF)))))))
+                                                                         & (~ (IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isCF))))))
                                                    : 
                                                   (((1U 
                                                      == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
