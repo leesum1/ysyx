@@ -23,6 +23,8 @@ VL_MODULE(Vtop___024root) {
     VL_IN8(rst,0,0);
 
     // LOCAL SIGNALS
+    CData/*0:0*/ top__DOT__u_pc__DOT___isready_branch;
+    CData/*0:0*/ top__DOT__u_pc__DOT___isready_inc4;
     CData/*0:0*/ top__DOT__u_dcode__DOT___type_store;
     CData/*0:0*/ top__DOT__u_dcode__DOT___type_branch;
     CData/*0:0*/ top__DOT__u_dcode__DOT___R_type;

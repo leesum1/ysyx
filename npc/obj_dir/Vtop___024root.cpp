@@ -1611,39 +1611,12 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                 (0xffffffffffffffffULL 
                                                                  >> (IData)(top__DOT__u_execute__DOT__u_alu__DOT___shifter_in2)))))
                                                           : 0ULL))))))));
-    vlSelf->top__DOT__u_pc__DOT___pc_next = ((((- (QData)((IData)(
-                                                                  (((((1U 
-                                                                       == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op)) 
-                                                                      & (1ULL 
-                                                                         == vlSelf->top__DOT__u_execute__DOT___alu_out)) 
-                                                                     | (2U 
-                                                                        == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))) 
-                                                                    | (4U 
-                                                                       == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))) 
-                                                                   | (0U 
-                                                                      == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op)))))) 
-                                               & vlSelf->top__DOT__u_pc__DOT___pc_current) 
-                                              | ((- (QData)((IData)(
-                                                                    (3U 
-                                                                     == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))))) 
-                                                 & vlSelf->top__DOT__rs1_data)) 
-                                             + (((- (QData)((IData)(
-                                                                    ((((1U 
-                                                                        == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op)) 
-                                                                       & (1ULL 
-                                                                          == vlSelf->top__DOT__u_execute__DOT___alu_out)) 
-                                                                      | (2U 
-                                                                         == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))) 
-                                                                     | (3U 
-                                                                        == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op)))))) 
-                                                 & vlSelf->top__DOT__u_dcode__DOT___imm_data) 
-                                                | (4ULL 
-                                                   & (- (QData)((IData)(
-                                                                        (4U 
-                                                                         == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))))))));
     top__DOT__u_memory__DOT___addr = ((0U == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op))
                                        ? 0x80000000ULL
                                        : vlSelf->top__DOT__u_execute__DOT___alu_out);
+    vlSelf->top__DOT__u_pc__DOT___isready_branch = 
+        ((1ULL == vlSelf->top__DOT__u_execute__DOT___alu_out) 
+         & (1U == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op)));
     Vtop___024root____Vdpiimwrap_top__DOT__u_fetch__DOT__pmem_read_TOP(top__DOT__u_memory__DOT___addr, vlSelf->__Vtask_top__DOT__u_memory__DOT__pmem_read__3__rdata);
     vlSelf->top__DOT__u_memory__DOT___mem_read = vlSelf->__Vtask_top__DOT__u_memory__DOT__pmem_read__3__rdata;
     Vtop___024root____Vdpiimwrap_top__DOT__u_memory__DOT__pmem_write_TOP(top__DOT__u_memory__DOT___addr, 
@@ -1675,6 +1648,30 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op)))
                                                                               ? 0xffU
                                                                               : 0U)))));
+    vlSelf->top__DOT__u_pc__DOT___isready_inc4 = ((4U 
+                                                   == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op)) 
+                                                  & (~ (IData)(vlSelf->top__DOT__u_pc__DOT___isready_branch)));
+    vlSelf->top__DOT__u_pc__DOT___pc_next = ((((- (QData)((IData)(
+                                                                  ((((IData)(vlSelf->top__DOT__u_pc__DOT___isready_branch) 
+                                                                     | (2U 
+                                                                        == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))) 
+                                                                    | (IData)(vlSelf->top__DOT__u_pc__DOT___isready_inc4)) 
+                                                                   | (0U 
+                                                                      == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op)))))) 
+                                               & vlSelf->top__DOT__u_pc__DOT___pc_current) 
+                                              | ((- (QData)((IData)(
+                                                                    (3U 
+                                                                     == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))))) 
+                                                 & vlSelf->top__DOT__rs1_data)) 
+                                             + (((- (QData)((IData)(
+                                                                    (((IData)(vlSelf->top__DOT__u_pc__DOT___isready_branch) 
+                                                                      | (2U 
+                                                                         == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))) 
+                                                                     | (3U 
+                                                                        == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op)))))) 
+                                                 & vlSelf->top__DOT__u_dcode__DOT___imm_data) 
+                                                | (4ULL 
+                                                   & (- (QData)((IData)(vlSelf->top__DOT__u_pc__DOT___isready_inc4))))));
 }
 
 void Vtop___024root___eval(Vtop___024root* vlSelf) {
