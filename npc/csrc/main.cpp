@@ -66,19 +66,6 @@ int main(int argc, char* argv[]) {
   return 0;
 }
 
-// //声明
-// static Vtop* top;
-// int main(int argc, char** argv, char** env) {
-
-//   Simtop mysim;
-//   top = mysim.getTop();
-//   int i = 50;
-//   mysim.reset();
-//   while (!top->contextp()->gotFinish()) {
-//     mysim.stepCycle();
-//   }
-//   mysim.npcTrap();
-// }
 
 
 
