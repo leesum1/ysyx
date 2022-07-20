@@ -187,18 +187,19 @@ module dcode (
   // wire _inst_srli = _type_op_imm & _func3_101 & _func7_0000000;
   // wire _inst_srai = _type_op_imm & _func3_101 & _func7_0100000;
 
+  /* _type_op */
+  wire _inst_add = _type_op & _func3_000 & _func7_0000000;
+  wire _inst_sub = _type_op & _func3_000 & _func7_0100000;
+  wire _inst_sll = _type_op & _func3_001 & _func7_0000000;
+  wire _inst_slt = _type_op & _func3_010 & _func7_0000000;
+  wire _inst_sltu = _type_op & _func3_011 & _func7_0000000;
+  wire _inst_xor = _type_op & _func3_100 & _func7_0000000;
+  wire _inst_srl = _type_op & _func3_101 & _func7_0000000;
+  wire _inst_sra = _type_op & _func3_101 & _func7_0100000;
+  wire _inst_or = _type_op & _func3_110 & _func7_0000000;
+  wire _inst_and = _type_op & _func3_111 & _func7_0000000;
   /* _type_op_32 */
-  wire _inst_add = _type_op_32 & _func3_000 & _func7_0000000;
-  wire _inst_sub = _type_op_32 & _func3_000 & _func7_0100000;
-  wire _inst_sll = _type_op_32 & _func3_001 & _func7_0000000;
-  wire _inst_slt = _type_op_32 & _func3_010 & _func7_0000000;
-  wire _inst_sltu = _type_op_32 & _func3_011 & _func7_0000000;
-  wire _inst_xor = _type_op_32 & _func3_100 & _func7_0000000;
-  wire _inst_srl = _type_op_32 & _func3_101 & _func7_0000000;
-  wire _inst_sra = _type_op_32 & _func3_101 & _func7_0100000;
-  wire _inst_or = _type_op_32 & _func3_110 & _func7_0000000;
-  wire _inst_and = _type_op_32 & _func3_111 & _func7_0000000;
-  // rv64 only
+  // rv64 only  
   wire _inst_addw = _type_op_32 & _func3_000 & _func7_0000000;
   wire _inst_subw = _type_op_32 & _func3_000 & _func7_0100000;
   wire _inst_sllw = _type_op_32 & _func3_001 & _func7_0000000;
@@ -290,15 +291,21 @@ module dcode (
 
 
   /* ALU_OP */
+  //加减和逻辑
   wire _alu_add = _inst_add |_inst_addw |_inst_addi |_inst_addiw| _type_load 
-                  | _type_store | _inst_jal |_inst_jalr |_inst_auipc;
+                  | _type_store | _inst_jal |_inst_jalr |_inst_auipc | _inst_lui;
   wire _alu_sub = _inst_sub | _inst_subw;
   wire _alu_xor = _inst_xor | _inst_xori;
   wire _alu_and = _inst_and | _inst_andi;
   wire _alu_or = _inst_or | _inst_ori;
-  wire _alu_sll = _inst_sll | _inst_slli | _inst_slliw | _inst_sllw;
-  wire _alu_srl = _inst_srl | _inst_srli | _inst_srliw | _inst_srlw;
-  wire _alu_sra = _inst_sra | _inst_srai | _inst_sraiw | _inst_sraw;
+  //移位
+  wire _alu_sll = _inst_sll | _inst_slli;
+  wire _alu_srl = _inst_srl | _inst_srli;
+  wire _alu_sra = _inst_sra | _inst_srai;
+  wire _alu_sllw = _inst_slliw | _inst_sllw;
+  wire _alu_srlw = _inst_srliw | _inst_srlw;
+  wire _alu_sraw = _inst_sraiw | _inst_sraw;
+  //比较
   wire _alu_slt = _inst_slt | _inst_slti;
   wire _alu_sltu = _inst_sltu | _inst_sltiu;
   wire _alu_beq = _inst_beq;
@@ -307,15 +314,21 @@ module dcode (
   wire _alu_bge = _inst_bge;
   wire _alu_bltu = _inst_bltu;
   wire _alu_bgeu = _inst_bgeu;
+
+  // // ALU 计算结果是否需要符号扩展,放在 execute 下实现
+  // wire _alu_sext = _type_op_imm_32 | _type_op_32;
   //多路选择器
   wire [`ALUOP_LEN-1:0] _alu_op = ({`ALUOP_LEN{_alu_add}} & `ALUOP_ADD)|
                                   ({`ALUOP_LEN{_alu_sub}} & `ALUOP_SUB)|
                                   ({`ALUOP_LEN{_alu_xor}} & `ALUOP_XOR)|
-                                  ({`ALUOP_LEN{_alu_and}} & `ALUOP_AND)|
                                   ({`ALUOP_LEN{_alu_or}} & `ALUOP_OR)|
+                                  ({`ALUOP_LEN{_alu_and}} & `ALUOP_AND)|
                                   ({`ALUOP_LEN{_alu_sll}} & `ALUOP_SLL)|
                                   ({`ALUOP_LEN{_alu_srl}} & `ALUOP_SRL)|
                                   ({`ALUOP_LEN{_alu_sra}} & `ALUOP_SRA)|
+                                  ({`ALUOP_LEN{_alu_sllw}} & `ALUOP_SLLW)|
+                                  ({`ALUOP_LEN{_alu_srlw}} & `ALUOP_SRLW)|
+                                  ({`ALUOP_LEN{_alu_sraw}} & `ALUOP_SRAW)|
                                   ({`ALUOP_LEN{_alu_slt}} & `ALUOP_SLT)|
                                   ({`ALUOP_LEN{_alu_sltu}} & `ALUOP_SLTU)|
                                   ({`ALUOP_LEN{_alu_beq}} & `ALUOP_BEQ)|

@@ -61,9 +61,10 @@ int main(int argc, char* argv[]) {
       std::cout << "Received error code 2\n";
     }
   } while (retCode != ret::Quit);
-  mysim_p->npcTrap();
+  mysim_p->excute(1);
+  int hitgood = mysim_p->npcTrap();
   delete mysim_p;
-  return 0;
+  return hitgood;
 }
 
 

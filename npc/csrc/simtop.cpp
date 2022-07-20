@@ -129,15 +129,18 @@ void  Simtop::printRegisterFile() {
  * @brief HIT GOOD / BAD TRAP
  * 在程序退出时调用
  */
-void Simtop::npcTrap() {
+int Simtop::npcTrap() {
     uint64_t a0 = registerfile[10];
     cout << "a0:" << a0 << endl;
     if (a0 == 0) {
         cout << "PC:" << hex << pc << "\tHIT GOOD" << endl;
+        return 0;
     }
     else {
         cout << "PC:" << hex << pc << "\tBAD TRAP" << endl;
+
     }
+    return 1;
 }
 
 /**

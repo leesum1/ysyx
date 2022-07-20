@@ -10,7 +10,7 @@ module memory (
     input [`XLEN-1:0] exc_in,
 
     output [`XLEN-1:0] mem_out,
-    output isloadEnable
+    output             isloadEnable  //读数据使能
 );
   wire _memop_none = (mem_op == `MEMOP_NONE);
   wire _memop_lb = (mem_op == `MEMOP_LB);
@@ -24,6 +24,10 @@ module memory (
   wire _memop_sw = (mem_op == `MEMOP_SW);
   wire _memop_ld = (mem_op == `MEMOP_LD);
   wire _memop_sd = (mem_op == `MEMOP_SD);
+
+  /* 写入还是读取 */
+  wire _isload = (_memop_lb |_memop_lbu |_memop_ld|_memop_lh|_memop_lhu|_memop_lw|_memop_lwu)&(~_memop_none);
+  wire _isstore = (_memop_sb | _memop_sd | _memop_sh | _memop_sw) & (~_memop_none);
 
   /* 读取或写入的 byte */
   wire _ls8byte = _memop_lb | _memop_lbu | _memop_sb;
@@ -43,12 +47,12 @@ module memory (
   /* 从内存中读取的数据 */
   wire [`XLEN-1:0] _mem_read;
 
-  /* 符号扩展后的结果 */
+  /* 符号扩展后的结果 TODO:改成并行编码*/
   wire [     `XLEN-1:0] _mem__signed_out = (_ls8byte)?{{`XLEN-8{_mem_read[7]}},_mem_read[7:0]}:
                                    (_ls16byte)?{{`XLEN-16{_mem_read[15]}},_mem_read[15:0]}:
                                    (_ls32byte)?{{`XLEN-32{_mem_read[31]}},_mem_read[31:0]}:
                                    _mem_read;
-  /* 不进行符号扩展的结果 */
+  /* 不进行符号扩展的结果 TODO:改成并行编码 */
   wire [     `XLEN-1:0] _mem__unsigned_out = (_ls8byte)?{{`XLEN-8{1'b0}},_mem_read[7:0]}:
                                    (_ls16byte)?{{`XLEN-16{1'b0}},_mem_read[15:0]}:
                                    (_ls32byte)?{{`XLEN-32{1'b0}},_mem_read[31:0]}:
@@ -67,12 +71,15 @@ module memory (
                                 (_ls16byte) ? {48'b0, rs2_data[15:0]}:
                                 (_ls32byte) ? {32'b0, rs2_data[31:0]}:
                                  rs2_data;
-  /* 掩码 */
-  wire [7:0] _wmask = (_ls8byte)?8'b0000_0001:
-                      (_ls16byte)?8'b0000_0011:
-                      (_ls32byte)?8'b0000_1111:
-                      (_ls64byte)?8'b1111_1111:
-                      8'b0000_0000;
+
+  /* 写数据 mask 选择,_mask:初步选择 _wmask:最终选择 */
+  wire [7:0] _mask = ({8{_ls8byte}}&8'b0000_0001) |
+                     ({8{_ls16byte}}&8'b0000_0011) |
+                     ({8{_ls32byte}}&8'b0000_1111) |
+                     ({8{_ls64byte}}&8'b1111_1111);
+
+  wire [7:0] _wmask = (_isstore) ? _mask : 8'b0000_0000;
+
   /* 地址 */
   wire [`XLEN-1:0] _addr = (_memop_none) ? `PC_RESET_ADDR : exc_in;
   wire [`XLEN-1:0] _raddr = _addr;

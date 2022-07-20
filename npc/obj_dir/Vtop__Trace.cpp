@@ -101,8 +101,8 @@ void Vtop___024root__traceChgSub0(Vtop___024root* vlSelf, VerilatedVcd* tracep) 
                                                       ? (QData)((IData)(vlSelf->top__DOT__u_memory__DOT___mem_read))
                                                       : vlSelf->top__DOT__u_memory__DOT___mem_read)))
                                                 : 0ULL))
-                                        : vlSelf->top__DOT__u_execute__DOT___alu_out)),64);
-            tracep->chgQData(oldp+18,(vlSelf->top__DOT__u_execute__DOT___alu_out),64);
+                                        : vlSelf->top__DOT__exc_out)),64);
+            tracep->chgQData(oldp+18,(vlSelf->top__DOT__exc_out),64);
             tracep->chgQData(oldp+20,(((IData)(vlSelf->top__DOT__u_memory__DOT___signed)
                                         ? ((IData)(vlSelf->top__DOT__u_memory__DOT___ls8byte)
                                             ? (((- (QData)((IData)(
@@ -207,35 +207,74 @@ void Vtop___024root__traceChgSub0(Vtop___024root* vlSelf, VerilatedVcd* tracep) 
             tracep->chgQData(oldp+87,(vlSelf->top__DOT__u_rv64reg__DOT__rf[31]),64);
             tracep->chgQData(oldp+89,(vlSelf->top__DOT__u_execute__DOT___alu_in1),64);
             tracep->chgQData(oldp+91,(vlSelf->top__DOT__u_execute__DOT___alu_in2),64);
-            tracep->chgBit(oldp+93,(((((((((9U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
-                                           | (0xfU 
+            tracep->chgQData(oldp+93,(vlSelf->top__DOT__u_execute__DOT___alu_out),64);
+            tracep->chgBit(oldp+95,(((((((((0xcU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
+                                           | (0x10U 
                                               == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
                                           & (IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isSLT)) 
-                                         | (((0xaU 
+                                         | (((0xdU 
                                               == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
-                                             | (0x11U 
+                                             | (0x12U 
                                                 == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
                                             & (IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isCF))) 
-                                        | ((0xdU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
+                                        | ((0xeU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
                                            & (0U == 
                                               ((vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[0U] 
                                                 | vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[1U]) 
                                                | vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[2U])))) 
-                                       | ((0xeU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
+                                       | ((0xfU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
                                           & (0U != 
                                              ((vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[0U] 
                                                | vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[1U]) 
                                               | vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[2U])))) 
-                                      | ((0x10U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
+                                      | ((0x11U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
                                          & (~ (IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isSLT)))) 
-                                     | ((0x12U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
+                                     | ((0x13U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
                                         & (~ (IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isCF))))));
-            tracep->chgQData(oldp+94,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___shifter_in1_inv),64);
-            tracep->chgQData(oldp+96,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___shifter_res),64);
-            tracep->chgQData(oldp+98,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___srl_res),64);
+            tracep->chgBit(oldp+96,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___shift_sra));
+            tracep->chgBit(oldp+97,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___shift_srl));
+            tracep->chgBit(oldp+98,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___shift_sll));
+            tracep->chgBit(oldp+99,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isshift32));
+            tracep->chgCData(oldp+100,((0x3fU & (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2))),6);
+            tracep->chgQData(oldp+101,(((((- (QData)((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___shift_srl))) 
+                                          & vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___srl_res) 
+                                         | ((- (QData)((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___shift_sra))) 
+                                            & ((vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___srl_res 
+                                                & (0xffffffffffffffffULL 
+                                                   >> 
+                                                   (0x3fU 
+                                                    & ((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isshift32)
+                                                        ? 
+                                                       ((IData)(0x20U) 
+                                                        + (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2))
+                                                        : (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2))))) 
+                                               | ((- (QData)((IData)(
+                                                                     (1U 
+                                                                      & ((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isshift32)
+                                                                          ? (IData)(
+                                                                                (vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num 
+                                                                                >> 0x1fU))
+                                                                          : (IData)(
+                                                                                (vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num 
+                                                                                >> 0x3fU))))))) 
+                                                  & (~ 
+                                                     (0xffffffffffffffffULL 
+                                                      >> 
+                                                      (0x3fU 
+                                                       & ((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isshift32)
+                                                           ? 
+                                                          ((IData)(0x20U) 
+                                                           + (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2))
+                                                           : (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2))))))))) 
+                                        | ((- (QData)((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___shift_sll))) 
+                                           & vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shifter_res))),64);
+            tracep->chgQData(oldp+103,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num),64);
+            tracep->chgQData(oldp+105,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num_inv),64);
+            tracep->chgQData(oldp+107,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shifter_res),64);
+            tracep->chgQData(oldp+109,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___srl_res),64);
         }
-        tracep->chgBit(oldp+100,(vlSelf->clk));
-        tracep->chgBit(oldp+101,(vlSelf->rst));
+        tracep->chgBit(oldp+111,(vlSelf->clk));
+        tracep->chgBit(oldp+112,(vlSelf->rst));
     }
 }
 
