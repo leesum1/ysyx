@@ -308,6 +308,9 @@ module dcode (
   wire _alu_bge = _inst_bge;
   wire _alu_bltu = _inst_bltu;
   wire _alu_bgeu = _inst_bgeu;
+
+  // // ALU 计算结果是否需要符号扩展,放在 execute 下实现
+  // wire _alu_sext = _type_op_imm_32 | _type_op_32;
   //多路选择器
   wire [`ALUOP_LEN-1:0] _alu_op = ({`ALUOP_LEN{_alu_add}} & `ALUOP_ADD)|
                                   ({`ALUOP_LEN{_alu_sub}} & `ALUOP_SUB)|

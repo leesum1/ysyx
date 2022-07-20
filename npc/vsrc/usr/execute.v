@@ -26,7 +26,7 @@ module execute (
   wire _excop_ebreak = (exc_op == `EXCOP_EBREAK);
   wire _excop_none = (exc_op == `EXCOP_NONE);
 
-
+  /* ALU 两端操作数选择 */
   wire _rs1_rs2 = _excop_op32 | _excop_op | _excop_branch;
   wire _rs1_imm = _excop_opimm | _excop_opimm32 | _excop_load | _excop_store;
   wire _pc_4 = _excop_jal | _excop_jalr;
@@ -57,8 +57,13 @@ module execute (
       .alu_op_i(alu_op),
       .compare_out(_compare_out)
   );
+  /* alu计算结果需要符号扩展 */
+  wire _alu_sext = _excop_opimm32 | _excop_op32;
 
-  assign exc_out = _alu_out;
+  assign exc_out = (_alu_sext)? ({{32{_alu_out[31]}},_alu_out[31:0]}) :_alu_out;
+
+
+  // assign exc_out = _alu_out;
 
 
   /*************ebreak仿真使用**************************/
