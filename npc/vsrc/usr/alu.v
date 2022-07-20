@@ -215,4 +215,5 @@ module alu_shift (
   wire [`XLEN-1:0] _shift_out = ({`XLEN{shift_srl}}&_srl_res) |
                                 ({`XLEN{shift_sra}}&_sra_res) |
                                 ({`XLEN{shift_sll}}&_sll_res);
+  assign shift_out = _shift_out;
 endmodule
