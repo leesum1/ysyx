@@ -12,7 +12,7 @@ INC_PATH := -I./vsrc \
 VERILATOR_FLAGS +=  --trace --cc --exe --build 
 VERILATOR_FLAGS += ${INC_PATH}
 VERILATOR_FLAGS += --top ${TOP_MODULE}
-# gcc 链接库
+# gcc 链接库 -lasan(内存检查)
 GCC_LDFLAGS := -LDFLAGS " -lreadline -ldl -lnemu"
 GCC_CFLAGS := -CFLAGS -I/home/leesum/ysyx-workbench/npc/csrc/include
 # NEMU_LIB := /home/leesum/ysyx-workbench/npc/riscv64-nemu-interpreter-so
