@@ -84,10 +84,6 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                                                  == 
                                                  (0x7fULL 
                                                   & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
-    top__DOT__u_dcode__DOT___type_op = (IData)((0x33ULL 
-                                                == 
-                                                (0x7fULL 
-                                                 & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
     top__DOT__u_dcode__DOT___type_jal = (IData)((0x6fULL 
                                                  == 
                                                  (0x7fULL 
@@ -116,6 +112,10 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                                                        == 
                                                        (0x7fULL 
                                                         & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
+    top__DOT__u_dcode__DOT___type_op = (IData)((0x33ULL 
+                                                == 
+                                                (0x7fULL 
+                                                 & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
     top__DOT__u_dcode__DOT___type_op_32 = (IData)((0x3bULL 
                                                    == 
                                                    (0x7fULL 
@@ -442,7 +442,7 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                                                                                 ((1U 
                                                                                 == 
                                                                                 (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_32))) 
+                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
                                                                                 & (0ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
@@ -481,7 +481,7 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                                                                                 ((1U 
                                                                                 == 
                                                                                 (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_32))) 
+                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
                                                                                 & (0x40000000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
@@ -501,7 +501,7 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                                                                                 ((1U 
                                                                                 == 
                                                                                 (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_32))) 
+                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
                                                                                 & (0x4000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
@@ -519,7 +519,7 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                                                                                 ((1U 
                                                                                 == 
                                                                                 (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_32))) 
+                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
                                                                                 & (0x7000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
@@ -537,7 +537,7 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                                                                                 ((1U 
                                                                                 == 
                                                                                 (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_32))) 
+                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
                                                                                 & (0x6000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
@@ -555,7 +555,7 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                                                                                 ((1U 
                                                                                 == 
                                                                                 (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_32))) 
+                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
                                                                                 & (0x1000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
@@ -593,7 +593,7 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                                                                                 ((1U 
                                                                                 == 
                                                                                 (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_32))) 
+                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
                                                                                 & (0x5000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
@@ -631,7 +631,7 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                                                                                 ((1U 
                                                                                 == 
                                                                                 (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_32))) 
+                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
                                                                                 & (0x40005000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
@@ -669,7 +669,7 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                                                                                ((1U 
                                                                                 == 
                                                                                 (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_32))) 
+                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
                                                                                 & (0x2000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
@@ -687,7 +687,7 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                                                                               ((1U 
                                                                                 == 
                                                                                 (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_32))) 
+                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
                                                                                & (0x3000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 

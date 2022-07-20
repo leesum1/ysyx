@@ -187,18 +187,19 @@ module dcode (
   // wire _inst_srli = _type_op_imm & _func3_101 & _func7_0000000;
   // wire _inst_srai = _type_op_imm & _func3_101 & _func7_0100000;
 
+  /* _type_op */
+  wire _inst_add = _type_op & _func3_000 & _func7_0000000;
+  wire _inst_sub = _type_op & _func3_000 & _func7_0100000;
+  wire _inst_sll = _type_op & _func3_001 & _func7_0000000;
+  wire _inst_slt = _type_op & _func3_010 & _func7_0000000;
+  wire _inst_sltu = _type_op & _func3_011 & _func7_0000000;
+  wire _inst_xor = _type_op & _func3_100 & _func7_0000000;
+  wire _inst_srl = _type_op & _func3_101 & _func7_0000000;
+  wire _inst_sra = _type_op & _func3_101 & _func7_0100000;
+  wire _inst_or = _type_op & _func3_110 & _func7_0000000;
+  wire _inst_and = _type_op & _func3_111 & _func7_0000000;
   /* _type_op_32 */
-  wire _inst_add = _type_op_32 & _func3_000 & _func7_0000000;
-  wire _inst_sub = _type_op_32 & _func3_000 & _func7_0100000;
-  wire _inst_sll = _type_op_32 & _func3_001 & _func7_0000000;
-  wire _inst_slt = _type_op_32 & _func3_010 & _func7_0000000;
-  wire _inst_sltu = _type_op_32 & _func3_011 & _func7_0000000;
-  wire _inst_xor = _type_op_32 & _func3_100 & _func7_0000000;
-  wire _inst_srl = _type_op_32 & _func3_101 & _func7_0000000;
-  wire _inst_sra = _type_op_32 & _func3_101 & _func7_0100000;
-  wire _inst_or = _type_op_32 & _func3_110 & _func7_0000000;
-  wire _inst_and = _type_op_32 & _func3_111 & _func7_0000000;
-  // rv64 only
+  // rv64 only  
   wire _inst_addw = _type_op_32 & _func3_000 & _func7_0000000;
   wire _inst_subw = _type_op_32 & _func3_000 & _func7_0100000;
   wire _inst_sllw = _type_op_32 & _func3_001 & _func7_0000000;
