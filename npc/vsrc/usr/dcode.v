@@ -321,11 +321,14 @@ module dcode (
   wire [`ALUOP_LEN-1:0] _alu_op = ({`ALUOP_LEN{_alu_add}} & `ALUOP_ADD)|
                                   ({`ALUOP_LEN{_alu_sub}} & `ALUOP_SUB)|
                                   ({`ALUOP_LEN{_alu_xor}} & `ALUOP_XOR)|
-                                  ({`ALUOP_LEN{_alu_and}} & `ALUOP_AND)|
                                   ({`ALUOP_LEN{_alu_or}} & `ALUOP_OR)|
+                                  ({`ALUOP_LEN{_alu_and}} & `ALUOP_AND)|
                                   ({`ALUOP_LEN{_alu_sll}} & `ALUOP_SLL)|
                                   ({`ALUOP_LEN{_alu_srl}} & `ALUOP_SRL)|
                                   ({`ALUOP_LEN{_alu_sra}} & `ALUOP_SRA)|
+                                  ({`ALUOP_LEN{_alu_sllw}} & `ALUOP_SLLW)|
+                                  ({`ALUOP_LEN{_alu_srlw}} & `ALUOP_SRLW)|
+                                  ({`ALUOP_LEN{_alu_sraw}} & `ALUOP_SRAW)|
                                   ({`ALUOP_LEN{_alu_slt}} & `ALUOP_SLT)|
                                   ({`ALUOP_LEN{_alu_sltu}} & `ALUOP_SLTU)|
                                   ({`ALUOP_LEN{_alu_beq}} & `ALUOP_BEQ)|

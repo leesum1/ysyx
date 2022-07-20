@@ -339,24 +339,24 @@ void Vtop___024root__traceFullSub0(Vtop___024root* vlSelf, VerilatedVcd* tracep)
         tracep->fullQData(oldp+92,(vlSelf->top__DOT__u_execute__DOT___alu_in2),64);
         tracep->fullQData(oldp+94,(vlSelf->top__DOT__u_execute__DOT___alu_out),64);
         tracep->fullBit(oldp+96,(((((((((0xcU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
-                                        | (0x12U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
+                                        | (0x10U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
                                        & (IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isSLT)) 
                                       | (((0xdU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
-                                          | (0x14U 
+                                          | (0x12U 
                                              == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
                                          & (IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isCF))) 
-                                     | ((0x10U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
+                                     | ((0xeU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
                                         & (0U == ((
                                                    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[0U] 
                                                    | vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[1U]) 
                                                   | vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[2U])))) 
-                                    | ((0x11U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
+                                    | ((0xfU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
                                        & (0U != ((vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[0U] 
                                                   | vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[1U]) 
                                                  | vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[2U])))) 
-                                   | ((0x13U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
+                                   | ((0x11U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
                                       & (~ (IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isSLT)))) 
-                                  | ((0x15U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
+                                  | ((0x13U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
                                      & (~ (IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isCF))))));
         tracep->fullBit(oldp+97,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___shift_sra));
         tracep->fullBit(oldp+98,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___shift_srl));

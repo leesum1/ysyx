@@ -37,8 +37,7 @@ module alu (
   //比较
   wire _aluop_slt = (alu_op_i == `ALUOP_SLT);
   wire _aluop_sltu = (alu_op_i == `ALUOP_SLTU);
-  wire _aluop_slti = (alu_op_i == `ALUOP_SLTI);
-  wire _aluop_sltiu = (alu_op_i == `ALUOP_SLTIU);
+
   wire _aluop_beq = (alu_op_i == `ALUOP_BEQ);
   wire _aluop_bne = (alu_op_i == `ALUOP_BNE);
   wire _aluop_blt = (alu_op_i == `ALUOP_BLT);
@@ -49,7 +48,6 @@ module alu (
   /*********************************加法-减法-比较器实现*************************************/
 
   wire _isCMP =   _aluop_slt | _aluop_bgeu |
-                  _aluop_slti | _aluop_sltiu|
                   _aluop_sltu |_aluop_beq |
                   _aluop_bne |_aluop_blt  |
                   _aluop_bge|_aluop_bltu  ;
@@ -119,6 +117,7 @@ module alu (
   wire [`XLEN-1:0] _shift_num = alu_a_i;
   wire [5:0] _shift_count = alu_b_i[5:0];
   wire [`XLEN-1:0] _shift_out;
+
   alu_shift u_alu_shift (
       .shift_sra  (_shift_sra),
       .shift_srl  (_shift_srl),
