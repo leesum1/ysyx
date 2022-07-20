@@ -291,15 +291,21 @@ module dcode (
 
 
   /* ALU_OP */
+  //加减和逻辑
   wire _alu_add = _inst_add |_inst_addw |_inst_addi |_inst_addiw| _type_load 
                   | _type_store | _inst_jal |_inst_jalr |_inst_auipc;
   wire _alu_sub = _inst_sub | _inst_subw;
   wire _alu_xor = _inst_xor | _inst_xori;
   wire _alu_and = _inst_and | _inst_andi;
   wire _alu_or = _inst_or | _inst_ori;
-  wire _alu_sll = _inst_sll | _inst_slli | _inst_slliw | _inst_sllw;
-  wire _alu_srl = _inst_srl | _inst_srli | _inst_srliw | _inst_srlw;
-  wire _alu_sra = _inst_sra | _inst_srai | _inst_sraiw | _inst_sraw;
+  //移位
+  wire _alu_sll = _inst_sll | _inst_slli;
+  wire _alu_srl = _inst_srl | _inst_srli;
+  wire _alu_sra = _inst_sra | _inst_srai;
+  wire _alu_sllw = _inst_slliw | _inst_sllw;
+  wire _alu_srlw = _inst_srliw | _inst_srlw;
+  wire _alu_sraw = _inst_sraiw | _inst_sraw;
+  //比较
   wire _alu_slt = _inst_slt | _inst_slti;
   wire _alu_sltu = _inst_sltu | _inst_sltiu;
   wire _alu_beq = _inst_beq;
