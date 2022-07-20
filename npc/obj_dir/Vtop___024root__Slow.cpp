@@ -1564,21 +1564,30 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                                                                            ((IData)(vlSelf->top__DOT__u_memory__DOT___ls32byte)
                                                                              ? (QData)((IData)(vlSelf->top__DOT__rs2_data))
                                                                              : vlSelf->top__DOT__rs2_data))), 
-                                                                         ((IData)(vlSelf->top__DOT__u_memory__DOT___ls8byte)
-                                                                           ? 1U
-                                                                           : 
-                                                                          ((IData)(vlSelf->top__DOT__u_memory__DOT___ls16byte)
-                                                                            ? 3U
-                                                                            : 
-                                                                           ((IData)(vlSelf->top__DOT__u_memory__DOT___ls32byte)
-                                                                             ? 0xfU
-                                                                             : 
-                                                                            (((6U 
+                                                                         ((((((8U 
                                                                                == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op)) 
                                                                               | (0xbU 
-                                                                                == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op)))
-                                                                              ? 0xffU
-                                                                              : 0U)))));
+                                                                                == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op))) 
+                                                                             | (9U 
+                                                                                == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op))) 
+                                                                            | (0xaU 
+                                                                               == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op))) 
+                                                                           & (0U 
+                                                                              != (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op)))
+                                                                           ? 
+                                                                          (0xffU 
+                                                                           & ((((1U 
+                                                                                & (- (IData)((IData)(vlSelf->top__DOT__u_memory__DOT___ls8byte)))) 
+                                                                                | (3U 
+                                                                                & (- (IData)((IData)(vlSelf->top__DOT__u_memory__DOT___ls16byte))))) 
+                                                                               | (0xfU 
+                                                                                & (- (IData)((IData)(vlSelf->top__DOT__u_memory__DOT___ls32byte))))) 
+                                                                              | (- (IData)(
+                                                                                ((6U 
+                                                                                == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op)) 
+                                                                                | (0xbU 
+                                                                                == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op)))))))
+                                                                           : 0U));
     vlSelf->top__DOT__u_pc__DOT___isready_inc4 = ((4U 
                                                    == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op)) 
                                                   | ((~ (IData)(vlSelf->top__DOT__u_pc__DOT___isready_branch)) 
