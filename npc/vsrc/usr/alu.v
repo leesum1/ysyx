@@ -103,20 +103,16 @@ module alu (
                       ((_aluop_bgeu)&_isBGEU);
 
   /************************************* 移位器实现 *********************************************/
-  //   wire [`XLEN-1:0] _shifter_in1;  //要移位的数
-  //   wire [`XLEN-1:0] _shifter_in1_inv;  //要移位的数
-  //   wire [6-1:0] _shifter_in2;  //移动次数
-  //   wire [`XLEN-1:0] _shifter_res;  //最终结果
 
-  //   wire _op_shift = _aluop_sra | _aluop_sll | _aluop_srl;
+  wire _shift_sra = _aluop_sra | _aluop_sraw;  //算数右移
+  wire _shift_srl = _aluop_srl | _aluop_srlw;  //逻辑右移
+  wire _shift_sll = _aluop_sll | _aluop_sllw;  //逻辑左移
 
-  wire _shift_sra = _aluop_sra | _aluop_sraw;
-  wire _shift_srl = _aluop_srl | _aluop_srlw;
-  wire _shift_sll = _aluop_sll | _aluop_sllw;
-  wire _isshift32 = _aluop_sllw | _aluop_sraw | _aluop_srlw;
-  wire [`XLEN-1:0] _shift_num = alu_a_i;
-  wire [5:0] _shift_count = alu_b_i[5:0];
-  wire [`XLEN-1:0] _shift_out;
+  //Shifts the lower 32 bits of x[rs1] left by x[rs2] bit positions. The vacated bits are filled withzeros, and the sign-extended 32-bit result is written to x[rd]. 
+  wire _isshift32 = _aluop_sllw | _aluop_sraw | _aluop_srlw;  //是否忽略高32位
+  wire [`XLEN-1:0] _shift_num = alu_a_i;  //进行移位的操作数
+  wire [5:0] _shift_count = alu_b_i[5:0];  //移位次数
+  wire [`XLEN-1:0] _shift_out;  //移位结果
 
   alu_shift u_alu_shift (
       .shift_sra  (_shift_sra),
@@ -127,31 +123,6 @@ module alu (
       .shift_count(_shift_count),
       .shift_out  (_shift_out)
   );
-  //   /* 位颠倒 */
-  //   Vectorinvert #(
-  //       .DATA_LEN(`XLEN)
-  //   ) u_Vectorinvert1 (
-  //       .in (alu_a_i),
-  //       .out(_shifter_in1_inv)
-  //   );
-  //   /* 如果是右移则颠倒，转换为左移 */
-  //   assign _shifter_in1 = {`XLEN{_op_shift}} & ((_aluop_sra | _aluop_srl) ? _shifter_in1_inv : alu_a_i);//操作数
-  //   assign _shifter_in2 = {6{_op_shift}} & alu_b_i[5:0];  //移位次数
-
-  //   /* 实际移位操作 */
-  //   assign _shifter_res = (_shifter_in1 << _shifter_in2);
-  //   wire [`XLEN-1:0] _sll_res = _shifter_res;  //逻辑左移结果
-  //   wire [`XLEN-1:0] _srl_res;  //逻辑右移结果
-  //   /* 位颠倒 */
-  //   Vectorinvert #(
-  //       .DATA_LEN(`XLEN)
-  //   ) u_Vectorinvert2 (
-  //       .in (_shifter_res),
-  //       .out(_srl_res)
-  //   );
-  //   /* 算数右移结果，采用掩码算法实现算数右移 */
-  //   wire [`XLEN-1:0] _eff_mask = (~(`XLEN'b0)) >> _shifter_in2;
-  //   wire [`XLEN-1:0] _sra_res = (_srl_res & _eff_mask) | ({`XLEN{alu_a_i[`XLEN-1]}} & (~_eff_mask));
 
   /***************************************逻辑运算*******************************************/
   wire [`XLEN-1:0] _and_res = alu_a_i & alu_b_i;
@@ -160,12 +131,18 @@ module alu (
 
   /****************************选择最终ALU结果***********************************************/
 
-  wire [`XLEN-1:0]_alu_out = (_aluop_add|_aluop_sub)?_add_out[`XLEN-1:0]:
-                    (_aluop_and)?_and_res:
-                    (_aluop_or)?_or_res:
-                    (_aluop_xor)?_xor_res:
-                    (_shift_sra|_shift_srl|_shift_sll)?_shift_out:
-                    `XLEN'b0;
+  //   wire [`XLEN-1:0]_alu_out = (_aluop_add|_aluop_sub)?_add_out[`XLEN-1:0]:
+  //                     (_aluop_and)?_and_res:
+  //                     (_aluop_or)?_or_res:
+  //                     (_aluop_xor)?_xor_res:
+  //                     (_shift_sra|_shift_srl|_shift_sll)?_shift_out:
+  //                     `XLEN'b0;
+
+  wire [`XLEN-1:0] _alu_out = ({`XLEN{_aluop_add|_aluop_sub}}&_add_out[`XLEN-1:0])|
+                                ({`XLEN{_aluop_and}}&_and_res)|
+                                ({`XLEN{_aluop_or}}&_or_res)|
+                                ({`XLEN{_aluop_xor}}&_xor_res)|
+                                ({`XLEN{_shift_sra|_shift_srl|_shift_sll}}&_shift_out);
 
   /* 选择最后输出 */
   assign alu_out = (_isCMP) ? {63'b0, _compare_out} : _alu_out;
@@ -183,7 +160,7 @@ module alu_shift (
     output [`XLEN-1:0] shift_out
 );
   wire _op_shift = shift_sra | shift_srl | shift_sll;
-
+  /* 选择是否忽略高32位 */
   wire [`XLEN-1:0] _shift_num = (isshift32) ? {32'b0, shift_num[31:0]} : shift_num;
   wire [`XLEN-1:0] _shift_num_inv;
   /* 位颠倒 */
@@ -193,25 +170,31 @@ module alu_shift (
       .in (_shift_num),
       .out(_shift_num_inv)
   );
+  //将右移转换为左移
   wire [`XLEN-1:0] _shifter_in1 = {`XLEN{_op_shift}} & ((shift_sra | shift_srl) ? _shift_num_inv : _shift_num);//操作数
-  wire [5:0] _shifter_in2 = shift_count;
+  wire [5:0] _shifter_in2 = shift_count;  //移位次数
+  /* 实际移位操作,用一个移位器实现左移和右移 */
   wire [`XLEN-1:0] _shifter_res = _shifter_in1 << _shifter_in2;
 
   wire [`XLEN-1:0] _sll_res = _shifter_res;  //逻辑左移结果
-  wire [`XLEN-1:0] _srl_res;  //逻辑右移结果
+  /*逻辑右移结果,srl_in->位颠倒->移位器(左移)->位颠倒->srl_out*/
+  wire [`XLEN-1:0] _srl_res;
   Vectorinvert #(
       .DATA_LEN(`XLEN)
   ) u_Vectorinvert2 (
       .in (_sll_res),
       .out(_srl_res)
   );
-
+  /* 选择掩码,64位移位和32位移位掩码不同 */
   wire [5:0] _eff_mask_shift_count = (isshift32) ? (_shifter_in2 + 6'd32) : _shifter_in2;
+  /* 选择符号位,32位移位需要忽略输入num的高32位 */
   wire _lastbit = (isshift32) ? _shift_num[31] : _shift_num[`XLEN-1];
+
   /* 算数右移结果，采用掩码算法实现算数右移 */
   wire [`XLEN-1:0] _eff_mask = (~(`XLEN'b0)) >> _eff_mask_shift_count;
   wire [`XLEN-1:0] _sra_res = (_srl_res & _eff_mask) | ({`XLEN{_lastbit}} & (~_eff_mask));
 
+  /* 多路选择器选择最终结果 */
   wire [`XLEN-1:0] _shift_out = ({`XLEN{shift_srl}}&_srl_res) |
                                 ({`XLEN{shift_sra}}&_sra_res) |
                                 ({`XLEN{shift_sll}}&_sll_res);
