@@ -62,9 +62,9 @@ int main(int argc, char* argv[]) {
     }
   } while (retCode != ret::Quit);
   mysim_p->excute(1);
-  mysim_p->npcTrap();
+  int hitgood = mysim_p->npcTrap();
   delete mysim_p;
-  return 0;
+  return hitgood;
 }
 
 

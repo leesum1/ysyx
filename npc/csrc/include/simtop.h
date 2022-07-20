@@ -43,7 +43,7 @@ public:
     ~Simtop();
     Vtop* getTop();
     void reset();
-    void npcTrap();
+    int npcTrap();
     uint64_t getRegVal(int idx);
     uint64_t getRegVal(const char* str);
     void printRegisterFile();
