@@ -94,7 +94,7 @@ module alu (
   wire _isBEQ = _isZero;  //a==b
   wire _isBNE = ~_isZero;  //a!=b
 
-  /* 并行多路选择器 */
+  /* 并行多路选择器,选择比较输出 */
   wire _compare_out = ((_aluop_slt|_aluop_blt)&_isSLT)|
                       ((_aluop_sltu|_aluop_bltu)&_isSLTU)|
                       ((_aluop_beq)&_isBEQ)|
@@ -130,13 +130,6 @@ module alu (
   wire [`XLEN-1:0] _xor_res = alu_a_i ^ alu_b_i;
 
   /****************************选择最终ALU结果***********************************************/
-
-  //   wire [`XLEN-1:0]_alu_out = (_aluop_add|_aluop_sub)?_add_out[`XLEN-1:0]:
-  //                     (_aluop_and)?_and_res:
-  //                     (_aluop_or)?_or_res:
-  //                     (_aluop_xor)?_xor_res:
-  //                     (_shift_sra|_shift_srl|_shift_sll)?_shift_out:
-  //                     `XLEN'b0;
 
   wire [`XLEN-1:0] _alu_out = ({`XLEN{_aluop_add|_aluop_sub}}&_add_out[`XLEN-1:0])|
                                 ({`XLEN{_aluop_and}}&_and_res)|
