@@ -184,8 +184,8 @@ module alu_shift (
     output [`XLEN-1:0] shift_out
 );
   wire _op_shift = shift_sra | shift_srl | shift_sll;
-  wire [`XLEN-1:0] _shift_num32 = {32'b0, shift_num[31:0]};
-  wire [`XLEN-1:0] _shift_num = (isshift32) ? _shift_num32 : shift_num;
+
+  wire [`XLEN-1:0] _shift_num = (isshift32) ? {32'b0, shift_num[31:0]} : shift_num;
   wire [`XLEN-1:0] _shift_num_inv;
   /* 位颠倒 */
   Vectorinvert #(
