@@ -60,8 +60,9 @@ module execute (
   /* alu计算结果需要符号扩展 */
   wire _alu_sext = _excop_opimm32 | _excop_op32;
   wire [`XLEN-1:0]_alu_sext_out = {{32{_alu_out[31]}},_alu_out[31:0]};
-  assign exc_out = (_alu_sext)? _alu_sext_out :_alu_out;
+  //assign exc_out = (_alu_sext)? _alu_sext_out :_alu_out;
 
+  assign exc_out = _alu_out;
 
   /*************ebreak仿真使用**************************/
   always @(*) begin
