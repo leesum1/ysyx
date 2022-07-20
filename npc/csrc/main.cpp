@@ -64,7 +64,7 @@ int main(int argc, char* argv[]) {
   mysim_p->excute(1);
   int hitgood = mysim_p->npcTrap();
   delete mysim_p;
-  return hitgood;
+  return 1;
 }
 
 
