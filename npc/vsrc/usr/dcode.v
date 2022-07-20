@@ -293,7 +293,7 @@ module dcode (
   /* ALU_OP */
   //加减和逻辑
   wire _alu_add = _inst_add |_inst_addw |_inst_addi |_inst_addiw| _type_load 
-                  | _type_store | _inst_jal |_inst_jalr |_inst_auipc;
+                  | _type_store | _inst_jal |_inst_jalr |_inst_auipc | _inst_lui;
   wire _alu_sub = _inst_sub | _inst_subw;
   wire _alu_xor = _inst_xor | _inst_xori;
   wire _alu_and = _inst_and | _inst_andi;

@@ -71,12 +71,7 @@ module memory (
                                 (_ls16byte) ? {48'b0, rs2_data[15:0]}:
                                 (_ls32byte) ? {32'b0, rs2_data[31:0]}:
                                  rs2_data;
-  /* 掩码 TODO:掩码设置错误*/
-  // wire [7:0] _wmask = (_ls8byte)?8'b0000_0001:
-  //                     (_ls16byte)?8'b0000_0011:
-  //                     (_ls32byte)?8'b0000_1111:
-  //                     (_ls64byte)?8'b1111_1111:
-  //                     8'b0000_0000;
+
   /* 写数据 mask 选择,_mask:初步选择 _wmask:最终选择 */
   wire [7:0] _mask = ({8{_ls8byte}}&8'b0000_0001) |
                      ({8{_ls16byte}}&8'b0000_0011) |
