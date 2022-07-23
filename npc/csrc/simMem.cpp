@@ -101,9 +101,10 @@ word_t SimMem::paddr_read(paddr_t addr, int len) {
         gettimeofday(&now, NULL);
         long seconds = now.tv_sec;
         long useconds = now.tv_usec;
-        cout << "读取时间" << endl;
+
         return (seconds * 1000000 + (useconds + 500));
     }
+    cout << "读取时间" << endl;
     out_of_bound(addr);
     return 0;
 
