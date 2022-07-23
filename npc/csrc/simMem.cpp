@@ -93,6 +93,7 @@ void SimMem::out_of_bound(paddr_t addr) {
     //cout << "addr:\t" << hex << addr << " not in pmem!" << endl;
 }
 word_t SimMem::paddr_read(paddr_t addr, int len) {
+    cout << "读取时间" << addr << endl;
     if (in_pmem(addr)) {
         return pmem_read(addr, len);
     }
@@ -101,7 +102,7 @@ word_t SimMem::paddr_read(paddr_t addr, int len) {
         gettimeofday(&now, NULL);
         long seconds = now.tv_sec;
         long useconds = now.tv_usec;
-        cout << "读取时间" << endl;
+
         return (seconds * 1000000 + (useconds + 500));
     }
 
