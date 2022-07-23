@@ -29,10 +29,10 @@ extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
     /* 隐式格式转换很坑 */
     uint32_t temp = (uint8_t)wmask;
     switch (temp) {
-    case 1:   mysim_p->mem->paddr_write(waddr, 1, wdata); printf("pmem_write:1\n");break; // 0000_0001, 1byte.
-    case 3:   mysim_p->mem->paddr_write(waddr, 2, wdata); printf("pmem_write:2\n");break; // 0000_0011, 2byte.
-    case 15:  mysim_p->mem->paddr_write(waddr, 4, wdata); printf("pmem_write:4\n");break; // 0000_1111, 4byte.
-    case 255: mysim_p->mem->paddr_write(waddr, 8, wdata); printf("pmem_write:8\n"); break; // 1111_1111, 8byte.
+    case 1:   mysim_p->mem->paddr_write(waddr, 1, wdata); break; // 0000_0001, 1byte.
+    case 3:   mysim_p->mem->paddr_write(waddr, 2, wdata); break; // 0000_0011, 2byte.
+    case 15:  mysim_p->mem->paddr_write(waddr, 4, wdata); break; // 0000_1111, 4byte.
+    case 255: mysim_p->mem->paddr_write(waddr, 8, wdata);  break; // 1111_1111, 8byte.
     default:  break;
     }
 }

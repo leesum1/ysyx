@@ -89,7 +89,7 @@ bool SimMem::in_pmem(paddr_t addr) {
 }
 
 void SimMem::out_of_bound(paddr_t addr) {
-    cout << "addr:\t" << hex << addr << " not in pmem!" << endl;
+    //cout << "addr:\t" << hex << addr << " not in pmem!" << endl;
 }
 word_t SimMem::paddr_read(paddr_t addr, int len) {
     if (in_pmem(addr)) {
