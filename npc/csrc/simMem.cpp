@@ -1,6 +1,7 @@
 #include "simMem.h"
 
-
+#include <sys/time.h>
+#include <time.h>
 
 /* 默认程序 */
 const uint32_t defimg[] = {
@@ -94,6 +95,13 @@ void SimMem::out_of_bound(paddr_t addr) {
 word_t SimMem::paddr_read(paddr_t addr, int len) {
     if (in_pmem(addr)) {
         return pmem_read(addr, len);
+    }
+    if (addr = 0xa000048) {
+        struct timeval now;
+        gettimeofday(&now, NULL);
+        long seconds = now.tv_sec;
+        long useconds = now.tv_usec;
+        return (seconds * 1000000 + (useconds + 500));
     }
     out_of_bound(addr);
     return 0;
