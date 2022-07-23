@@ -96,9 +96,10 @@ word_t SimMem::paddr_read(paddr_t addr, int len) {
     if (in_pmem(addr)) {
         return pmem_read(addr, len);
     }
+    /* 读取低位时刷新时间 */
     static uint64_t rtc_time;
+    static struct timeval now;
     if (addr == 0xa0000048) {
-        static struct timeval now;
         gettimeofday(&now, NULL);
         long seconds = now.tv_sec;
         long useconds = now.tv_usec;
