@@ -1,6 +1,6 @@
 #include <am.h>
 #include <klib-macros.h>
-#include "npc.h"
+#include "npc.h" // add by leesum
 
 extern char _heap_start;
 int main(const char* args);
@@ -21,7 +21,6 @@ void putch(char ch) {
 }
 
 void halt(int code) {
-  // asm volatile("mv a0, %0; ebreak" : : "r"(code));
   npc_trap(code);
   /* 不应该到这里来 */
   while (1);

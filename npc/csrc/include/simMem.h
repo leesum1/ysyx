@@ -14,8 +14,8 @@ typedef uint64_t word_t;
 class SimMem {
 
 public:
-#define MEMSIZE 0x8000000
-#define MEMBASE 0x80000000
+#define MEMSIZE 0x8000000 //((128 * 1024 * 1024))
+#define MEMBASE 0x80000000 
     /* 实际内存 4k对齐*/
     string imgpath;
     uint8_t pmem[MEMSIZE] PG_ALIGN = {};
