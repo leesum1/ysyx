@@ -96,13 +96,17 @@ word_t SimMem::paddr_read(paddr_t addr, int len) {
     if (in_pmem(addr)) {
         return pmem_read(addr, len);
     }
+    static uint64_t rtc_time;
     if (addr = 0xa0000048) {
-        struct timeval now;
+        static struct timeval now;
         gettimeofday(&now, NULL);
         long seconds = now.tv_sec;
         long useconds = now.tv_usec;
-
-        return (seconds * 1000000 + (useconds + 500));
+        rtc_time = (seconds * 1000000 + (useconds + 500));
+        return rtc_time;
+    }
+    else if (addr = 0xa0000048 + 4) {
+        return rtc_time >> 32;
     }
 
     out_of_bound(addr);

@@ -1,12 +1,25 @@
 #include <am.h>
+#include "npc.h"
 #include <stdio.h>
 
+static uint64_t boot_time = 0;
+
+static uint64_t read_time() {
+  uint64_t us_low = inl(RTC_ADDR);
+  uint64_t us_high = inl(RTC_ADDR + 4);
+  uint64_t time = ((uint64_t)us_high << 32) | us_low;
+  return time;
+}
+
+
 void __am_timer_init() {
+  boot_time = read_time();
 }
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T* uptime) {
-  printf("__am_timer_uptime");
-  uptime->us = 0;
+
+  uptime->us = read_time() - boot_time;
+  // printf("time:%d\n", read_time() / 1000000);
 }
 
 void __am_timer_rtc(AM_TIMER_RTC_T* rtc) {
