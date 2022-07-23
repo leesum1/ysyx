@@ -6,21 +6,10 @@
 #include "riscv/riscv.h" // the macro `ISA_H` is defined in CFLAGS
 // it will be expanded as "x86/x86.h", "mips/mips32.h", ...
 
-#if defined(__ISA_X86__)
-# define npc_trap(code) asm volatile ("int3" : :"a"(code))
-#elif defined(__ISA_MIPS32__)
-# define npc_trap(code) asm volatile ("move $v0, %0; sdbbp" : :"r"(code))
-#elif defined(__ISA_RISCV32__) || defined(__ISA_RISCV64__)
-# define npc_trap(code) asm volatile("mv a0, %0; ebreak" : :"r"(code))
-#elif
-# error unsupported ISA __ISA__
-#endif
 
-#if defined(__ARCH_X86_NPC)
-# define DEVICE_BASE 0x0
-#else
+#define npc_trap(code) asm volatile("mv a0, %0; ebreak" : :"r"(code))
+
 # define DEVICE_BASE 0xa0000000
-#endif
 
 #define MMIO_BASE 0xa0000000
 

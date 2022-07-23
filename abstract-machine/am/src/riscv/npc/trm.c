@@ -17,7 +17,7 @@ static const char mainargs[] = MAINARGS;
 
 /* 串口 */
 void putch(char ch) {
-  // outb(SERIAL_PORT, ch);
+  outb(SERIAL_PORT, ch);
 }
 
 void halt(int code) {
