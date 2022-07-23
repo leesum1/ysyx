@@ -193,8 +193,8 @@ module alu (
       // input rst,
       .is_sr1_signed(_is_div_sr1_signed),
       .is_sr2_signed(_is_div_sr2_signed),
-      .sr1_data     (alu_a_i),
-      .sr2_data     (alu_b_i),
+      .sr1_data     (_div_sr1),
+      .sr2_data     (_div_sr2),
       .div_result   (_div_result),
       .rem_result   (_rem_result)
   );

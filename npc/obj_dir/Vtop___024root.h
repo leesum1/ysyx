@@ -61,6 +61,8 @@ VL_MODULE(Vtop___024root) {
     QData/*63:0*/ top__DOT__u_execute__DOT___alu_in1;
     QData/*63:0*/ top__DOT__u_execute__DOT___alu_in2;
     QData/*63:0*/ top__DOT__u_execute__DOT___alu_out;
+    QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT___div_sr1;
+    QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT___div_sr2;
     QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num;
     QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num_inv;
     QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shifter_res;

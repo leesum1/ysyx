@@ -280,21 +280,23 @@ void Vtop___024root__traceChgSub0(Vtop___024root* vlSelf, VerilatedVcd* tracep) 
                                       | (0x18U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)))));
             tracep->chgWData(oldp+113,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_mul_top__DOT___mul_result),128);
             tracep->chgBit(oldp+117,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___is_div_sr1_signed));
+            tracep->chgQData(oldp+118,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___div_sr1),64);
+            tracep->chgQData(oldp+120,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___div_sr2),64);
             VL_DIV_WWW(65, __Vtemp64, vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT___sr1_65, vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT___sr2_65);
-            tracep->chgQData(oldp+118,((((QData)((IData)(
+            tracep->chgQData(oldp+122,((((QData)((IData)(
                                                          __Vtemp64[1U])) 
                                          << 0x20U) 
                                         | (QData)((IData)(
                                                           __Vtemp64[0U])))),64);
             VL_MODDIV_WWW(65, __Vtemp67, vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT___sr1_65, vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT___sr2_65);
-            tracep->chgQData(oldp+120,((((QData)((IData)(
+            tracep->chgQData(oldp+124,((((QData)((IData)(
                                                          __Vtemp67[1U])) 
                                          << 0x20U) 
                                         | (QData)((IData)(
                                                           __Vtemp67[0U])))),64);
         }
-        tracep->chgBit(oldp+122,(vlSelf->clk));
-        tracep->chgBit(oldp+123,(vlSelf->rst));
+        tracep->chgBit(oldp+126,(vlSelf->clk));
+        tracep->chgBit(oldp+127,(vlSelf->rst));
     }
 }
 
