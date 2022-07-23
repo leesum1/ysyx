@@ -1,9 +1,11 @@
 #include <am.h>
+#include <stdio.h>
 
 void __am_timer_init() {
 }
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T* uptime) {
+  printf("__am_timer_uptime");
   uptime->us = 0;
 }
 
