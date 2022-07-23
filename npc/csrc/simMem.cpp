@@ -103,7 +103,7 @@ word_t SimMem::paddr_read(paddr_t addr, int len) {
         long seconds = now.tv_sec;
         long useconds = now.tv_usec;
         rtc_time = (seconds * 1000000 + (useconds + 500));
-        return rtc_time;
+        return (uint32_t)rtc_time;
     }
     else if (addr = 0xa0000048 + 4) {
         return rtc_time >> 32;
