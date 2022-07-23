@@ -9,10 +9,9 @@
 #include "mysdb.h"
 #include "simMem.h"
 
+
 namespace cr = CppReadline;
 using ret = cr::Console::ReturnCode;
-
-
 
 const char* nemu_so_path = "/lib/libnemu.so";
 
@@ -24,7 +23,6 @@ int main(int argc, char* argv[]) {
   for (i = 1;i < argc;i++) {
     printf("argv:%s\n", argv[i]);
   }
-
   /* 不知道为什么将 Simtop mysim 声明为全局变量会崩溃*/
   mysim_p = new Simtop;
   /* 加载镜像 */
@@ -32,7 +30,6 @@ int main(int argc, char* argv[]) {
   mysim_p->mem->loadImage(mysim_p->mem->imgpath.c_str());
 
   size_t imgsize = mysim_p->mem->getImgSize(mysim_p->mem->imgpath.c_str());
-  static Vtop* top = mysim_p->getTop();
 
   mysim_p->reset();
   mysim_p->u_difftest.init(nemu_so_path, imgsize, 0);

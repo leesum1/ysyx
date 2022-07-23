@@ -26,7 +26,7 @@
 
 
 /* ALU 操作码 */
-`define ALUOP_LEN 5
+`define ALUOP_LEN 6
 
 `define ALUOP_NONE `ALUOP_LEN'd0
 `define ALUOP_ADD `ALUOP_LEN'd1
@@ -53,6 +53,22 @@
 `define ALUOP_BGE `ALUOP_LEN'd17
 `define ALUOP_BLTU `ALUOP_LEN'd18
 `define ALUOP_BGEU `ALUOP_LEN'd19
+
+/* 乘除法 */
+`define ALUOP_MUL `ALUOP_LEN'd20
+`define ALUOP_MULH `ALUOP_LEN'd21
+`define ALUOP_MULHSU `ALUOP_LEN'd22
+`define ALUOP_MULHU `ALUOP_LEN'd23
+`define ALUOP_MULW `ALUOP_LEN'd24
+
+`define ALUOP_DIV `ALUOP_LEN'd25
+`define ALUOP_DIVU `ALUOP_LEN'd26
+`define ALUOP_REM `ALUOP_LEN'd27
+`define ALUOP_REMU `ALUOP_LEN'd28
+`define ALUOP_DIVW `ALUOP_LEN'd29
+`define ALUOP_DIVUW `ALUOP_LEN'd30
+`define ALUOP_REMW `ALUOP_LEN'd31
+`define ALUOP_REMUW `ALUOP_LEN'd32
 
 /* mem操作码 */
 `define MEMOP_LEN 4

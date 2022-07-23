@@ -314,6 +314,23 @@ module dcode (
   wire _alu_bge = _inst_bge;
   wire _alu_bltu = _inst_bltu;
   wire _alu_bgeu = _inst_bgeu;
+  //定点乘法
+  wire _alu_mul = _inst_mul;
+  wire _alu_mulh = _inst_mulh;
+  wire _alu_mulhsu = _inst_mulhsu;
+  wire _alu_mulhu = _inst_mulhu;
+  wire _alu_mulw = _inst_mulw;
+  //定点除法
+  wire _alu_div = _inst_div;
+  wire _alu_divu = _inst_divu;
+  wire _alu_rem = _inst_rem;
+  wire _alu_remu = _inst_remu;
+  wire _alu_divw = _inst_divw;
+  wire _alu_divuw = _inst_divuw;
+  wire _alu_remw = _inst_remw;
+  wire _alu_remuw = _inst_remuw;
+
+
 
   // // ALU 计算结果是否需要符号扩展,放在 execute 下实现
   // wire _alu_sext = _type_op_imm_32 | _type_op_32;
@@ -336,10 +353,24 @@ module dcode (
                                   ({`ALUOP_LEN{_alu_blt}} & `ALUOP_BLT)|
                                   ({`ALUOP_LEN{_alu_bge}} & `ALUOP_BGE)|
                                   ({`ALUOP_LEN{_alu_bltu}} & `ALUOP_BLTU)|
-                                  ({`ALUOP_LEN{_alu_bgeu}} & `ALUOP_BGEU);
+                                  ({`ALUOP_LEN{_alu_bgeu}} & `ALUOP_BGEU)|
+                                  ({`ALUOP_LEN{_alu_mul}} & `ALUOP_MUL)|
+                                  ({`ALUOP_LEN{_alu_mulh}} & `ALUOP_MULH)|
+                                  ({`ALUOP_LEN{_alu_mulhsu}} & `ALUOP_MULHSU)|
+                                  ({`ALUOP_LEN{_alu_mulhu}} & `ALUOP_MULHU)|
+                                  ({`ALUOP_LEN{_alu_mulw}} & `ALUOP_MULW)|
+                                  ({`ALUOP_LEN{_alu_div}} & `ALUOP_DIV)|
+                                  ({`ALUOP_LEN{_alu_divu}} & `ALUOP_DIVU)|
+                                  ({`ALUOP_LEN{_alu_rem}} & `ALUOP_REM)|
+                                  ({`ALUOP_LEN{_alu_remu}} & `ALUOP_REMU)|
+                                  ({`ALUOP_LEN{_alu_divw}} & `ALUOP_DIVW)|
+                                  ({`ALUOP_LEN{_alu_divuw}} & `ALUOP_DIVUW)|
+                                  ({`ALUOP_LEN{_alu_remw}} & `ALUOP_REMW)|
+                                  ({`ALUOP_LEN{_alu_remuw}} & `ALUOP_REMUW);
+
   assign alu_op = _alu_op;
 
-  //多路选择器
+  /* EXC_OP */
   wire [`EXCOP_LEN-1:0] _exc_op = ({`EXCOP_LEN{_type_auipc}}&`EXCOP_AUIPC) |
                                   ({`EXCOP_LEN{_type_lui}}&`EXCOP_LUI) |
                                   ({`EXCOP_LEN{_type_jal}}&`EXCOP_JAL) |
@@ -351,8 +382,8 @@ module dcode (
                                   ({`EXCOP_LEN{_type_op_imm_32}}&`EXCOP_OPIMM32) |
                                   ({`EXCOP_LEN{_type_op}}&`EXCOP_OP) |
                                   ({`EXCOP_LEN{_type_op_32}}&`EXCOP_OP32) |
-                                  ({`EXCOP_LEN{_inst_ebreak}}&`EXCOP_EBREAK) |
-                                  ({`EXCOP_LEN{_NONE_type}}&`EXCOP_NONE);
+                                  ({`EXCOP_LEN{_inst_ebreak}}&`EXCOP_EBREAK) | //TODO:暂时对 ebreak 特殊处理
+  ({`EXCOP_LEN{_NONE_type}} & `EXCOP_NONE);
 
   assign exc_op = _exc_op;
 

@@ -30,7 +30,7 @@ VL_MODULE(Vtop___024root) {
     CData/*0:0*/ top__DOT__u_dcode__DOT___R_type;
     CData/*0:0*/ top__DOT__u_dcode__DOT___I_type;
     CData/*4:0*/ top__DOT__u_dcode__DOT___rd_idx;
-    CData/*4:0*/ top__DOT__u_dcode__DOT___alu_op;
+    CData/*5:0*/ top__DOT__u_dcode__DOT___alu_op;
     CData/*4:0*/ top__DOT__u_dcode__DOT___exc_op;
     CData/*3:0*/ top__DOT__u_dcode__DOT___mem_op;
     CData/*2:0*/ top__DOT__u_dcode__DOT___pc_op;
@@ -40,12 +40,17 @@ VL_MODULE(Vtop___024root) {
     CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___shift_srl;
     CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___shift_sll;
     CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___isshift32;
+    CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___is_mul_sr1_signed;
+    CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___is_div_sr1_signed;
     CData/*0:0*/ top__DOT__u_memory__DOT___ls8byte;
     CData/*0:0*/ top__DOT__u_memory__DOT___ls16byte;
     CData/*0:0*/ top__DOT__u_memory__DOT___ls32byte;
     CData/*0:0*/ top__DOT__u_memory__DOT___unsigned;
     CData/*0:0*/ top__DOT__u_memory__DOT___signed;
     VlWide<3>/*64:0*/ top__DOT__u_execute__DOT__u_alu__DOT___add_out;
+    VlWide<4>/*127:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_mul_top__DOT___mul_result;
+    VlWide<3>/*64:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT___sr1_65;
+    VlWide<3>/*64:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT___sr2_65;
     QData/*63:0*/ top__DOT__rs1_data;
     QData/*63:0*/ top__DOT__rs2_data;
     QData/*63:0*/ top__DOT__exc_out;
@@ -56,6 +61,8 @@ VL_MODULE(Vtop___024root) {
     QData/*63:0*/ top__DOT__u_execute__DOT___alu_in1;
     QData/*63:0*/ top__DOT__u_execute__DOT___alu_in2;
     QData/*63:0*/ top__DOT__u_execute__DOT___alu_out;
+    QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT___div_sr1;
+    QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT___div_sr2;
     QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num;
     QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num_inv;
     QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shifter_res;
