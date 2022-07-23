@@ -45,6 +45,24 @@ module alu (
   wire _aluop_bltu = (alu_op_i == `ALUOP_BLTU);
   wire _aluop_bgeu = (alu_op_i == `ALUOP_BGEU);
 
+  //乘法
+  wire _aluop_mul = (alu_op_i == `ALUOP_MUL);
+  wire _aluop_mulh = (alu_op_i == `ALUOP_MULH);
+  wire _aluop_mulhsu = (alu_op_i == `ALUOP_MULHSU);
+  wire _aluop_mulhu = (alu_op_i == `ALUOP_MULHU);
+  wire _aluop_mulw = (alu_op_i == `ALUOP_MULW);
+
+  //除法
+  wire _aluop_div = (alu_op_i == `ALUOP_DIV);
+  wire _aluop_divu = (alu_op_i == `ALUOP_DIVU);
+  wire _aluop_rem = (alu_op_i == `ALUOP_REM);
+  wire _aluop_remu = (alu_op_i == `ALUOP_REMU);
+  wire _aluop_divw = (alu_op_i == `ALUOP_DIVW);
+  wire _aluop_divuw = (alu_op_i == `ALUOP_DIVUW);
+  wire _aluop_remw = (alu_op_i == `ALUOP_REMW);
+  wire _aluop_remuw = (alu_op_i == `ALUOP_REMUW);
+
+
   /*********************************加法-减法-比较器实现*************************************/
 
   wire _isCMP =   _aluop_slt | _aluop_bgeu |
@@ -129,13 +147,74 @@ module alu (
   wire [`XLEN-1:0] _or_res = alu_a_i | alu_b_i;
   wire [`XLEN-1:0] _xor_res = alu_a_i ^ alu_b_i;
 
+  /***************************************乘法运算*******************************************/
+
+  wire _is_mul_sr1_signed = _aluop_mul | _aluop_mulh | _aluop_mulhsu | _aluop_mulw;
+  wire _is_mul_sr2_signed = _aluop_mul | _aluop_mulh | _aluop_mulw;
+  wire [`XLEN*2-1:0] _mul_result;
+
+  alu_mul_top u_alu_mul_top (
+      // input clk,  //为流水线准备
+      // input rst,
+      .is_sr1_signed(_is_mul_sr1_signed),
+      .is_sr2_signed(_is_mul_sr2_signed),
+      .sr1_data     (alu_a_i),
+      .sr2_data     (alu_b_i),
+      .mul_result   (_mul_result)
+  );
+
+  /* 不同乘法指令的结果 */
+  wire [`XLEN-1:0] _inst_mul_result = _mul_result[`XLEN-1:0];
+  wire [`XLEN-1:0] _inst_mulh_mulhsu_mulhu_result = _mul_result[`XLEN*2-1:`XLEN];
+  wire [`XLEN-1:0] _inst_mulw_result = {
+    32'b0, _mul_result[31:0]
+  };  // w 指令的符号扩展统一在 execute 中执行.
+
+  /***************************************除法运算*******************************************/
+  wire _is_div_sr1_signed = _aluop_div | _aluop_divw | _aluop_rem | _aluop_remw;
+  wire _is_div_sr2_signed = _is_mul_sr1_signed;
+
+  // 是否是 32 位除法
+  wire _is_div32 = _aluop_divw | _aluop_divuw | _aluop_remw | _aluop_remuw;
+
+  /* 兼容 rv32 的 32 位除法 */
+  wire [`XLEN-1:0] _div_sr1_32 = (_is_div_sr1_signed)?{{32{alu_a_i[31]}},alu_a_i[31:0]}:
+                                                      {32'b0,alu_a_i[31:0]};
+  wire [`XLEN-1:0] _div_sr2_32 = (_is_div_sr1_signed)?{{32{alu_b_i[31]}},alu_b_i[31:0]}:
+                                                      {32'b0,alu_b_i[31:0]};
+  /* 选择是 64 位除法 还是 32位除法 */
+  wire [`XLEN-1:0] _div_sr1 = (_is_div32) ? _div_sr1_32 : alu_a_i;
+  wire [`XLEN-1:0] _div_sr2 = (_is_div32) ? _div_sr2_32 : alu_b_i;
+
+  /* 暂存结果 */
+  wire [`XLEN-1:0] _div_result, _rem_result;
+  alu_div_top u_alu_div_top (
+      // input clk,  //为流水线准备
+      // input rst,
+      .is_sr1_signed(_is_div_sr1_signed),
+      .is_sr2_signed(_is_div_sr2_signed),
+      .sr1_data     (_div_sr1),
+      .sr2_data     (_div_sr2),
+      .div_result   (_div_result),
+      .rem_result   (_rem_result)
+  );
+
+  /* 不同除法指令的结果 */
+  wire [`XLEN-1:0] _inst_div_divu_divw_divuw_ret = _div_result;
+  wire [`XLEN-1:0] _inst_rem_remu_remw_remuw_ret = _rem_result;
+
   /****************************选择最终ALU结果***********************************************/
 
   wire [`XLEN-1:0] _alu_out = ({`XLEN{_aluop_add|_aluop_sub}}&_add_out[`XLEN-1:0])|
                                 ({`XLEN{_aluop_and}}&_and_res)|
                                 ({`XLEN{_aluop_or}}&_or_res)|
                                 ({`XLEN{_aluop_xor}}&_xor_res)|
-                                ({`XLEN{_shift_sra|_shift_srl|_shift_sll}}&_shift_out);
+                                ({`XLEN{_shift_sra|_shift_srl|_shift_sll}}&_shift_out)|
+                                ({`XLEN{_aluop_mul}}&_inst_mul_result) |
+                                ({`XLEN{_aluop_mulh|_aluop_mulhsu|_aluop_mulhu}}&_inst_mulh_mulhsu_mulhu_result) |
+                                ({`XLEN{_aluop_mulw}}&_inst_mulw_result)|
+                                ({`XLEN{_aluop_div|_aluop_divu|_aluop_divw|_aluop_divuw}}&_inst_div_divu_divw_divuw_ret)|
+                                ({`XLEN{_aluop_rem|_aluop_remu|_aluop_remw|_aluop_remuw}}&_inst_rem_remu_remw_remuw_ret);
 
   /* 选择最后输出 */
   assign alu_out = (_isCMP) ? {63'b0, _compare_out} : _alu_out;
@@ -143,53 +222,3 @@ module alu (
 
 endmodule
 
-module alu_shift (
-    input shift_sra,
-    input shift_srl,
-    input shift_sll,
-    input isshift32,
-    input [`XLEN-1:0] shift_num,
-    input [5:0] shift_count,
-    output [`XLEN-1:0] shift_out
-);
-  wire _op_shift = shift_sra | shift_srl | shift_sll;
-  /* 选择是否忽略高32位 */
-  wire [`XLEN-1:0] _shift_num = (isshift32) ? {32'b0, shift_num[31:0]} : shift_num;
-  wire [`XLEN-1:0] _shift_num_inv;
-  /* 位颠倒 */
-  Vectorinvert #(
-      .DATA_LEN(`XLEN)
-  ) u_Vectorinvert1 (
-      .in (_shift_num),
-      .out(_shift_num_inv)
-  );
-  //将右移转换为左移
-  wire [`XLEN-1:0] _shifter_in1 = {`XLEN{_op_shift}} & ((shift_sra | shift_srl) ? _shift_num_inv : _shift_num);//操作数
-  wire [5:0] _shifter_in2 = shift_count;  //移位次数
-  /* 实际移位操作,用一个移位器实现左移和右移 */
-  wire [`XLEN-1:0] _shifter_res = _shifter_in1 << _shifter_in2;
-
-  wire [`XLEN-1:0] _sll_res = _shifter_res;  //逻辑左移结果
-  /*逻辑右移结果,srl_in->位颠倒->移位器(左移)->位颠倒->srl_out*/
-  wire [`XLEN-1:0] _srl_res;
-  Vectorinvert #(
-      .DATA_LEN(`XLEN)
-  ) u_Vectorinvert2 (
-      .in (_sll_res),
-      .out(_srl_res)
-  );
-  /* 选择掩码,64位移位和32位移位掩码不同 */
-  wire [5:0] _eff_mask_shift_count = (isshift32) ? (_shifter_in2 + 6'd32) : _shifter_in2;
-  /* 选择符号位,32位移位需要忽略输入num的高32位 */
-  wire _lastbit = (isshift32) ? _shift_num[31] : _shift_num[`XLEN-1];
-
-  /* 算数右移结果，采用掩码算法实现算数右移 */
-  wire [`XLEN-1:0] _eff_mask = (~(`XLEN'b0)) >> _eff_mask_shift_count;
-  wire [`XLEN-1:0] _sra_res = (_srl_res & _eff_mask) | ({`XLEN{_lastbit}} & (~_eff_mask));
-
-  /* 多路选择器选择最终结果 */
-  wire [`XLEN-1:0] _shift_out = ({`XLEN{shift_srl}}&_srl_res) |
-                                ({`XLEN{shift_sra}}&_sra_res) |
-                                ({`XLEN{shift_sll}}&_sll_res);
-  assign shift_out = _shift_out;
-endmodule
