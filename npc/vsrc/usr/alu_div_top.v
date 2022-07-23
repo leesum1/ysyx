@@ -16,6 +16,6 @@ module alu_div_top (
   wire [`XLEN:0] _sr1_65 = {_sr1_sign, sr1_data};
   wire [`XLEN:0] _sr2_65 = {_sr2_sign, sr2_data};
 
-  assign div_result = {_sr1_65/_sr2_65}[`XLEN:1];
+  assign div_result = {_sr1_65/_sr2_65}[`XLEN-1:0];
   assign rem_result = {_sr1_65%_sr2_65}[`XLEN-1:0];
 endmodule
