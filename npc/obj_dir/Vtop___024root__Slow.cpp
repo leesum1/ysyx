@@ -1749,8 +1749,11 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                                      | (0x1aU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
                                     | (0x1dU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
                                    | (0x1eU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)))))) 
-               & (((QData)((IData)(__Vtemp46[1U])) 
-                   << 0x20U) | (QData)((IData)(__Vtemp46[0U]))))) 
+               & (((QData)((IData)((1U & __Vtemp46[2U]))) 
+                   << 0x3fU) | (((QData)((IData)(__Vtemp46[1U])) 
+                                 << 0x1fU) | ((QData)((IData)(
+                                                              __Vtemp46[0U])) 
+                                              >> 1U))))) 
            | ((- (QData)((IData)(((((0x1bU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
                                     | (0x1cU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
                                    | (0x1fU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 

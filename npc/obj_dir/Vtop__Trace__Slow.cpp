@@ -422,9 +422,15 @@ void Vtop___024root__traceFullSub0(Vtop___024root* vlSelf, VerilatedVcd* tracep)
         tracep->fullQData(oldp+121,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___div_sr2),64);
         VL_DIV_WWW(65, __Vtemp56, vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT___sr1_65, vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT___sr2_65);
         tracep->fullQData(oldp+123,((((QData)((IData)(
-                                                      __Vtemp56[1U])) 
-                                      << 0x20U) | (QData)((IData)(
-                                                                  __Vtemp56[0U])))),64);
+                                                      (1U 
+                                                       & __Vtemp56[2U]))) 
+                                      << 0x3fU) | (
+                                                   ((QData)((IData)(
+                                                                    __Vtemp56[1U])) 
+                                                    << 0x1fU) 
+                                                   | ((QData)((IData)(
+                                                                      __Vtemp56[0U])) 
+                                                      >> 1U)))),64);
         VL_MODDIV_WWW(65, __Vtemp59, vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT___sr1_65, vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT___sr2_65);
         tracep->fullQData(oldp+125,((((QData)((IData)(
                                                       __Vtemp59[1U])) 
