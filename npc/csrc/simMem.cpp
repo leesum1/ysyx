@@ -90,7 +90,7 @@ bool SimMem::in_pmem(paddr_t addr) {
 }
 
 void SimMem::out_of_bound(paddr_t addr) {
-    //cout << "addr:\t" << hex << addr << " not in pmem!" << endl;
+
 }
 word_t SimMem::paddr_read(paddr_t addr, int len) {
     if (in_pmem(addr)) {
@@ -106,7 +106,8 @@ word_t SimMem::paddr_read(paddr_t addr, int len) {
     //     return (uint32_t)rtc_time;
     // }
     if (addr = 0xa0000048 + 4) {
-        return 100000;
+        //return 100000;
+        cout << "addr:\t" << hex << addr << " not in pmem!" << endl;
     }
 
     out_of_bound(addr);
