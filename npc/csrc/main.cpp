@@ -42,6 +42,7 @@ int main(int argc, char* argv[]) {
   c.registerCommand("p", cmd_p);
   c.registerCommand("help", cmd_help);
   c.registerCommand("w", cmd_w);
+  c.registerCommand("d", cmd_d);
   int retCode;
   do {
     retCode = c.readLine();
