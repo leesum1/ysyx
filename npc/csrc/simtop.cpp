@@ -188,7 +188,7 @@ void Simtop::excute() {
             break;
         }
         stepCycle(false);
-        this->u_difftest.difftest_step();
+        //this->u_difftest.difftest_step();
     }
 }
 Vtop* Simtop::getTop() {
