@@ -68,12 +68,12 @@ void Exprinternal::ParseAll() {
 }
 
 Exprinternal::~Exprinternal() {
-    cout << "Exprinternal end" << endl;
+    //cout << "Exprinternal end" << endl;
 }
 
 void Exprinternal::printTokens() {
 
-    cout << "Exprinternal start" << endl;
+    //cout << "Exprinternal start" << endl;
     // for (size_t i = 0; i < tokens.size(); i++) {
     //     cout << " str: " << tokens.at(i).str \
     //         << " type: " << tokens.at(i).type << endl;
