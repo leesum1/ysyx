@@ -205,7 +205,7 @@ void Simtop::sdbOn(const char* sdbname) {
     for (auto iter : sdbToollist) {
         if (sdbname == iter.name) {
             iter.isok = true;
-            break;
+            return;
         }
     }
     cout << "can not find " << sdbname << endl;
@@ -219,7 +219,7 @@ void Simtop::sdbOff(const char* sdbname) {
     for (auto iter : sdbToollist) {
         if (sdbname == iter.name) {
             iter.isok = false;
-            break;
+            return;
         }
     }
     cout << "can not find " << sdbname << endl;
