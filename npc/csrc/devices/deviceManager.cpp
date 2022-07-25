@@ -13,6 +13,7 @@ deviceManager::~deviceManager() {
 void deviceManager::deviceManagerInit(void) {
     bool ret;
     ret = installDevice("deviceuart", "uart0");
+    cout << ret << endl;
     assert(ret == true);
 }
 
