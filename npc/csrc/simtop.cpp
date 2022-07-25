@@ -11,19 +11,19 @@ static const char* regs[] = {
 Simtop::Simtop() {
     cout << "SimtopStart!" << endl;
     mem = new SimMem;
-    contextp = new VerilatedContext;
+    //contextp = new VerilatedContext;
     top = new Vtop;
-    tfp = new VerilatedVcdC;
-    contextp->traceEverOn(true);
-    top->trace(tfp, 0);
-    tfp->open("sim.vcd");
+    //tfp = new VerilatedVcdC;
+    //contextp->traceEverOn(true);
+    //top->trace(tfp, 0);
+    //tfp->open("sim.vcd");
 
     this->top_status = TOP_RUNNING;
 }
 
 Simtop::~Simtop() {
-    tfp->close();
-    delete tfp;
+    //tfp->close();
+    //delete tfp;
     delete top;
     cout << "SimtopEnd!" << endl;
 }
@@ -46,8 +46,8 @@ void Simtop::changeCLK() {
 
 
 void Simtop::dampWave() {
-    contextp->timeInc(1);
-    tfp->dump(contextp->time());
+    // contextp->timeInc(1);
+    // tfp->dump(contextp->time());
 }
 
 /**
@@ -60,7 +60,7 @@ void Simtop::stepCycle(bool val) {
         return;
     }
     changeCLK();
-    //dampWave();
+    //dampWave(); //跑大型任务时不能开启,否则动则10G的波形数据
     changeCLK();
     //dampWave();
     // if (val) {

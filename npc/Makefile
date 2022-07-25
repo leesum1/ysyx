@@ -8,8 +8,8 @@ INC_PATH := -I./vsrc \
 			-I./vsrc/lib \
 
 
-# 2.verilator flags:
-VERILATOR_FLAGS +=  --trace --cc --exe --build 
+# 2.verilator flags: --trace
+VERILATOR_FLAGS +=   --cc --exe --build 
 VERILATOR_FLAGS += ${INC_PATH}
 VERILATOR_FLAGS += --top ${TOP_MODULE}
 # gcc 链接库 -lasan(内存检查)
