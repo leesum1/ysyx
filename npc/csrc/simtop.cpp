@@ -196,4 +196,30 @@ Vtop* Simtop::getTop() {
     return this->top;
 }
 
-
+/**
+ * @brief 打开sdb调试工具
+ *
+ * @param sdbname 工具名称
+ */
+void Simtop::sdbOn(const char* sdbname) {
+    for (auto iter : sdbToollist) {
+        if (sdbname == iter.name) {
+            iter.isok = true;
+            break;
+        }
+    }
+    cout << "can not find " << sdbname << endl;
+}
+/**
+ * @brief 关闭sdb调试工具
+ *
+ * @param sdbname 工具名称
+ */
+void Simtop::sdbOff(const char* sdbname) {
+    for (auto iter : sdbToollist) {
+        if (sdbname == iter.name) {
+            iter.isok = false;
+            break;
+        }
+    }
+}

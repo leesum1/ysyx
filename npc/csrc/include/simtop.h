@@ -29,7 +29,12 @@ private:
     };
     vector<sdbTool_t> sdbToollist = {
         {"difftest",false},
-        {"wp",false}
+        {"wp",false},
+        {"wave",false},
+        {"itrace",false},
+        {"mtrace",false},
+        {"ftrace",false},
+        {"dtrace",false}
     };
 private:
     void stepCycle(bool val);
@@ -57,6 +62,8 @@ public:
     void scanMem(paddr_t addr, uint32_t len);
     void excute(int32_t t);
     void excute();
+    void sdbOn(const char* sdbname);
+    void sdbOff(const char* sdbname);
 };
 
 #endif
