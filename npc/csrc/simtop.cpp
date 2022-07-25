@@ -60,9 +60,9 @@ void Simtop::stepCycle(bool val) {
         return;
     }
     changeCLK();
-    dampWave();
+    //dampWave();
     changeCLK();
-    dampWave();
+    //dampWave();
     // if (val) {
     //     printRegisterFile();
     // }
