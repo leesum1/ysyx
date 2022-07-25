@@ -197,7 +197,7 @@ Vtop* Simtop::getTop() {
  * @param sdbname 工具名称
  */
 void Simtop::sdbOn(const char* sdbname) {
-    for (auto iter : sdbToollist) {
+    for (auto& iter : sdbToollist) {
         if (sdbname == iter.name) {
             iter.isok = true;
             cout << sdbname << iter.isok << endl;
@@ -212,7 +212,7 @@ void Simtop::sdbOn(const char* sdbname) {
  * @param sdbname 工具名称
  */
 void Simtop::sdbOff(const char* sdbname) {
-    for (auto iter : sdbToollist) {
+    for (auto& iter : sdbToollist) {
         if (sdbname == iter.name) {
             iter.isok = false;
             return;
@@ -222,7 +222,7 @@ void Simtop::sdbOff(const char* sdbname) {
 }
 
 bool Simtop::isSdbOk(const char* sdbname) {
-    for (auto iter : sdbToollist) {
+    for (auto& iter : sdbToollist) {
         if (sdbname == iter.name) {
             cout << sdbname << iter.isok << endl;
             return iter.isok;

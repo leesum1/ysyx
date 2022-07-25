@@ -71,6 +71,7 @@ Exprresult::Exprresult(vector<Token> val) {
 
 uint64_t Exprresult::getResult() {
     auto iter = tokens.begin();
+
     vector<Token> vector_l, vector_r;
     for (; iter != tokens.end(); iter++) {
         if (isCompare(iter.operator*())) {
