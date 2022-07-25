@@ -13,4 +13,7 @@ extern unsigned cmd_info(const std::vector<std::string>& input);
 extern unsigned cmd_p(const std::vector<std::string>& input);
 extern unsigned cmd_w(const std::vector<std::string>& input);
 extern unsigned cmd_d(const std::vector<std::string>& input);
+extern unsigned cmd_sdbon(const std::vector<std::string>& input);
+extern unsigned cmd_sdboff(const std::vector<std::string>& input);
+
 #endif

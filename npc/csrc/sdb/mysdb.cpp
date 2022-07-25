@@ -172,3 +172,13 @@ unsigned cmd_sdbon(const std::vector<std::string>& input) {
     return 0;
 }
 
+unsigned cmd_sdboff(const std::vector<std::string>& input) {
+
+    if (input.size() != 2) {
+        std::cout << "Usage: " << input[0] << " all difftest wp wave itrace mtrace ftrace dtrace\n";
+        return 1;
+    }
+    mysim_p->sdbOff(input[1].c_str());
+    return 0;
+}
+

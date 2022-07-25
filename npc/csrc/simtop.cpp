@@ -222,4 +222,5 @@ void Simtop::sdbOff(const char* sdbname) {
             break;
         }
     }
+    cout << "can not find " << sdbname << endl;
 }
