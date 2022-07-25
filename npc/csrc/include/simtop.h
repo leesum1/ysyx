@@ -18,12 +18,19 @@ extern uint64_t cpu_pc;
 class Simtop {
 private:
     Vtop* top;
-
     VerilatedContext* contextp;
     VerilatedVcdC* tfp;
     uint64_t* registerfile;
     uint64_t pc;
 
+    struct sdbTool_t {
+        string name;
+        bool isok;
+    };
+    vector<sdbTool_t> sdbToollist = {
+        {"difftest",false},
+        {"wp",false}
+    };
 private:
     void stepCycle(bool val);
     const char* getRegName(int idx);
