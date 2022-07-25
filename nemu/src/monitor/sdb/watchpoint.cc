@@ -158,7 +158,7 @@ void Watchpoint::praseAllwp() {
       nemu_state.state = NEMU_STOP;
       cout << "NUM:" << it.operator*().NO <<
         "\twpexp: " << it.operator*().exp <<
-        "\texprResult" << exprResult << endl;
+        "\texprResult: " << exprResult << endl;
     }
   }
 }

@@ -1,6 +1,6 @@
 #include "deviceuart.h"
 
-using namespace topdevice;
+using namespace Topdevice;
 
 
 deviceuart::deviceuart(/* args */) {

@@ -10,6 +10,8 @@
 //==========
 
 class Vtop__Syms;
+class Vtop_VerilatedVcd;
+
 
 //----------
 
@@ -21,16 +23,50 @@ VL_MODULE(Vtop___024root) {
     VL_IN8(rst,0,0);
 
     // LOCAL SIGNALS
+    CData/*0:0*/ top__DOT__u_pc__DOT___isready_branch;
+    CData/*0:0*/ top__DOT__u_pc__DOT___isready_inc4;
+    CData/*0:0*/ top__DOT__u_dcode__DOT___type_store;
+    CData/*0:0*/ top__DOT__u_dcode__DOT___type_branch;
+    CData/*0:0*/ top__DOT__u_dcode__DOT___R_type;
+    CData/*0:0*/ top__DOT__u_dcode__DOT___I_type;
     CData/*4:0*/ top__DOT__u_dcode__DOT___rd_idx;
+    CData/*5:0*/ top__DOT__u_dcode__DOT___alu_op;
+    CData/*4:0*/ top__DOT__u_dcode__DOT___exc_op;
+    CData/*3:0*/ top__DOT__u_dcode__DOT___mem_op;
+    CData/*2:0*/ top__DOT__u_dcode__DOT___pc_op;
+    CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___isCF;
+    CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___isSLT;
+    CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___shift_sra;
+    CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___shift_srl;
+    CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___shift_sll;
+    CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___isshift32;
+    CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___is_mul_sr1_signed;
+    CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___is_div_sr1_signed;
+    CData/*5:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shifter_in2;
     CData/*0:0*/ top__DOT__u_memory__DOT___ls8byte;
     CData/*0:0*/ top__DOT__u_memory__DOT___ls16byte;
     CData/*0:0*/ top__DOT__u_memory__DOT___ls32byte;
     CData/*0:0*/ top__DOT__u_memory__DOT___unsigned;
     CData/*0:0*/ top__DOT__u_memory__DOT___signed;
+    VlWide<3>/*64:0*/ top__DOT__u_execute__DOT__u_alu__DOT___add_out;
+    VlWide<4>/*127:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_mul_top__DOT___mul_result;
+    VlWide<3>/*64:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT___sr1_65;
+    VlWide<3>/*64:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT___sr2_65;
+    QData/*63:0*/ top__DOT__rs1_data;
+    QData/*63:0*/ top__DOT__rs2_data;
     QData/*63:0*/ top__DOT__exc_out;
     QData/*63:0*/ top__DOT__u_pc__DOT___pc_next;
     QData/*63:0*/ top__DOT__u_pc__DOT___pc_current;
+    QData/*63:0*/ top__DOT__u_fetch__DOT___mem_data;
+    QData/*63:0*/ top__DOT__u_dcode__DOT___imm_data;
+    QData/*63:0*/ top__DOT__u_execute__DOT___alu_in1;
+    QData/*63:0*/ top__DOT__u_execute__DOT___alu_in2;
+    QData/*63:0*/ top__DOT__u_execute__DOT___alu_out;
+    QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT___div_sr1;
+    QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT___div_sr2;
+    QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num;
     QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num_inv;
+    QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shifter_res;
     QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___srl_res;
     QData/*63:0*/ top__DOT__u_memory__DOT___mem_read;
     VlUnpacked<QData/*63:0*/, 32> top__DOT__u_rv64reg__DOT__rf;
@@ -39,6 +75,7 @@ VL_MODULE(Vtop___024root) {
     CData/*0:0*/ __Vclklast__TOP__clk;
     QData/*63:0*/ __Vtask_top__DOT__u_fetch__DOT__pmem_read__0__rdata;
     QData/*63:0*/ __Vtask_top__DOT__u_memory__DOT__pmem_read__3__rdata;
+    VlUnpacked<CData/*0:0*/, 2> __Vm_traceActivity;
 
     // INTERNAL VARIABLES
     Vtop__Syms* vlSymsp;  // Symbol table

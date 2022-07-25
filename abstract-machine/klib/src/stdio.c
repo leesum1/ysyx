@@ -305,6 +305,8 @@ int printf(const char* fmt, ...) {
   puts(printf_buf);
 
   return printed;
+
+  return 0;
 }
 
 

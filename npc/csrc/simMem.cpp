@@ -16,7 +16,7 @@ const uint32_t defimg[] = {
 
 SimMem::SimMem(/* args */) {
     cout << "npc内存初始化开始" << endl;
-    Device = new topdevice::deviceManager;
+    Device = new Topdevice::DeviceManager;
 }
 
 SimMem::~SimMem() {
@@ -99,21 +99,8 @@ word_t SimMem::paddr_read(paddr_t addr, int len) {
     if (in_pmem(addr)) {
         return pmem_read(addr, len);
     }
-    /* 读取低位时刷新时间 */
-    static uint64_t rtc_time;
-    static struct timeval now;
 
-    if (addr == 0xa0000048) {
-        gettimeofday(&now, NULL);
-        long seconds = now.tv_sec;
-        long useconds = now.tv_usec;
-        rtc_time = (seconds * 1000000 + (useconds + 500));
-        return (uint32_t)rtc_time;
-    }
-    else if (addr == 0xa0000048 + 4) {
-        return rtc_time >> 32;
-    }
-
+    return Device->read(addr);
     out_of_bound(addr);
     return 0;
 
@@ -123,9 +110,7 @@ void SimMem::paddr_write(paddr_t addr, int len, word_t data) {
         pmem_write(addr, len, data);
         return;
     }
-    // if (addr == 0xa00003f8) {
-    //     putchar(data);
-    // }
+
     Device->write(addr, data, len);
     out_of_bound(addr);
 }

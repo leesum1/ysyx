@@ -27,7 +27,7 @@ private:
     void pmem_write(paddr_t addr, int len, word_t data);
 
 public:
-    topdevice::deviceManager* Device; // 统一的外设入口
+    Topdevice::DeviceManager* Device; // 统一的外设入口
     SimMem(/* args */);
     ~SimMem();
     paddr_t getMEMBASE();

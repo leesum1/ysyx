@@ -95,7 +95,12 @@ unsigned cmd_info(const std::vector<std::string>& input) {
     }
     return 0;
 }
-
+/**
+ * @brief 表达式求值
+ *
+ * @param input
+ * @return unsigned
+ */
 unsigned cmd_p(const std::vector<std::string>& input) {
 
     string inputall;
@@ -104,8 +109,6 @@ unsigned cmd_p(const std::vector<std::string>& input) {
     }
     cout << "cmd_p\t" << inputall << endl;
     bool ret;
-
-
     // extern uint64_t exprgetResult(char* e, bool* success);
     char* c = const_cast<char*>(inputall.c_str());
     // exprgetResult(c, &ret);
@@ -113,7 +116,12 @@ unsigned cmd_p(const std::vector<std::string>& input) {
     return 0;
 }
 
-
+/**
+ * @brief 监视点
+ *
+ * @param input
+ * @return unsigned
+ */
 unsigned cmd_w(const std::vector<std::string>& input) {
     if (input.size() == 1) {
         // The first element of the input array is always the name of the
@@ -132,7 +140,12 @@ unsigned cmd_w(const std::vector<std::string>& input) {
     mysim_p->u_wp.newWp(inputall);
     return 0;
 }
-
+/**
+ * @brief 删除监视点
+ *
+ * @param input
+ * @return unsigned
+ */
 unsigned cmd_d(const std::vector<std::string>& input) {
 
     if (input.size() != 2) {
@@ -146,6 +159,26 @@ unsigned cmd_d(const std::vector<std::string>& input) {
     uint32_t val;
     sscanf(input[1].c_str(), "%u", &val);
     mysim_p->u_wp.delWp(val);
+    return 0;
+}
+
+unsigned cmd_sdbon(const std::vector<std::string>& input) {
+
+    if (input.size() != 2) {
+        std::cout << "Usage: " << input[0] << " all difftest wp wave itrace mtrace ftrace dtrace\n";
+        return 1;
+    }
+    mysim_p->sdbOn(input[1].c_str());
+    return 0;
+}
+
+unsigned cmd_sdboff(const std::vector<std::string>& input) {
+
+    if (input.size() != 2) {
+        std::cout << "Usage: " << input[0] << " all difftest wp wave itrace mtrace ftrace dtrace\n";
+        return 1;
+    }
+    mysim_p->sdbOff(input[1].c_str());
     return 0;
 }
 
