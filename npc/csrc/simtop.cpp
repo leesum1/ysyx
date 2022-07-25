@@ -200,6 +200,7 @@ void Simtop::sdbOn(const char* sdbname) {
     for (auto iter : sdbToollist) {
         if (sdbname == iter.name) {
             iter.isok = true;
+            cout << sdbname << iter.isok << endl;
             return;
         }
     }
