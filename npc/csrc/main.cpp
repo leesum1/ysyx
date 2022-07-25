@@ -19,14 +19,18 @@ Simtop* mysim_p;
 int main(int argc, char* argv[]) {
 
   int i;
+  const char* path;
   printf("argc:%d\n", argc);
-  for (i = 1;i < argc;i++) {
+  for (i = 0;i < argc;i++) {
     printf("argv:%s\n", argv[i]);
+    if (i == 1) {
+      path = argv[i];
+    }
   }
   /* 不知道为什么将 Simtop mysim 声明为全局变量会崩溃*/
   mysim_p = new Simtop;
   /* 加载镜像 */
-  mysim_p->mem->imgpath.append(argv[1]);
+  mysim_p->mem->imgpath.append(path);
   mysim_p->mem->loadImage(mysim_p->mem->imgpath.c_str());
 
   size_t imgsize = mysim_p->mem->getImgSize(mysim_p->mem->imgpath.c_str());
