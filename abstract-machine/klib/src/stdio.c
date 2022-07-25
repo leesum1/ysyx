@@ -294,17 +294,17 @@ void puts(const char* str) {
 }
 
 int printf(const char* fmt, ...) {
-  // char printf_buf[1024];
-  // va_list args;
-  // int printed;
+  char printf_buf[1024];
+  va_list args;
+  int printed;
 
-  // va_start(args, fmt);
-  // printed = vsprintf(printf_buf, fmt, args);
-  // va_end(args);
+  va_start(args, fmt);
+  printed = vsprintf(printf_buf, fmt, args);
+  va_end(args);
 
-  // puts(printf_buf);
+  puts(printf_buf);
 
-  // return printed;
+  return printed;
 
   return 0;
 }
