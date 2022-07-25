@@ -17,7 +17,6 @@ void Devicetimer::init(const char* name) {
     deviceinfo.isok = true;
 
     gettimeofday(&boottime, NULL);
-    cout << "tset111" << endl;
 }
 void Devicetimer::write(paddr_t addr, word_t data, uint32_t len) {
 
@@ -29,6 +28,7 @@ word_t Devicetimer::read(paddr_t addr) {
         long seconds = now.tv_sec;
         long useconds = now.tv_usec;
         rtc_time = (seconds * 1000000 + (useconds + 500));
+        cout << "time:" << rtc_time << endl;
         return (uint32_t)rtc_time;
     }
     else {
