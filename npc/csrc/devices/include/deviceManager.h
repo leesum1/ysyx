@@ -8,22 +8,22 @@
 #include "devicebase.h"
 namespace Topdevice {
 
-    class deviceManager {
+    class DeviceManager {
     private:
         /* data */
         vector <Devicebase*> devicePool;
 
     public:
         bool atRange(paddr_t s, paddr_t e, paddr_t val);
-        deviceManager(/* args */);
-        ~deviceManager();
+        DeviceManager(/* args */);
+        ~DeviceManager();
         Devicebase* findDevicebyaddr(paddr_t addr);
         Devicebase* findDevicebyName(const char* name);
         Devicebase* createDevice(const char* name);
         word_t read(paddr_t addr);
         void write(paddr_t addr, word_t data, uint32_t len);
         bool installDevice(const char* className, const char* deviceName);
-        void deviceManagerInit(void);
+        void DeviceManagerInit(void);
     };
 
 
