@@ -63,13 +63,13 @@ void Simtop::stepCycle(bool val) {
     dampWave();
     changeCLK();
     dampWave();
-    if (val) {
-        printRegisterFile();
-    }
-    /* 监视点 */
-    if (1) {
-        this->u_wp.praseAllwp();
-    }
+    // if (val) {
+    //     printRegisterFile();
+    // }
+    // /* 监视点 */
+    // if (1) {
+    //     this->u_wp.praseAllwp();
+    // }
 
 }
 
