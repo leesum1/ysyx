@@ -114,7 +114,6 @@ word_t SimMem::paddr_read(paddr_t addr, int len) {
     //     return rtc_time >> 32;
     // }
     return Device->read(addr);
-
     out_of_bound(addr);
     return 0;
 

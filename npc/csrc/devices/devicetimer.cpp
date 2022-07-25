@@ -19,10 +19,10 @@ void Devicetimer::init(const char* name) {
     gettimeofday(&boottime, NULL);
 }
 void Devicetimer::write(paddr_t addr, word_t data, uint32_t len) {
-    putchar(data);
+
 }
 word_t Devicetimer::read(paddr_t addr) {
-    paddr_t offset = addr = deviceinfo.addr;
+    paddr_t offset = addr - deviceinfo.addr;
     assert(offset == 0 || offset == 4);
     if (offset == 0) {
         long seconds = now.tv_sec;
