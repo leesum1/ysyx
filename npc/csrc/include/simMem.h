@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sys/stat.h> // struct stat
 #include <string.h>
+#include "deviceManager.h"
 
 using namespace std;
 #define PG_ALIGN __attribute((aligned(4096)))
@@ -26,6 +27,7 @@ private:
     void pmem_write(paddr_t addr, int len, word_t data);
 
 public:
+    topdevice::deviceManager* Device;
     SimMem(/* args */);
     ~SimMem();
     paddr_t getMEMBASE();
@@ -38,8 +40,6 @@ public:
     bool loadImage(const char* img);
     size_t getImgSize(const char* img);
 };
-
-
 
 
 #endif
