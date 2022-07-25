@@ -14,6 +14,7 @@ void deviceManager::deviceManagerInit(void) {
     bool ret;
     ret = installDevice("deviceuart", "uart0");
     assert(ret == true);
+    printf("uart0 init\n");
 }
 
 
