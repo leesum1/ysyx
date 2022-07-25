@@ -98,16 +98,16 @@ void Exprresult::ParseAll() {
 }
 
 Exprresult::~Exprresult() {
-    cout << "Exprresult end" << endl;
+    //cout << "Exprresult end" << endl;
 }
 
 void Exprresult::printTokens() {
 
-    cout << "Exprresult start" << endl;
-    for (size_t i = 0; i < tokens.size(); i++) {
-        cout << " str: " << tokens.at(i).str \
-            << " type: " << tokens.at(i).type << endl;
-    }
+    // cout << "Exprresult start" << endl;
+    // for (size_t i = 0; i < tokens.size(); i++) {
+    //     cout << " str: " << tokens.at(i).str \
+    //         << " type: " << tokens.at(i).type << endl;
+    // }
 
 
 
@@ -151,9 +151,9 @@ uint64_t Exprresult::run1() {
     }
 
     Assert(stackNum.size() == 1 || stackOpre.size() == 0, "stackNum.size:%ld,stackOpre.size%ld", stackNum.size(), stackOpre.size());
-    cout << "stackNumsize:" << stackNum.size() << endl;
-    cout << "stackOpsize:" << stackOpre.size() << endl;
-    cout << "calculate:" << stackNum.top() << endl;
+    // cout << "stackNumsize:" << stackNum.size() << endl;
+    // cout << "stackOpsize:" << stackOpre.size() << endl;
+    // cout << "calculate:" << stackNum.top() << endl;
 
     return stackNum.top();
 }
@@ -321,7 +321,6 @@ void Exprresult::ref() {
                 /* 得到地址 */
                 sscanf(tokens.at(i + 1).str, "%lu", &addr);
                 data = vaddr_read(addr, 8);//读取地址数据
-                cout << "data:" << data << endl;
                 sprintf(tokens[i + 1].str, "%lu", data);//重新写入数据
             }
         }
@@ -350,7 +349,6 @@ void Exprresult::hex() {
         /* 读取寄存器 */
         if (tokens.at(i).type == TK_HEX) {
             sscanf(tokens.at(i).str, "%lx", &ret);
-            cout << "hexret:" << ret << endl;
             sprintf(tokens[i].str, "%lu", ret);
             tokens[i].type = TK_NUM;
         }
