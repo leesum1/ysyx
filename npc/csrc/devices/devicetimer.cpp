@@ -25,10 +25,10 @@ word_t Devicetimer::read(paddr_t addr) {
     paddr_t offset = addr - deviceinfo.addr;
     assert(offset == 0 || offset == 4);
     if (offset == 0) {
+        gettimeofday(&now, NULL);
         long seconds = now.tv_sec;
         long useconds = now.tv_usec;
         rtc_time = (seconds * 1000000 + (useconds + 500));
-        cout << "time:" << rtc_time << endl;
         return (uint32_t)rtc_time;
     }
     else {
