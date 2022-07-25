@@ -16,7 +16,7 @@ const uint32_t defimg[] = {
 
 SimMem::SimMem(/* args */) {
     cout << "npc内存初始化开始" << endl;
-    //Device = new topdevice::deviceManager;
+    Device = new topdevice::deviceManager;
 }
 
 SimMem::~SimMem() {
@@ -125,7 +125,7 @@ void SimMem::paddr_write(paddr_t addr, int len, word_t data) {
     // if (addr == 0xa00003f8) {
     //     putchar(data);
     // }
-    Device->write(addr, data, len);
+    //Device->write(addr, data, len);
     out_of_bound(addr);
 }
 /**
