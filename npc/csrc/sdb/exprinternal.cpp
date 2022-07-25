@@ -68,16 +68,16 @@ void Exprinternal::ParseAll() {
 }
 
 Exprinternal::~Exprinternal() {
-    cout << "Exprinternal end" << endl;
+    //cout << "Exprinternal end" << endl;
 }
 
 void Exprinternal::printTokens() {
 
-    cout << "Exprinternal start" << endl;
-    for (size_t i = 0; i < tokens.size(); i++) {
-        cout << " str: " << tokens.at(i).str \
-            << " type: " << tokens.at(i).type << endl;
-    }
+    //cout << "Exprinternal start" << endl;
+    // for (size_t i = 0; i < tokens.size(); i++) {
+    //     cout << " str: " << tokens.at(i).str \
+    //         << " type: " << tokens.at(i).type << endl;
+    // }
 }
 /**
  * @brief 中缀表达式求值
@@ -122,9 +122,9 @@ uint64_t Exprinternal::run1() {
     }
 
     //Assert(stackNum.size() == 1 || stackOpre.size() == 0, "stackNum.size:%ld,stackOpre.size%ld", stackNum.size(), stackOpre.size());
-    cout << "stackNumsize:" << stackNum.size() << endl;
-    cout << "stackOpsize:" << stackOpre.size() << endl;
-    cout << "calculate:" << stackNum.top() << endl;
+    // cout << "stackNumsize:" << stackNum.size() << endl;
+    // cout << "stackOpsize:" << stackOpre.size() << endl;
+    // cout << "calculate:" << stackNum.top() << endl;
 
     return stackNum.top();
 }

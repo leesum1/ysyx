@@ -30,6 +30,7 @@ private:
     ref_Difftest_exec diff_exec;
     ref_Difftest_raise_intr diff_raise_intr;
     ref_difftest_init diff_init;
+    bool is_skip_ref = false;
 public:
     Difftest(/* args */);
     ~Difftest();
@@ -38,6 +39,7 @@ public:
     CPU_state getRefregs();
     bool checkregs();
     void difftest_step();
+    void difftest_skip_ref();
     void printregs(CPU_state& cpu_regs);
     const char* getRegName(int idx);
 };

@@ -35,7 +35,7 @@ VM_PREFIX = Vtop
 VM_MODPREFIX = Vtop
 # User CFLAGS (from -CFLAGS on Verilator command line)
 VM_USER_CFLAGS = \
-	-I/home/leesum/ysyx-workbench/npc/csrc/include \
+	 -I/home/leesum/ysyx-workbench/npc/csrc/include -I/home/leesum/ysyx-workbench/npc/csrc/devices/include   \
 
 # User LDLIBS (from -LDFLAGS on Verilator command line)
 VM_USER_LDLIBS = \
@@ -44,6 +44,9 @@ VM_USER_LDLIBS = \
 # User .cpp files (from .cpp's on Verilator command line)
 VM_USER_CLASSES = \
 	Console \
+	deviceManager \
+	devicebase \
+	deviceuart \
 	main \
 	mydpic \
 	difftest \
@@ -58,6 +61,7 @@ VM_USER_CLASSES = \
 VM_USER_DIR = \
 	/home/leesum/ysyx-workbench/npc/csrc \
 	/home/leesum/ysyx-workbench/npc/csrc/cppreadline \
+	/home/leesum/ysyx-workbench/npc/csrc/devices \
 	/home/leesum/ysyx-workbench/npc/csrc/sdb \
 
 
@@ -71,6 +75,12 @@ include $(VERILATOR_ROOT)/include/verilated.mk
 VPATH += $(VM_USER_DIR)
 
 Console.o: /home/leesum/ysyx-workbench/npc/csrc/cppreadline/Console.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+deviceManager.o: /home/leesum/ysyx-workbench/npc/csrc/devices/deviceManager.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+devicebase.o: /home/leesum/ysyx-workbench/npc/csrc/devices/devicebase.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+deviceuart.o: /home/leesum/ysyx-workbench/npc/csrc/devices/deviceuart.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 main.o: /home/leesum/ysyx-workbench/npc/csrc/main.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<

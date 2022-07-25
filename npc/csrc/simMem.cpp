@@ -1,5 +1,7 @@
 #include "simMem.h"
 
+#include <sys/time.h>
+#include <time.h>
 
 
 /* 默认程序 */
@@ -14,10 +16,12 @@ const uint32_t defimg[] = {
 
 SimMem::SimMem(/* args */) {
     cout << "npc内存初始化开始" << endl;
+    Device = new topdevice::deviceManager;
 }
 
 SimMem::~SimMem() {
     cout << "npc内存销毁完毕" << endl;
+    delete Device;
 }
 /**
  * @brief 地址映射
@@ -89,12 +93,27 @@ bool SimMem::in_pmem(paddr_t addr) {
 }
 
 void SimMem::out_of_bound(paddr_t addr) {
-    cout << "addr:\t" << hex << addr << " not in pmem!" << endl;
+    //cout << "addr:\t" << hex << addr << " not in pmem!" << endl;
 }
 word_t SimMem::paddr_read(paddr_t addr, int len) {
     if (in_pmem(addr)) {
         return pmem_read(addr, len);
     }
+    /* 读取低位时刷新时间 */
+    static uint64_t rtc_time;
+    static struct timeval now;
+
+    if (addr == 0xa0000048) {
+        gettimeofday(&now, NULL);
+        long seconds = now.tv_sec;
+        long useconds = now.tv_usec;
+        rtc_time = (seconds * 1000000 + (useconds + 500));
+        return (uint32_t)rtc_time;
+    }
+    else if (addr == 0xa0000048 + 4) {
+        return rtc_time >> 32;
+    }
+
     out_of_bound(addr);
     return 0;
 
@@ -104,6 +123,10 @@ void SimMem::paddr_write(paddr_t addr, int len, word_t data) {
         pmem_write(addr, len, data);
         return;
     }
+    // if (addr == 0xa00003f8) {
+    //     putchar(data);
+    // }
+    Device->write(addr, data, len);
     out_of_bound(addr);
 }
 /**
@@ -145,7 +168,6 @@ bool SimMem::loadImage(const char* img) {
     binaryimg.read((char*)pmem, img_size);
     return true;
 }
-
 
 paddr_t SimMem::getMEMBASE() {
     return MEMBASE;

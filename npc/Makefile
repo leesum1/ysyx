@@ -5,16 +5,19 @@ CSRC +=  $(shell find $(abspath ./csrc) -name "*.cpp")
 VSRC +=  $(shell find $(abspath ./vsrc) -name "*.v" -or -name "*.sv")
 INC_PATH := -I./vsrc \
 			-I./vsrc/usr \
-			-I./vsrc/lib \
+			-I./vsrc/lib 
 
 
-# 2.verilator flags:
-VERILATOR_FLAGS +=  --trace --cc --exe --build 
+
+# 2.verilator flags: --trace
+VERILATOR_FLAGS +=   --cc --exe --build 
 VERILATOR_FLAGS += ${INC_PATH}
 VERILATOR_FLAGS += --top ${TOP_MODULE}
 # gcc 链接库 -lasan(内存检查)
+GCC_INC_PATH = -I/home/leesum/ysyx-workbench/npc/csrc/include -I/home/leesum/ysyx-workbench/npc/csrc/devices/include 
+
 GCC_LDFLAGS := -LDFLAGS " -lreadline -ldl -lnemu"
-GCC_CFLAGS := -CFLAGS -I/home/leesum/ysyx-workbench/npc/csrc/include
+GCC_CFLAGS := -CFLAGS " ${GCC_INC_PATH} "
 # NEMU_LIB := /home/leesum/ysyx-workbench/npc/riscv64-nemu-interpreter-so
 
 
@@ -23,7 +26,7 @@ OBJ_DIR := ./obj_dir
 BIN := ${OBJ_DIR}/V${TOP_MODULE}
 
 com:${CSRC} ${VSRC}
-	@verilator ${VERILATOR_FLAGS} ${CSRC} ${VSRC} ${GCC_LDFLAGS} ${GCC_CFLAGS} 
+	@verilator ${VERILATOR_FLAGS} ${CSRC} ${VSRC} ${GCC_LDFLAGS} ${GCC_CFLAGS}
 
 all: default
 	@echo "Write this Makefile by your self."

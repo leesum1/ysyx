@@ -109,13 +109,18 @@ const char* Difftest::getRegName(int idx) {
     return regs[idx];
 }
 
+/**
+ * @brief 格式化打印寄存器
+ *
+ * @param cpu_regs 寄存器组
+ */
 void Difftest::printregs(CPU_state& cpu_regs) {
     /* 格式化输出 */
     for (size_t i = 0; i < 16; i++) {
         cout << setw(5) << left << getRegName(i)
-            << setw(15) << left << hex << cpu_regs.gpr[i]
+            << setw(20) << left << hex << cpu_regs.gpr[i]
             << setw(5) << left << getRegName(i + 16)
-            << setw(15) << left << cpu_regs.gpr[i + 16]
+            << setw(20) << left << cpu_regs.gpr[i + 16]
             << endl;
     }
     cout << "\npc:" << "\t" << hex << cpu_regs.pc << endl;
@@ -126,8 +131,21 @@ void Difftest::printregs(CPU_state& cpu_regs) {
  */
 void Difftest::difftest_step() {
     /* 寄存器不一样 */
+
+    /* 跳过当前指令的 difftest ,以 dut 为准 */
+    if (is_skip_ref) {
+        CPU_state dutregs = getDutregs();
+        diff_regcpy(&dutregs, DIFFTEST_TO_REF);
+        is_skip_ref = false;
+        return;
+    }
     diff_exec(1);
     if (!checkregs()) {
+        /* 停止指令执行 */
         mysim_p->top_status = mysim_p->TOP_STOP;
     }
+}
+
+void Difftest::difftest_skip_ref() {
+    this->is_skip_ref = true;
 }

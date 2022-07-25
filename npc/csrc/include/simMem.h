@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sys/stat.h> // struct stat
 #include <string.h>
+#include "deviceManager.h"
 
 using namespace std;
 #define PG_ALIGN __attribute((aligned(4096)))
@@ -14,8 +15,8 @@ typedef uint64_t word_t;
 class SimMem {
 
 public:
-#define MEMSIZE 0x8000000
-#define MEMBASE 0x80000000
+#define MEMSIZE 0x8000000 //((128 * 1024 * 1024))
+#define MEMBASE 0x80000000 
     /* 实际内存 4k对齐*/
     string imgpath;
     uint8_t pmem[MEMSIZE] PG_ALIGN = {};
@@ -26,6 +27,7 @@ private:
     void pmem_write(paddr_t addr, int len, word_t data);
 
 public:
+    topdevice::deviceManager* Device; // 统一的外设入口
     SimMem(/* args */);
     ~SimMem();
     paddr_t getMEMBASE();
@@ -38,8 +40,6 @@ public:
     bool loadImage(const char* img);
     size_t getImgSize(const char* img);
 };
-
-
 
 
 #endif
