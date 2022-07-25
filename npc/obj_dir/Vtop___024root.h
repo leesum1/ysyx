@@ -42,6 +42,7 @@ VL_MODULE(Vtop___024root) {
     CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___isshift32;
     CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___is_mul_sr1_signed;
     CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___is_div_sr1_signed;
+    CData/*5:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shifter_in2;
     CData/*0:0*/ top__DOT__u_memory__DOT___ls8byte;
     CData/*0:0*/ top__DOT__u_memory__DOT___ls16byte;
     CData/*0:0*/ top__DOT__u_memory__DOT___ls32byte;

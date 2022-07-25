@@ -22,7 +22,7 @@ module alu_shift (
   );
   //将右移转换为左移
   wire [`XLEN-1:0] _shifter_in1 = {`XLEN{_op_shift}} & ((shift_sra | shift_srl) ? _shift_num_inv : _shift_num);//操作数
-  wire [5:0] _shifter_in2 = shift_count;  //移位次数
+  wire [5:0] _shifter_in2 = (isshift32) ? {1'b0, shift_count[4:0]} : shift_count;  //移位次数
   /* 实际移位操作,用一个移位器实现左移和右移 */
   wire [`XLEN-1:0] _shifter_res = _shifter_in1 << _shifter_in2;
 
