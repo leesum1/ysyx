@@ -16,7 +16,7 @@ const uint32_t defimg[] = {
 
 SimMem::SimMem(/* args */) {
     cout << "npc内存初始化开始" << endl;
-    Device = new topdevice::deviceManager;
+    //Device = new topdevice::deviceManager;
 }
 
 SimMem::~SimMem() {
