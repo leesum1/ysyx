@@ -231,6 +231,7 @@ bool Simtop::isSdbOk(const char* sdbname) {
 }
 
 void Simtop::sdbRun(void) {
+    cout << "sdb " << endl;
     if (isSdbOk("difftest")) {
         this->u_difftest.difftest_step();
     }
