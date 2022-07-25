@@ -11,19 +11,21 @@ static const char* regs[] = {
 Simtop::Simtop() {
     cout << "SimtopStart!" << endl;
     mem = new SimMem;
-    //contextp = new VerilatedContext;
+
+    /* 波形数据 */
+    contextp = new VerilatedContext;
     top = new Vtop;
-    //tfp = new VerilatedVcdC;
-    //contextp->traceEverOn(true);
-    //top->trace(tfp, 0);
-    //tfp->open("sim.vcd");
+    tfp = new VerilatedVcdC;
+    contextp->traceEverOn(true);
+    top->trace(tfp, 0);
+    tfp->open("sim.vcd");
 
     this->top_status = TOP_RUNNING;
 }
 
 Simtop::~Simtop() {
-    //tfp->close();
-    //delete tfp;
+    tfp->close();
+    delete tfp;
     delete top;
     cout << "SimtopEnd!" << endl;
 }
@@ -60,17 +62,12 @@ void Simtop::stepCycle(bool val) {
         return;
     }
     changeCLK();
-    //dampWave(); //跑大型任务时不能开启,否则动则10G的波形数据
+    /* 上升沿和下降沿都要保存波形数据 */
+    if (isSdbOk("wave")) {
+        this->dampWave();
+    }
     changeCLK();
-    //dampWave();
-    // if (val) {
-    //     printRegisterFile();
-    // }
-    // /* 监视点 */
-    // if (1) {
-    //     this->u_wp.praseAllwp();
-    // }
-
+    sdbRun();
 }
 
 const char* Simtop::getRegName(int idx) {
@@ -116,9 +113,9 @@ void  Simtop::printRegisterFile() {
     /* 格式化输出 */
     for (size_t i = 0; i < 16; i++) {
         cout << setw(5) << left << getRegName(i)
-            << setw(15) << left << hex << getRegVal(i)
+            << setw(20) << left << hex << getRegVal(i)
             << setw(5) << left << getRegName(i + 16)
-            << setw(15) << left << getRegVal(i + 16)
+            << setw(20) << left << getRegVal(i + 16)
             << endl;
     }
     cout << "\npc:" << "\t" << hex << cpu_pc << endl;
@@ -165,7 +162,7 @@ void Simtop::scanMem(paddr_t addr, uint32_t len) {
  */
 void Simtop::excute(int32_t t) {
     bool val;
-    val = (t > 4) ? false : true;
+    val = (t == 1);
     top_status = TOP_RUNNING;
     while ((!top->contextp()->gotFinish()) && (t--)) {
         if (top_status != TOP_RUNNING) {
@@ -173,7 +170,6 @@ void Simtop::excute(int32_t t) {
             break;
         }
         stepCycle(val);
-        this->u_difftest.difftest_step();
     }
 }
 /**
@@ -188,7 +184,6 @@ void Simtop::excute() {
             break;
         }
         stepCycle(false);
-        //this->u_difftest.difftest_step();
     }
 }
 Vtop* Simtop::getTop() {
@@ -224,3 +219,31 @@ void Simtop::sdbOff(const char* sdbname) {
     }
     cout << "can not find " << sdbname << endl;
 }
+
+bool Simtop::isSdbOk(const char* sdbname) {
+    for (auto iter : sdbToollist) {
+        if (sdbname == iter.name) {
+            iter.isok = false;
+            return iter.isok;
+        }
+    }
+    cout << "can not find " << sdbname << endl;
+    return false;
+}
+
+void Simtop::sdbRun(void) {
+    if (isSdbOk("difftest")) {
+        this->u_difftest.difftest_step();
+    }
+    if (isSdbOk("wp")) {
+        this->u_wp.praseAllwp();
+    }
+    if (isSdbOk("wave")) {
+        this->dampWave();
+    }
+    if (isSdbOk("reg")) {
+        this->printRegisterFile();
+    }
+    //TODO:add more
+}
+

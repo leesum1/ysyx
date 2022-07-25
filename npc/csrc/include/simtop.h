@@ -31,6 +31,7 @@ private:
         {"difftest",false},
         {"wp",false},
         {"wave",false},
+        {"reg",false},
         {"itrace",false},
         {"mtrace",false},
         {"ftrace",false},
@@ -64,6 +65,8 @@ public:
     void excute();
     void sdbOn(const char* sdbname);
     void sdbOff(const char* sdbname);
+    void sdbRun(void);
+    bool isSdbOk(const char* sdbname);
 };
 
 #endif

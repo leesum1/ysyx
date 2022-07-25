@@ -8,8 +8,8 @@ VERILATOR_INC_PATH := -I./vsrc \
 			-I./vsrc/usr \
 			-I./vsrc/lib 
 
-# verilator flags: --trace
-VERILATOR_FLAGS +=   --cc --exe --build 
+# verilator flags: 
+VERILATOR_FLAGS +=   --cc --exe --build --trace
 VERILATOR_FLAGS += ${VERILATOR_INC_PATH}
 VERILATOR_FLAGS += --top ${TOP_MODULE}
 
