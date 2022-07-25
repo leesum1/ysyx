@@ -17,16 +17,16 @@ static const char mainargs[] = MAINARGS;
 
 /* 串口 */
 void putch(char ch) {
-  outb(SERIAL_PORT, ch);
+    outb(SERIAL_PORT, ch);
 }
 
 void halt(int code) {
-  npc_trap(code);
-  /* 不应该到这里来 */
-  while (1);
+    npc_trap(code);
+    /* 不应该到这里来 */
+    while (1);
 }
 
 void _trm_init() {
-  int ret = main(mainargs);
-  halt(ret);
+    int ret = main(mainargs);
+    halt(ret);
 }
