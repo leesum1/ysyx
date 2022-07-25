@@ -1,7 +1,9 @@
 #include "deviceManager.h"
+#include "deviceuart.h"
+#include "devicetimer.h"
 #include "assert.h"
 
-using namespace topdevice;
+using namespace Topdevice;
 
 
 deviceManager::deviceManager(/* args */) {
@@ -15,6 +17,9 @@ void deviceManager::deviceManagerInit(void) {
     ret = installDevice("deviceuart", "uart0");
     assert(ret == true);
     printf("uart0 init\n");
+    ret = installDevice("Devicetimer", "timer0");
+    assert(ret == true);
+    printf("timer0 init\n");
 }
 
 
@@ -26,7 +31,7 @@ bool deviceManager::atRange(paddr_t s, paddr_t e, paddr_t val) {
 }
 
 
-devicebase* deviceManager::findDevicebyaddr(paddr_t addr) {
+Devicebase* deviceManager::findDevicebyaddr(paddr_t addr) {
     paddr_t staraddr, endaddr;
     for (size_t i = 0; i < devicePool.size(); i++) {
         if (!(devicePool[i]->deviceinfo.isok)) {
@@ -46,17 +51,18 @@ devicebase* deviceManager::findDevicebyaddr(paddr_t addr) {
 do{\
     if (strcmp(name, #className) == 0)\
     {\
-        return new topdevice::className;\
+        return new Topdevice::className;\
     }\
 }while(0)
 /**
  * @brief 创造设备
  *
  * @param name 设备类名称
- * @return devicebase*
+ * @return Devicebase*
  */
-devicebase* deviceManager::createDevice(const char* name) {
+Devicebase* deviceManager::createDevice(const char* name) {
     DEVICE_CLASS_MATCH(deviceuart);
+    DEVICE_CLASS_MATCH(Devicetimer);
     return NULL;
 }
 
@@ -73,7 +79,7 @@ bool deviceManager::installDevice(const char* className, const char* deviceName)
         printf("%s,already installed\n");
         return false;
     };
-    devicebase* base = createDevice(className);
+    Devicebase* base = createDevice(className);
     if (base == nullptr) {
         printf("device has not %s\n", className);
         return false;
@@ -91,9 +97,9 @@ bool deviceManager::installDevice(const char* className, const char* deviceName)
  * @brief 根据名字找设备
  *
  * @param name
- * @return devicebase*
+ * @return Devicebase*
  */
-devicebase* deviceManager::findDevicebyName(const char* name) {
+Devicebase* deviceManager::findDevicebyName(const char* name) {
     for (auto iter : devicePool) {
         if (iter->deviceinfo.name == name) {
             return iter;
@@ -104,7 +110,7 @@ devicebase* deviceManager::findDevicebyName(const char* name) {
 
 
 word_t deviceManager::read(paddr_t addr) {
-    devicebase* base = findDevicebyaddr(addr);
+    Devicebase* base = findDevicebyaddr(addr);
     if (base == nullptr) {
         cout << hex << addr << " is out of device addr" << endl;
         return 0;
@@ -113,7 +119,7 @@ word_t deviceManager::read(paddr_t addr) {
     return data;
 }
 void deviceManager::write(paddr_t addr, word_t data, uint32_t len) {
-    devicebase* base = findDevicebyaddr(addr);
+    Devicebase* base = findDevicebyaddr(addr);
     if (base == nullptr) {
         cout << hex << addr << " is out of device addr" << endl;
         return;

@@ -16,11 +16,12 @@ const uint32_t defimg[] = {
 
 SimMem::SimMem(/* args */) {
     cout << "npc内存初始化开始" << endl;
-    Device = new topdevice::deviceManager;
+    Device = new Topdevice::deviceManager;
 }
 
 SimMem::~SimMem() {
     cout << "npc内存销毁完毕" << endl;
+    delete Device;
 }
 /**
  * @brief 地址映射
@@ -122,9 +123,7 @@ void SimMem::paddr_write(paddr_t addr, int len, word_t data) {
         pmem_write(addr, len, data);
         return;
     }
-    // if (addr == 0xa00003f8) {
-    //     putchar(data);
-    // }
+
     Device->write(addr, data, len);
     out_of_bound(addr);
 }
@@ -167,7 +166,6 @@ bool SimMem::loadImage(const char* img) {
     binaryimg.read((char*)pmem, img_size);
     return true;
 }
-
 
 paddr_t SimMem::getMEMBASE() {
     return MEMBASE;

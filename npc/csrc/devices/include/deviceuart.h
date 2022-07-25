@@ -3,9 +3,9 @@
 
 #include "devicebase.h"
 
-namespace topdevice {
+namespace Topdevice {
 
-    class deviceuart :public devicebase {
+    class deviceuart :public Devicebase {
     private:
 
     public:
