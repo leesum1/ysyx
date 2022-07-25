@@ -223,7 +223,6 @@ void Simtop::sdbOff(const char* sdbname) {
 bool Simtop::isSdbOk(const char* sdbname) {
     for (auto iter : sdbToollist) {
         if (sdbname == iter.name) {
-            iter.isok = false;
             return iter.isok;
         }
     }
