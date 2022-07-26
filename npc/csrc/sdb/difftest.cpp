@@ -133,17 +133,17 @@ void Difftest::difftest_step() {
     /* 寄存器不一样 */
 
     /* 跳过当前指令的 difftest ,以 dut 为准 */
-    if (is_skip_ref) {
+    if (is_skip_ref == true) {
         CPU_state dutregs = getDutregs();
         diff_regcpy(&dutregs, DIFFTEST_TO_REF);
 
 
-        CPU_state refregs = getRefregs();
-        cout << "----------------------------------dutregs----------------------------------" << endl;
-        printregs(dutregs);
-        cout << "----------------------------------refregs----------------------------------" << endl;
-        printregs(refregs);
-        mysim_p->top_status = mysim_p->TOP_STOP;
+        // CPU_state refregs = getRefregs();
+        // cout << "----------------------------------dutregs----------------------------------" << endl;
+        // printregs(dutregs);
+        // cout << "----------------------------------refregs----------------------------------" << endl;
+        // printregs(refregs);
+        // mysim_p->top_status = mysim_p->TOP_STOP;
         is_skip_ref = false;
         return;
     }
@@ -156,5 +156,5 @@ void Difftest::difftest_step() {
 }
 
 void Difftest::difftest_skip_ref() {
-    this->is_skip_ref = true;
+    is_skip_ref = true;
 }
