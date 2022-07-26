@@ -51,25 +51,15 @@ bool DeviceManager::atRange(paddr_t s, paddr_t e, paddr_t val) {
  */
 Devicebase* DeviceManager::findDevicebyaddr(paddr_t addr) {
     paddr_t staraddr, endaddr;
-    /* 在设备池中遍历所有设备,找到该地址所属的设备 */
-    // for (size_t i = 0; i < devicePool.size(); i++) {
-    //     if (!(devicePool[i]->deviceinfo.isok)) {
-    //         continue;
-    //     }
-    //     staraddr = devicePool[i]->deviceinfo.addr;//开始地址
-    //     endaddr = staraddr + devicePool[i]->deviceinfo.len - 1;//结束地址
-    //     if (atRange(staraddr, endaddr, addr)) {
-    //         mysim_p->u_difftest.difftest_skip_ref(); // 访问外设时,跳过 difftest
-    //         return devicePool[i];
-    //     }
-    // }
+    /* 遍历设备池,必须使用引用遍历 */
     for (auto& iter : devicePool) {
+        /* 每个设备可能有多块地址区域,例如 vga */
         for (auto dinfoiter : iter->deviceinfo) {
             if (!dinfoiter.isok) {
                 continue;
             }
-            staraddr = dinfoiter.addr;
-            endaddr = staraddr + dinfoiter.len - 1;
+            staraddr = dinfoiter.addr; //地址空间开始地址
+            endaddr = staraddr + dinfoiter.len - 1;//结束地址
             if (atRange(staraddr, endaddr, addr)) {
                 mysim_p->u_difftest.difftest_skip_ref(); // 访问外设时,跳过 difftest
                 return iter;
