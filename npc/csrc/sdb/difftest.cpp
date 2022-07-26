@@ -137,13 +137,18 @@ void Difftest::difftest_step() {
         CPU_state dutregs = getDutregs();
         diff_regcpy(&dutregs, DIFFTEST_TO_REF);
         is_skip_ref = false;
+        if (!checkregs()) {
+            /* 停止指令执行 */
+            mysim_p->top_status = mysim_p->TOP_STOP;
+        }
         return;
     }
-    // diff_exec(1);
-    // if (!checkregs()) {
-    //     /* 停止指令执行 */
-    //     mysim_p->top_status = mysim_p->TOP_STOP;
-    // }
+
+    diff_exec(1);
+    if (!checkregs()) {
+        /* 停止指令执行 */
+        mysim_p->top_status = mysim_p->TOP_STOP;
+    }
 }
 
 void Difftest::difftest_skip_ref() {
