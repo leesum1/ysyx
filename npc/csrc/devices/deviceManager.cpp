@@ -24,6 +24,8 @@ void DeviceManager::DeviceManagerInit(void) {
     printf("uart0 init\n");
     ret = installDevice("Devicetimer", "timer0");
     assert(ret == true);
+    ret = installDevice("Devicevga", "vga0");
+    assert(ret == true);
     printf("timer0 init\n");
 }
 

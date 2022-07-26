@@ -1,5 +1,5 @@
 #include "devicevga.h"
-#include <SDL2/SDL.h>
+
 #include "assert.h"
 using namespace Topdevice;
 
@@ -33,6 +33,8 @@ void Devicevga::init(const char* name) {
     t.len = screen_size();
     t.isok = true;
     deviceinfo.push_back(t);
+
+    initscreen();
 }
 void Devicevga::write(paddr_t addr, word_t data, uint32_t len) {
     paddr_t offset;
