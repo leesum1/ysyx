@@ -184,7 +184,7 @@ unsigned cmd_sdboff(const std::vector<std::string>& input) {
 
 unsigned cmd_sdb(const std::vector<std::string>& input) {
 
-    if (input.size() < 3) {
+    if (input.size() < 2) {
         std::cout << "Usage: " << " <sdb status> or <sdb on/off name>\n";
         return 1;
     }
