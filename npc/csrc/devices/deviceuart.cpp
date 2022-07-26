@@ -11,10 +11,13 @@ deviceuart::~deviceuart() {
 }
 
 void deviceuart::init(const char* name) {
-    deviceinfo.name.append(name);
-    deviceinfo.addr = SERIAL_PORT;
-    deviceinfo.len = 4;
-    deviceinfo.isok = true;
+    deviceinfo_t t;
+    t.name.append(name);
+    t.addr = SERIAL_PORT;
+    t.len = 4;
+    t.isok = true;
+
+    deviceinfo.push_back(t);
 }
 void deviceuart::write(paddr_t addr, word_t data, uint32_t len) {
     putchar(data);

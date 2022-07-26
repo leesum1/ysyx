@@ -96,7 +96,7 @@ module alu (
 
   wire _isZero = (_add_out == 65'd0);
   wire _isOF = _add_out[`XLEN] ^ _add_out[`XLEN-1];
-  wire _isSF = _add_out[`XLEN-1];  //leesum
+  wire _isSF = _add_out[`XLEN-1];  //leesum(bug),最高位为扩展符号位,次高位为原始符号位
   wire _isCF = _isSUBop ^ _isC64in;
 
   /* 比较信息 具体看 obsidian 笔记 */

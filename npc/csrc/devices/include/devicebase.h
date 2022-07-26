@@ -31,7 +31,7 @@ namespace Topdevice {
     class Devicebase {
     private:
     public:
-        deviceinfo_t deviceinfo;
+        vector<deviceinfo_t> deviceinfo;
         virtual ~Devicebase() {};
         virtual void write(paddr_t addr, word_t data, uint32_t len) = 0;
         virtual word_t read(paddr_t addr) = 0;

@@ -51,6 +51,7 @@ VM_USER_CLASSES = \
 	devicebase \
 	devicetimer \
 	deviceuart \
+	devicevga \
 	main \
 	mydpic \
 	difftest \
@@ -87,6 +88,8 @@ devicebase.o: /home/leesum/ysyx-workbench/npc/csrc/devices/devicebase.cpp
 devicetimer.o: /home/leesum/ysyx-workbench/npc/csrc/devices/devicetimer.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 deviceuart.o: /home/leesum/ysyx-workbench/npc/csrc/devices/deviceuart.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+devicevga.o: /home/leesum/ysyx-workbench/npc/csrc/devices/devicevga.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 main.o: /home/leesum/ysyx-workbench/npc/csrc/main.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<

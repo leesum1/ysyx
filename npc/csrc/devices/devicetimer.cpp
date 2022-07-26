@@ -11,11 +11,13 @@ Devicetimer::~Devicetimer() {
 }
 
 void Devicetimer::init(const char* name) {
-    deviceinfo.name.append(name);
-    deviceinfo.addr = RTC_ADDR;
-    deviceinfo.len = 8;
-    deviceinfo.isok = true;
 
+    deviceinfo_t t;
+    t.name.append(name);
+    t.addr = RTC_ADDR;
+    t.len = 8;
+    t.isok = true;
+    deviceinfo.push_back(t);
     gettimeofday(&boottime, NULL);
 }
 void Devicetimer::write(paddr_t addr, word_t data, uint32_t len) {
@@ -28,7 +30,7 @@ void Devicetimer::write(paddr_t addr, word_t data, uint32_t len) {
  * @return word_t
  */
 word_t Devicetimer::read(paddr_t addr) {
-    paddr_t offset = addr - deviceinfo.addr;
+    paddr_t offset = addr - deviceinfo.at(0).addr;
     assert(offset == 0 || offset == 4);
     if (offset == 0) {
         gettimeofday(&now, NULL);
