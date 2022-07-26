@@ -119,6 +119,8 @@ void Vtop___024root__traceInitSub0(Vtop___024root* vlSelf, VerilatedVcd* tracep)
         tracep->declQuad(c+121,"top u_execute u_alu u_alu_div_top sr2_data", false,-1, 63,0);
         tracep->declQuad(c+123,"top u_execute u_alu u_alu_div_top div_result", false,-1, 63,0);
         tracep->declQuad(c+125,"top u_execute u_alu u_alu_div_top rem_result", false,-1, 63,0);
+        tracep->declBit(c+127,"top u_memory clk", false,-1);
+        tracep->declBit(c+128,"top u_memory rst", false,-1);
         tracep->declQuad(c+1,"top u_memory pc", false,-1, 63,0);
         tracep->declBus(c+6,"top u_memory rd_idx", false,-1, 4,0);
         tracep->declQuad(c+13,"top u_memory rs1_data", false,-1, 63,0);

@@ -1,5 +1,7 @@
 `include "./../sysconfig.v"
 module memory (
+    input                      clk,
+    input                      rst,
     input [         `XLEN-1:0] pc,
     input [`REG_ADDRWIDTH-1:0] rd_idx,
     input [         `XLEN-1:0] rs1_data,
@@ -96,7 +98,12 @@ module memory (
     input byte wmask
   );
 
-  always @(*) begin
+  // always @(*) begin
+  //   pmem_read(_raddr, _mem_read);
+  //   pmem_write(_waddr, _mem_write, _wmask);
+  // end
+
+  always @(posedge clk) begin
     pmem_read(_raddr, _mem_read);
     pmem_write(_waddr, _mem_write, _wmask);
   end

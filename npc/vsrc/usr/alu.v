@@ -96,7 +96,7 @@ module alu (
 
   wire _isZero = (_add_out == 65'd0);
   wire _isOF = _add_out[`XLEN] ^ _add_out[`XLEN-1];
-  wire _isSF = _add_out[`XLEN-2];
+  wire _isSF = _add_out[`XLEN-1];  //leesum
   wire _isCF = _isSUBop ^ _isC64in;
 
   /* 比较信息 具体看 obsidian 笔记 */

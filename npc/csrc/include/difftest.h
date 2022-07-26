@@ -30,7 +30,7 @@ private:
     ref_Difftest_exec diff_exec;
     ref_Difftest_raise_intr diff_raise_intr;
     ref_difftest_init diff_init;
-    bool is_skip_ref = false;
+    volatile bool is_skip_ref = false;
 public:
     Difftest(/* args */);
     ~Difftest();

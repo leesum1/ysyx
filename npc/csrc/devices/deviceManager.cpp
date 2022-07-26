@@ -2,10 +2,11 @@
 #include "deviceuart.h"
 #include "devicetimer.h"
 #include "assert.h"
+#include "simtop.h"
 
 using namespace Topdevice;
 
-
+extern Simtop* mysim_p;
 DeviceManager::DeviceManager(/* args */) {
     DeviceManagerInit();
     cout << "设备框架初始化" << endl;
@@ -13,7 +14,7 @@ DeviceManager::DeviceManager(/* args */) {
 DeviceManager::~DeviceManager() {
 }
 /**
- * @brief 注册设备
+ * @brief 注册所有设备
  *
  */
 void DeviceManager::DeviceManagerInit(void) {
@@ -50,13 +51,15 @@ bool DeviceManager::atRange(paddr_t s, paddr_t e, paddr_t val) {
  */
 Devicebase* DeviceManager::findDevicebyaddr(paddr_t addr) {
     paddr_t staraddr, endaddr;
+    /* 在设备池中遍历所有设备,找到该地址所属的设备 */
     for (size_t i = 0; i < devicePool.size(); i++) {
         if (!(devicePool[i]->deviceinfo.isok)) {
             continue;
         }
-        staraddr = devicePool[i]->deviceinfo.addr;
-        endaddr = staraddr + devicePool[i]->deviceinfo.len - 1;
+        staraddr = devicePool[i]->deviceinfo.addr;//开始地址
+        endaddr = staraddr + devicePool[i]->deviceinfo.len - 1;//结束地址
         if (atRange(staraddr, endaddr, addr)) {
+            mysim_p->u_difftest.difftest_skip_ref(); // 访问外设时,跳过 difftest
             return devicePool[i];
         }
     }
@@ -75,7 +78,7 @@ do{\
  * @brief 创造设备
  *
  * @param name 设备类名称
- * @return Devicebase*
+ * @return Devicebase* 指向设备的指针
  */
 Devicebase* DeviceManager::createDevice(const char* name) {
     DEVICE_CLASS_MATCH(deviceuart);
@@ -135,6 +138,7 @@ word_t DeviceManager::read(paddr_t addr) {
     Devicebase* base = findDevicebyaddr(addr);
     if (base == nullptr) {
         cout << hex << addr << " is out of device addr" << endl;
+        assert(base);
         return 0;
     }
     // 多态的用法
@@ -149,9 +153,11 @@ word_t DeviceManager::read(paddr_t addr) {
  * @param len  数据长度
  */
 void DeviceManager::write(paddr_t addr, word_t data, uint32_t len) {
+    assert(len >= 1 && len <= 8);
     Devicebase* base = findDevicebyaddr(addr);
     if (base == nullptr) {
         cout << hex << addr << " is out of device addr" << endl;
+        assert(base);
         return;
     }
     // 多态的用法

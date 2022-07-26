@@ -20,6 +20,9 @@ extern "C" void get_pc(long long pc) {
 
 extern "C" void pmem_read(long long raddr, long long* rdata) {
     // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
+    if (raddr == 0) {
+        return;
+    }
     *rdata = mysim_p->mem->paddr_read(raddr, 8);
     //printf("readaddr:%08x\n", raddr);
 };

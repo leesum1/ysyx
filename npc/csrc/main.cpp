@@ -49,6 +49,7 @@ int main(int argc, char* argv[]) {
   c.registerCommand("d", cmd_d);
   c.registerCommand("sdbon", cmd_sdbon);
   c.registerCommand("sdboff", cmd_sdboff);
+  c.registerCommand("sdb", cmd_sdb);
   int retCode;
   do {
     retCode = c.readLine();
