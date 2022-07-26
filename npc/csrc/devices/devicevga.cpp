@@ -65,7 +65,7 @@ void Devicevga::write(paddr_t addr, word_t data, uint32_t len) {
         offset = addr - deviceinfo.at(1).addr;
         vgaregs.fbbuff[offset / 4] = (uint32_t)data;
     }
-    vga_update_screen();
+    //vga_update_screen();
 }
 word_t Devicevga::read(paddr_t addr) {
     word_t data;
@@ -86,7 +86,7 @@ word_t Devicevga::read(paddr_t addr) {
         offset = addr - deviceinfo.at(1).addr;
         data = *(vgaregs.fbbuff + offset);
     }
-    vga_update_screen();
+    //vga_update_screen();
     return data;
 }
 
