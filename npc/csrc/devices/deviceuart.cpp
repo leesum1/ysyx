@@ -17,7 +17,6 @@ void deviceuart::init(const char* name) {
     deviceinfo.isok = true;
 }
 void deviceuart::write(paddr_t addr, word_t data, uint32_t len) {
-    cout << "uart:" << hex << addr << endl;
     putchar(data);
 }
 word_t deviceuart::read(paddr_t addr) {
