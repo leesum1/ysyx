@@ -9,7 +9,7 @@ VERILATOR_INC_PATH := -I./vsrc \
 			-I./vsrc/lib 
 
 # verilator flags: 
-VERILATOR_FLAGS +=   --cc --exe --build --trace   -O3 --x-assign fast --x-initial fast --noassert
+VERILATOR_FLAGS +=   --cc --exe --build --trace  
 VERILATOR_FLAGS += ${VERILATOR_INC_PATH}
 VERILATOR_FLAGS += --top ${TOP_MODULE}
 
@@ -34,7 +34,7 @@ OBJ_DIR := ./obj_dir
 BIN := ${OBJ_DIR}/V${TOP_MODULE}
 
 com:${CSRC} ${VSRC}
-	@verilator ${VERILATOR_FLAGS} ${CSRC} ${VSRC} ${GCC_FLAGS} -CFLAGS -flto
+	@verilator ${VERILATOR_FLAGS} ${CSRC} ${VSRC} ${GCC_FLAGS} -CFLAGS -flto -CFLAGS -O3
 
 all: default
 	@echo "Write this Makefile by your self."
