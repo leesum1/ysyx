@@ -59,6 +59,7 @@ Devicebase* DeviceManager::findDevicebyaddr(paddr_t addr) {
         staraddr = devicePool[i]->deviceinfo.addr;//开始地址
         endaddr = staraddr + devicePool[i]->deviceinfo.len - 1;//结束地址
         if (atRange(staraddr, endaddr, addr)) {
+            cout << "addr:" << hex << addr << endl;
             mysim_p->u_difftest.difftest_skip_ref(); // 访问外设时,跳过 difftest
             return devicePool[i];
         }
