@@ -37,7 +37,7 @@ VM_MODPREFIX = Vtop
 VM_USER_CFLAGS = \
 	-I/home/leesum/ysyx-workbench/npc/csrc/include \
 	-I/home/leesum/ysyx-workbench/npc/csrc/devices/include \
-	-O3 \
+	-flto \
 
 # User LDLIBS (from -LDFLAGS on Verilator command line)
 VM_USER_LDLIBS = \
