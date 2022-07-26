@@ -137,6 +137,8 @@ void Difftest::difftest_step() {
         CPU_state dutregs = getDutregs();
         diff_regcpy(&dutregs, DIFFTEST_TO_REF);
         is_skip_ref = false;
+
+        printf("difftest\n");
         return;
     }
     diff_exec(1);
