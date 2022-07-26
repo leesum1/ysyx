@@ -9,7 +9,7 @@ VERILATOR_INC_PATH := -I./vsrc \
 			-I./vsrc/lib 
 
 # verilator flags: 
-VERILATOR_FLAGS +=   --cc --exe --build --trace --x-initial fast -O3
+VERILATOR_FLAGS +=   --cc --exe --build --trace --x-initial fast -O3 --compiler clang
 VERILATOR_FLAGS += ${VERILATOR_INC_PATH}
 VERILATOR_FLAGS += --top ${TOP_MODULE}
 
