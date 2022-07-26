@@ -17,7 +17,7 @@ VERILATOR_FLAGS += --top ${TOP_MODULE}
 # gcc flags 
 GCC_INC_PATH = -I/home/leesum/ysyx-workbench/npc/csrc/include  \
 			   -I/home/leesum/ysyx-workbench/npc/csrc/devices/include \
-			   -O3
+
 #-lasan(内存检查)
 GCC_LIB = -lreadline \
 		  -ldl \
@@ -34,7 +34,7 @@ OBJ_DIR := ./obj_dir
 BIN := ${OBJ_DIR}/V${TOP_MODULE}
 
 com:${CSRC} ${VSRC}
-	@verilator ${VERILATOR_FLAGS} ${CSRC} ${VSRC} ${GCC_FLAGS} 
+	@verilator ${VERILATOR_FLAGS} ${CSRC} ${VSRC} ${GCC_FLAGS} -CFLAGS -O3
 
 all: default
 	@echo "Write this Makefile by your self."
