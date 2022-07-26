@@ -20,7 +20,8 @@ GCC_INC_PATH = -I/home/leesum/ysyx-workbench/npc/csrc/include  \
 #-lasan(内存检查)
 GCC_LIB = -lreadline \
 		  -ldl \
-		  -lnemu
+		  -lnemu \
+		  -lSDL2
 
 GCC_LDFLAGS := $(addprefix -LDFLAGS ,${GCC_LIB})
 GCC_CFLAGS :=  $(addprefix -CFLAGS ,${GCC_INC_PATH})

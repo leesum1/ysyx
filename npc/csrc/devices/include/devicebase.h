@@ -36,6 +36,7 @@ namespace Topdevice {
         virtual void write(paddr_t addr, word_t data, uint32_t len) = 0;
         virtual word_t read(paddr_t addr) = 0;
         virtual void init(const char* name) = 0;
+        bool atRange(paddr_t s, paddr_t e, paddr_t val);
     };
 
 };
