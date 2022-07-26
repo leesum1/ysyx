@@ -182,3 +182,34 @@ unsigned cmd_sdboff(const std::vector<std::string>& input) {
     return 0;
 }
 
+unsigned cmd_sdb(const std::vector<std::string>& input) {
+
+    if (input.size() < 3) {
+        std::cout << "Usage: " << " <sdb status> or <sdb on/off name>\n";
+        return 1;
+    }
+
+    if (input[1] == "status") {
+        mysim_p->sdbStatus();
+    }
+    else if (input[1] == "on") {
+        if (input.size() != 3) {
+            std::cout << "Usage: " << " <sdb status> or <sdb on/off name>\n";
+            return 1;
+        }
+        mysim_p->sdbOn(input[1].c_str());
+    }
+    else if (input[1] == "off") {
+        if (input.size() != 3) {
+            std::cout << "Usage: " << " <sdb status> or <sdb on/off name>\n";
+            return 1;
+        }
+        mysim_p->sdbOff(input[1].c_str());
+    }
+    else {
+        std::cout << "Usage: " << " <sdb status> or <sdb on/off name>\n";
+        return 1;
+    }
+    return 0;
+}
+

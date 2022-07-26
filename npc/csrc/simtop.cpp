@@ -197,6 +197,15 @@ Vtop* Simtop::getTop() {
  * @param sdbname 工具名称
  */
 void Simtop::sdbOn(const char* sdbname) {
+    /* 打开所有 sdb 调试工具 */
+    if (!(sdbname, "all")) {
+        for (auto& iter : sdbToollist) {
+            iter.isok = true;
+
+        }
+        return;
+    }
+    /* 按名字打开 */
     for (auto& iter : sdbToollist) {
         if (sdbname == iter.name) {
             iter.isok = true;
@@ -211,6 +220,15 @@ void Simtop::sdbOn(const char* sdbname) {
  * @param sdbname 工具名称
  */
 void Simtop::sdbOff(const char* sdbname) {
+    /* 关闭所有 sdb 调试工具 */
+    if (!(sdbname, "all")) {
+        for (auto& iter : sdbToollist) {
+            iter.isok = false;
+
+        }
+        return;
+    }
+
     for (auto& iter : sdbToollist) {
         if (sdbname == iter.name) {
             iter.isok = false;
@@ -229,6 +247,13 @@ bool Simtop::isSdbOk(const char* sdbname) {
     }
     cout << "can not find " << sdbname << endl;
     return false;
+}
+
+void Simtop::sdbStatus() {
+    /* 只读遍历 */
+    for (auto iter : sdbToollist) {
+        cout << iter.name << ": " << iter.isok << endl;
+    }
 }
 
 void Simtop::sdbRun(void) {

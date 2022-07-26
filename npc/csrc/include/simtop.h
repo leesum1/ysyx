@@ -65,6 +65,7 @@ public:
     void excute();
     void sdbOn(const char* sdbname);
     void sdbOff(const char* sdbname);
+    void sdbStatus();
     void sdbRun(void);
     bool isSdbOk(const char* sdbname);
 };
