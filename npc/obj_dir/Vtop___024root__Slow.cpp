@@ -1377,7 +1377,7 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
            << (IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shifter_in2));
     vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isSLT 
         = (1U & ((vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[1U] 
-                  >> 0x1eU) ^ (vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[2U] 
+                  >> 0x1fU) ^ (vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[2U] 
                                ^ (vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[1U] 
                                   >> 0x1fU))));
     vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isCF 
