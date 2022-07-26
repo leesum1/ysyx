@@ -139,11 +139,11 @@ void Difftest::difftest_step() {
         is_skip_ref = false;
         return;
     }
-    diff_exec(1);
-    if (!checkregs()) {
-        /* 停止指令执行 */
-        mysim_p->top_status = mysim_p->TOP_STOP;
-    }
+    // diff_exec(1);
+    // if (!checkregs()) {
+    //     /* 停止指令执行 */
+    //     mysim_p->top_status = mysim_p->TOP_STOP;
+    // }
 }
 
 void Difftest::difftest_skip_ref() {

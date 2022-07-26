@@ -48,8 +48,8 @@ void Simtop::changeCLK() {
 
 
 void Simtop::dampWave() {
-    // contextp->timeInc(1);
-    // tfp->dump(contextp->time());
+    contextp->timeInc(1);
+    tfp->dump(contextp->time());
 }
 
 /**
@@ -61,16 +61,12 @@ void Simtop::stepCycle(bool val) {
     if (top_status != TOP_RUNNING) {
         return;
     }
-    changeCLK();
+    changeCLK(); // 上升沿
     /* 上升沿和下降沿都要保存波形数据 */
-    int j = top->clk;
-    cout << "clkj:" << j << endl;
     if (isSdbOk("wave")) {
         this->dampWave();
     }
-    changeCLK();
-    int i = top->clk;
-    cout << "clki:" << i << endl;
+    changeCLK();// 下降沿
     sdbRun();
 }
 
