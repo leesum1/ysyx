@@ -200,7 +200,6 @@ void Simtop::sdbOn(const char* sdbname) {
     for (auto& iter : sdbToollist) {
         if (sdbname == iter.name) {
             iter.isok = true;
-            cout << sdbname << iter.isok << endl;
             return;
         }
     }
@@ -222,9 +221,9 @@ void Simtop::sdbOff(const char* sdbname) {
 }
 
 bool Simtop::isSdbOk(const char* sdbname) {
+    /* 这种方式便利时, auto iter 为只读, auto & iter 可修改 */
     for (auto& iter : sdbToollist) {
         if (sdbname == iter.name) {
-            cout << sdbname << iter.isok << endl;
             return iter.isok;
         }
     }
