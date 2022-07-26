@@ -7,7 +7,7 @@ using namespace Topdevice;
 static int thread_func(void* ptr) {
     Devicevga* vga_p = (Devicevga*)ptr;
     while (1) {
-        SDL_Delay(100);
+        SDL_Delay(200);
         vga_p->update_screen();
     }
 }
