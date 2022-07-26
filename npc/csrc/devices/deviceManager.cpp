@@ -1,6 +1,7 @@
 #include "deviceManager.h"
 #include "deviceuart.h"
 #include "devicetimer.h"
+#include "devicevga.h"
 #include "assert.h"
 #include "simtop.h"
 
@@ -88,6 +89,7 @@ do{\
 Devicebase* DeviceManager::createDevice(const char* name) {
     DEVICE_CLASS_MATCH(deviceuart);
     DEVICE_CLASS_MATCH(Devicetimer);
+    DEVICE_CLASS_MATCH(Devicevga);
     return NULL;
 }
 
