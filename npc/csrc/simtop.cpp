@@ -63,12 +63,14 @@ void Simtop::stepCycle(bool val) {
     }
     changeCLK();
     /* 上升沿和下降沿都要保存波形数据 */
+    int j = top->clk;
+    cout << "clkj:" << j << endl;
     if (isSdbOk("wave")) {
         this->dampWave();
     }
     changeCLK();
     int i = top->clk;
-    cout << "clk:" << i << endl;
+    cout << "clki:" << i << endl;
     sdbRun();
 }
 
