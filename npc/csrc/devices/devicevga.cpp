@@ -125,7 +125,7 @@ uint32_t Devicevga::screen_size() {
 
 
 void Devicevga::update_screen() {
-    SDL_UpdateTexture(texture, NULL, vgaregs.fbbuff, SCREEN_W * sizeof(uint32_t));
+    SDL_UpdateTexture(texture, NULL, vgaregs.fbbuff, SCREEN_W * SCREEN_H * sizeof(uint32_t));
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, texture, NULL, NULL);
     SDL_RenderPresent(renderer);
