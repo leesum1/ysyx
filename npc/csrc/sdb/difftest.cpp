@@ -136,6 +136,14 @@ void Difftest::difftest_step() {
     if (is_skip_ref) {
         CPU_state dutregs = getDutregs();
         diff_regcpy(&dutregs, DIFFTEST_TO_REF);
+        mysim_p->top_status = mysim_p->TOP_STOP;
+
+        CPU_state refregs = getRefregs();
+        cout << "----------------------------------dutregs----------------------------------" << endl;
+        printregs(dutregs);
+        cout << "----------------------------------refregs----------------------------------" << endl;
+        printregs(refregs);
+
         is_skip_ref = false;
         return;
     }
