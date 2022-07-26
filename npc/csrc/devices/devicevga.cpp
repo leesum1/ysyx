@@ -14,6 +14,7 @@ Devicevga::~Devicevga() {
 
 void Devicevga::init(const char* name) {
 
+    cout << "sdl init vga" << endl;
     /* 两块地址空间名称 */
     string ctrName(name);
     ctrName += "_ctr";
