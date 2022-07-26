@@ -29,7 +29,7 @@ void Devicetimer::write(paddr_t addr, word_t data, uint32_t len) {
  */
 word_t Devicetimer::read(paddr_t addr) {
     paddr_t offset = addr - deviceinfo.addr;
-    printf("offset:%d", offset);
+    printf("offset:%d\n", offset);
     assert(offset == 0 || offset == 4);
     if (offset == 0) {
         gettimeofday(&now, NULL);
