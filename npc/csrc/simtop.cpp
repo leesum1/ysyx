@@ -67,6 +67,7 @@ void Simtop::stepCycle(bool val) {
         this->dampWave();
     }
     changeCLK();// 下降沿
+
     sdbRun();
 }
 
