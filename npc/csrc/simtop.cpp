@@ -68,7 +68,7 @@ void Simtop::stepCycle(bool val) {
     }
     changeCLK();// 下降沿
 
-    // sdbRun();
+    sdbRun();
 }
 
 const char* Simtop::getRegName(int idx) {
