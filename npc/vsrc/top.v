@@ -104,6 +104,8 @@ module top (
   wire [`XLEN-1:0] mem_out;
   wire isloadEnable;
   memory u_memory (
+      .clk         (clk),
+      .rst         (rst),
       .pc          (pc),
       .rd_idx      (rd_idx),
       .rs1_data    (rs1_data),

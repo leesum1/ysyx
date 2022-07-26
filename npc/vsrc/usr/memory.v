@@ -1,5 +1,7 @@
 `include "./../sysconfig.v"
 module memory (
+    input                      clk,
+    input                      rst,
     input [         `XLEN-1:0] pc,
     input [`REG_ADDRWIDTH-1:0] rd_idx,
     input [         `XLEN-1:0] rs1_data,
