@@ -122,7 +122,7 @@ static void disassemble(char* str, int size, uint64_t pc, uint8_t* code, int nby
 extern Simtop* mysim_p;
 
 Itrace::Itrace(/* args */) {
-    init_disasm(NULL);
+    init_disasm("riscv64-pc-linux-gnu");
     cout << "Itrace init!" << endl;
 }
 
