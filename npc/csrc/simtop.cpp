@@ -270,6 +270,7 @@ void Simtop::sdbRun(void) {
     if (isSdbOk("reg")) {
         this->printRegisterFile();
     }
+    u_itrace.llvmDis();
     //TODO:add more
 }
 

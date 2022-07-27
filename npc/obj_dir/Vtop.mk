@@ -37,8 +37,14 @@ VM_MODPREFIX = Vtop
 VM_USER_CFLAGS = \
 	-I/home/leesum/ysyx-workbench/npc/csrc/include \
 	-I/home/leesum/ysyx-workbench/npc/csrc/devices/include \
-	-flto \
-	-O3 \
+	-I/usr/lib/llvm-13/include \
+	-std=c++14 \
+	-fno-exceptions \
+	-D_GNU_SOURCE \
+	-D__STDC_CONSTANT_MACROS \
+	-D__STDC_FORMAT_MACROS \
+	-D__STDC_LIMIT_MACROS \
+	-fPIE \
 
 # User LDLIBS (from -LDFLAGS on Verilator command line)
 VM_USER_LDLIBS = \
@@ -46,6 +52,7 @@ VM_USER_LDLIBS = \
 	-ldl \
 	-lnemu \
 	-lSDL2 \
+	-lLLVM-13 \
 
 # User .cpp files (from .cpp's on Verilator command line)
 VM_USER_CLASSES = \
@@ -60,6 +67,7 @@ VM_USER_CLASSES = \
 	difftest \
 	expr \
 	exprinternal \
+	itrace \
 	mysdb \
 	watchpoint \
 	simMem \
@@ -103,6 +111,8 @@ difftest.o: /home/leesum/ysyx-workbench/npc/csrc/sdb/difftest.cpp
 expr.o: /home/leesum/ysyx-workbench/npc/csrc/sdb/expr.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 exprinternal.o: /home/leesum/ysyx-workbench/npc/csrc/sdb/exprinternal.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+itrace.o: /home/leesum/ysyx-workbench/npc/csrc/sdb/itrace.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 mysdb.o: /home/leesum/ysyx-workbench/npc/csrc/sdb/mysdb.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<

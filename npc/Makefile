@@ -23,9 +23,13 @@ GCC_LIB = -lreadline \
 		  -ldl \
 		  -lnemu \
 		  -lSDL2
+# llvm
+GCC_LIB += $(shell llvm-config --libs)
+CXXFLAGS += $(shell llvm-config --cxxflags) -fPIE
 
 GCC_LDFLAGS := $(addprefix -LDFLAGS ,${GCC_LIB})
 GCC_CFLAGS :=  $(addprefix -CFLAGS ,${GCC_INC_PATH})
+GCC_CFLAGS += $(addprefix -CFLAGS ,${CXXFLAGS})
 
 GCC_FLAGS := ${GCC_CFLAGS} ${GCC_LDFLAGS}
 
@@ -34,7 +38,7 @@ OBJ_DIR := ./obj_dir
 BIN := ${OBJ_DIR}/V${TOP_MODULE}
 
 com:${CSRC} ${VSRC}
-	@verilator ${VERILATOR_FLAGS} ${CSRC} ${VSRC} ${GCC_FLAGS} -CFLAGS -flto -CFLAGS -O3
+	@verilator ${VERILATOR_FLAGS} ${CSRC} ${VSRC} ${GCC_FLAGS} 
 
 all: default
 	@echo "Write this Makefile by your self."
