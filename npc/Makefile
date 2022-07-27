@@ -17,6 +17,7 @@ VERILATOR_FLAGS += --top ${TOP_MODULE}
 # gcc flags 
 GCC_INC_PATH = -I/home/leesum/ysyx-workbench/npc/csrc/include  \
 			   -I/home/leesum/ysyx-workbench/npc/csrc/devices/include \
+			   -I/home/leesum/ysyx-workbench/npc/csrc/ringbuff \
 
 #-lasan(内存检查)
 GCC_LIB = -lreadline \

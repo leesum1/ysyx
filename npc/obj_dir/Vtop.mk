@@ -37,6 +37,7 @@ VM_MODPREFIX = Vtop
 VM_USER_CFLAGS = \
 	-I/home/leesum/ysyx-workbench/npc/csrc/include \
 	-I/home/leesum/ysyx-workbench/npc/csrc/devices/include \
+	-I/home/leesum/ysyx-workbench/npc/csrc/ringbuff \
 	-I/usr/lib/llvm-13/include \
 	-std=c++14 \
 	-fno-exceptions \
