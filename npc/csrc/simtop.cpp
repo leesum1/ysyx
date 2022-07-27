@@ -61,6 +61,10 @@ void Simtop::stepCycle(bool val) {
     if (top_status != TOP_RUNNING) {
         return;
     }
+
+    if (!top->rst) {
+        u_itrace.llvmDis();
+    }
     changeCLK(); // 上升沿
     /* 上升沿和下降沿都要保存波形数据 */
     if (isSdbOk("wave")) {
