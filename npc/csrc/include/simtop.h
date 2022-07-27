@@ -53,7 +53,7 @@ public:
     Watchpoint u_wp;
     expr_namespace::Expr u_expr;
     Difftest u_difftest;
-    // Itrace u_itrace;
+    Itrace u_itrace;
     Simtop();
     ~Simtop();
     Vtop* getTop();
