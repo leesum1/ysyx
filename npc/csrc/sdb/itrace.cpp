@@ -131,8 +131,10 @@ Itrace::~Itrace() {
 
 void Itrace::llvmDis() {
     static char dis_str[64];
-    static uint64_t pc = mysim_p->getRegVal("pc");
-    static uint64_t inst = mysim_p->mem->paddr_read(pc, 4);
+    static uint64_t pc;
+    static uint64_t inst;
+    pc = mysim_p->getRegVal("pc");
+    inst = mysim_p->mem->paddr_read(pc, 4);
     disassemble(dis_str, sizeof(dis_str), pc, (uint8_t*)&inst, 4);
     printf("pc:%08x\t%s\n", pc, dis_str);
 }
