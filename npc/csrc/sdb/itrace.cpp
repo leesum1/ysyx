@@ -134,5 +134,5 @@ void Itrace::llvmDis() {
     static uint64_t pc = mysim_p->getRegVal("pc");
     static uint64_t inst = mysim_p->mem->paddr_read(pc, 4);
     disassemble(dis_str, sizeof(dis_str), pc, (uint8_t*)&inst, 4);
-    printf("pc:%08x\t%s\n", dis_str);
+    printf("pc:%08x\t%s\n", pc, dis_str);
 }
