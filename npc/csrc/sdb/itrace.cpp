@@ -130,6 +130,7 @@ Itrace::~Itrace() {
 }
 
 void Itrace::llvmDis() {
+
     static char dis_str[64];
     static uint64_t pc;
     static uint64_t inst;
