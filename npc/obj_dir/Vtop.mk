@@ -60,6 +60,7 @@ VM_USER_CLASSES = \
 	Console \
 	deviceManager \
 	devicebase \
+	devicekb \
 	devicetimer \
 	deviceuart \
 	devicevga \
@@ -96,6 +97,8 @@ Console.o: /home/leesum/ysyx-workbench/npc/csrc/cppreadline/Console.cpp
 deviceManager.o: /home/leesum/ysyx-workbench/npc/csrc/devices/deviceManager.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 devicebase.o: /home/leesum/ysyx-workbench/npc/csrc/devices/devicebase.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+devicekb.o: /home/leesum/ysyx-workbench/npc/csrc/devices/devicekb.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 devicetimer.o: /home/leesum/ysyx-workbench/npc/csrc/devices/devicetimer.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
