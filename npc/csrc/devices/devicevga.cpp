@@ -4,11 +4,20 @@
 using namespace Topdevice;
 
 
+static int thread_func(void* ptr) {
+    Devicevga* vga_p = (Devicevga*)ptr;
+    while (1) {
+        SDL_Delay(20);
+        vga_p->update_screen();
+    }
+}
+
 Devicevga::Devicevga(/* args */) {
 
 }
 Devicevga::~Devicevga() {
     delete vgaregs.fbbuff;
+    SDL_DetachThread(update_thread);
 
 }
 
@@ -36,6 +45,7 @@ void Devicevga::init(const char* name) {
     deviceinfo.push_back(t);
 
     initscreen();
+    update_thread = SDL_CreateThread(thread_func, "screenupdate", this);
 }
 void Devicevga::write(paddr_t addr, word_t data, uint32_t len) {
     paddr_t offset;
@@ -53,9 +63,9 @@ void Devicevga::write(paddr_t addr, word_t data, uint32_t len) {
     /* fb 缓存 */
     else if (atRange(deviceinfo.at(1).addr, deviceinfo.at(1).addr + deviceinfo.at(1).len - 1, addr)) {
         offset = addr - deviceinfo.at(1).addr;
-        vgaregs.fbbuff[offset / 4] = (uint32_t)data;
+        vgaregs.fbbuff[offset >> 2] = (uint32_t)data;
     }
-    vga_update_screen();
+    //vga_update_screen();
 }
 word_t Devicevga::read(paddr_t addr) {
     word_t data;
@@ -76,7 +86,7 @@ word_t Devicevga::read(paddr_t addr) {
         offset = addr - deviceinfo.at(1).addr;
         data = *(vgaregs.fbbuff + offset);
     }
-    vga_update_screen();
+    //vga_update_screen();
     return data;
 }
 
@@ -96,6 +106,7 @@ void Devicevga::initscreen() {
 
     uint32_t buffsize = screen_size();
     vgaregs.fbbuff = new uint32_t[buffsize];
+
 }
 
 
@@ -128,3 +139,6 @@ void Devicevga::vga_update_screen() {
         vgaregs.sync = 0;
     }
 }
+
+
+

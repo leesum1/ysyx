@@ -20,16 +20,18 @@ namespace Topdevice {
         vga_reg_t vgaregs;
         SDL_Renderer* renderer = nullptr;
         SDL_Texture* texture = nullptr;
+        SDL_Thread* update_thread;
     private:
         void initscreen();
         uint32_t screen_width();
         uint32_t screen_height();
         uint32_t screen_size();
         void vga_update_screen();
-        void update_screen();
+
     public:
         Devicevga(/* args */);
         virtual  ~Devicevga();
+        void update_screen();
         void write(paddr_t addr, word_t data, uint32_t len);
         word_t read(paddr_t addr);
         void init(const char* name);

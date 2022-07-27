@@ -9,22 +9,27 @@ VERILATOR_INC_PATH := -I./vsrc \
 			-I./vsrc/lib 
 
 # verilator flags: 
-VERILATOR_FLAGS +=   --cc --exe --build --trace
+VERILATOR_FLAGS +=   --cc --exe --build --trace  
 VERILATOR_FLAGS += ${VERILATOR_INC_PATH}
 VERILATOR_FLAGS += --top ${TOP_MODULE}
 
 
 # gcc flags 
 GCC_INC_PATH = -I/home/leesum/ysyx-workbench/npc/csrc/include  \
-			   -I/home/leesum/ysyx-workbench/npc/csrc/devices/include
+			   -I/home/leesum/ysyx-workbench/npc/csrc/devices/include \
+
 #-lasan(内存检查)
 GCC_LIB = -lreadline \
 		  -ldl \
 		  -lnemu \
 		  -lSDL2
+# llvm
+GCC_LIB += $(shell llvm-config --libs)
+CXXFLAGS += $(shell llvm-config --cxxflags) -fPIE
 
 GCC_LDFLAGS := $(addprefix -LDFLAGS ,${GCC_LIB})
 GCC_CFLAGS :=  $(addprefix -CFLAGS ,${GCC_INC_PATH})
+GCC_CFLAGS += $(addprefix -CFLAGS ,${CXXFLAGS})
 
 GCC_FLAGS := ${GCC_CFLAGS} ${GCC_LDFLAGS}
 
