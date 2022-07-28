@@ -26,8 +26,10 @@ void Devicekb::write(paddr_t addr, word_t data, uint32_t len) {
 }
 word_t Devicekb::read(paddr_t addr) {
     int k = AM_KEY_NONE;
-    k = keybuff.front();
-    keybuff.pop_front();
+    if (!keybuff.empty()) {
+        k = keybuff.front();
+        keybuff.pop_front();
+    }
     return k;
 }
 
