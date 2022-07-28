@@ -171,32 +171,20 @@ module alu (
   };  // w 指令的符号扩展统一在 execute 中执行.
 
   /***************************************除法运算*******************************************/
-  wire _is_div_sr1_signed = _aluop_div | _aluop_divw | _aluop_rem | _aluop_remw;
-  wire _is_div_sr2_signed = _is_mul_sr1_signed;
+  wire _is_div_signed = _aluop_div | _aluop_divw | _aluop_rem | _aluop_remw;
 
   // 是否是 32 位除法
   wire _is_div32 = _aluop_divw | _aluop_divuw | _aluop_remw | _aluop_remuw;
 
-  /* 兼容 rv32 的 32 位除法 */
-  wire [`XLEN-1:0] _div_sr1_32 = (_is_div_sr1_signed)?{{32{alu_a_i[31]}},alu_a_i[31:0]}:
-                                                      {32'b0,alu_a_i[31:0]};
-  wire [`XLEN-1:0] _div_sr2_32 = (_is_div_sr1_signed)?{{32{alu_b_i[31]}},alu_b_i[31:0]}:
-                                                      {32'b0,alu_b_i[31:0]};
-  /* 选择是 64 位除法 还是 32位除法 */
-  wire [`XLEN-1:0] _div_sr1 = (_is_div32) ? _div_sr1_32 : alu_a_i;
-  wire [`XLEN-1:0] _div_sr2 = (_is_div32) ? _div_sr2_32 : alu_b_i;
-
   /* 暂存结果 */
   wire [`XLEN-1:0] _div_result, _rem_result;
   alu_div_top u_alu_div_top (
-      // input clk,  //为流水线准备
-      // input rst,
-      .is_sr1_signed(_is_div_sr1_signed),
-      .is_sr2_signed(_is_div_sr2_signed),
-      .sr1_data     (_div_sr1),
-      .sr2_data     (_div_sr2),
-      .div_result   (_div_result),
-      .rem_result   (_rem_result)
+      .issigned  (_is_div_signed),
+      .isdivw    (_is_div32),
+      .sr1_data  (alu_a_i),
+      .sr2_data  (alu_b_i),
+      .div_result(_div_result),
+      .rem_result(_rem_result)
   );
 
   /* 不同除法指令的结果 */
