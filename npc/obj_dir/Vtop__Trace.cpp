@@ -19,8 +19,6 @@ void Vtop___024root__traceChgTop0(void* voidSelf, VerilatedVcd* tracep) {
 void Vtop___024root__traceChgSub0(Vtop___024root* vlSelf, VerilatedVcd* tracep) {
     if (false && vlSelf) {}  // Prevent unused
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VlWide<3>/*95:0*/ __Vtemp64;
-    VlWide<3>/*95:0*/ __Vtemp67;
     vluint32_t* const oldp = tracep->oldp(vlSymsp->__Vm_baseCode + 1);
     if (false && oldp) {}  // Prevent unused
     // Body
@@ -274,29 +272,61 @@ void Vtop___024root__traceChgSub0(Vtop___024root* vlSelf, VerilatedVcd* tracep) 
             tracep->chgQData(oldp+105,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num_inv),64);
             tracep->chgQData(oldp+107,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shifter_res),64);
             tracep->chgQData(oldp+109,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___srl_res),64);
-            tracep->chgBit(oldp+111,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___is_mul_sr1_signed));
+            tracep->chgBit(oldp+111,(((((0x14U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
+                                        | (0x15U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
+                                       | (0x16U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
+                                      | (0x18U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)))));
             tracep->chgBit(oldp+112,((((0x14U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
                                        | (0x15U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
                                       | (0x18U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)))));
             tracep->chgWData(oldp+113,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_mul_top__DOT___mul_result),128);
-            tracep->chgBit(oldp+117,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___is_div_sr1_signed));
-            tracep->chgQData(oldp+118,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___div_sr1),64);
-            tracep->chgQData(oldp+120,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___div_sr2),64);
-            VL_DIV_WWW(65, __Vtemp64, vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT___sr1_65, vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT___sr2_65);
-            tracep->chgQData(oldp+122,((((QData)((IData)(
-                                                         __Vtemp64[1U])) 
-                                         << 0x20U) 
-                                        | (QData)((IData)(
-                                                          __Vtemp64[0U])))),64);
-            VL_MODDIV_WWW(65, __Vtemp67, vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT___sr1_65, vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT___sr2_65);
-            tracep->chgQData(oldp+124,((((QData)((IData)(
-                                                         __Vtemp67[1U])) 
-                                         << 0x20U) 
-                                        | (QData)((IData)(
-                                                          __Vtemp67[0U])))),64);
+            tracep->chgBit(oldp+117,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___is_div_signed));
+            tracep->chgBit(oldp+118,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___is_div32));
+            tracep->chgQData(oldp+119,(((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___is_div32)
+                                         ? (QData)((IData)(
+                                                           ((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___is_div_signed)
+                                                             ? 
+                                                            VL_DIVS_III(32, (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in1), (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2))
+                                                             : 
+                                                            VL_DIV_III(32, (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in1), (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2)))))
+                                         : ((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___is_div_signed)
+                                             ? vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT__div64_signed
+                                             : VL_DIV_QQQ(64, vlSelf->top__DOT__u_execute__DOT___alu_in1, vlSelf->top__DOT__u_execute__DOT___alu_in2)))),64);
+            tracep->chgQData(oldp+121,(((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___is_div32)
+                                         ? (QData)((IData)(
+                                                           ((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___is_div_signed)
+                                                             ? 
+                                                            VL_MODDIVS_III(32, (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in1), (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2))
+                                                             : 
+                                                            VL_MODDIV_III(32, (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in1), (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2)))))
+                                         : ((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___is_div_signed)
+                                             ? vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT__div64_signed
+                                             : VL_MODDIV_QQQ(64, vlSelf->top__DOT__u_execute__DOT___alu_in1, vlSelf->top__DOT__u_execute__DOT___alu_in2)))),64);
+            tracep->chgQData(oldp+123,(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT__div64_signed),64);
+            tracep->chgQData(oldp+125,(VL_MODDIVS_QQQ(64, vlSelf->top__DOT__u_execute__DOT___alu_in1, vlSelf->top__DOT__u_execute__DOT___alu_in2)),64);
+            tracep->chgQData(oldp+127,(VL_DIV_QQQ(64, vlSelf->top__DOT__u_execute__DOT___alu_in1, vlSelf->top__DOT__u_execute__DOT___alu_in2)),64);
+            tracep->chgQData(oldp+129,(VL_MODDIV_QQQ(64, vlSelf->top__DOT__u_execute__DOT___alu_in1, vlSelf->top__DOT__u_execute__DOT___alu_in2)),64);
+            tracep->chgQData(oldp+131,(((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___is_div_signed)
+                                         ? vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT__div64_signed
+                                         : VL_DIV_QQQ(64, vlSelf->top__DOT__u_execute__DOT___alu_in1, vlSelf->top__DOT__u_execute__DOT___alu_in2))),64);
+            tracep->chgQData(oldp+133,(((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___is_div_signed)
+                                         ? vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT__div64_signed
+                                         : VL_MODDIV_QQQ(64, vlSelf->top__DOT__u_execute__DOT___alu_in1, vlSelf->top__DOT__u_execute__DOT___alu_in2))),64);
+            tracep->chgIData(oldp+135,((IData)(vlSelf->top__DOT__u_execute__DOT___alu_in1)),32);
+            tracep->chgIData(oldp+136,((IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2)),32);
+            tracep->chgIData(oldp+137,(VL_DIVS_III(32, (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in1), (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2))),32);
+            tracep->chgIData(oldp+138,(VL_MODDIVS_III(32, (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in1), (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2))),32);
+            tracep->chgIData(oldp+139,(VL_DIV_III(32, (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in1), (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2))),32);
+            tracep->chgIData(oldp+140,(VL_MODDIV_III(32, (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in1), (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2))),32);
+            tracep->chgIData(oldp+141,(((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___is_div_signed)
+                                         ? VL_DIVS_III(32, (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in1), (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2))
+                                         : VL_DIV_III(32, (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in1), (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2)))),32);
+            tracep->chgIData(oldp+142,(((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___is_div_signed)
+                                         ? VL_MODDIVS_III(32, (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in1), (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2))
+                                         : VL_MODDIV_III(32, (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in1), (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2)))),32);
         }
-        tracep->chgBit(oldp+126,(vlSelf->clk));
-        tracep->chgBit(oldp+127,(vlSelf->rst));
+        tracep->chgBit(oldp+143,(vlSelf->clk));
+        tracep->chgBit(oldp+144,(vlSelf->rst));
     }
 }
 
