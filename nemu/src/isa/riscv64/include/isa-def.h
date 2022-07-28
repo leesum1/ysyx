@@ -27,10 +27,6 @@ typedef struct {
   vaddr_t pc;     // 64位
   // CSR 寄存器
   word_t csr[4];
-  word_t mtvec;   //0x305
-  word_t mepc;    //0x341 
-  word_t mstatus; //0x300
-  word_t mcause;  //0x342
 } riscv64_CPU_state;
 
 // decode
