@@ -99,7 +99,7 @@ void Devicevga::initscreen() {
     texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
         SDL_TEXTUREACCESS_STATIC, SCREEN_W, SCREEN_H);
 
-    uint32_t buffsize = screen_size();
+    uint32_t buffsize = screen_size() / 4;
     vgaregs.fbbuff = new uint32_t[buffsize];
 
 }
@@ -120,6 +120,8 @@ uint32_t Devicevga::screen_size() {
 
 
 void Devicevga::update_screen() {
+    uint32_t fbbuff_temp[screen_size()];
+    // memcpy(fbbuff_temp, vgaregs.fbbuff, )
     SDL_UpdateTexture(texture, NULL, vgaregs.fbbuff, SCREEN_W * sizeof(uint32_t));
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, texture, NULL, NULL);
