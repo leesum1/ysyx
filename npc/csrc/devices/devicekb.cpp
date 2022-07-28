@@ -28,6 +28,7 @@ word_t Devicekb::read(paddr_t addr) {
     int k = AM_KEY_NONE;
     k = keybuff.front();
     keybuff.pop_front();
+    cout << "keybuffsize:" << keybuff.size() << endl;
     return k;
 }
 
