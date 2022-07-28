@@ -54,6 +54,7 @@ void Devicevga::write(paddr_t addr, word_t data, uint32_t len) {
         }
         else {
             vgaregs.sync = (uint32_t)data;
+            vga_update_screen();
         }
     }
     /* fb 缓存 */
@@ -102,6 +103,8 @@ void Devicevga::initscreen() {
     uint32_t buffsize = screen_size();
     vgaregs.fbbuff = new uint32_t[buffsize];
 
+    fbbuff_lock = SDL_CreateMutex();
+
 }
 
 
@@ -120,7 +123,9 @@ uint32_t Devicevga::screen_size() {
 
 
 void Devicevga::update_screen() {
+
     SDL_UpdateTexture(texture, NULL, vgaregs.fbbuff, SCREEN_W * sizeof(uint32_t));
+
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, texture, NULL, NULL);
     SDL_RenderPresent(renderer);
@@ -135,7 +140,7 @@ void Devicevga::vga_update_screen() {
     }
 }
 void Devicevga::update() {
-    vga_update_screen();
+    //vga_update_screen();
 }
 
 

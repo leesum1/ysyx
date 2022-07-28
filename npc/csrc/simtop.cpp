@@ -62,7 +62,7 @@ void Simtop::stepCycle(bool val) {
         return;
     }
 
-    if (!top->rst) {
+    if (!top->rst && isSdbOk("itrace")) {
         u_itrace.llvmDis();
     }
     changeCLK(); // 上升沿
@@ -71,7 +71,6 @@ void Simtop::stepCycle(bool val) {
         this->dampWave();
     }
     changeCLK();// 下降沿
-
     sdbRun();
 }
 

@@ -21,6 +21,7 @@ namespace Topdevice {
         SDL_Renderer* renderer = nullptr;
         SDL_Texture* texture = nullptr;
         SDL_Thread* update_thread;
+        SDL_mutex* fbbuff_lock;
     private:
         void initscreen();
         uint32_t screen_width();

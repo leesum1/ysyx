@@ -18,10 +18,15 @@
 
 #include <common.h>
 
+enum {
+  mtvec, mepc, mstatus, mcause,
+};
+
 typedef struct {
   word_t gpr[32]; // 64位
   vaddr_t pc;     // 64位
-  // word_t csr[4];
+  // CSR 寄存器
+  word_t csr[4];
 } riscv64_CPU_state;
 
 // decode
