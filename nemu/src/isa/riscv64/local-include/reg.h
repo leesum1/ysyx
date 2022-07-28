@@ -36,8 +36,8 @@ static inline int check_csr_idx(int idx) {
 }
 
 #define gpr(idx) (cpu.gpr[check_reg_idx(idx)])
-#define csrmet (cpu.csr[idx2csr(mepc)])
-#define csr(idx) (cpu.csr[idx2csr(idx)])
+#define csrmet (cpu.csr[check_csr_idx(mepc)])
+#define csr(idx) (cpu.csr[check_csr_idx(idx)])
 
 
 /**
