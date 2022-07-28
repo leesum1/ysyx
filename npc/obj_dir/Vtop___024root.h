@@ -40,8 +40,8 @@ VL_MODULE(Vtop___024root) {
     CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___shift_srl;
     CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___shift_sll;
     CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___isshift32;
-    CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___is_mul_sr1_signed;
-    CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___is_div_sr1_signed;
+    CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___is_div_signed;
+    CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___is_div32;
     CData/*5:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shifter_in2;
     CData/*0:0*/ top__DOT__u_memory__DOT___ls8byte;
     CData/*0:0*/ top__DOT__u_memory__DOT___ls16byte;
@@ -50,8 +50,6 @@ VL_MODULE(Vtop___024root) {
     CData/*0:0*/ top__DOT__u_memory__DOT___signed;
     VlWide<3>/*64:0*/ top__DOT__u_execute__DOT__u_alu__DOT___add_out;
     VlWide<4>/*127:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_mul_top__DOT___mul_result;
-    VlWide<3>/*64:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT___sr1_65;
-    VlWide<3>/*64:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT___sr2_65;
     QData/*63:0*/ top__DOT__rs1_data;
     QData/*63:0*/ top__DOT__rs2_data;
     QData/*63:0*/ top__DOT__exc_out;
@@ -62,12 +60,11 @@ VL_MODULE(Vtop___024root) {
     QData/*63:0*/ top__DOT__u_execute__DOT___alu_in1;
     QData/*63:0*/ top__DOT__u_execute__DOT___alu_in2;
     QData/*63:0*/ top__DOT__u_execute__DOT___alu_out;
-    QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT___div_sr1;
-    QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT___div_sr2;
     QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num;
     QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num_inv;
     QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shifter_res;
     QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___srl_res;
+    QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT__div64_signed;
     QData/*63:0*/ top__DOT__u_memory__DOT___mem_read;
     QData/*63:0*/ top__DOT__u_memory__DOT___addr;
     VlUnpacked<QData/*63:0*/, 32> top__DOT__u_rv64reg__DOT__rf;

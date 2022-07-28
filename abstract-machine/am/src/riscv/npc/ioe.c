@@ -14,6 +14,8 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T*);
 
 static void __am_timer_config(AM_TIMER_CONFIG_T* cfg) { cfg->present = true; cfg->has_rtc = true; }
 static void __am_input_config(AM_INPUT_CONFIG_T* cfg) { cfg->present = true; }
+static void __am_uart_config(AM_UART_CONFIG_T* cfg) { cfg->present = false; }
+// static void __am_net_config(AM_NET_CONFIG_T* cfg) { cfg->present = false; }
 
 typedef void (*handler_t)(void* buf);
 static void* lut[128] = {
@@ -25,6 +27,7 @@ static void* lut[128] = {
   [AM_GPU_CONFIG] = __am_gpu_config,
   [AM_GPU_FBDRAW] = __am_gpu_fbdraw,
   [AM_GPU_STATUS] = __am_gpu_status,
+  [AM_UART_CONFIG] = __am_uart_config,
 };
 
 static void fail(void* buf) { panic("access nonexist register"); }

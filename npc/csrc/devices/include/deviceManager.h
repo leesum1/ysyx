@@ -11,9 +11,10 @@ namespace Topdevice {
     class DeviceManager {
     private:
         /* data */
-        vector <Devicebase*> devicePool;
+
 
     public:
+        vector <Devicebase*> devicePool;
         bool atRange(paddr_t s, paddr_t e, paddr_t val);
         DeviceManager(/* args */);
         ~DeviceManager();
@@ -24,6 +25,7 @@ namespace Topdevice {
         void write(paddr_t addr, word_t data, uint32_t len);
         bool installDevice(const char* className, const char* deviceName);
         void DeviceManagerInit(void);
+        void DeviceUpdate();
     };
 
 

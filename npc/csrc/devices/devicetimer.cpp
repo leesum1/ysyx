@@ -44,3 +44,7 @@ word_t Devicetimer::read(paddr_t addr) {
     }
     return 0;
 }
+
+void Devicetimer::update() {
+
+}

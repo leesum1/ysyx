@@ -25,6 +25,7 @@ namespace Topdevice {
         };
 
 #define XX(k) [SDL_SCANCODE_##k] = AM_KEY_##k,
+#define KEYDOWN_MASK 0x8000
 
     private:
         /* 提取自 native 的键盘映关系,cpp 中不支持数组乱序初始化,无奈之举 */
@@ -38,7 +39,7 @@ namespace Topdevice {
                             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
                             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,67,55,69,0,72,
                             66,71,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
-        jm::circular_buffer<int, 256> keybuff; //环形缓冲区
+        jm::circular_buffer<int, 512> keybuff; //环形缓冲区
         SDL_Event event;
     public:
         Devicekb(/* args */);
@@ -47,6 +48,7 @@ namespace Topdevice {
         word_t read(paddr_t addr);
         void update();
         void init(const char* name);
+        void send_key(uint8_t scancode, bool is_keydown);
     };
 
 } // namespace d
