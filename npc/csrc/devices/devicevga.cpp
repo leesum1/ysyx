@@ -59,7 +59,9 @@ void Devicevga::write(paddr_t addr, word_t data, uint32_t len) {
     /* fb 缓存 */
     else if (atRange(deviceinfo.at(1).addr, deviceinfo.at(1).addr + deviceinfo.at(1).len - 1, addr)) {
         offset = addr - deviceinfo.at(1).addr;
+        SDL_LockMutex(fbbuff_lock);
         vgaregs.fbbuff[offset >> 2] = (uint32_t)data;
+        SDL_UnlockMutex(fbbuff_lock);
     }
 }
 word_t Devicevga::read(paddr_t addr) {
@@ -102,6 +104,8 @@ void Devicevga::initscreen() {
     uint32_t buffsize = screen_size();
     vgaregs.fbbuff = new uint32_t[buffsize];
 
+    fbbuff_lock = SDL_CreateMutex();
+
 }
 
 
@@ -120,9 +124,11 @@ uint32_t Devicevga::screen_size() {
 
 
 void Devicevga::update_screen() {
-    uint32_t fbbuff_temp[screen_size()];
-    memcpy(fbbuff_temp, vgaregs.fbbuff, screen_size());
-    SDL_UpdateTexture(texture, NULL, fbbuff_temp, SCREEN_W * sizeof(uint32_t));
+
+    SDL_LockMutex(fbbuff_lock);
+    SDL_UpdateTexture(texture, NULL, vgaregs.fbbuff, SCREEN_W * sizeof(uint32_t));
+    SDL_UnlockMutex(fbbuff_lock);
+
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, texture, NULL, NULL);
     SDL_RenderPresent(renderer);
