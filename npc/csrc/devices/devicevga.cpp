@@ -17,8 +17,6 @@ Devicevga::Devicevga(/* args */) {
 }
 Devicevga::~Devicevga() {
     delete vgaregs.fbbuff;
-    SDL_DetachThread(update_thread);
-
 }
 
 void Devicevga::init(const char* name) {
@@ -45,7 +43,6 @@ void Devicevga::init(const char* name) {
     deviceinfo.push_back(t);
 
     initscreen();
-    update_thread = SDL_CreateThread(thread_func, "screenupdate", this);
 }
 void Devicevga::write(paddr_t addr, word_t data, uint32_t len) {
     paddr_t offset;
@@ -134,6 +131,12 @@ void Devicevga::update_screen() {
 void Devicevga::vga_update_screen() {
     // TODO: call `update_screen()` when the sync register is non-zero,
     // then zero out the sync register
+    if (vgaregs.sync) {
+        update_screen();
+        vgaregs.sync = 0;
+    }
+}
+void Devicevga::update() {
     if (vgaregs.sync) {
         update_screen();
         vgaregs.sync = 0;

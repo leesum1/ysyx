@@ -4,6 +4,7 @@
 #include "devicevga.h"
 #include "devicekb.h"
 #include "assert.h"
+#include <SDL2/SDL.h>
 #include "simtop.h"
 
 using namespace Topdevice;
@@ -14,6 +15,17 @@ DeviceManager::DeviceManager(/* args */) {
     cout << "设备框架初始化" << endl;
 }
 DeviceManager::~DeviceManager() {
+}
+
+
+static int thread_func(void* ptr) {
+    while (1) {
+        SDL_Delay(30);
+        DeviceManager* p = (DeviceManager*)ptr;
+        for (auto& iter : p->devicePool) {
+            iter->update();
+        }
+    }
 }
 /**
  * @brief 注册所有设备
@@ -26,9 +38,15 @@ void DeviceManager::DeviceManagerInit(void) {
     printf("uart0 init\n");
     ret = installDevice("Devicetimer", "timer0");
     assert(ret == true);
-    // ret = installDevice("Devicevga", "vga0");
-    // assert(ret == true);
-    // printf("vga0 init\n");
+    printf("timer0 init\n");
+    ret = installDevice("Devicekb", "kb0");
+    assert(ret == true);
+    printf("keyboard0 init\n");
+    ret = installDevice("Devicevga", "vga0");
+    assert(ret == true);
+    printf("vga0 init\n");
+
+    SDL_CreateThread(thread_func, "DeviceUpdate", this);
 }
 
 /**

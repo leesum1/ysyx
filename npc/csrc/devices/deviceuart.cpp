@@ -25,3 +25,7 @@ void deviceuart::write(paddr_t addr, word_t data, uint32_t len) {
 word_t deviceuart::read(paddr_t addr) {
     return 0;
 }
+
+void deviceuart::update() {
+
+}

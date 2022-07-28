@@ -34,6 +34,7 @@ namespace Topdevice {
         void update_screen();
         void write(paddr_t addr, word_t data, uint32_t len);
         word_t read(paddr_t addr);
+        void update();
         void init(const char* name);
     };
 
