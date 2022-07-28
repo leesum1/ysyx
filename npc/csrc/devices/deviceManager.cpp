@@ -18,6 +18,12 @@ DeviceManager::~DeviceManager() {
 }
 
 
+/**
+ * @brief sdl 线程函数,所有设备周期性更新
+ *
+ * @param ptr this 指针
+ * @return int
+ */
 static int thread_func(void* ptr) {
     while (1) {
         SDL_Delay(30);
