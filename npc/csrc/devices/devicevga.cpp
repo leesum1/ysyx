@@ -121,8 +121,8 @@ uint32_t Devicevga::screen_size() {
 
 void Devicevga::update_screen() {
     uint32_t fbbuff_temp[screen_size()];
-    // memcpy(fbbuff_temp, vgaregs.fbbuff, )
-    SDL_UpdateTexture(texture, NULL, vgaregs.fbbuff, SCREEN_W * sizeof(uint32_t));
+    memcpy(fbbuff_temp, vgaregs.fbbuff, screen_size());
+    SDL_UpdateTexture(texture, NULL, fbbuff_temp, SCREEN_W * sizeof(uint32_t));
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, texture, NULL, NULL);
     SDL_RenderPresent(renderer);
