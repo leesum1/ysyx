@@ -154,8 +154,6 @@ module alu (
   wire [`XLEN*2-1:0] _mul_result;
 
   alu_mul_top u_alu_mul_top (
-      // input clk,  //为流水线准备
-      // input rst,
       .is_sr1_signed(_is_mul_sr1_signed),
       .is_sr2_signed(_is_mul_sr2_signed),
       .sr1_data     (alu_a_i),
@@ -166,11 +164,11 @@ module alu (
   /* 不同乘法指令的结果 */
   wire [`XLEN-1:0] _inst_mul_result = _mul_result[`XLEN-1:0];
   wire [`XLEN-1:0] _inst_mulh_mulhsu_mulhu_result = _mul_result[`XLEN*2-1:`XLEN];
-  wire [`XLEN-1:0] _inst_mulw_result = {
-    32'b0, _mul_result[31:0]
-  };  // w 指令的符号扩展统一在 execute 中执行.
+  // w 指令的符号扩展统一在 execute 中执行.
+  wire [`XLEN-1:0] _inst_mulw_result = {32'b0, _mul_result[31:0]};
 
   /***************************************除法运算*******************************************/
+  // 是否是有符号除法
   wire _is_div_signed = _aluop_div | _aluop_divw | _aluop_rem | _aluop_remw;
 
   // 是否是 32 位除法

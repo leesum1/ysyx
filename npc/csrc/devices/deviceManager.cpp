@@ -26,7 +26,7 @@ DeviceManager::~DeviceManager() {
  */
 static int thread_func(void* ptr) {
     while (1) {
-        SDL_Delay(30);
+        SDL_Delay(50);
         DeviceManager* p = (DeviceManager*)ptr;
         for (auto& iter : p->devicePool) {
             iter->update();
