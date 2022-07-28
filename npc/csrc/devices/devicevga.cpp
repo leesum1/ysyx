@@ -54,14 +54,13 @@ void Devicevga::write(paddr_t addr, word_t data, uint32_t len) {
         }
         else {
             vgaregs.sync = (uint32_t)data;
+            vga_update_screen();
         }
     }
     /* fb 缓存 */
     else if (atRange(deviceinfo.at(1).addr, deviceinfo.at(1).addr + deviceinfo.at(1).len - 1, addr)) {
         offset = addr - deviceinfo.at(1).addr;
-        SDL_LockMutex(fbbuff_lock);
         vgaregs.fbbuff[offset >> 2] = (uint32_t)data;
-        SDL_UnlockMutex(fbbuff_lock);
     }
 }
 word_t Devicevga::read(paddr_t addr) {
@@ -125,9 +124,7 @@ uint32_t Devicevga::screen_size() {
 
 void Devicevga::update_screen() {
 
-    SDL_LockMutex(fbbuff_lock);
     SDL_UpdateTexture(texture, NULL, vgaregs.fbbuff, SCREEN_W * sizeof(uint32_t));
-    SDL_UnlockMutex(fbbuff_lock);
 
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, texture, NULL, NULL);
@@ -143,7 +140,7 @@ void Devicevga::vga_update_screen() {
     }
 }
 void Devicevga::update() {
-    vga_update_screen();
+    //vga_update_screen();
 }
 
 
