@@ -11,6 +11,7 @@ Context* __am_irq_handle(Context* c) {
     default: ev.event = EVENT_ERROR; break;
     }
 
+    printf("__am_irq_handle ok\n");
     c = user_handler(ev, c);
     assert(c != NULL);
   }
