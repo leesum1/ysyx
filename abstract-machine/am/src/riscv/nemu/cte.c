@@ -9,10 +9,15 @@
 static Context* (*user_handler)(Event, Context*) = NULL;
 
 Context* __am_irq_handle(Context* c) {
+  printf("__am_irq_handle code:%d\n", c->mcause);
   if (user_handler) {
     Event ev = { 0 };
     switch (c->mcause) {
-    default:  printf("code:%d\n", c->mcause); ev.event = EVENT_ERROR; break;
+    case -1: ev.event = EVENT_YIELD; break;   // yield
+    case  0: ev.event = EVENT_SYSCALL; break; // exit
+    case  1: ev.event = EVENT_SYSCALL; break; // yield
+    case  4: ev.event = EVENT_SYSCALL; break; // write
+    default: ev.event = EVENT_ERROR; break;
     }
 
     // for (size_t i = 0; i < 32; i++) {
