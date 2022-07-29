@@ -13,7 +13,6 @@ static Context* do_event(Event e, Context* c) {
   case EVENT_YIELD: printf("do_event:EVENT_YIELD\n");  c->mepc += 4;break;
   default: panic("Unhandled event ID = %d", e.event);
   }
-
   return c;
 }
 
