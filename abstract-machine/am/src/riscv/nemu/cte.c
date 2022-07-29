@@ -2,6 +2,10 @@
 #include <riscv/riscv.h>
 #include <klib.h>
 
+// 为了代码提示
+// #include "riscv64-nemu.h"
+// typedef struct Context Context;
+
 static Context* (*user_handler)(Event, Context*) = NULL;
 
 Context* __am_irq_handle(Context* c) {
@@ -10,6 +14,11 @@ Context* __am_irq_handle(Context* c) {
     switch (c->mcause) {
     default: ev.event = EVENT_ERROR; break;
     }
+
+    for (size_t i = 0; i < 32; i++) {
+      printf("%d: %p\n", c->gpr[i]);
+    }
+
 
     printf("__am_irq_handle ok\n");
     c = user_handler(ev, c);
