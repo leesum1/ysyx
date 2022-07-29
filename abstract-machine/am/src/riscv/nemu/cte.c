@@ -2,15 +2,29 @@
 #include <riscv/riscv.h>
 #include <klib.h>
 
+// /*为了代码提示*/
+// #include "riscv64-nemu.h"
+// typedef struct Context Context;
+
 static Context* (*user_handler)(Event, Context*) = NULL;
 
 Context* __am_irq_handle(Context* c) {
+  printf("__am_irq_handle code:%d\n", c->mcause);
   if (user_handler) {
     Event ev = { 0 };
     switch (c->mcause) {
+    case -1: ev.event = EVENT_YIELD; c->mepc += 4;break;   // yield
+      // case  0: ev.event = EVENT_SYSCALL; break; // exit
+      // case  1: ev.event = EVENT_SYSCALL; break; // yield
+      // case  4: ev.event = EVENT_SYSCALL; break; // write
     default: ev.event = EVENT_ERROR; break;
     }
 
+    // for (size_t i = 0; i < 32; i++) {
+    //   printf("%d: %x\n", i, c->gpr[i]);
+    // }
+
+    printf("__am_irq_handle ok\n");
     c = user_handler(ev, c);
     assert(c != NULL);
   }

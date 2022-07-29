@@ -294,7 +294,7 @@ void puts(const char* str) {
 }
 
 int printf(const char* fmt, ...) {
-  char printf_buf[1024];
+  char printf_buf[2048];
   va_list args;
   int printed;
 
