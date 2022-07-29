@@ -15,9 +15,9 @@ Context* __am_irq_handle(Context* c) {
   //   default: ev.event = EVENT_ERROR; break;
   //   }
 
-  //   for (size_t i = 0; i < 32; i++) {
-  //     printf("%d: %x\n", i, c->gpr[i]);
-  //   }
+  for (size_t i = 0; i < 32; i++) {
+    printf("%d: %x\n", i, c->gpr[i]);
+  }
 
 
   //   printf("__am_irq_handle ok\n");
