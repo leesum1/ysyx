@@ -12,7 +12,7 @@ Context* __am_irq_handle(Context* c) {
   if (user_handler) {
     Event ev = { 0 };
     switch (c->mcause) {
-    default: ev.event = EVENT_ERROR; break;
+    default:  printf("code:%d\n", c->mcause); ev.event = EVENT_ERROR; break;
     }
 
     // for (size_t i = 0; i < 32; i++) {
