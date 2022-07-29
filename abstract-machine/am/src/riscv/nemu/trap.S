@@ -31,9 +31,9 @@ f(30) f(31)
 .globl __am_asm_trap
 __am_asm_trap:
   addi sp, sp, -CONTEXT_SIZE
-
+  # 通用寄存器压栈
   MAP(REGS, PUSH)
-
+  # csr 寄存器压栈
   csrr t0, mcause
   csrr t1, mstatus
   csrr t2, mepc
@@ -46,15 +46,19 @@ __am_asm_trap:
   li a0, (1 << 17)
   or t1, t1, a0
   csrw mstatus, t1
-
+  
+  # a0 传参,传递栈指针
   mv a0, sp
+  # 跳转中断处理函数
   jal __am_irq_handle
-
+  
+  # 恢复 csr 寄存器
   LOAD t1, OFFSET_STATUS(sp)
   LOAD t2, OFFSET_EPC(sp)
   csrw mstatus, t1
   csrw mepc, t2
 
+  # 恢复通用寄存器
   MAP(REGS, POP)
 
   addi sp, sp, CONTEXT_SIZE
