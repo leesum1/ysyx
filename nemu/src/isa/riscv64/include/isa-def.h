@@ -18,6 +18,7 @@
 
 #include <common.h>
 
+ // csr 寄存器地址映射
 enum {
   mtvec, mepc, mstatus, mcause,
 };
