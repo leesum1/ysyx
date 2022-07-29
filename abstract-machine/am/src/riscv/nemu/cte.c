@@ -2,7 +2,7 @@
 #include <riscv/riscv.h>
 #include <klib.h>
 
-// 为了代码提示
+// /*为了代码提示*/
 // #include "riscv64-nemu.h"
 // typedef struct Context Context;
 
