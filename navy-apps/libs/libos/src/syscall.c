@@ -73,7 +73,7 @@ void* _sbrk(intptr_t increment) {
 
   static char* heap_end;		/* Previous end of heap or 0 if none */
   char* prev_heap_end;
-
+  sprintf(writebuff, "123");
   if (0 == heap_end) {
     heap_end = &end;			/* Initialize first time round */
   }
