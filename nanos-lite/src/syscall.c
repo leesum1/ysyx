@@ -1,4 +1,5 @@
 #include <common.h>
+#include <unistd.h>
 #include "syscall.h"
 void do_syscall(Context* c) {
   uintptr_t a[4];
@@ -35,8 +36,7 @@ void do_syscall(Context* c) {
 
   case SYS_brk:
     printf("SYS_brk\n");
-    extern void* _sbrk(intptr_t increment);
-    //c->GPRx = (uintptr_t)_sbrk(a[1]);
+    c->GPRx = 0;
     break;
 
   default:
@@ -44,3 +44,28 @@ void do_syscall(Context* c) {
     break;
   }
 }
+
+
+
+// void* _sbrk(intptr_t increment) {
+//   extern  end;       //set by linker
+//   extern  __heap_end;//set by linker
+//   static char* heap_end;		/* Previous end of heap or 0 if none */
+//   char* prev_heap_end;
+
+//   if (0 == heap_end) {
+//     heap_end = &__heap_start;			/* Initialize first time round */
+//   }
+
+//   prev_heap_end = heap_end;
+//   heap_end += increment;
+//   //check
+//   if (heap_end < (&__heap_end)) {
+
+//   }
+//   else {
+//     // errno = ENOMEM;
+//     return (char*)-1;
+//   }
+//   return (void*)prev_heap_end;
+// }
