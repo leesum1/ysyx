@@ -8,7 +8,7 @@ void do_syscall(Context* c) {
   a[2] = c->GPR3;// 函数参数2
   a[3] = c->GPR4;// 函数参数3
 
-  printf(" syscall ID = %d\n", a[0]);
+  //printf(" syscall ID = %d\n", a[0]);
   switch (a[0]) {
   case -1:
     printf("do nothing\n");
@@ -22,7 +22,7 @@ void do_syscall(Context* c) {
     halt(c->GPRx);
     break;
   case SYS_write:
-    printf("SYS_exit\n");
+    //printf("SYS_write\n");
     if (a[1] == 1 || a[1] == 2) {
       for (int i = 0; i < a[3]; i++) {
         putch(*(char*)(a[2] + i));
