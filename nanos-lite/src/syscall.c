@@ -7,7 +7,7 @@ void do_syscall(Context* c) {
 
   switch (a[0]) {
   case -1:break;
-  case SYS_yield:printf("SYS_yield\n"); yield();c->GPRx = 0; break;
+  case SYS_yield:printf("SYS_yield\n"); yield();; break; //c->GPRx = 0
   default: panic("Unhandled syscall ID = %d", a[0]);
   }
 }
