@@ -2,9 +2,12 @@
 #include "syscall.h"
 void do_syscall(Context* c) {
   uintptr_t a[4];
-  // 得到系统调用号
-  a[0] = c->GPR1;
-  a[1] = c->GPRx;
+
+  a[0] = c->GPR1;// 系统调用号
+  a[1] = c->GPR2;// 函数参数1
+  a[2] = c->GPR3;// 函数参数2
+  a[3] = c->GPR4;// 函数参数3
+
   printf(" syscall ID = %d\n", a[0]);
   switch (a[0]) {
   case -1:
@@ -16,8 +19,19 @@ void do_syscall(Context* c) {
     break;
   case SYS_exit:
     printf("SYS_exit\n");
-    halt(a[1]);
+    halt(c->GPRx);
     break;
+  case SYS_write:
+    printf("SYS_exit\n");
+    if (a[1] == 1 || a[1] == 2) {
+      for (int i = 0; i < a[3]; i++) {
+        putch(*(char*)(a[2] + i));
+      }
+      c->GPRx = a[3];
+    }
+    else c->GPRx = -1;
+    break;
+
   default:
     panic("Unhandled syscall ID = %d\n", a[0]);
     break;
