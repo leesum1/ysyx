@@ -53,7 +53,10 @@ bool cte_init(Context* (*handler)(Event, Context*)) {
 Context* kcontext(Area kstack, void (*entry)(void*), void* arg) {
   return NULL;
 }
-
+/**
+ * @brief 自陷指令,通过 $a7 寄存器来传递系统调用编号
+ *
+ */
 void yield() {
   asm volatile("li a7, -1; ecall");
 }
