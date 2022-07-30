@@ -5,12 +5,12 @@ int main() {
   write(1, "Hello World!\n", 13);
   int i = 2;
   volatile int j = 0;
-  extern char etext, edata, end; /* The symbols must have some type,
-                                 or "gcc -Wall" complains */
-  printf("First address past:\n");
-  printf("    program text (etext)      %10p\n", &etext);
-  printf("    initialized data (edata)  %10p\n", &edata);
-  printf("    uninitialized data (end)  %10p\n", &end);
+  // extern char etext, edata, end; /* The symbols must have some type,
+  //                                or "gcc -Wall" complains */
+  // printf("First address past:\n");
+  // printf("    program text (etext)      %10p\n", &etext);
+  // printf("    initialized data (edata)  %10p\n", &edata);
+  // printf("    uninitialized data (end)  %10p\n", &end);
 
   while (1) {
     j++;
