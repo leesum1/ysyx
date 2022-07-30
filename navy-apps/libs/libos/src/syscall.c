@@ -84,7 +84,9 @@ void* _sbrk(intptr_t increment) {
   if (_syscall_(SYS_brk, heap_end, 0, 0) != 0) {
     return (char*)-1;
   }
-  return (void*)prev_heap_end;
+  // return (void*)prev_heap_end;
+
+  return (char*)-1;
 }
 
 int _read(int fd, void* buf, size_t count) {
