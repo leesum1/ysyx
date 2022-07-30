@@ -23,7 +23,7 @@ void do_syscall(Context* c) {
     halt(c->GPRx);
     break;
   case SYS_write:
-    printf("SYS_write fd:%d,buff:%p,cout:%d\n", a[1], a[2], a[3]);
+    //printf("SYS_write fd:%d,buff:%p,cout:%d\n", a[1], a[2], a[3]);
     if (a[1] == 1 || a[1] == 2) {
       for (int i = 0; i < a[3]; i++) {
         putch(*(char*)(a[2] + i));
