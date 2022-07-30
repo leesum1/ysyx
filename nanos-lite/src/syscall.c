@@ -32,6 +32,11 @@ void do_syscall(Context* c) {
     else {
       c->GPRx = -1;
     }
+
+  case SYS_brk:
+    printf("SYS_brk\n");
+    extern void* _sbrk(intptr_t increment);
+    //c->GPRx = (uintptr_t)_sbrk(a[1]);
     break;
 
   default:
