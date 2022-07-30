@@ -41,12 +41,14 @@
 #endif
 
 intptr_t _syscall_(intptr_t type, intptr_t a0, intptr_t a1, intptr_t a2) {
-  register intptr_t _gpr1 asm (GPR1) = type;
-  register intptr_t _gpr2 asm (GPR2) = a0;
-  register intptr_t _gpr3 asm (GPR3) = a1;
-  register intptr_t _gpr4 asm (GPR4) = a2;
-  register intptr_t ret asm (GPRx);
+  register intptr_t _gpr1 asm(GPR1) = type; //系统调用号 a7 寄存器保存
+  register intptr_t _gpr2 asm(GPR2) = a0;   //参数 a0-a2 寄存器
+  register intptr_t _gpr3 asm(GPR3) = a1;
+  register intptr_t _gpr4 asm(GPR4) = a2;
+  register intptr_t ret asm(GPRx);          //返回值 a0 寄存器
+  // 执行系统调用
   asm volatile (SYSCALL : "=r" (ret) : "r"(_gpr1), "r"(_gpr2), "r"(_gpr3), "r"(_gpr4));
+
   return ret;
 }
 
@@ -55,21 +57,21 @@ void _exit(int status) {
   while (1);
 }
 
-int _open(const char *path, int flags, mode_t mode) {
+int _open(const char* path, int flags, mode_t mode) {
   _exit(SYS_open);
   return 0;
 }
 
-int _write(int fd, void *buf, size_t count) {
+int _write(int fd, void* buf, size_t count) {
   _exit(SYS_write);
   return 0;
 }
 
-void *_sbrk(intptr_t increment) {
-  return (void *)-1;
+void* _sbrk(intptr_t increment) {
+  return (void*)-1;
 }
 
-int _read(int fd, void *buf, size_t count) {
+int _read(int fd, void* buf, size_t count) {
   _exit(SYS_read);
   return 0;
 }
@@ -84,12 +86,12 @@ off_t _lseek(int fd, off_t offset, int whence) {
   return 0;
 }
 
-int _gettimeofday(struct timeval *tv, struct timezone *tz) {
+int _gettimeofday(struct timeval* tv, struct timezone* tz) {
   _exit(SYS_gettimeofday);
   return 0;
 }
 
-int _execve(const char *fname, char * const argv[], char *const envp[]) {
+int _execve(const char* fname, char* const argv[], char* const envp[]) {
   _exit(SYS_execve);
   return 0;
 }
@@ -97,11 +99,11 @@ int _execve(const char *fname, char * const argv[], char *const envp[]) {
 // Syscalls below are not used in Nanos-lite.
 // But to pass linking, they are defined as dummy functions.
 
-int _fstat(int fd, struct stat *buf) {
+int _fstat(int fd, struct stat* buf) {
   return -1;
 }
 
-int _stat(const char *fname, struct stat *buf) {
+int _stat(const char* fname, struct stat* buf) {
   assert(0);
   return -1;
 }
@@ -126,22 +128,22 @@ pid_t vfork() {
   return -1;
 }
 
-int _link(const char *d, const char *n) {
+int _link(const char* d, const char* n) {
   assert(0);
   return -1;
 }
 
-int _unlink(const char *n) {
+int _unlink(const char* n) {
   assert(0);
   return -1;
 }
 
-pid_t _wait(int *status) {
+pid_t _wait(int* status) {
   assert(0);
   return -1;
 }
 
-clock_t _times(void *buf) {
+clock_t _times(void* buf) {
   assert(0);
   return 0;
 }
@@ -165,12 +167,12 @@ unsigned int sleep(unsigned int seconds) {
   return -1;
 }
 
-ssize_t readlink(const char *pathname, char *buf, size_t bufsiz) {
+ssize_t readlink(const char* pathname, char* buf, size_t bufsiz) {
   assert(0);
   return -1;
 }
 
-int symlink(const char *target, const char *linkpath) {
+int symlink(const char* target, const char* linkpath) {
   assert(0);
   return -1;
 }
