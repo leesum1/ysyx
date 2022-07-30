@@ -68,7 +68,28 @@ int _write(int fd, void* buf, size_t count) {
 }
 
 void* _sbrk(intptr_t increment) {
-  return (void*)-1;
+  extern char __heap_start;//set by linker
+  extern char __heap_end;//set by linker
+
+  static char* heap_end;		/* Previous end of heap or 0 if none */
+  char* prev_heap_end;
+
+  if (0 == heap_end) {
+    heap_end = &__heap_start;			/* Initialize first time round */
+  }
+
+  prev_heap_end = heap_end;
+  heap_end += increment;
+  //check
+  if (heap_end < (&__heap_end)) {
+
+  }
+  else {
+    // errno = ENOMEM;
+    return (char*)-1;
+  }
+  return (void*)prev_heap_end;
+
 }
 
 int _read(int fd, void* buf, size_t count) {
