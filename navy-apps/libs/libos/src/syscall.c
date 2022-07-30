@@ -68,7 +68,7 @@ int _write(int fd, void* buf, size_t count) {
 }
 
 void* _sbrk(intptr_t increment) {
-  extern  _end;//set by linker
+  extern  _end1111;//set by linker
 
   static char* heap_end;		/* Previous end of heap or 0 if none */
   char* prev_heap_end;
@@ -79,15 +79,7 @@ void* _sbrk(intptr_t increment) {
 
   prev_heap_end = heap_end;
   heap_end += increment;
-  // //check
-  // if (heap_end < (&__heap_end)) {
 
-  // }
-  // else {
-  //   // errno = ENOMEM;
-  //   return (char*)-1;
-  // }
-  // return (void*)prev_heap_end;
   if (_syscall_(SYS_brk, heap_end, 0, 0) != 0) {
     return (char*)-1;
   }
