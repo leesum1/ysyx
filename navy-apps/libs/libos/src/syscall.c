@@ -81,7 +81,7 @@ void* _sbrk(intptr_t increment) {
   prev_heap_end = heap_end;
   heap_end += increment;
 
-  if (_syscall_(SYS_brk, SYS_brk, 0, 0) != 0) {
+  if (_syscall_(SYS_brk, heap_end, 0, 0) != 0) {
     return (char*)-1;
   }
   return (void*)prev_heap_end;
