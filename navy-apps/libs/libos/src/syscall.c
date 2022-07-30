@@ -68,14 +68,13 @@ int _write(int fd, void* buf, size_t count) {
 }
 
 void* _sbrk(intptr_t increment) {
-  extern  end;//set by linker
-  extern char __heap_end;//set by linker
+  extern  _end;//set by linker
 
   static char* heap_end;		/* Previous end of heap or 0 if none */
   char* prev_heap_end;
 
   if (0 == heap_end) {
-    heap_end = end;			/* Initialize first time round */
+    heap_end = _end;			/* Initialize first time round */
   }
 
   prev_heap_end = heap_end;
