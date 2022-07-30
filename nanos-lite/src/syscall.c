@@ -36,7 +36,7 @@ void do_syscall(Context* c) {
     break;
   case SYS_brk:
     printf("SYS_brk a1:%p,a2:%d,a3:%d\n", a[1], a[2], a[3]);
-    c->GPRx = -1;
+    c->GPRx = 0;
     break;
 
   default:
