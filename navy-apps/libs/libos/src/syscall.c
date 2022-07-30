@@ -74,7 +74,7 @@ void* _sbrk(intptr_t increment) {
   char* prev_heap_end;
 
   if (0 == heap_end) {
-    heap_end = _end;			/* Initialize first time round */
+    heap_end = _end1111;			/* Initialize first time round */
   }
 
   prev_heap_end = heap_end;
