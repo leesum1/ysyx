@@ -15,6 +15,7 @@ void do_syscall(Context* c) {
     yield();c->GPRx = 0;
     break;
   case SYS_exit:
+    printf("SYS_exit\n");
     halt(a[1]);
     break;
   default:
