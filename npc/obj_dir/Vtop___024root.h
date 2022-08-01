@@ -33,7 +33,7 @@ VL_MODULE(Vtop___024root) {
     CData/*5:0*/ top__DOT__u_dcode__DOT___alu_op;
     CData/*4:0*/ top__DOT__u_dcode__DOT___exc_op;
     CData/*3:0*/ top__DOT__u_dcode__DOT___mem_op;
-    CData/*2:0*/ top__DOT__u_dcode__DOT___pc_op;
+    CData/*3:0*/ top__DOT__u_dcode__DOT___pc_op;
     CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___isCF;
     CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___isSLT;
     CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___shift_sra;

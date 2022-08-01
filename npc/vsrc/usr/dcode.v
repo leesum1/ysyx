@@ -3,16 +3,21 @@
 
 module dcode (
     /* 输入信号 */
-    input  [     `INST_LEN-1:0] inst_data,
+    input  [         `INST_LEN-1:0] inst_data,
     /*输出信号： */
-    output [`REG_ADDRWIDTH-1:0] rs1_idx,
-    output [`REG_ADDRWIDTH-1:0] rs2_idx,
-    output [`REG_ADDRWIDTH-1:0] rd_idx,
-    output [      `IMM_LEN-1:0] imm_data,
-    output [    `ALUOP_LEN-1:0] alu_op,     // alu 操作码
-    output [    `MEMOP_LEN-1:0] mem_op,     // mem 操作码
-    output [    `EXCOP_LEN-1:0] exc_op,     // exc 操作码
-    output [     `PCOP_LEN-1:0] pc_op       // pc 操作码
+    output [    `REG_ADDRWIDTH-1:0] rs1_idx,
+    output [    `REG_ADDRWIDTH-1:0] rs2_idx,
+    output [    `REG_ADDRWIDTH-1:0] rd_idx,
+    output [          `IMM_LEN-1:0] imm_data,
+    /* CSR 译码结果 */
+    output [          `IMM_LEN-1:0] immCSR,
+    output                          isNeedimmCSR,
+    output [`CSR_REG_ADDRWIDTH-1:0] csr_idx,
+
+    output [`ALUOP_LEN-1:0] alu_op,  // alu 操作码
+    output [`MEMOP_LEN-1:0] mem_op,  // mem 操作码
+    output [`EXCOP_LEN-1:0] exc_op,  // exc 操作码
+    output [ `PCOP_LEN-1:0] pc_op    // pc 操作码
     /* 测试信号 */
 
 );
@@ -24,6 +29,7 @@ module dcode (
   wire [4:0] _rs1 = _inst[19:15];
   wire [4:0] _rs2 = _inst[24:20];
   wire [6:0] _func7 = _inst[31:25];
+  wire [`CSR_REG_ADDRWIDTH-1:0] _csr = _inst[31:20];  // CSR 地址
 
   // 不同指令类型的立即数
   wire [`IMM_LEN-1:0] _immI = {{21 + 32{_inst[31]}}, _inst[30:20]};
@@ -33,6 +39,7 @@ module dcode (
   wire [`IMM_LEN-1:0] _immJ = {
     {12 + 32{_inst[31]}}, _inst[19:12], _inst[20], _inst[30:25], _inst[24:21], 1'b0
   };
+  wire [`IMM_LEN-1:0] _immCSR = {59'b0, _inst[19:15]};
 
 
 
@@ -227,9 +234,10 @@ module dcode (
   wire _inst_csrrwi = _type_system & _func3_101;
   wire _inst_csrrsi = _type_system & _func3_110;
   wire _inst_csrrci = _type_system & _func3_111;
-  // wire _inst_mret = _type_system & _func3_000 & (_inst[31:20] == 12'b0011_0000_0010);
-  // wire _inst_dret = _type_system & _func3_000 & (_inst[31:20] == 12'b0111_1011_0010);
-  // wire _inst_wfi = _type_system & _func3_000 & (_inst[31:20] == 12'b0001_0000_0101);
+
+  wire _inst_mret = _type_system & _func3_000 & (_inst[31:20] == 12'b0011_0000_0010);
+  wire _inst_dret = _type_system & _func3_000 & (_inst[31:20] == 12'b0111_1011_0010);
+  wire _inst_wfi = _type_system & _func3_000 & (_inst[31:20] == 12'b0001_0000_0101);
 
   /*_type_miscmem*/
   wire _inst_fence = _type_miscmem & _func3_000;
@@ -266,14 +274,19 @@ module dcode (
   wire _NONE_type = ~(_R_type | _I_type | _S_type | _U_type | _J_type | _B_type);
 
   /*获取操作数  */  //TODO:一些特殊指令没有归类ecall,ebreak
-  wire _isNeed_rs1 = (_R_type | _I_type | _S_type | _B_type);
+  wire _isNeed_imm = (_I_type | _S_type | _B_type | _U_type | _J_type);
+  wire _isNeed_immCSR = _inst_csrrci | _inst_csrrsi | _inst_csrrwi;
+
+  // I 型指令中, CSR 立即数占了 rs1 的位置
+  wire _isNeed_rs1 = (_R_type | _I_type | _S_type | _B_type) & (~_isNeed_immCSR);
   wire _isNeed_rs2 = (_R_type | _S_type | _B_type);
   wire _isNeed_rd = (_R_type | _I_type | _U_type | _J_type);
-  wire _isNeed_imm = (_I_type | _S_type | _B_type | _U_type | _J_type);
+  wire _isNeed_csr = (_inst_csrrc|_inst_csrrci|_inst_csrrs|_inst_csrrsi|_inst_csrrw|_inst_csrrwi);
 
   wire [4:0] _rs1_idx = (_isNeed_rs1) ? _rs1 : 5'b0;
   wire [4:0] _rs2_idx = (_isNeed_rs2) ? _rs2 : 5'b0;
   wire [4:0] _rd_idx = (_isNeed_rd) ? _rd : 5'b0;
+  wire [`CSR_REG_ADDRWIDTH-1:0] _csr_idx = (_isNeed_csr) ? _csr : `CSR_REG_ADDRWIDTH'b0;
 
 
   /* assign 实现多路选择器：根据指令类型选立即数 */
@@ -284,16 +297,21 @@ module dcode (
                                   ({`IMM_LEN{_J_type}}&_immJ);
 
   /* 输出指定 */
-  assign rs1_idx  = _rs1_idx;
-  assign rs2_idx  = _rs2_idx;
-  assign rd_idx   = _rd_idx;
+  assign rs1_idx = _rs1_idx;
+  assign rs2_idx = _rs2_idx;
+  assign rd_idx = _rd_idx;
+  assign csr_idx = _csr_idx;
   assign imm_data = _imm_data;
+
+  // CSR 中的立即数 特殊处理
+  assign isNeedimmCSR = _isNeed_immCSR;
+  assign immCSR = _immCSR;
 
 
   /* ALU_OP */
   //加减和逻辑
   wire _alu_add = _inst_add |_inst_addw |_inst_addi |_inst_addiw| _type_load 
-                  | _type_store | _inst_jal |_inst_jalr |_inst_auipc | _inst_lui;
+                  | _type_store | _inst_jal |_inst_jalr |_inst_auipc | _inst_lui|_isNeed_csr;
   wire _alu_sub = _inst_sub | _inst_subw;
   wire _alu_xor = _inst_xor | _inst_xori;
   wire _alu_and = _inst_and | _inst_andi;
@@ -382,6 +400,7 @@ module dcode (
                                   ({`EXCOP_LEN{_type_op_imm_32}}&`EXCOP_OPIMM32) |
                                   ({`EXCOP_LEN{_type_op}}&`EXCOP_OP) |
                                   ({`EXCOP_LEN{_type_op_32}}&`EXCOP_OP32) |
+                                  ({`EXCOP_LEN{_isNeed_csr}}&`EXCOP_CSR) |
                                   ({`EXCOP_LEN{_inst_ebreak}}&`EXCOP_EBREAK) | //TODO:暂时对 ebreak 特殊处理
   ({`EXCOP_LEN{_NONE_type}} & `EXCOP_NONE);
 
@@ -406,6 +425,8 @@ module dcode (
   wire [`PCOP_LEN-1:0] _pc_op = (_B_type)?`PCOP_BRANCH:
                                 (_inst_jal)?`PCOP_JAL:
                                 (_inst_jalr)?`PCOP_JALR:
+                                (_inst_mret)?`PCOP_MRET:
+                                (_inst_ecall)?`PCOP_MTVEC:
                                 `PCOP_INC4;
   assign pc_op = _pc_op;
 

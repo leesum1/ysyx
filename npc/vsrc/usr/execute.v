@@ -5,6 +5,9 @@ module execute (
     input  [         `XLEN-1:0] rs1_data,
     input  [         `XLEN-1:0] rs2_data,
     input  [      `IMM_LEN-1:0] imm_data,
+    /* CSR 译码结果 */
+    input [`XLEN-1:0]         csr_data,
+
     input  [    `ALUOP_LEN-1:0] alu_op,    // alu 操作码
     input  [    `MEMOP_LEN-1:0] mem_op,    // 访存操作码
     input  [    `EXCOP_LEN-1:0] exc_op,    // exc 操作码
@@ -23,6 +26,7 @@ module execute (
   wire _excop_opimm32 = (exc_op == `EXCOP_OPIMM32);
   wire _excop_op = (exc_op == `EXCOP_OP);
   wire _excop_op32 = (exc_op == `EXCOP_OP32);
+  wire _excop_csr = (exc_op == `EXCOP_CSR);
   wire _excop_ebreak = (exc_op == `EXCOP_EBREAK);
   wire _excop_none = (exc_op == `EXCOP_NONE);
 
@@ -32,6 +36,7 @@ module execute (
   wire _pc_4 = _excop_jal | _excop_jalr;
   wire _pc_imm12 = _excop_auipc;
   wire _none_imm12 = _excop_lui;
+  wire _none_csr = _excop_csr; //保存原来的 csr
 
   /* jal jalr lui auipc ecall ebreak 需要单独处理 */
   /* 拼接代替左移 */
@@ -40,10 +45,11 @@ module execute (
   // ALU 第一个操作数
   wire [         `XLEN-1:0] _alu_in1 = ({`XLEN{_rs1_rs2 | _rs1_imm}}&rs1_data) |
                                        ({`XLEN{_pc_4 | _pc_imm12}}&pc) |
-                                       ({`XLEN{_none_imm12}}&`XLEN'b0);
+                                       ({`XLEN{_none_imm12|_none_csr}}&`XLEN'b0);
   // ALU 第二个操作数
   wire [         `XLEN-1:0] _alu_in2 = ({`XLEN{_rs1_rs2}}&rs2_data) |
                                        ({`XLEN{_rs1_imm}}&imm_data) |
+                                       ({`XLEN{_none_csr}}&csr_data) |
                                        ({`XLEN{_pc_4}}&`XLEN'd4)   |
                                        ({`XLEN{_pc_imm12|_none_imm12}}&_imm_aui_auipc);
 

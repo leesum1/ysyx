@@ -35,7 +35,7 @@ void Vtop___024root__traceInitSub0(Vtop___024root* vlSelf, VerilatedVcd* tracep)
         tracep->declBus(c+9,"top alu_op", false,-1, 5,0);
         tracep->declBus(c+10,"top mem_op", false,-1, 3,0);
         tracep->declBus(c+11,"top exc_op", false,-1, 4,0);
-        tracep->declBus(c+12,"top pc_op", false,-1, 2,0);
+        tracep->declBus(c+12,"top pc_op", false,-1, 3,0);
         tracep->declQuad(c+13,"top rs1_data", false,-1, 63,0);
         tracep->declQuad(c+15,"top rs2_data", false,-1, 63,0);
         tracep->declQuad(c+17,"top w_data", false,-1, 63,0);
@@ -46,7 +46,7 @@ void Vtop___024root__traceInitSub0(Vtop___024root* vlSelf, VerilatedVcd* tracep)
         tracep->declQuad(c+17,"top wb_data", false,-1, 63,0);
         tracep->declBit(c+144,"top u_pc clk", false,-1);
         tracep->declBit(c+145,"top u_pc rst", false,-1);
-        tracep->declBus(c+12,"top u_pc pc_op", false,-1, 2,0);
+        tracep->declBus(c+12,"top u_pc pc_op", false,-1, 3,0);
         tracep->declQuad(c+13,"top u_pc rs1_data", false,-1, 63,0);
         tracep->declQuad(c+7,"top u_pc imm_data", false,-1, 63,0);
         tracep->declQuad(c+19,"top u_pc execute_data", false,-1, 63,0);
@@ -68,7 +68,7 @@ void Vtop___024root__traceInitSub0(Vtop___024root* vlSelf, VerilatedVcd* tracep)
         tracep->declBus(c+9,"top u_dcode alu_op", false,-1, 5,0);
         tracep->declBus(c+10,"top u_dcode mem_op", false,-1, 3,0);
         tracep->declBus(c+11,"top u_dcode exc_op", false,-1, 4,0);
-        tracep->declBus(c+12,"top u_dcode pc_op", false,-1, 2,0);
+        tracep->declBus(c+12,"top u_dcode pc_op", false,-1, 3,0);
         tracep->declBit(c+144,"top u_rv64reg clk", false,-1);
         tracep->declBus(c+4,"top u_rv64reg rs1_idx", false,-1, 4,0);
         tracep->declBus(c+5,"top u_rv64reg rs2_idx", false,-1, 4,0);
@@ -208,7 +208,7 @@ void Vtop___024root__traceFullSub0(Vtop___024root* vlSelf, VerilatedVcd* tracep)
         tracep->fullCData(oldp+9,(vlSelf->top__DOT__u_dcode__DOT___alu_op),6);
         tracep->fullCData(oldp+10,(vlSelf->top__DOT__u_dcode__DOT___mem_op),4);
         tracep->fullCData(oldp+11,(vlSelf->top__DOT__u_dcode__DOT___exc_op),5);
-        tracep->fullCData(oldp+12,(vlSelf->top__DOT__u_dcode__DOT___pc_op),3);
+        tracep->fullCData(oldp+12,(vlSelf->top__DOT__u_dcode__DOT___pc_op),4);
         tracep->fullQData(oldp+13,(vlSelf->top__DOT__rs1_data),64);
         tracep->fullQData(oldp+15,(vlSelf->top__DOT__rs2_data),64);
         tracep->fullQData(oldp+17,((((IData)(vlSelf->top__DOT__u_memory__DOT___unsigned) 

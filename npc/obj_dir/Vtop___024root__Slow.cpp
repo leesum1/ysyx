@@ -436,7 +436,29 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                                                    : 
                                                   ((IData)(top__DOT__u_dcode__DOT___inst_jalr)
                                                     ? 3U
-                                                    : 4U)));
+                                                    : 
+                                                   ((IData)(
+                                                            ((1U 
+                                                              == 
+                                                              (1U 
+                                                               & (IData)(top__DOT__u_dcode__DOT___type_system))) 
+                                                             & (0x30200000ULL 
+                                                                == 
+                                                                (0xfff07000ULL 
+                                                                 & vlSelf->top__DOT__u_fetch__DOT___mem_data))))
+                                                     ? 5U
+                                                     : 
+                                                    ((IData)(
+                                                             ((1U 
+                                                               == 
+                                                               (1U 
+                                                                & (IData)(top__DOT__u_dcode__DOT___type_system))) 
+                                                              & (0ULL 
+                                                                 == 
+                                                                 (0xfff07000ULL 
+                                                                  & vlSelf->top__DOT__u_fetch__DOT___mem_data))))
+                                                      ? 6U
+                                                      : 4U)))));
     vlSelf->top__DOT__u_dcode__DOT___alu_op = (((((
                                                    (((((((((((((((((((((((((((1U 
                                                                               & (- (IData)(
@@ -1852,7 +1874,7 @@ void Vtop___024root___ctor_var_reset(Vtop___024root* vlSelf) {
     vlSelf->top__DOT__u_dcode__DOT___alu_op = VL_RAND_RESET_I(6);
     vlSelf->top__DOT__u_dcode__DOT___exc_op = VL_RAND_RESET_I(5);
     vlSelf->top__DOT__u_dcode__DOT___mem_op = VL_RAND_RESET_I(4);
-    vlSelf->top__DOT__u_dcode__DOT___pc_op = VL_RAND_RESET_I(3);
+    vlSelf->top__DOT__u_dcode__DOT___pc_op = VL_RAND_RESET_I(4);
     for (int __Vi0=0; __Vi0<32; ++__Vi0) {
         vlSelf->top__DOT__u_rv64reg__DOT__rf[__Vi0] = VL_RAND_RESET_Q(64);
     }

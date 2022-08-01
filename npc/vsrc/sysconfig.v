@@ -21,8 +21,9 @@
 `define EXCOP_OPIMM32 `EXCOP_LEN'd9
 `define EXCOP_OP `EXCOP_LEN'd10
 `define EXCOP_OP32 `EXCOP_LEN'd11
+`define EXCOP_CSR `EXCOP_LEN'd12
 
-`define EXCOP_EBREAK `EXCOP_LEN'd12
+`define EXCOP_EBREAK `EXCOP_LEN'd13
 
 
 /* ALU 操作码 */
@@ -100,13 +101,37 @@
 `define WBOP_NONE `WBOP_LEN'd1
 
 /* PC操作码 */
-`define PCOP_LEN 3
+`define PCOP_LEN 4
 
 `define PCOP_NONE `PCOP_LEN'd0 //空操作
 `define PCOP_BRANCH `PCOP_LEN'd1
 `define PCOP_JAL `PCOP_LEN'd2
 `define PCOP_JALR `PCOP_LEN'd3
 `define PCOP_INC4 `PCOP_LEN'd4
+`define PCOP_MRET `PCOP_LEN'd5  //异常返回
+`define PCOP_MTVEC `PCOP_LEN'd6 //异常跳转
+
+
+`define CSR_REG_ADDRWIDTH 12
+//Machine Trap Setup
+`define CSR_MSTATUS 12'h300
+`define CSR_MISA 12'h301
+`define CSR_MEDELEG 12'h302
+`define CSR_MIDELEG 12'h303
+`define CSR_MIE 12'h304
+`define CSR_MTVEC 12'h305
+`define CSR_MCOUNTEREN 12'h306
+//Machine Trap Handling
+`define CSR_MSCRATCH 12'h340
+`define CSR_MEPC 12'h341
+`define CSR_MCAUSE 12'h342
+`define CSR_MTVAL 12'h343
+`define CSR_MIP 12'h344
+`define CSR_MTINST 12'h34a
+`define CSR_MTVAL2 12'h34b
+
+
+
 
 
 

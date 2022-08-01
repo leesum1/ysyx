@@ -547,7 +547,29 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                    : 
                                                   ((IData)(top__DOT__u_dcode__DOT___inst_jalr)
                                                     ? 3U
-                                                    : 4U)));
+                                                    : 
+                                                   ((IData)(
+                                                            ((1U 
+                                                              == 
+                                                              (1U 
+                                                               & (IData)(top__DOT__u_dcode__DOT___type_system))) 
+                                                             & (0x30200000ULL 
+                                                                == 
+                                                                (0xfff07000ULL 
+                                                                 & vlSelf->top__DOT__u_fetch__DOT___mem_data))))
+                                                     ? 5U
+                                                     : 
+                                                    ((IData)(
+                                                             ((1U 
+                                                               == 
+                                                               (1U 
+                                                                & (IData)(top__DOT__u_dcode__DOT___type_system))) 
+                                                              & (0ULL 
+                                                                 == 
+                                                                 (0xfff07000ULL 
+                                                                  & vlSelf->top__DOT__u_fetch__DOT___mem_data))))
+                                                      ? 6U
+                                                      : 4U)))));
     vlSelf->top__DOT__u_dcode__DOT___alu_op = (((((
                                                    (((((((((((((((((((((((((((1U 
                                                                               & (- (IData)(
