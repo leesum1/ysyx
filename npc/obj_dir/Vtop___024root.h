@@ -29,6 +29,7 @@ VL_MODULE(Vtop___024root) {
         CData/*0:0*/ top__DOT__csr_mcause_i_en;
         CData/*0:0*/ top__DOT__csr_mtval_i_en;
         CData/*0:0*/ top__DOT__csr_mtvec_i_en;
+        CData/*0:0*/ top__DOT__csr_mstatus_i_en;
         CData/*0:0*/ top__DOT__u_pc__DOT___isready_branch;
         CData/*0:0*/ top__DOT__u_pc__DOT___isready_inc4;
         CData/*0:0*/ top__DOT__u_dcode__DOT___type_store;
@@ -42,6 +43,7 @@ VL_MODULE(Vtop___024root) {
         CData/*4:0*/ top__DOT__u_dcode__DOT___exc_op;
         CData/*3:0*/ top__DOT__u_dcode__DOT___mem_op;
         CData/*3:0*/ top__DOT__u_dcode__DOT___pc_op;
+        CData/*0:0*/ top__DOT__u_rv64_csr_regfile__DOT___mstatus_en;
         CData/*0:0*/ top__DOT__u_rv64_csr_regfile__DOT___mepc_en;
         CData/*0:0*/ top__DOT__u_rv64_csr_regfile__DOT___mcause_en;
         CData/*0:0*/ top__DOT__u_rv64_csr_regfile__DOT___mtval_en;
@@ -70,11 +72,13 @@ VL_MODULE(Vtop___024root) {
         QData/*63:0*/ top__DOT__csr_mcause_i;
         QData/*63:0*/ top__DOT__csr_mtval_i;
         QData/*63:0*/ top__DOT__csr_mtvec_i;
+        QData/*63:0*/ top__DOT__csr_mstatus_i;
         QData/*63:0*/ top__DOT__exc_out;
         QData/*63:0*/ top__DOT__u_pc__DOT___pc_next;
         QData/*63:0*/ top__DOT__u_pc__DOT___pc_current;
         QData/*63:0*/ top__DOT__u_fetch__DOT___mem_data;
         QData/*63:0*/ top__DOT__u_dcode__DOT___imm_data;
+        QData/*63:0*/ top__DOT__u_rv64_csr_regfile__DOT___mstatus_q;
         QData/*63:0*/ top__DOT__u_rv64_csr_regfile__DOT___mepc_q;
         QData/*63:0*/ top__DOT__u_rv64_csr_regfile__DOT___mcause_q;
         QData/*63:0*/ top__DOT__u_rv64_csr_regfile__DOT___mtval_q;
@@ -85,12 +89,12 @@ VL_MODULE(Vtop___024root) {
         QData/*63:0*/ top__DOT__u_execute__DOT___alu_out;
         QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num;
         QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num_inv;
+    };
+    struct {
         QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shifter_res;
         QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___srl_res;
         QData/*63:0*/ top__DOT__u_execute__DOT__u_execute_csr__DOT___csr_exe_result;
         QData/*63:0*/ top__DOT__u_memory__DOT___mem_read;
-    };
-    struct {
         QData/*63:0*/ top__DOT__u_memory__DOT___addr;
         VlUnpacked<QData/*63:0*/, 32> top__DOT__u_rv64reg__DOT__rf;
     };

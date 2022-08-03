@@ -98,15 +98,19 @@ module top (
   wire [`XLEN-1:0] csr_mcause_i;
   wire [`XLEN-1:0] csr_mtval_i;
   wire [`XLEN-1:0] csr_mtvec_i;
+  wire [`XLEN-1:0] csr_mstatus_i;
+
   wire csr_mepc_i_en;
   wire csr_mcause_i_en;
   wire csr_mtval_i_en;
   wire csr_mtvec_i_en;
+  wire csr_mstatus_i_en;
   /* 单独引出寄存器(读) */
   wire [`XLEN-1:0] csr_mepc_o;
   wire [`XLEN-1:0] csr_mcause_o;
   wire [`XLEN-1:0] csr_mtval_o;
   wire [`XLEN-1:0] csr_mtvec_o;
+  wire [`XLEN-1:0] csr_mstatus_o;
 
   /* 读取数据端口 */
   wire [`CSR_REG_ADDRWIDTH-1:0] csr_readaddr = csr_idx;
@@ -117,29 +121,32 @@ module top (
   wire [`XLEN-1:0] csr_writedata = exc_csr_out;
 
   rv64_csr_regfile u_rv64_csr_regfile (
-      .clk            (clk),
-      .rst            (rst),
+      .clk             (clk),
+      .rst             (rst),
       /* 单独引出寄存器(写) */
-      .csr_mepc_i     (csr_mepc_i),
-      .csr_mcause_i   (csr_mcause_i),
-      .csr_mtval_i    (csr_mtval_i),
-      .csr_mtvec_i    (csr_mtvec_i),
-      .csr_mepc_i_en  (csr_mepc_i_en),
-      .csr_mcause_i_en(csr_mcause_i_en),
-      .csr_mtval_i_en (csr_mtval_i_en),
-      .csr_mtvec_i_en (csr_mtvec_i_en),
+      .csr_mstatus_i   (csr_mstatus_i),
+      .csr_mepc_i      (csr_mepc_i),
+      .csr_mcause_i    (csr_mcause_i),
+      .csr_mtval_i     (csr_mtval_i),
+      .csr_mtvec_i     (csr_mtvec_i),
+      .csr_mstatus_i_en(csr_mstatus_i_en),
+      .csr_mepc_i_en   (csr_mepc_i_en),
+      .csr_mcause_i_en (csr_mcause_i_en),
+      .csr_mtval_i_en  (csr_mtval_i_en),
+      .csr_mtvec_i_en  (csr_mtvec_i_en),
       /* 单独引出寄存器(读) */
-      .csr_mepc_o     (csr_mepc_o),
-      .csr_mcause_o   (csr_mcause_o),
-      .csr_mtval_o    (csr_mtval_o),
-      .csr_mtvec_o    (csr_mtvec_o),
+      .csr_mstatus_o   (csr_mstatus_o),
+      .csr_mepc_o      (csr_mepc_o),
+      .csr_mcause_o    (csr_mcause_o),
+      .csr_mtval_o     (csr_mtval_o),
+      .csr_mtvec_o     (csr_mtvec_o),
       /* 读取数据端口 */
-      .csr_readaddr   (csr_readaddr),
-      .csr_readdata   (csr_readdata),
+      .csr_readaddr    (csr_readaddr),
+      .csr_readdata    (csr_readdata),
       /* 写入数据端口 */
-      .csr_writeaddr  (csr_writeaddr),
-      .write_enable   (write_enable),
-      .csr_writedata  (csr_writedata)
+      .csr_writeaddr   (csr_writeaddr),
+      .write_enable    (write_enable),
+      .csr_writedata   (csr_writedata)
   );
 
   /**********************执行模块**********************/

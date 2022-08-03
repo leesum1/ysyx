@@ -32,5 +32,5 @@ module execute_csr (
 
 
   assign csr_exe_result = _csr_exe_result;
-  assign csr_exe_valid  = ~(_csr_none | _csr_read);
+  assign csr_exe_valid  = ~(_csr_none | _csr_read);  // 读取不写回
 endmodule
