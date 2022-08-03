@@ -183,18 +183,30 @@ void Vtop___024root__traceChgSub0(Vtop___024root* vlSelf, VerilatedVcd* tracep) 
                                           & vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtvec_q))),64);
             tracep->chgBit(oldp+49,((IData)((0U != 
                                              (7U & (IData)(vlSelf->top__DOT__u_dcode__DOT___decode_trap_bus))))));
-            tracep->chgQData(oldp+50,(((((- (QData)((IData)(
-                                                            ((((IData)(vlSelf->top__DOT__u_pc__DOT___isready_branch) 
-                                                               | (2U 
-                                                                  == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))) 
-                                                              | (IData)(vlSelf->top__DOT__u_pc__DOT___isready_inc4)) 
-                                                             | (0U 
-                                                                == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op)))))) 
-                                         & vlSelf->top__DOT__u_pc__DOT___pc_current) 
+            tracep->chgQData(oldp+50,((((((- (QData)((IData)(
+                                                             ((((IData)(vlSelf->top__DOT__u_pc__DOT___isready_branch) 
+                                                                | (2U 
+                                                                   == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))) 
+                                                               | (IData)(vlSelf->top__DOT__u_pc__DOT___isready_inc4)) 
+                                                              | (0U 
+                                                                 == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op)))))) 
+                                          & vlSelf->top__DOT__u_pc__DOT___pc_current) 
+                                         | ((- (QData)((IData)(
+                                                               (3U 
+                                                                == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))))) 
+                                            & vlSelf->top__DOT__rs1_data)) 
                                         | ((- (QData)((IData)(
-                                                              (3U 
+                                                              (5U 
                                                                == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))))) 
-                                           & vlSelf->top__DOT__rs1_data)) 
+                                           & (((- (QData)((IData)(
+                                                                  (1U 
+                                                                   & ((IData)(vlSelf->top__DOT__u_dcode__DOT___decode_trap_bus) 
+                                                                      >> 2U))))) 
+                                               & vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mepc_q) 
+                                              | ((- (QData)((IData)(
+                                                                    (1U 
+                                                                     & (IData)(vlSelf->top__DOT__u_dcode__DOT___decode_trap_bus))))) 
+                                                 & vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtvec_q)))) 
                                        + (((- (QData)((IData)(
                                                               (((IData)(vlSelf->top__DOT__u_pc__DOT___isready_branch) 
                                                                 | (2U 
