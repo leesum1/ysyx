@@ -13,6 +13,7 @@ const uint32_t defimg[] = {
      0x30552073,
      0x00900513, //li a0,9
      0x30552073,
+     0x00000297, // auipc t0,0 ,        (pc+0) 写入 t0
      0x00100073, // ebreak (used as nemu_trap)
      0xdeadbeef // some data
 };
