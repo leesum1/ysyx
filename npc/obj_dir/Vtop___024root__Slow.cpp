@@ -244,15 +244,16 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                                                                     & (IData)(
                                                                               (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                >> 0xcU)))))))));
-    vlSelf->top__DOT__u_dcode__DOT___I_type = ((((IData)(top__DOT__u_dcode__DOT___type_load) 
-                                                 | (IData)(top__DOT__u_dcode__DOT___type_op_imm)) 
-                                                | (IData)(top__DOT__u_dcode__DOT___type_op_imm_32)) 
-                                               | (IData)(top__DOT__u_dcode__DOT___type_jalr));
     top__DOT__u_dcode__DOT___inst_jalr = ((IData)(top__DOT__u_dcode__DOT___type_jalr) 
                                           & (0U == 
                                              (7U & (IData)(
                                                            (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                             >> 0xcU)))));
+    vlSelf->top__DOT__u_dcode__DOT___I_type = (((((IData)(top__DOT__u_dcode__DOT___type_load) 
+                                                  | (IData)(top__DOT__u_dcode__DOT___type_op_imm)) 
+                                                 | (IData)(top__DOT__u_dcode__DOT___type_op_imm_32)) 
+                                                | (IData)(top__DOT__u_dcode__DOT___type_jalr)) 
+                                               | (IData)(top__DOT__u_dcode__DOT___type_system));
     top__DOT__u_dcode__DOT___inst_csrrw = ((IData)(top__DOT__u_dcode__DOT___type_system) 
                                            & (1U == 
                                               (7U & (IData)(
@@ -324,6 +325,36 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                                                     == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op))) 
                                                 | (6U 
                                                    == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op)));
+    vlSelf->top__DOT__u_dcode__DOT___pc_op = ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_branch)
+                                               ? 1U
+                                               : ((IData)(top__DOT__u_dcode__DOT___type_jal)
+                                                   ? 2U
+                                                   : 
+                                                  ((IData)(top__DOT__u_dcode__DOT___inst_jalr)
+                                                    ? 3U
+                                                    : 
+                                                   ((IData)(
+                                                            ((1U 
+                                                              == 
+                                                              (1U 
+                                                               & (IData)(top__DOT__u_dcode__DOT___type_system))) 
+                                                             & (0x30200000ULL 
+                                                                == 
+                                                                (0xfff07000ULL 
+                                                                 & vlSelf->top__DOT__u_fetch__DOT___mem_data))))
+                                                     ? 5U
+                                                     : 
+                                                    ((IData)(
+                                                             ((1U 
+                                                               == 
+                                                               (1U 
+                                                                & (IData)(top__DOT__u_dcode__DOT___type_system))) 
+                                                              & (0ULL 
+                                                                 == 
+                                                                 (0xfff07000ULL 
+                                                                  & vlSelf->top__DOT__u_fetch__DOT___mem_data))))
+                                                      ? 6U
+                                                      : 4U)))));
     vlSelf->top__DOT__u_dcode__DOT___rd_idx = (((((IData)(vlSelf->top__DOT__u_dcode__DOT___R_type) 
                                                   | (IData)(vlSelf->top__DOT__u_dcode__DOT___I_type)) 
                                                  | (IData)(top__DOT__u_dcode__DOT___U_type)) 
@@ -432,36 +463,6 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                                                                                 (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0x15U)) 
                                                                                 << 1U))))))))));
-    vlSelf->top__DOT__u_dcode__DOT___pc_op = ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_branch)
-                                               ? 1U
-                                               : ((IData)(top__DOT__u_dcode__DOT___type_jal)
-                                                   ? 2U
-                                                   : 
-                                                  ((IData)(top__DOT__u_dcode__DOT___inst_jalr)
-                                                    ? 3U
-                                                    : 
-                                                   ((IData)(
-                                                            ((1U 
-                                                              == 
-                                                              (1U 
-                                                               & (IData)(top__DOT__u_dcode__DOT___type_system))) 
-                                                             & (0x30200000ULL 
-                                                                == 
-                                                                (0xfff07000ULL 
-                                                                 & vlSelf->top__DOT__u_fetch__DOT___mem_data))))
-                                                     ? 5U
-                                                     : 
-                                                    ((IData)(
-                                                             ((1U 
-                                                               == 
-                                                               (1U 
-                                                                & (IData)(top__DOT__u_dcode__DOT___type_system))) 
-                                                              & (0ULL 
-                                                                 == 
-                                                                 (0xfff07000ULL 
-                                                                  & vlSelf->top__DOT__u_fetch__DOT___mem_data))))
-                                                      ? 6U
-                                                      : 4U)))));
     top__DOT__u_dcode__DOT___csr_set = ((IData)(top__DOT__u_dcode__DOT___inst_csrrs) 
                                         | (IData)(top__DOT__u_dcode__DOT___inst_csrrsi));
     top__DOT__u_dcode__DOT___csr_clear = ((IData)(top__DOT__u_dcode__DOT___inst_csrrc) 
@@ -499,7 +500,7 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
               | (IData)(vlSelf->top__DOT__u_dcode__DOT___I_type)) 
              | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_store)) 
             | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_branch)) 
-           & (IData)(vlSelf->top__DOT__u_dcode__DOT___isNeed_immCSR))
+           & (~ (IData)(vlSelf->top__DOT__u_dcode__DOT___isNeed_immCSR)))
            ? (0x1fU & (IData)((vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                >> 0xfU))) : 0U)];
     vlSelf->top__DOT__u_dcode__DOT___csr_idx = ((IData)(top__DOT__u_dcode__DOT___isNeed_csr)

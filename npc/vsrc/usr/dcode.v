@@ -264,9 +264,9 @@ module dcode (
   wire _inst_remw = _type_op_32 & _func3_110 & _func7_0000001;
   wire _inst_remuw = _type_op_32 & _func3_111 & _func7_0000001;
 
-  /* 将指令分为 R I S B U J 六类，便于获得操作数 */
+  /* 将指令分为 R I S B U J 六类，便于获得操作数 TODO:还有一些没有添加*/
   wire _R_type = _type_op | _type_op_32;
-  wire _I_type = _type_load | _type_op_imm | _type_op_imm_32 | _type_jalr;
+  wire _I_type = _type_load | _type_op_imm | _type_op_imm_32 | _type_jalr | _type_system;
   wire _S_type = _type_store;
   wire _B_type = _type_branch;
   wire _U_type = _type_auipc | _type_lui;
@@ -279,7 +279,7 @@ module dcode (
   wire _isNeed_immCSR = (_inst_csrrci | _inst_csrrsi | _inst_csrrwi);
 
   // I 型指令中, CSR 立即数占了 rs1 的位置
-  wire _isNeed_rs1 = (_R_type | _I_type | _S_type | _B_type) & (_isNeed_immCSR);
+  wire _isNeed_rs1 = (_R_type | _I_type | _S_type | _B_type) & (~_isNeed_immCSR);
   wire _isNeed_rs2 = (_R_type | _S_type | _B_type);
   wire _isNeed_rd = (_R_type | _I_type | _U_type | _J_type);
   wire _isNeed_csr = (_inst_csrrc|_inst_csrrci|_inst_csrrs|_inst_csrrsi|_inst_csrrw|_inst_csrrwi);

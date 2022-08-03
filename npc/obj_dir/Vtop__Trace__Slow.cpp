@@ -279,7 +279,7 @@ void Vtop___024root__traceFullSub0(Vtop___024root* vlSelf, VerilatedVcd* tracep)
                                        | (IData)(vlSelf->top__DOT__u_dcode__DOT___I_type)) 
                                       | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_store)) 
                                      | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_branch)) 
-                                    & (IData)(vlSelf->top__DOT__u_dcode__DOT___isNeed_immCSR))
+                                    & (~ (IData)(vlSelf->top__DOT__u_dcode__DOT___isNeed_immCSR)))
                                     ? (0x1fU & (IData)(
                                                        (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                         >> 0xfU)))
