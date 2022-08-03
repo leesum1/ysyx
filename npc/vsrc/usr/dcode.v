@@ -279,7 +279,7 @@ module dcode (
   wire _isNeed_immCSR = (_inst_csrrci | _inst_csrrsi | _inst_csrrwi);
 
   // I 型指令中, CSR 立即数占了 rs1 的位置
-  wire _isNeed_rs1 = (_R_type | _I_type | _S_type | _B_type) & (~_isNeed_immCSR);
+  wire _isNeed_rs1 = (_R_type | _I_type | _S_type | _B_type) & (_isNeed_immCSR);
   wire _isNeed_rs2 = (_R_type | _S_type | _B_type);
   wire _isNeed_rd = (_R_type | _I_type | _U_type | _J_type);
   wire _isNeed_csr = (_inst_csrrc|_inst_csrrci|_inst_csrrs|_inst_csrrsi|_inst_csrrw|_inst_csrrwi);

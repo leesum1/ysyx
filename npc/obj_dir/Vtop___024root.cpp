@@ -638,7 +638,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
               | (IData)(vlSelf->top__DOT__u_dcode__DOT___I_type)) 
              | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_store)) 
             | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_branch)) 
-           & (~ (IData)(vlSelf->top__DOT__u_dcode__DOT___isNeed_immCSR)))
+           & (IData)(vlSelf->top__DOT__u_dcode__DOT___isNeed_immCSR))
            ? (0x1fU & (IData)((vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                >> 0xfU))) : 0U)];
     vlSelf->top__DOT__u_dcode__DOT___csr_idx = ((IData)(top__DOT__u_dcode__DOT___isNeed_csr)
