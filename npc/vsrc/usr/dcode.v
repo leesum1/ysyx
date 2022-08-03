@@ -17,9 +17,10 @@ module dcode (
     output [`ALUOP_LEN-1:0] alu_op,  // alu 操作码
     output [`MEMOP_LEN-1:0] mem_op,  // mem 操作码
     output [`EXCOP_LEN-1:0] exc_op,  // exc 操作码
-    output [ `PCOP_LEN-1:0] pc_op,   // pc 操作码
-    output [`CSROP_LEN-1:0] csr_op   // csr 操作码
-    /* 测试信号 */
+    output [`PCOP_LEN-1:0] pc_op,  // pc 操作码
+    output [`CSROP_LEN-1:0] csr_op,  // csr 操作码
+    /* TARP 总线 */
+    output wire [`TRAP_BUS] trap_bus_o
 
 );
 
@@ -441,9 +442,18 @@ module dcode (
   wire [`PCOP_LEN-1:0] _pc_op = (_B_type)?`PCOP_BRANCH:
                                 (_inst_jal)?`PCOP_JAL:
                                 (_inst_jalr)?`PCOP_JALR:
-                                (_inst_mret)?`PCOP_MRET:
-                                (_inst_ecall)?`PCOP_MTVEC:
+                                (_inst_mret|_inst_ecall)?`PCOP_TRAP:
                                 `PCOP_INC4;
   assign pc_op = _pc_op;
+
+
+  /* trap_bus TODO:add more*/
+  wire [`TRAP_BUS] _decode_trap_bus;
+  assign _decode_trap_bus[`TRAP_ECALL] = _inst_ecall;
+  assign _decode_trap_bus[`TRAP_EBREAK] = _inst_ebreak;
+  assign _decode_trap_bus[`TRAP_MRET] = _inst_mret;
+
+  assign trap_bus_o = _decode_trap_bus;
+
 
 endmodule

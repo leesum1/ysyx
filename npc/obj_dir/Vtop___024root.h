@@ -25,9 +25,6 @@ VL_MODULE(Vtop___024root) {
     // LOCAL SIGNALS
     // Anonymous structures to workaround compiler member-count bugs
     struct {
-        CData/*0:0*/ top__DOT__csr_mepc_i_en;
-        CData/*0:0*/ top__DOT__csr_mcause_i_en;
-        CData/*0:0*/ top__DOT__csr_mtval_i_en;
         CData/*0:0*/ top__DOT__csr_mtvec_i_en;
         CData/*0:0*/ top__DOT__csr_mstatus_i_en;
         CData/*0:0*/ top__DOT__u_pc__DOT___isready_branch;
@@ -43,6 +40,7 @@ VL_MODULE(Vtop___024root) {
         CData/*4:0*/ top__DOT__u_dcode__DOT___exc_op;
         CData/*3:0*/ top__DOT__u_dcode__DOT___mem_op;
         CData/*3:0*/ top__DOT__u_dcode__DOT___pc_op;
+        CData/*2:0*/ top__DOT__u_dcode__DOT___decode_trap_bus;
         CData/*0:0*/ top__DOT__u_rv64_csr_regfile__DOT___mstatus_en;
         CData/*0:0*/ top__DOT__u_rv64_csr_regfile__DOT___mepc_en;
         CData/*0:0*/ top__DOT__u_rv64_csr_regfile__DOT___mcause_en;
@@ -68,9 +66,6 @@ VL_MODULE(Vtop___024root) {
         VlWide<4>/*127:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_mul_top__DOT___mul_result;
         QData/*63:0*/ top__DOT__rs1_data;
         QData/*63:0*/ top__DOT__rs2_data;
-        QData/*63:0*/ top__DOT__csr_mepc_i;
-        QData/*63:0*/ top__DOT__csr_mcause_i;
-        QData/*63:0*/ top__DOT__csr_mtval_i;
         QData/*63:0*/ top__DOT__csr_mtvec_i;
         QData/*63:0*/ top__DOT__csr_mstatus_i;
         QData/*63:0*/ top__DOT__exc_out;
@@ -89,13 +84,13 @@ VL_MODULE(Vtop___024root) {
         QData/*63:0*/ top__DOT__u_execute__DOT___alu_out;
         QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num;
         QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num_inv;
-    };
-    struct {
         QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shifter_res;
         QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___srl_res;
         QData/*63:0*/ top__DOT__u_execute__DOT__u_execute_csr__DOT___csr_exe_result;
         QData/*63:0*/ top__DOT__u_memory__DOT___mem_read;
         QData/*63:0*/ top__DOT__u_memory__DOT___addr;
+    };
+    struct {
         VlUnpacked<QData/*63:0*/, 32> top__DOT__u_rv64reg__DOT__rf;
     };
 
