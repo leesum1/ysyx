@@ -108,8 +108,7 @@
 `define PCOP_JAL `PCOP_LEN'd2
 `define PCOP_JALR `PCOP_LEN'd3
 `define PCOP_INC4 `PCOP_LEN'd4
-`define PCOP_MRET `PCOP_LEN'd5  //异常返回
-`define PCOP_MTVEC `PCOP_LEN'd6 //异常跳转
+`define PCOP_TRAP `PCOP_LEN'd5
 
 
 /*************CSR************/
@@ -142,6 +141,19 @@
 `define CSR_MIP 12'h344
 `define CSR_MTINST 12'h34a
 `define CSR_MTVAL2 12'h34b
+
+
+/**********tarp**********/
+
+`define TRAP_LEN 3
+`define TRAP_BUS `TRAP_LEN-1:0
+
+`define TRAP_ECALL 0
+`define TRAP_EBREAK 1
+`define TRAP_MRET 2
+
+
+
 
 
 

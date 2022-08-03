@@ -15,9 +15,11 @@ module execute_csr (
   wire _csr_clear = (csr_op_i == `CSROP_CLEAR);
   wire _csr_read = (csr_op_i == `CSROP_READ);
   wire _csr_none = (csr_op_i == `CSROP_NONE);
+
   /* CSR 不同操作的结果 */
   wire [`XLEN-1:0] _csr_op1 = csr_data_i;
   wire [`XLEN-1:0] _csr_op2 = isNeedimmCSR_i ? imm_CSR_i : rs1_data_i;
+
   wire [`XLEN-1:0] _csr_write_result = _csr_op2;
   wire [`XLEN-1:0] _csr_set_result = _csr_op1 | _csr_op2;
   wire [`XLEN-1:0] _csr_clear_result = _csr_op1 & (~_csr_op2);
@@ -30,5 +32,5 @@ module execute_csr (
 
 
   assign csr_exe_result = _csr_exe_result;
-  assign csr_exe_valid  = ~(_csr_none | _csr_read);
+  assign csr_exe_valid  = ~(_csr_none | _csr_read);  // 读取不写回
 endmodule
