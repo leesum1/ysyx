@@ -11,7 +11,7 @@ const uint32_t defimg[] = {
      // 0x0102b503, // ld  a0,16(t0)       a0 写 (t0+16)8byte
      0x00800513, //li a0,8
      0x30552073,
-     0x00900513, //li a0,9
+     0x00100513, //li a0,9
      0x30552073,
      0x00000297, // auipc t0,0 ,        (pc+0) 写入 t0
      0x00100073, // ebreak (used as nemu_trap)
