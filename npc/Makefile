@@ -9,7 +9,7 @@ VERILATOR_INC_PATH := -I./vsrc \
 			-I./vsrc/lib 
 
 # verilator flags: 
-VERILATOR_FLAGS +=   --cc --exe --build --trace --prefix Vtop
+VERILATOR_FLAGS +=   --cc --exe --build --trace  
 VERILATOR_FLAGS += ${VERILATOR_INC_PATH}
 VERILATOR_FLAGS += --top ${TOP_MODULE}
 
@@ -19,23 +19,22 @@ GCC_INC_PATH = -I/home/leesum/ysyx-workbench/npc/csrc/include  \
 			   -I/home/leesum/ysyx-workbench/npc/csrc/devices/include \
 			   -I/home/leesum/ysyx-workbench/npc/csrc/ringbuff \
 
+# llvm
+LLVM_LIB = $(shell llvm-config --libs)
+LLVM_FLAGS = $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config --cxxflags))
+
 #-lasan(内存检查)
 GCC_LIB = -lreadline \
 		  -ldl \
 		  -lnemu \
 		  -lSDL2
-# llvm
-LLVM_LIB = $(shell llvm-config --libs)
-LLVM_FLAGS = $(shell llvm-config --cxxflags) -fPIE
-CXXFLAGS = $(filter-out  -D__STDC_FORMAT_MACROS,${LLVM_FLAGS}) #去除重复定义
-GCC_LIB += ${LLVM_LIB};
+GCC_LIB += ${LLVM_LIB}
+
 
 GCC_LDFLAGS := $(addprefix -LDFLAGS ,${GCC_LIB})
 GCC_CFLAGS :=  $(addprefix -CFLAGS ,${GCC_INC_PATH})
-GCC_CFLAGS += $(addprefix -CFLAGS ,${CXXFLAGS})
-
+GCC_CFLAGS += $(addprefix -CFLAGS ,${LLVM_FLAGS})
 GCC_FLAGS := ${GCC_CFLAGS} ${GCC_LDFLAGS}
-
 
 # run info:
 OBJ_DIR := ./obj_dir

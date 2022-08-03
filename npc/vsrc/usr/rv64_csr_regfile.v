@@ -2,135 +2,125 @@
 
 module rv64_csr_regfile (
     input clk,
-    /* 读取数据 */
-    input wire [`CSR_REG_ADDRWIDTH-1:0] csr_read_idx,
-    output wire [`XLEN-1:0] csr_read_data,
-    /* 写入数据 */
-    input wire [`CSR_REG_ADDRWIDTH-1:0] csr_write_idx,
-    input wire [`XLEN-1:0] csr_write_data,
-    input wire csr_write_wen
+    input rst,
+    /* 单独引出寄存器(写) */
+    input wire [`XLEN-1:0] csr_mepc_i,
+    input wire [`XLEN-1:0] csr_mcause_i,
+    input wire [`XLEN-1:0] csr_mtval_i,
+    input wire [`XLEN-1:0] csr_mtvec_i,
+    input wire csr_mepc_i_en,
+    input wire csr_mcause_i_en,
+    input wire csr_mtval_i_en,
+    input wire csr_mtvec_i_en,
+    /* 单独引出寄存器(读) */
+    output wire [`XLEN-1:0] csr_mepc_o,
+    output wire [`XLEN-1:0] csr_mcause_o,
+    output wire [`XLEN-1:0] csr_mtval_o,
+    output wire [`XLEN-1:0] csr_mtvec_o,
 
+    /* 读取数据端口 */
+    input wire [`CSR_REG_ADDRWIDTH-1:0] csr_readaddr,
+    output wire [`XLEN-1:0] csr_readdata,
+    /* 写入数据端口 */
+    input reg [`CSR_REG_ADDRWIDTH-1:0] csr_writeaddr,
+    input write_enable,
+    input wire [`XLEN-1:0] csr_writedata
 );
-  /***** CSR - Machine *****/
+  // mepc
+  wire [`XLEN-1:0] _mepc_d = (csr_mepc_i_en) ? csr_mepc_i : csr_writedata;
+  reg [`XLEN-1:0] _mepc_q;
+  reg _mepc_en;
 
-  //Machine Information Registers
-  reg  [`XLEN-1:0] mvendorid;
-  reg  [`XLEN-1:0] marchid;
-  reg  [`XLEN-1:0] mimpid;
-  reg  [`XLEN-1:0] mhartid;
-  reg  [`XLEN-1:0] mconfigptr;
+  // mcause
+  wire [`XLEN-1:0] _mcause_d = (csr_mcause_i_en) ? csr_mcause_i : csr_writedata;
+  reg [`XLEN-1:0] _mcause_q;
+  reg _mcause_en;
 
-  //Machine Trap Setup
-  reg  [`XLEN-1:0] mstatus;
-  reg  [`XLEN-1:0] misa;
-  reg  [`XLEN-1:0] medeleg;
-  reg  [`XLEN-1:0] mideleg;
-  reg  [`XLEN-1:0] mie;
-  reg  [`XLEN-1:0] mtvec;
-  reg  [`XLEN-1:0] mcounteren;
-  //   reg [`XLEN-1:0] mstatush; rv32 only
+  // mtval
+  wire [`XLEN-1:0] _mtval_d = (csr_mtval_i_en) ? csr_mtval_i : csr_writedata;
+  reg [`XLEN-1:0] _mtval_q;
+  reg _mtval_en;
 
-  //Machine Trap Handling
-  reg  [`XLEN-1:0] mscratch;
-  reg  [`XLEN-1:0] mepc;
-  reg  [`XLEN-1:0] mcause;
-  reg  [`XLEN-1:0] mtval;
-  reg  [`XLEN-1:0] mip;
-  reg  [`XLEN-1:0] mtinst;
-  reg  [`XLEN-1:0] mtval2;
-  //Machine Configuration
-  reg  [`XLEN-1:0] menvcfg;
-  reg  [`XLEN-1:0] mseccfg;
-  //   reg [`XLEN-1:0] menvcfgh; rv32 only
-  //   reg [`XLEN-1:0] mseccfgh; rv32 only
+  // mtvec
+  wire [`XLEN-1:0] _mtvec_d = (csr_mtvec_i_en) ? csr_mtvec_i : csr_writedata;
+  reg [`XLEN-1:0] _mtvec_q;
+  reg _mtvec_en;
 
-  /* 读 csr 寄存器 */
-  wire [`XLEN-1:0] _read_data;
+  /* 写使能 */
   always @(*) begin
-    case (csr_read_idx)
-      `CSR_MVENDORID:  _read_data = mvendorid;
-      `CSR_MARCHID:    _read_data = marchid;
-      `CSR_MIMPID:     _read_data = mimpid;
-      `CSR_MHARTID:    _read_data = mhartid;
-      `CSR_MCONFIGPTR: _read_data = mconfigptr;
-      `CSR_MSTATUS:    _read_data = mstatus;
-      `CSR_MISA:       _read_data = misa;
-      `CSR_MEDELEG:    _read_data = medeleg;
-      `CSR_MIDELEG:    _read_data = mideleg;
-      `CSR_MIE:        _read_data = mie;
-      `CSR_MTVEC:      _read_data = mtvec;
-      `CSR_MCOUNTEREN: _read_data = mcounteren;
-      `CSR_MSCRATCH:   _read_data = mscratch;
-      `CSR_MEPC:       _read_data = mepc;
-      `CSR_MCAUSE:     _read_data = mcause;
-      `CSR_MTVAL:      _read_data = mtval;
-      `CSR_MIP:        _read_data = mip;
-      `CSR_MTINST:     _read_data = mtinst;
-      `CSR_MTVAL2:     _read_data = mtval2;
-      `CSR_MENVCFG:    _read_data = menvcfg;
-      `CSR_MSECCFG:    _read_data = mseccfg;
-      default:         _read_data = `XLEN'b0;
+    //需要赋初值防止生成 latch
+    _mepc_en   = csr_mepc_i_en;
+    _mcause_en = csr_mcause_i_en;
+    _mtval_en  = csr_mtval_i_en;
+    _mtvec_en  = csr_mtvec_i_en;
+    case (csr_writeaddr)
+      `CSR_MEPC: _mepc_en = write_enable;
+      `CSR_MCAUSE: _mcause_en = write_enable;
+      `CSR_MTVAL: _mtval_en = write_enable;
+      `CSR_MTVEC: _mtvec_en = write_enable;
+      default: ;
     endcase
   end
 
-  /* 写 csr 寄存器 */
-  wire [`XLEN-1:0] _write_data = csr_write_data;
-  always @(posedge clk) begin
-    if (csr_write_wen == 1'b1) begin
-      case (csr_write_idx)
-        `CSR_MVENDORID:  mvendorid <= csr_write_data;
-        `CSR_MARCHID:    marchid <= csr_write_data;
-        `CSR_MIMPID:     mimpid <= csr_write_data;
-        `CSR_MHARTID:    mhartid <= csr_write_data;
-        `CSR_MCONFIGPTR: mconfigptr <= csr_write_data;
-        `CSR_MSTATUS:    mstatus <= csr_write_data;
-        `CSR_MISA:       misa <= csr_write_data;
-        `CSR_MEDELEG:    medeleg <= csr_write_data;
-        `CSR_MIDELEG:    mideleg <= csr_write_data;
-        `CSR_MIE:        mie <= csr_write_data;
-        `CSR_MTVEC:      mtvec <= csr_write_data;
-        `CSR_MCOUNTEREN: mcounteren <= csr_write_data;
-        `CSR_MSCRATCH:   mscratch <= csr_write_data;
-        `CSR_MEPC:       mepc <= csr_write_data;
-        `CSR_MCAUSE:     mcause <= csr_write_data;
-        `CSR_MTVAL:      mtval <= csr_write_data;
-        `CSR_MIP:        mip <= csr_write_data;
-        `CSR_MTINST:     mtinst <= csr_write_data;
-        `CSR_MTVAL2:     mtval2 <= csr_write_data;
-        `CSR_MENVCFG:    menvcfg <= csr_write_data;
-        `CSR_MSECCFG:    mseccfg <= csr_write_data;
-        default: begin
-        end
-      endcase
-    end
+  /* 读取数据 */
+  reg [`XLEN-1:0] _csr_readdata;
+  always @(*) begin
+    case (csr_readaddr)
+      `CSR_MEPC: _csr_readdata = _mepc_q;
+      `CSR_MCAUSE: _csr_readdata = _mcause_q;
+      `CSR_MTVAL: _csr_readdata = _mtval_q;
+      `CSR_MTVEC: _csr_readdata = _mtvec_q;
+      default: _csr_readdata = `XLEN'b0;
+    endcase
   end
+  assign csr_readdata = _csr_readdata;
+
+  assign csr_mepc_o   = _mepc_q;
+  assign csr_mcause_o = _mcause_q;
+  assign csr_mtval_o  = _mtval_q;
+  assign csr_mtvec_o  = _mtvec_q;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  //   always @(posedge clk) begin
-  //     if (_wen) rf[write_idx] <= _write_data;
-  //   end
-
-
-
-
+  /* CSR 寄存器组 */
+  regTemplate #(
+      .WIDTH    (`XLEN),
+      .RESET_VAL(`XLEN'b0)
+  ) u_csr_mepc (
+      .clk (clk),
+      .rst (rst),
+      .din (_mepc_d),
+      .dout(_mepc_q),
+      .wen (_mepc_en)
+  );
+  regTemplate #(
+      .WIDTH    (`XLEN),
+      .RESET_VAL(`XLEN'b0)
+  ) u_csr_mcause (
+      .clk (clk),
+      .rst (rst),
+      .din (_mcause_d),
+      .dout(_mcause_q),
+      .wen (_mcause_en)
+  );
+  regTemplate #(
+      .WIDTH    (`XLEN),
+      .RESET_VAL(`XLEN'b0)
+  ) u_csr_mtval (
+      .clk (clk),
+      .rst (rst),
+      .din (_mtval_d),
+      .dout(_mtval_q),
+      .wen (_mtval_en)
+  );
+  regTemplate #(
+      .WIDTH    (`XLEN),
+      .RESET_VAL(`XLEN'b0)
+  ) u_csr_mtvec (
+      .clk (clk),
+      .rst (rst),
+      .din (_mtvec_d),
+      .dout(_mtvec_q),
+      .wen (_mtvec_en)
+  );
 
 endmodule
-
-
