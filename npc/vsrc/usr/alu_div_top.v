@@ -21,7 +21,7 @@ module alu_div_top (
   wire [`XLEN-1:0] rem64_unsigned = sr1_data % sr2_data;
   // 结果
   wire [`XLEN-1:0] div64_result = (issigned) ? div64_signed : div64_unsigned;
-  wire [`XLEN-1:0] rem64_result = (issigned) ? div64_signed : rem64_unsigned;
+  wire [`XLEN-1:0] rem64_result = (issigned) ? rem64_signed : rem64_unsigned;
 
   /* 32 位除法 */
   wire signed [32-1:0] sr1_32_signed = sr1_data[31:0];

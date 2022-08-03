@@ -87,11 +87,10 @@ VL_MODULE(Vtop___024root) {
         QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num_inv;
         QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shifter_res;
         QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___srl_res;
-        QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT__u_alu_div_top__DOT__div64_signed;
         QData/*63:0*/ top__DOT__u_execute__DOT__u_execute_csr__DOT___csr_exe_result;
+        QData/*63:0*/ top__DOT__u_memory__DOT___mem_read;
     };
     struct {
-        QData/*63:0*/ top__DOT__u_memory__DOT___mem_read;
         QData/*63:0*/ top__DOT__u_memory__DOT___addr;
         VlUnpacked<QData/*63:0*/, 32> top__DOT__u_rv64reg__DOT__rf;
     };
