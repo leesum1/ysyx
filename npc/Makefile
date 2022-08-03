@@ -19,19 +19,21 @@ GCC_INC_PATH = -I/home/leesum/ysyx-workbench/npc/csrc/include  \
 			   -I/home/leesum/ysyx-workbench/npc/csrc/devices/include \
 			   -I/home/leesum/ysyx-workbench/npc/csrc/ringbuff \
 
+# llvm
+LLVM_LIB = $(shell llvm-config --libs)
+LLVM_FLAGS = $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config --cxxflags))
+
 #-lasan(内存检查)
 GCC_LIB = -lreadline \
 		  -ldl \
 		  -lnemu \
 		  -lSDL2
-# llvm
-GCC_LIB += $(shell llvm-config --libs)
-CXXFLAGS += $(shell llvm-config --cxxflags) -fPIE
+GCC_LIB += ${LLVM_LIB}
+
 
 GCC_LDFLAGS := $(addprefix -LDFLAGS ,${GCC_LIB})
 GCC_CFLAGS :=  $(addprefix -CFLAGS ,${GCC_INC_PATH})
-GCC_CFLAGS += $(addprefix -CFLAGS ,${CXXFLAGS})
-
+GCC_CFLAGS += $(addprefix -CFLAGS ,${LLVM_FLAGS})
 GCC_FLAGS := ${GCC_CFLAGS} ${GCC_LDFLAGS}
 
 # run info:

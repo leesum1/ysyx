@@ -17,7 +17,8 @@ module dcode (
     output [`ALUOP_LEN-1:0] alu_op,  // alu 操作码
     output [`MEMOP_LEN-1:0] mem_op,  // mem 操作码
     output [`EXCOP_LEN-1:0] exc_op,  // exc 操作码
-    output [ `PCOP_LEN-1:0] pc_op    // pc 操作码
+    output [ `PCOP_LEN-1:0] pc_op,   // pc 操作码
+    output [`CSROP_LEN-1:0] csr_op   // csr 操作码
     /* 测试信号 */
 
 );
@@ -307,6 +308,21 @@ module dcode (
   assign isNeedimmCSR = _isNeed_immCSR;
   assign immCSR = _immCSR;
 
+
+
+  /* CSR_OP */
+  wire _csr_write = _inst_csrrw | _inst_csrrwi;
+  wire _csr_set = _inst_csrrs | _inst_csrrsi;
+  wire _csr_clear = _inst_csrrc | _inst_csrrci;
+  // CSRRSI/CSRRCI must not write 0 to CSRs (uimm[4:0]=='0)
+  // CSRRS/CSRRC must not write from x0 to CSRs (rs1=='0)
+  wire _csr_read = (_csr_set | _csr_clear) & (_rs1 == '0);
+  // read 优先级高
+  wire [`CSROP_LEN-1:0]_csr_op = (_csr_read)?`CSROP_READ:(
+                 ({`CSROP_LEN{_csr_write}}&`CSROP_WRITE)|
+                 ({`CSROP_LEN{_csr_set}}&`CSROP_SET)|
+                 ({`CSROP_LEN{_csr_clear}}&`CSROP_CLEAR));
+  assign csr_op = _csr_op;
 
   /* ALU_OP */
   //加减和逻辑

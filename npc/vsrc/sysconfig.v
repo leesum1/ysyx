@@ -112,6 +112,19 @@
 `define PCOP_MTVEC `PCOP_LEN'd6 //异常跳转
 
 
+/*************CSR************/
+
+`define CSROP_LEN 3
+
+
+`define CSROP_NONE `CSROP_LEN'd0
+`define CSROP_READ `CSROP_LEN'd1
+`define CSROP_WRITE `CSROP_LEN'd2
+`define CSROP_SET `CSROP_LEN'd3
+`define CSROP_CLEAR `CSROP_LEN'd4
+
+
+//寄存器地址
 `define CSR_REG_ADDRWIDTH 12
 //Machine Trap Setup
 `define CSR_MSTATUS 12'h300
