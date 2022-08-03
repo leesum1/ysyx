@@ -1979,30 +1979,18 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                                                   | ((~ (IData)(vlSelf->top__DOT__u_pc__DOT___isready_branch)) 
                                                      & (1U 
                                                         == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))));
-    vlSelf->top__DOT__u_pc__DOT___pc_next = (((((- (QData)((IData)(
-                                                                   ((((IData)(vlSelf->top__DOT__u_pc__DOT___isready_branch) 
-                                                                      | (2U 
-                                                                         == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))) 
-                                                                     | (IData)(vlSelf->top__DOT__u_pc__DOT___isready_inc4)) 
-                                                                    | (0U 
-                                                                       == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op)))))) 
-                                                & vlSelf->top__DOT__u_pc__DOT___pc_current) 
-                                               | ((- (QData)((IData)(
-                                                                     (3U 
-                                                                      == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))))) 
-                                                  & vlSelf->top__DOT__rs1_data)) 
+    vlSelf->top__DOT__u_pc__DOT___pc_next = ((((- (QData)((IData)(
+                                                                  ((((IData)(vlSelf->top__DOT__u_pc__DOT___isready_branch) 
+                                                                     | (2U 
+                                                                        == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))) 
+                                                                    | (IData)(vlSelf->top__DOT__u_pc__DOT___isready_inc4)) 
+                                                                   | (0U 
+                                                                      == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op)))))) 
+                                               & vlSelf->top__DOT__u_pc__DOT___pc_current) 
                                               | ((- (QData)((IData)(
-                                                                    (5U 
+                                                                    (3U 
                                                                      == (IData)(vlSelf->top__DOT__u_dcode__DOT___pc_op))))) 
-                                                 & (((- (QData)((IData)(
-                                                                        (1U 
-                                                                         & ((IData)(vlSelf->top__DOT__u_dcode__DOT___decode_trap_bus) 
-                                                                            >> 2U))))) 
-                                                     & vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mepc_q) 
-                                                    | ((- (QData)((IData)(
-                                                                          (1U 
-                                                                           & (IData)(vlSelf->top__DOT__u_dcode__DOT___decode_trap_bus))))) 
-                                                       & vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtvec_q)))) 
+                                                 & vlSelf->top__DOT__rs1_data)) 
                                              + (((- (QData)((IData)(
                                                                     (((IData)(vlSelf->top__DOT__u_pc__DOT___isready_branch) 
                                                                       | (2U 
