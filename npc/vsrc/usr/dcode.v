@@ -276,7 +276,7 @@ module dcode (
 
   /*获取操作数  */  //TODO:一些特殊指令没有归类ecall,ebreak
   wire _isNeed_imm = (_I_type | _S_type | _B_type | _U_type | _J_type);
-  wire _isNeed_immCSR = _inst_csrrci | _inst_csrrsi | _inst_csrrwi;
+  wire _isNeed_immCSR = (_inst_csrrci | _inst_csrrsi | _inst_csrrwi);
 
   // I 型指令中, CSR 立即数占了 rs1 的位置
   wire _isNeed_rs1 = (_R_type | _I_type | _S_type | _B_type) & (~_isNeed_immCSR);
