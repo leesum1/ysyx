@@ -68,14 +68,14 @@ void do_syscall(Context* c) {
 
   case SYS_lseek:
 #ifdef STRACE
-    printf("SYS_open a1:%d,a2:%d,a3:%d\n", a[1], a[2], a[3]);
+    printf("SYS_lseek a1:%d,a2:%d,a3:%d\n", a[1], a[2], a[3]);
 #endif
     c->GPRx = fs_lseek(a[1], a[2], a[3]);
     break;
 
   case SYS_close:
 #ifdef STRACE
-    printf("SYS_open a1:%p,a2:%d,a3:%d\n", a[1], a[2], a[3]);
+    printf("SYS_close a1:%d,a2:%d,a3:%d\n", a[1], a[2], a[3]);
 #endif
     c->GPRx = fs_close(a[1]);
     break;
