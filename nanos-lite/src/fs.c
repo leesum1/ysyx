@@ -77,11 +77,13 @@ size_t fs_read(int fd, void* buf, size_t len) {
   size_t file_size = file_table[fd].size;
   size_t open_offset = file_table[fd].open_offset;
 
+
+  // 若读取的数超出文件大小,读取到文件尾为止,此时 read_len < len
   size_t read_len = len;
   if ((open_offset + len) > file_size) {
     read_len = open_offset + len - file_size;
   }
-  printf("len:%ld\n", len);
+
   ramdisk_read(buf, disk_offset + open_offset, read_len);
   file_table[fd].open_offset += len;
   return read_len;
@@ -98,6 +100,8 @@ size_t fs_write(int fd, const void* buf, size_t len) {
   size_t disk_offset = file_table[fd].disk_offset;
   size_t file_size = file_table[fd].size;
   size_t open_offset = file_table[fd].open_offset;
+
+  //不允许新增文件大小
   assert((open_offset + len) <= file_size);
 
   ramdisk_write(buf, disk_offset + open_offset, len);
