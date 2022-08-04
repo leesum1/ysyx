@@ -57,10 +57,11 @@ static uintptr_t loader(PCB* pcb, const char* filename) {
   //ramdisk_read(Phdr, Ehdr->e_phoff, sizeof(Elf_Phdr) * Ehdr->e_phnum);
   /* 加载进内存,空闲空间需要清零 */
   for (int i = 0; i < Ehdr->e_phnum; i++) {
-    printf("e_phnum:%d\n", i);
     if (Phdr[i].p_type == PT_LOAD) {
-      printf("PT_LOAD:%d\n", i);
-      ramdisk_read((char*)Phdr[i].p_vaddr, Phdr[i].p_offset, Phdr[i].p_filesz);
+      fs_lseek(fd, Phdr[i].p_offset, 0);
+      fs_read(fd, (void*)Phdr[i].p_vaddr, Phdr[i].p_filesz);
+      //ramdisk_read((char*)Phdr[i].p_vaddr, Phdr[i].p_offset, Phdr[i].p_filesz);
+
       memset((char*)Phdr[i].p_vaddr + Phdr[i].p_filesz, 0, Phdr[i].p_memsz - Phdr[i].p_filesz);
     }
   }
