@@ -20,7 +20,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
    * Then return the address of the interrupt/exception vector.
    */
    //printf("\nisa_raise_intr ok \n");
-  //cpu.csr[mstatus] = 0xa00001800;
+  cpu.csr[mstatus] = 0xa00001800; // 为了 difftest https://ysyx.oscc.cc/docs/ics-pa/3.2.html#%E8%A7%A6%E5%8F%91%E8%87%AA%E9%99%B7%E6%93%8D%E4%BD%9C
   cpu.csr[mepc] = epc;   //存放触发异常 pc 的值
   cpu.csr[mcause] = NO;  //中断号
   return cpu.csr[mtvec]; //返回统一的异常处理程序地址

@@ -121,7 +121,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc, uint8_t istarp) {
     is_skip_ref = false;
     return;
   }
-  if (istarp) {
+  if (0) {
     ref_difftest_raise_intr(11);
     printf("trap happened\n");
   }
