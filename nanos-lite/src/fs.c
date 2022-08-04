@@ -77,7 +77,7 @@ size_t fs_read(int fd, void* buf, size_t len) {
   size_t file_size = file_table[fd].size;
   size_t open_offset = file_table[fd].open_offset;
 
-  if ((open_offset + len) <= file_size) {
+  if ((open_offset + len) > file_size) {
     return 0;
   }
 
