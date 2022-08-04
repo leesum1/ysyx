@@ -121,13 +121,15 @@ void difftest_step(vaddr_t pc, vaddr_t npc, uint8_t istarp) {
     is_skip_ref = false;
     return;
   }
-  if (istarp) {
-    ref_difftest_raise_intr(11);
-    printf("trap happened\n");
-  }
-  else {
-    ref_difftest_exec(1);
-  }
+  /* 不用主动触发 trap , ref 会自动触发 */
+  // if (istarp) {
+  //   ref_difftest_raise_intr(11);
+  //   printf("trap happened\n");
+  // }
+  // else {
+  //   ref_difftest_exec(1);
+  // }
+  ref_difftest_exec(1);
   ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
   checkregs(&ref_r, pc);
 }
