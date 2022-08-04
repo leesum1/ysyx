@@ -54,7 +54,6 @@ static uintptr_t loader(PCB* pcb, const char* filename) {
   fs_lseek(fd, Ehdr->e_phoff, 0);
   fs_read(fd, (void*)Phdr, sizeof(Elf_Phdr) * Ehdr->e_phnum);
   //ramdisk_read(Phdr, Ehdr->e_phoff, sizeof(Elf_Phdr) * Ehdr->e_phnum);
-  printf("start loader %s\n", filename);
   /* 加载进内存,空闲空间需要清零 */
   for (int i = 0; i < Ehdr->e_phnum; i++) {
     if (Phdr[i].p_type == PT_LOAD) {
