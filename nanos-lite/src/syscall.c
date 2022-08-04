@@ -1,5 +1,6 @@
 #include <common.h>
 #include <unistd.h>
+#include <sys/time.h>
 #include "syscall.h"
 #include <fs.h>
 // #define STRACE
@@ -35,15 +36,7 @@ void do_syscall(Context* c) {
 #ifdef STRACE
     printf("SYS_write fd:%d,buff:%p,cout:%d\n", a[1], a[2], a[3]);
 #endif
-    if (a[1] == 1 || a[1] == 2) {
-      for (int i = 0; i < a[3]; i++) {
-        putch(*(char*)(a[2] + i));
-      }
-      c->GPRx = a[3];
-    }
-    else {
-      c->GPRx = fs_write(a[1], (void*)a[2], a[3]);
-    }
+    c->GPRx = fs_write(a[1], (void*)a[2], a[3]);
     break;
   case SYS_brk:
 #ifdef STRACE
@@ -79,33 +72,22 @@ void do_syscall(Context* c) {
 #endif
     c->GPRx = fs_close(a[1]);
     break;
+  case SYS_gettimeofday:
+#ifdef STRACE
+    printf("SYS_gettimeofday a1:%d,a2:%d,a3:%d\n", a[1], a[2], a[3]);
+#endif
+    {
+      struct timeval* tv = (struct timeval*)a[1];
+      //struct timezone* tz = (struct timezone*)a[2]; // 没有设置时区
+      uint64_t us = io_read(AM_TIMER_UPTIME).us;
+      tv->tv_sec = us / 1000000;
+      tv->tv_usec = us % 1000000;
+    }
+    c->GPRx = 0;
+    break;
   default:
     panic("Unhandled syscall ID = %d\n", a[0]);
     break;
   }
 }
 
-
-
-// void* _sbrk(intptr_t increment) {
-//   extern  end;       //set by linker
-//   extern  __heap_end;//set by linker
-//   static char* heap_end;		/* Previous end of heap or 0 if none */
-//   char* prev_heap_end;
-
-//   if (0 == heap_end) {
-//     heap_end = &__heap_start;			/* Initialize first time round */
-//   }
-
-//   prev_heap_end = heap_end;
-//   heap_end += increment;
-//   //check
-//   if (heap_end < (&__heap_end)) {
-
-//   }
-//   else {
-//     // errno = ENOMEM;
-//     return (char*)-1;
-//   }
-//   return (void*)prev_heap_end;
-// }
