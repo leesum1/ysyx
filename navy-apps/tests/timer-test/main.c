@@ -10,12 +10,11 @@ int main() {
   now = tv.tv_sec * 1000 + tv.tv_usec / 1000;
   last = now;
   while (1) {
-    printf("now:%d\n", now);
     gettimeofday(&tv, NULL);
     now = tv.tv_sec * 1000 + tv.tv_usec / 1000;
     if (now - last >= 1000) {
       last = now;
-      printf("timer-test:%d\n", i);
+      printf("timer-test:%d\n", i++);
     }
   }
   return 0;
