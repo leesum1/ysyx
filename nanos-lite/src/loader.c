@@ -60,6 +60,7 @@ static uintptr_t loader(PCB* pcb, const char* filename) {
     if (Phdr[i].p_type == PT_LOAD) {
       fs_lseek(fd, Phdr[i].p_offset, 0);
       fs_read(fd, (void*)Phdr[i].p_vaddr, Phdr[i].p_filesz);
+      // 清理未使用空间
       memset((char*)Phdr[i].p_vaddr + Phdr[i].p_filesz, 0, Phdr[i].p_memsz - Phdr[i].p_filesz);
     }
   }
