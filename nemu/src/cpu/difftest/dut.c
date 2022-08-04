@@ -95,7 +95,7 @@ static void checkregs(CPU_state* ref, vaddr_t pc) {
   if (!isa_difftest_checkregs(ref, pc)) {
     nemu_state.state = NEMU_ABORT;
     nemu_state.halt_pc = pc;
-    //isa_reg_display();
+    isa_reg_display();
   }
 }
 
@@ -121,7 +121,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc, uint8_t istarp) {
     is_skip_ref = false;
     return;
   }
-  if (0) {
+  if (istarp) {
     ref_difftest_raise_intr(11);
     printf("trap happened\n");
   }
