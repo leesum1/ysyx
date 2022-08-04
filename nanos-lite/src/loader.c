@@ -54,7 +54,7 @@ static uintptr_t loader(PCB* pcb, const char* filename) {
   assert(Phdr);
 
   fs_lseek(fd, Ehdr->e_phoff, 0);
-  printf("Ehdr->e_phoff:%d", Ehdr->e_phoff);
+  printf("Ehdr->e_phoff:%d\n", Ehdr->e_phoff);
   fs_read(fd, (void*)Phdr, sizeof(Elf_Phdr) * Ehdr->e_phnum);
   //ramdisk_read(Phdr, Ehdr->e_phoff, sizeof(Elf_Phdr) * Ehdr->e_phnum);
   /* 加载进内存,空闲空间需要清零 */
