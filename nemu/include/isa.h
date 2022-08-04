@@ -21,8 +21,11 @@
 
 // The macro `__GUEST_ISA__` is defined in $(CFLAGS).
 // It will be expanded as "x86" or "mips32" ...
-typedef concat(__GUEST_ISA__, _CPU_state) CPU_state;
-typedef concat(__GUEST_ISA__, _ISADecodeInfo) ISADecodeInfo;
+// typedef concat(__GUEST_ISA__, _CPU_state) CPU_state;
+// typedef concat(__GUEST_ISA__, _ISADecodeInfo) ISADecodeInfo;
+
+typedef riscv64_CPU_state CPU_state;
+typedef riscv64_ISADecodeInfo ISADecodeInfo;
 
 // monitor
 extern char isa_logo[];
@@ -31,11 +34,11 @@ void init_isa();
 // reg
 extern CPU_state cpu;
 void isa_reg_display();
-word_t isa_reg_str2val(const char *name, bool *success);
+word_t isa_reg_str2val(const char* name, bool* success);
 
 // exec
 struct Decode;
-int isa_exec_once(struct Decode *s);
+int isa_exec_once(struct Decode* s);
 
 // memory
 enum { MMU_DIRECT, MMU_TRANSLATE, MMU_FAIL };
@@ -52,7 +55,7 @@ vaddr_t isa_raise_intr(word_t NO, vaddr_t epc);
 word_t isa_query_intr();
 
 // difftest
-bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc);
+bool isa_difftest_checkregs(CPU_state* ref_r, vaddr_t pc);
 void isa_difftest_attach();
 
 #endif

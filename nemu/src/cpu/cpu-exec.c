@@ -45,7 +45,9 @@ static void trace_and_difftest(Decode* _this, vaddr_t dnpc) {
   extern void prase_wp();
   /* 监视点信息 */
   IFDEF(CONFIG_WATCHPOINT, prase_wp());
-  IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
+
+  uint8_t istarp = (_this->isa.inst.val == 0x73);
+  IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc, istarp));
 }
 
 static void exec_once(Decode* s, vaddr_t pc) {

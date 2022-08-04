@@ -143,6 +143,8 @@
 `define CSR_MTVAL2 12'h34b
 
 
+`define CSR_MSTATUS_DEFAULT `XLEN'ha00001800
+
 /**********tarp**********/
 
 `define TRAP_LEN 3

@@ -1,7 +1,7 @@
 .section .data
 .global ramdisk_start, ramdisk_end
 ramdisk_start:
-.incbin "/home/leesum/ysyx-workbench/navy-apps/fsimg/bin/hello"
+.incbin "build/ramdisk.img"
 ramdisk_end:
 
 .section .rodata

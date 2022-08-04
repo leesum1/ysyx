@@ -99,7 +99,7 @@ static void checkregs(CPU_state* ref, vaddr_t pc) {
   }
 }
 
-void difftest_step(vaddr_t pc, vaddr_t npc) {
+void difftest_step(vaddr_t pc, vaddr_t npc, uint8_t istarp) {
   CPU_state ref_r;
 
   if (skip_dut_nr_inst > 0) {
@@ -121,10 +121,16 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
     is_skip_ref = false;
     return;
   }
-
+  /* 不用主动触发 trap , ref 会自动触发 */
+  // if (istarp) {
+  //   ref_difftest_raise_intr(11);
+  //   printf("trap happened\n");
+  // }
+  // else {
+  //   ref_difftest_exec(1);
+  // }
   ref_difftest_exec(1);
   ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
-
   checkregs(&ref_r, pc);
 }
 #else
