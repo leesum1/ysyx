@@ -48,8 +48,6 @@ static uintptr_t loader(PCB* pcb, const char* filename) {
   /* 获取所有 Program header Table,Ehdr->e_phnum 为个数信息 */
   assert(Ehdr->e_phnum != 0);
 
-
-
   Elf_Phdr* Phdr = (Elf_Phdr*)malloc(sizeof(Elf_Phdr) * Ehdr->e_phnum);
   assert(Phdr);
 
@@ -60,6 +58,7 @@ static uintptr_t loader(PCB* pcb, const char* filename) {
   /* 加载进内存,空闲空间需要清零 */
   for (int i = 0; i < Ehdr->e_phnum; i++) {
     if (Phdr[i].p_type == PT_LOAD) {
+      printf("PT_LOAD:%d\n", i);
       ramdisk_read((char*)Phdr[i].p_vaddr, Phdr[i].p_offset, Phdr[i].p_filesz);
       memset((char*)Phdr[i].p_vaddr + Phdr[i].p_filesz, 0, Phdr[i].p_memsz - Phdr[i].p_filesz);
     }
