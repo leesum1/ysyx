@@ -145,28 +145,28 @@ void Vtop___024root__traceInitSub0(Vtop___024root* vlSelf, VerilatedVcd* tracep)
         tracep->declQuad(c+36,"top u_rv64_csr_regfile u_csr_mstatus dout", false,-1, 63,0);
         tracep->declBit(c+119,"top u_rv64_csr_regfile u_csr_mstatus wen", false,-1);
         tracep->declBus(c+196,"top u_rv64_csr_regfile u_csr_mepc WIDTH", false,-1, 31,0);
-        tracep->declQuad(c+200,"top u_rv64_csr_regfile u_csr_mepc RESET_VAL", false,-1, 63,0);
+        tracep->declQuad(c+202,"top u_rv64_csr_regfile u_csr_mepc RESET_VAL", false,-1, 63,0);
         tracep->declBit(c+186,"top u_rv64_csr_regfile u_csr_mepc clk", false,-1);
         tracep->declBit(c+187,"top u_rv64_csr_regfile u_csr_mepc rst", false,-1);
         tracep->declQuad(c+120,"top u_rv64_csr_regfile u_csr_mepc din", false,-1, 63,0);
         tracep->declQuad(c+28,"top u_rv64_csr_regfile u_csr_mepc dout", false,-1, 63,0);
         tracep->declBit(c+122,"top u_rv64_csr_regfile u_csr_mepc wen", false,-1);
         tracep->declBus(c+196,"top u_rv64_csr_regfile u_csr_mcause WIDTH", false,-1, 31,0);
-        tracep->declQuad(c+200,"top u_rv64_csr_regfile u_csr_mcause RESET_VAL", false,-1, 63,0);
+        tracep->declQuad(c+202,"top u_rv64_csr_regfile u_csr_mcause RESET_VAL", false,-1, 63,0);
         tracep->declBit(c+186,"top u_rv64_csr_regfile u_csr_mcause clk", false,-1);
         tracep->declBit(c+187,"top u_rv64_csr_regfile u_csr_mcause rst", false,-1);
         tracep->declQuad(c+123,"top u_rv64_csr_regfile u_csr_mcause din", false,-1, 63,0);
         tracep->declQuad(c+30,"top u_rv64_csr_regfile u_csr_mcause dout", false,-1, 63,0);
         tracep->declBit(c+125,"top u_rv64_csr_regfile u_csr_mcause wen", false,-1);
         tracep->declBus(c+196,"top u_rv64_csr_regfile u_csr_mtval WIDTH", false,-1, 31,0);
-        tracep->declQuad(c+200,"top u_rv64_csr_regfile u_csr_mtval RESET_VAL", false,-1, 63,0);
+        tracep->declQuad(c+202,"top u_rv64_csr_regfile u_csr_mtval RESET_VAL", false,-1, 63,0);
         tracep->declBit(c+186,"top u_rv64_csr_regfile u_csr_mtval clk", false,-1);
         tracep->declBit(c+187,"top u_rv64_csr_regfile u_csr_mtval rst", false,-1);
         tracep->declQuad(c+126,"top u_rv64_csr_regfile u_csr_mtval din", false,-1, 63,0);
         tracep->declQuad(c+32,"top u_rv64_csr_regfile u_csr_mtval dout", false,-1, 63,0);
         tracep->declBit(c+128,"top u_rv64_csr_regfile u_csr_mtval wen", false,-1);
         tracep->declBus(c+196,"top u_rv64_csr_regfile u_csr_mtvec WIDTH", false,-1, 31,0);
-        tracep->declQuad(c+200,"top u_rv64_csr_regfile u_csr_mtvec RESET_VAL", false,-1, 63,0);
+        tracep->declQuad(c+202,"top u_rv64_csr_regfile u_csr_mtvec RESET_VAL", false,-1, 63,0);
         tracep->declBit(c+186,"top u_rv64_csr_regfile u_csr_mtvec clk", false,-1);
         tracep->declBit(c+187,"top u_rv64_csr_regfile u_csr_mtvec rst", false,-1);
         tracep->declQuad(c+129,"top u_rv64_csr_regfile u_csr_mtvec din", false,-1, 63,0);
@@ -202,11 +202,11 @@ void Vtop___024root__traceInitSub0(Vtop___024root* vlSelf, VerilatedVcd* tracep)
         tracep->declBus(c+196,"top u_execute u_alu u_alu_shift u_Vectorinvert1 DATA_LEN", false,-1, 31,0);
         tracep->declQuad(c+146,"top u_execute u_alu u_alu_shift u_Vectorinvert1 in", false,-1, 63,0);
         tracep->declQuad(c+148,"top u_execute u_alu u_alu_shift u_Vectorinvert1 out", false,-1, 63,0);
-        tracep->declBus(c+202,"top u_execute u_alu u_alu_shift u_Vectorinvert1 i", false,-1, 31,0);
+        tracep->declBus(c+204,"top u_execute u_alu u_alu_shift u_Vectorinvert1 i", false,-1, 31,0);
         tracep->declBus(c+196,"top u_execute u_alu u_alu_shift u_Vectorinvert2 DATA_LEN", false,-1, 31,0);
         tracep->declQuad(c+150,"top u_execute u_alu u_alu_shift u_Vectorinvert2 in", false,-1, 63,0);
         tracep->declQuad(c+152,"top u_execute u_alu u_alu_shift u_Vectorinvert2 out", false,-1, 63,0);
-        tracep->declBus(c+202,"top u_execute u_alu u_alu_shift u_Vectorinvert2 i", false,-1, 31,0);
+        tracep->declBus(c+204,"top u_execute u_alu u_alu_shift u_Vectorinvert2 i", false,-1, 31,0);
         tracep->declBit(c+154,"top u_execute u_alu u_alu_mul_top is_sr1_signed", false,-1);
         tracep->declBit(c+155,"top u_execute u_alu u_alu_mul_top is_sr2_signed", false,-1);
         tracep->declQuad(c+132,"top u_execute u_alu u_alu_mul_top sr1_data", false,-1, 63,0);
@@ -679,7 +679,8 @@ void Vtop___024root__traceFullSub0(Vtop___024root* vlSelf, VerilatedVcd* tracep)
         tracep->fullIData(oldp+196,(0x40U),32);
         tracep->fullQData(oldp+197,(0x80000000ULL),64);
         tracep->fullBit(oldp+199,(1U));
-        tracep->fullQData(oldp+200,(0ULL),64);
-        tracep->fullIData(oldp+202,(0x40U),32);
+        tracep->fullQData(oldp+200,(0xa00001800ULL),64);
+        tracep->fullQData(oldp+202,(0ULL),64);
+        tracep->fullIData(oldp+204,(0x40U),32);
     }
 }

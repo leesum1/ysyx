@@ -147,7 +147,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op)))))))
                                                                            : 0U));
     if (vlSelf->rst) {
-        vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mstatus_q = 0ULL;
+        vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mstatus_q = 0xa00001800ULL;
     } else if (vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mstatus_en) {
         vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mstatus_q 
             = ((IData)(vlSelf->top__DOT__csr_mstatus_i_en)

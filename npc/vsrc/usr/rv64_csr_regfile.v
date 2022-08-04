@@ -101,7 +101,7 @@ module rv64_csr_regfile (
   /* CSR 寄存器组 */
   regTemplate #(
       .WIDTH    (`XLEN),
-      .RESET_VAL(`XLEN'b0)
+      .RESET_VAL(`CSR_MSTATUS_DEFAULT)
   ) u_csr_mstatus (
       .clk (clk),
       .rst (rst),
