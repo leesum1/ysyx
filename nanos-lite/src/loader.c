@@ -36,7 +36,6 @@ static uintptr_t loader(PCB* pcb, const char* filename) {
   // 打开文件
   printf("start loader %s\n", filename);
   int fd = fs_open(filename, 0, 0);
-  printf("fd:%d\n", fd);
   /* 获取 elf header */
   Elf_Ehdr* Ehdr = (Elf_Ehdr*)malloc(sizeof(Elf_Ehdr));
   assert(Ehdr);
@@ -48,6 +47,9 @@ static uintptr_t loader(PCB* pcb, const char* filename) {
   assert(EXPECT_TYPE == Ehdr->e_machine);
   /* 获取所有 Program header Table,Ehdr->e_phnum 为个数信息 */
   assert(Ehdr->e_phnum != 0);
+
+
+
   Elf_Phdr* Phdr = (Elf_Phdr*)malloc(sizeof(Elf_Phdr) * Ehdr->e_phnum);
   assert(Phdr);
 
