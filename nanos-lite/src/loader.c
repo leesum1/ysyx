@@ -40,7 +40,7 @@ static uintptr_t loader(PCB* pcb, const char* filename) {
   Elf_Ehdr* Ehdr = (Elf_Ehdr*)malloc(sizeof(Elf_Ehdr));
   assert(Ehdr);
   fs_read(fd, Ehdr, sizeof(Elf_Ehdr));
-  //ramdisk_read(Ehdr, 0, sizeof(Elf_Ehdr));
+
   // 检查 magic
   assert(*(uint32_t*)Ehdr->e_ident == 0x464C457F);
   // 检查架构信息
@@ -54,17 +54,16 @@ static uintptr_t loader(PCB* pcb, const char* filename) {
   fs_lseek(fd, Ehdr->e_phoff, 0);
   printf("Ehdr->e_phoff:%d\n", Ehdr->e_phoff);
   fs_read(fd, (void*)Phdr, sizeof(Elf_Phdr) * Ehdr->e_phnum);
-  //ramdisk_read(Phdr, Ehdr->e_phoff, sizeof(Elf_Phdr) * Ehdr->e_phnum);
+
   /* 加载进内存,空闲空间需要清零 */
   for (int i = 0; i < Ehdr->e_phnum; i++) {
     if (Phdr[i].p_type == PT_LOAD) {
       fs_lseek(fd, Phdr[i].p_offset, 0);
       fs_read(fd, (void*)Phdr[i].p_vaddr, Phdr[i].p_filesz);
-      //ramdisk_read((char*)Phdr[i].p_vaddr, Phdr[i].p_offset, Phdr[i].p_filesz);
-
       memset((char*)Phdr[i].p_vaddr + Phdr[i].p_filesz, 0, Phdr[i].p_memsz - Phdr[i].p_filesz);
     }
   }
+
   Log("Ehdr->e_entry:%p\n", Ehdr->e_entry);
   return Ehdr->e_entry;
 }
