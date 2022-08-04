@@ -1,5 +1,6 @@
 #include <common.h>
 #include <unistd.h>
+#include <sys/time.h>
 #include "syscall.h"
 #include <fs.h>
 // #define STRACE
@@ -70,6 +71,12 @@ void do_syscall(Context* c) {
     printf("SYS_close a1:%d,a2:%d,a3:%d\n", a[1], a[2], a[3]);
 #endif
     c->GPRx = fs_close(a[1]);
+    break;
+  case SYS_gettimeofday:
+#ifdef STRACE
+    printf("SYS_gettimeofday a1:%d,a2:%d,a3:%d\n", a[1], a[2], a[3]);
+#endif
+    // c->GPRx = gettimeofday((struct timeval*)a[1], (struct timezone*)a[2]);
     break;
   default:
     panic("Unhandled syscall ID = %d\n", a[0]);
