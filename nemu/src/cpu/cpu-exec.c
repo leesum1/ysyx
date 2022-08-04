@@ -47,7 +47,7 @@ static void trace_and_difftest(Decode* _this, vaddr_t dnpc) {
   IFDEF(CONFIG_WATCHPOINT, prase_wp());
 
   uint8_t istarp = (_this->isa.inst.val == 0x73);
-  IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
+  IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc, istarp));
 }
 
 static void exec_once(Decode* s, vaddr_t pc) {
