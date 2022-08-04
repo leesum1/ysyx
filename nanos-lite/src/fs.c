@@ -113,11 +113,11 @@ size_t fs_write(int fd, const void* buf, size_t len) {
   size_t file_size = file_table[fd].size;
   size_t open_offset = file_table[fd].open_offset;
   // serial, device type:char
-  // if (fd <= 2) {
-  //   file_table->write(buf, 0, len);
-  // }
+  if (fd <= 2) {
+    file_table[fd].write(buf, 0, len);
+  }
   // ramdisk, device type:block
-  if (NULL == file_table->write) {
+  else if (NULL == file_table[fd].write) {
     printf("ramdisk_write\n");
     //不允许新增文件大小
     assert((open_offset + len) <= file_size);
