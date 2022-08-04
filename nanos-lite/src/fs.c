@@ -117,12 +117,13 @@ size_t fs_write(int fd, const void* buf, size_t len) {
   //   file_table->write(buf, 0, len);
   // }
   // ramdisk, device type:block
-
+  if (NULL == file_table->write) {
+    printf("ramdisk_write\n");
     //不允许新增文件大小
-  assert((open_offset + len) <= file_size);
-  ramdisk_write(buf, disk_offset + open_offset, len);
-  file_table[fd].open_offset += len;
-
+    assert((open_offset + len) <= file_size);
+    ramdisk_write(buf, disk_offset + open_offset, len);
+    file_table[fd].open_offset += len;
+  }
 
   return len;
 }
