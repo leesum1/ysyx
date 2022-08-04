@@ -41,7 +41,6 @@ static uintptr_t loader(PCB* pcb, const char* filename) {
   Elf_Ehdr* Ehdr = (Elf_Ehdr*)malloc(sizeof(Elf_Ehdr));
   assert(Ehdr);
   fs_read(fd, Ehdr, sizeof(Elf_Ehdr));
-  printf("start loader %s\n", filename);
   //ramdisk_read(Ehdr, 0, sizeof(Elf_Ehdr));
   // 检查 magic
   assert(*(uint32_t*)Ehdr->e_ident == 0x464C457F);
@@ -52,7 +51,8 @@ static uintptr_t loader(PCB* pcb, const char* filename) {
   Elf_Phdr* Phdr = (Elf_Phdr*)malloc(sizeof(Elf_Phdr) * Ehdr->e_phnum);
   assert(Phdr);
 
-  fs_read(fd, (void*)Ehdr->e_phoff, sizeof(Elf_Phdr) * Ehdr->e_phnum);
+  fs_lseek(fd, Ehdr->e_phoff, 0);
+  fs_read(fd, (void*)Phdr, sizeof(Elf_Phdr) * Ehdr->e_phnum);
   //ramdisk_read(Phdr, Ehdr->e_phoff, sizeof(Elf_Phdr) * Ehdr->e_phnum);
   printf("start loader %s\n", filename);
   /* 加载进内存,空闲空间需要清零 */
