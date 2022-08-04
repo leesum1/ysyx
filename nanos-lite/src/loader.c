@@ -34,6 +34,7 @@ extern size_t get_ramdisk_size();
 static uintptr_t loader(PCB* pcb, const char* filename) {
 
   // 打开文件
+  printf("start loader %s\n", filename);
   int fd = fs_open(filename, 0, 0);
 
   /* 获取 elf header */
