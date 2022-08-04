@@ -35,15 +35,7 @@ void do_syscall(Context* c) {
 #ifdef STRACE
     printf("SYS_write fd:%d,buff:%p,cout:%d\n", a[1], a[2], a[3]);
 #endif
-    // if (a[1] == 1 || a[1] == 2) {
-    //   for (int i = 0; i < a[3]; i++) {
-    //     putch(*(char*)(a[2] + i));
-    //   }
-    //   c->GPRx = a[3];
-    // }
-    // else {
     c->GPRx = fs_write(a[1], (void*)a[2], a[3]);
-    // }
     break;
   case SYS_brk:
 #ifdef STRACE

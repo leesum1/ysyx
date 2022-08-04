@@ -118,7 +118,6 @@ size_t fs_write(int fd, const void* buf, size_t len) {
   }
   // ramdisk, device type:block
   else if (NULL == file_table[fd].write) {
-    printf("ramdisk_write\n");
     //不允许新增文件大小
     assert((open_offset + len) <= file_size);
     ramdisk_write(buf, disk_offset + open_offset, len);
