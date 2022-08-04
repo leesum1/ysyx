@@ -76,7 +76,14 @@ void do_syscall(Context* c) {
 #ifdef STRACE
     printf("SYS_gettimeofday a1:%d,a2:%d,a3:%d\n", a[1], a[2], a[3]);
 #endif
-    // c->GPRx = gettimeofday((struct timeval*)a[1], (struct timezone*)a[2]);
+    {
+      struct timeval* tv = (struct timeval*)a[1];
+      //struct timezone* tz = (struct timezone*)a[2]; // 没有设置时区
+      uint64_t us = io_read(AM_TIMER_UPTIME).us;
+      tv->tv_sec = us / 1000000;
+      tv->tv_usec = us % 1000000;
+    }
+    c->GPRx = 0;
     break;
   default:
     panic("Unhandled syscall ID = %d\n", a[0]);
@@ -84,27 +91,3 @@ void do_syscall(Context* c) {
   }
 }
 
-
-
-// void* _sbrk(intptr_t increment) {
-//   extern  end;       //set by linker
-//   extern  __heap_end;//set by linker
-//   static char* heap_end;		/* Previous end of heap or 0 if none */
-//   char* prev_heap_end;
-
-//   if (0 == heap_end) {
-//     heap_end = &__heap_start;			/* Initialize first time round */
-//   }
-
-//   prev_heap_end = heap_end;
-//   heap_end += increment;
-//   //check
-//   if (heap_end < (&__heap_end)) {
-
-//   }
-//   else {
-//     // errno = ENOMEM;
-//     return (char*)-1;
-//   }
-//   return (void*)prev_heap_end;
-// }

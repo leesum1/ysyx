@@ -4,6 +4,12 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
+
+// 为了代码提示
+#ifndef ARCH_H
+#define ARCH_H "arch/riscv64-nemu.h"
+#endif
+
 #include ARCH_H // this macro is defined in $CFLAGS
 // examples: "arch/x86-qemu.h", "arch/native.h", ...
 
