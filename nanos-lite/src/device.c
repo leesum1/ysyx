@@ -31,7 +31,7 @@ size_t events_read(void* buf, size_t offset, size_t len) {
   else {
     sprintf(keybuf, "ku %s\n", keyname[kb.keycode]);
   }
-  Log("%s\n", keybuf);
+  printf("%s\n", keybuf);
   //检查长度
   size_t buflen = strlen(keybuf);
   assert(buflen <= len);
@@ -39,7 +39,7 @@ size_t events_read(void* buf, size_t offset, size_t len) {
   if (kb.keycode == 0) {
     return 0;
   }
-  return 1;
+  return 0;
 }
 
 size_t dispinfo_read(void* buf, size_t offset, size_t len) {
