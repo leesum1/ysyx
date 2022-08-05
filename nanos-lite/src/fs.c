@@ -1,6 +1,7 @@
 #include <fs.h>
 #include <stdio.h>
 #include <stdint.h>
+
 typedef size_t(*ReadFn) (void* buf, size_t offset, size_t len);
 typedef size_t(*WriteFn) (const void* buf, size_t offset, size_t len);
 
@@ -32,7 +33,7 @@ typedef struct {
   size_t open_offset;
 } Finfo;
 
-enum { FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB };
+enum { FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB, FD_EVENTS, FD_DISP_INFO, FD_NUM };
 
 size_t invalid_read(void* buf, size_t offset, size_t len) {
   panic("should not reach here");
@@ -49,11 +50,38 @@ static Finfo file_table[] __attribute__((used)) = {
   [FD_STDIN] = {"stdin", 0, 0, invalid_read, invalid_write},
   [FD_STDOUT] = {"stdout", 0, 0, invalid_read, serial_write},
   [FD_STDERR] = {"stderr", 0, 0, invalid_read, serial_write},
+  [FD_FB] = {"/dev/fb", 0, 0, invalid_read, fb_write},
+  [FD_EVENTS] = {"/dev/events", 0, 0, events_read, invalid_write},
+  [FD_DISP_INFO] = {"/proc/dispinfo", 0, 0, dispinfo_read, invalid_write},
 #include "files.h"
 };
 
+
+/**
+ * @brief 按行优先存储所有像素的颜色值(32位). 每个像素是`00rrggbb`的形式
+ *
+ */
 void init_fs() {
-  // TODO: initialize the size of /dev/fb
+  /* 获取屏幕信息 没有实现 sscanf 函数,无法使用 */
+  // int w, h;
+  // char dispinfo[32];
+  // dispinfo_read(dispinfo, 0, 32);
+  // sscanf(dispinfo, "WIDTH:%d\nHEIGHT:%d\n", &w, &h);
+
+
+  // 直接读取屏幕信息
+  AM_GPU_CONFIG_T dispinfo = io_read(AM_GPU_CONFIG);
+  Log("dispinfo_WIDTH:%d,dispinfo_HEIGHT:%d", dispinfo.width, dispinfo.height);
+
+  // 分配显存
+  size_t fb_buf_size = dispinfo.height * dispinfo.width * sizeof(uint32_t);
+  //uint32_t* fb_buf = malloc(fb_buf_size);
+  // assert(fb_buf);
+  // 更新文件记录表
+
+  file_table[FD_FB].size = fb_buf_size;
+  file_table[FD_FB].open_offset = 0;
+
 }
 
 /**
@@ -72,6 +100,7 @@ int fs_open(const char* pathname, int flags, int mode) {
       return i;
     }
   }
+
   //找不到文件
   assert(0);
   return -1;
@@ -89,16 +118,23 @@ size_t fs_read(int fd, void* buf, size_t len) {
   size_t file_size = file_table[fd].size;
   size_t open_offset = file_table[fd].open_offset;
 
-
-  // 若读取的数超出文件大小,读取到文件尾为止,此时 read_len < len
-  size_t read_len = len;
-  if ((open_offset + len) > file_size) {
-    read_len = open_offset + len - file_size;
+  // devices
+  if (fd < FD_NUM) {
+    return file_table[fd].read(buf, 0, len);
   }
+  // ramdisk
+  else {
+    // 若读取的数超出文件大小,读取到文件尾为止,此时 read_len < len
+    size_t read_len = len;
+    if ((open_offset + len) > file_size) {
+      read_len = open_offset + len - file_size;
+    }
 
-  ramdisk_read(buf, disk_offset + open_offset, read_len);
-  file_table[fd].open_offset += len;
-  return read_len;
+    ramdisk_read(buf, disk_offset + open_offset, read_len);
+    file_table[fd].open_offset += len;
+    return read_len;
+  }
+  return -1;
 }
 /**
  * @brief 简易文件系统 write
@@ -113,18 +149,18 @@ size_t fs_write(int fd, const void* buf, size_t len) {
   size_t file_size = file_table[fd].size;
   size_t open_offset = file_table[fd].open_offset;
   // serial, device type:char
-  if (fd <= 2) {
-    file_table[fd].write(buf, 0, len);
+  if (fd < FD_NUM) {
+    return file_table[fd].write(buf, open_offset, len);
   }
   // ramdisk, device type:block
   else if (NULL == file_table[fd].write) {
     //不允许新增文件大小
     assert((open_offset + len) <= file_size);
-    ramdisk_write(buf, disk_offset + open_offset, len);
     file_table[fd].open_offset += len;
+    return ramdisk_write(buf, disk_offset + open_offset, len);
   }
 
-  return len;
+  return -1;
 }
 
 /**

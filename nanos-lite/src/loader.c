@@ -34,11 +34,13 @@ extern size_t get_ramdisk_size();
 static uintptr_t loader(PCB* pcb, const char* filename) {
 
   // 打开文件
-  printf("start loader %s\n", filename);
+  Log("start loader %s\n", filename);
   int fd = fs_open(filename, 0, 0);
+
   /* 获取 elf header */
   Elf_Ehdr* Ehdr = (Elf_Ehdr*)malloc(sizeof(Elf_Ehdr));
   assert(Ehdr);
+
   fs_read(fd, Ehdr, sizeof(Elf_Ehdr));
 
   // 检查 magic
@@ -65,6 +67,9 @@ static uintptr_t loader(PCB* pcb, const char* filename) {
   }
 
   Log("Ehdr->e_entry:%p\n", Ehdr->e_entry);
+
+  free(Ehdr);
+  free(Phdr);
   return Ehdr->e_entry;
 }
 
