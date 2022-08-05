@@ -67,10 +67,11 @@ void init_fs() {
   // char dispinfo[32];
   // dispinfo_read(dispinfo, 0, 32);
   // sscanf(dispinfo, "WIDTH:%d\nHEIGHT:%d\n", &w, &h);
-  // Log("dispinfo_WIDTH:%d,dispinfo_HEIGHT:%d\n", w, h);
+
 
   // 直接读取屏幕信息
   AM_GPU_CONFIG_T dispinfo = io_read(AM_GPU_CONFIG);
+  Log("dispinfo_WIDTH:%d,dispinfo_HEIGHT:%d\n", dispinfo.width, dispinfo.height);
 
   // 分配显存
   size_t fb_buf_size = dispinfo.height * dispinfo.width * sizeof(uint32_t);
