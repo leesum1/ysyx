@@ -67,23 +67,17 @@ int _write(int fd, void* buf, size_t count) {
 
   return _syscall_(SYS_write, fd, buf, count);
 }
-
+extern char _end[];               /* _end is set in the linker command file.  */
+char* heap_ptr;
 void* _sbrk(intptr_t increment) {
-  extern char etext, edata, end;
+  char* base;
 
-  static char* heap_end;		/* Previous end of heap or 0 if none */
-  char* prev_heap_end;
-  if (0 == heap_end) {
-    heap_end = &end;			/* Initialize first time round */
-  }
+  if (!heap_ptr)
+    heap_ptr = (char*)&_end;
+  base = heap_ptr;
+  heap_ptr += increment;
 
-  prev_heap_end = heap_end;
-  heap_end += increment;
-
-  if (_syscall_(SYS_brk, heap_end, 0, 0) != 0) {
-    return (char*)-1;
-  }
-  return (void*)prev_heap_end;
+  return base;
 }
 
 int _read(int fd, void* buf, size_t count) {
