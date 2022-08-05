@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <fcntl.h> 
 static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
@@ -17,6 +18,15 @@ uint32_t NDL_GetTicks() {
 }
 
 int NDL_PollEvent(char* buf, int len) {
+  // 使用 open 打开设备文件
+  int fd = open("/dev/events", O_RDONLY);
+  int state = read(fd, buf, len);
+  // 有事件
+  if ((state != -1) && (fd != -1)) {
+    return 1;
+  }
+  // 无事件
+  close(fd);
   return 0;
 }
 
