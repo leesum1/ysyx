@@ -83,7 +83,6 @@ void init_fs() {
   file_table[FD_FB].size = fb_buf_size;
   file_table[FD_FB].open_offset = 0;
 
-  // TODO: initialize the size of /dev/fb
 }
 
 /**
@@ -152,7 +151,7 @@ size_t fs_write(int fd, const void* buf, size_t len) {
   size_t open_offset = file_table[fd].open_offset;
   // serial, device type:char
   if (fd < FD_NUM) {
-    return file_table[fd].write(buf, 0, len);
+    return file_table[fd].write(buf, open_offset, len);
   }
   // ramdisk, device type:block
   else if (NULL == file_table[fd].write) {
