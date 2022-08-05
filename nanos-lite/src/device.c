@@ -67,16 +67,16 @@ size_t fb_write(const void* buf, size_t offset, size_t len) {
   int y = (offset);
   int w = (len >> 32);
   int h = len;
-  // AM_GPU_FBDRAW_T fbctrl;
-  // fbctrl.pixels = (void*)buf;
-  // fbctrl.sync = true;
-  // fbctrl.x = x;
-  // fbctrl.y = y;
-  // fbctrl.w = w;
-  // fbctrl.h = h;
+  AM_GPU_FBDRAW_T fbctrl;
+  fbctrl.pixels = (void*)buf;
+  fbctrl.sync = true;
+  fbctrl.x = x;
+  fbctrl.y = y;
+  fbctrl.w = w;
+  fbctrl.h = h;
   Log("fb_write,x:%d,y:%d,w:%d,h:%d", x, y, w, h);
   // fbctrl.
-  //ioe_write(AM_GPU_FBDRAW, &fbctrl);
+  ioe_write(AM_GPU_FBDRAW, &fbctrl);
   return len;
 }
 
