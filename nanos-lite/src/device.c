@@ -35,7 +35,7 @@ size_t events_read(void* buf, size_t offset, size_t len) {
   //检查长度
   size_t buflen = strlen(keybuf);
   assert(buflen <= len);
-
+  Log("%s", buf);
   if (kb.keycode == 0) {
     return 0;
   }
