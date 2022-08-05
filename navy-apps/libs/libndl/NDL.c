@@ -19,15 +19,15 @@ uint32_t NDL_GetTicks() {
 
 int NDL_PollEvent(char* buf, int len) {
   // 使用 open 打开设备文件
-  int fd = open("/dev/events", O_RDONLY);
-  int state = read(fd, buf, len);
+
+  //int fd = open("/dev/events", O_RDONLY);
+  //FD_EVENTS:4
+  static int fd = 4;
   // 有事件
-  if ((state != 0) && (fd != -1)) {
-    close(fd);
+  if (read(fd, buf, len)) {
     return 1;
   }
   // 无事件
-  close(fd);
   return 0;
 }
 
