@@ -67,6 +67,7 @@ void init_fs() {
  * @return int 文件描述符
  */
 int fs_open(const char* pathname, int flags, int mode) {
+  printf("1322\n");
   for (size_t i = 0; i < LENGTH(file_table); i++) {
     //找到文件
     if (!strcmp(pathname, file_table[i].name)) {
