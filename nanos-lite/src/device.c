@@ -30,7 +30,7 @@ size_t events_read(void* buf, size_t offset, size_t len) {
   else {
     sprintf(buf, "ku %s\n", keyname[kb.keycode]);
   }
-  Log("keybuff:%s\n", buf);
+  //Log("keybuff:%s\n", buf);
 
   if (kb.keycode == 0) {
     return 0;
