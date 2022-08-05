@@ -71,9 +71,11 @@ int fs_open(const char* pathname, int flags, int mode) {
     //找到文件
     if (!strcmp(pathname, file_table[i].name)) {
       file_table[i].open_offset = 0;
+      printf("fd:%ld\n", i);
       return i;
     }
   }
+
   //找不到文件
   assert(0);
   return -1;
