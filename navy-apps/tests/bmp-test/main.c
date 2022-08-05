@@ -5,7 +5,7 @@
 #include <BMP.h>
 
 int main() {
-  // NDL_Init(0);
+  NDL_Init(0);
   int w, h;
   w = 0;
   h = 0;
