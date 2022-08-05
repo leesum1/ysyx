@@ -23,7 +23,8 @@ int NDL_PollEvent(char* buf, int len) {
   int state = read(fd, buf, len);
   // 有事件
   if ((state != -1) && (fd != -1)) {
-    return 0;
+    close(fd);
+    return 1;
   }
   // 无事件
   close(fd);
