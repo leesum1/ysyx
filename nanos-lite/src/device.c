@@ -77,7 +77,7 @@ size_t fb_write(const void* buf, size_t offset, size_t len) {
   Log("fb_write,x:%d,y:%d,w:%d,h:%d", x, y, w, h);
   // fbctrl.
   //ioe_write(AM_GPU_FBDRAW, &fbctrl);
-  return 0;
+  return len;
 }
 
 void init_device() {
