@@ -31,7 +31,28 @@ int NDL_PollEvent(char* buf, int len) {
   return 0;
 }
 
+/**
+ * @brief  打开一张(*w) X (*h)的画布 如果*w和*h均为0, 则将系统全屏幕作为画布, 并将*w和*h分别设为系统屏幕的大小
+ *
+ * @param w
+ * @param h
+ */
+static int ndl_w, ndl_h;
 void NDL_OpenCanvas(int* w, int* h) {
+  // 获取屏幕大小
+  char dispinfo[32];
+  int dispinfo_fd = open("/proc/dispinfo", O_RDONLY);
+  read(dispinfo_fd, dispinfo, sizeof(dispinfo));
+
+  sscanf(dispinfo, "WIDTH:%d\nHEIGHT:%d\n", &ndl_w, &ndl_h);
+  close(dispinfo_fd);
+  // 将全屏幕设置为画布
+  if (*w == 0 && *h == 0) {
+    *w = ndl_w;
+    *h = ndl_h;
+  }
+  printf("ndl_w:%d,ndl_h%d\n", ndl_w, ndl_h);
+
   if (getenv("NWM_APP")) {
     int fbctl = 4;
     fbdev = 5;
