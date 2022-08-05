@@ -51,7 +51,6 @@ void NDL_OpenCanvas(int* w, int* h) {
     *w = ndl_w;
     *h = ndl_h;
   }
-  printf("ndl_w:%d,ndl_h%d\n", ndl_w, ndl_h);
 
   if (getenv("NWM_APP")) {
     int fbctl = 4;
