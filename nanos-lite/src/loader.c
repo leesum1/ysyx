@@ -67,6 +67,9 @@ static uintptr_t loader(PCB* pcb, const char* filename) {
   }
 
   Log("Ehdr->e_entry:%p\n", Ehdr->e_entry);
+
+  free(Ehdr);
+  free(Phdr);
   return Ehdr->e_entry;
 }
 

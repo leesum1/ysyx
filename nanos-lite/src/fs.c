@@ -56,7 +56,32 @@ static Finfo file_table[] __attribute__((used)) = {
 #include "files.h"
 };
 
+
+/**
+ * @brief 按行优先存储所有像素的颜色值(32位). 每个像素是`00rrggbb`的形式
+ *
+ */
 void init_fs() {
+  /* 获取屏幕信息 没有实现 sscanf 函数,无法使用 */
+  // int w, h;
+  // char dispinfo[32];
+  // dispinfo_read(dispinfo, 0, 32);
+  // sscanf(dispinfo, "WIDTH:%d\nHEIGHT:%d\n", &w, &h);
+  // Log("dispinfo_WIDTH:%d,dispinfo_HEIGHT:%d\n", w, h);
+
+  // 直接读取屏幕信息
+  AM_GPU_CONFIG_T dispinfo = io_read(AM_GPU_CONFIG);
+
+  // 分配显存
+  size_t fb_buf_size = dispinfo.height * dispinfo.width * sizeof(uint32_t);
+  uint32_t* fb_buf = malloc(fb_buf_size);
+  assert(fb_buf);
+  // 更新文件记录表
+
+  file_table[FD_FB].disk_offset = (size_t)fb_buf;
+  file_table[FD_FB].size = fb_buf_size;
+  file_table[FD_FB].open_offset = 0;
+
   // TODO: initialize the size of /dev/fb
 }
 
