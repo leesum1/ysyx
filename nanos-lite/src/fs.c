@@ -71,7 +71,7 @@ void init_fs() {
 
   // 直接读取屏幕信息
   AM_GPU_CONFIG_T dispinfo = io_read(AM_GPU_CONFIG);
-  Log("dispinfo_WIDTH:%d,dispinfo_HEIGHT:%d\n", dispinfo.width, dispinfo.height);
+  Log("dispinfo_WIDTH:%d,dispinfo_HEIGHT:%d", dispinfo.width, dispinfo.height);
 
   // 分配显存
   size_t fb_buf_size = dispinfo.height * dispinfo.width * sizeof(uint32_t);
