@@ -50,7 +50,7 @@ size_t events_read(void* buf, size_t offset, size_t len) {
 size_t dispinfo_read(void* buf, size_t offset, size_t len) {
   assert(len > 20);
   AM_GPU_CONFIG_T dispinfo = io_read(AM_GPU_CONFIG);
-  sprintf(buf, "WIDTH:%d\nHEIGHT:%d\n", dispinfo.width, dispinfo.width);
+  sprintf(buf, "WIDTH:%d\nHEIGHT:%d\n", dispinfo.width, dispinfo.height);
   return len;
 }
 
