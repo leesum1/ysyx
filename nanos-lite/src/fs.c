@@ -75,11 +75,10 @@ void init_fs() {
 
   // 分配显存
   size_t fb_buf_size = dispinfo.height * dispinfo.width * sizeof(uint32_t);
-  uint32_t* fb_buf = malloc(fb_buf_size);
-  assert(fb_buf);
+  //uint32_t* fb_buf = malloc(fb_buf_size);
+  // assert(fb_buf);
   // 更新文件记录表
 
-  file_table[FD_FB].disk_offset = (size_t)fb_buf;
   file_table[FD_FB].size = fb_buf_size;
   file_table[FD_FB].open_offset = 0;
 
