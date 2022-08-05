@@ -22,7 +22,7 @@ int NDL_PollEvent(char* buf, int len) {
   int fd = open("/dev/events", O_RDONLY);
   int state = read(fd, buf, len);
   // 有事件
-  if ((state != -1) && (fd != -1)) {
+  if ((state != 0) && (fd != -1)) {
     close(fd);
     return 1;
   }

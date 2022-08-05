@@ -33,9 +33,10 @@ size_t events_read(void* buf, size_t offset, size_t len) {
   Log("keybuff:%s\n", buf);
 
   if (kb.keycode == 0) {
-    return 1;
+    return 0;
   }
-  return 0;
+
+  return 1;
 }
 
 size_t dispinfo_read(void* buf, size_t offset, size_t len) {
