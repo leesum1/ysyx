@@ -40,7 +40,7 @@ static uintptr_t loader(PCB* pcb, const char* filename) {
   Elf_Ehdr* Ehdr = (Elf_Ehdr*)malloc(sizeof(Elf_Ehdr));
   assert(Ehdr);
   fs_read(fd, Ehdr, sizeof(Elf_Ehdr));
-
+  printf("start loader %s\n", filename);
   // 检查 magic
   assert(*(uint32_t*)Ehdr->e_ident == 0x464C457F);
   // 检查架构信息
