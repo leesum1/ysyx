@@ -12,8 +12,8 @@ int main() {
   // printf("    program text (etext)      %10p\n", &etext);
   // printf("    initialized data (edata)  %10p\n", &edata);
   // printf("    uninitialized data (end)  %10p\n", &end);
-  for (size_t inc = 0; inc < 20; i++) {
-    void* p = malloc(1024);
+  for (size_t inc = 0; inc < 20; inc++) {
+    void* p = malloc(10240);
     printf("malloc ok\n");
     free(p);
     printf("free ok\n");
