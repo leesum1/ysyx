@@ -70,13 +70,15 @@ int _write(int fd, void* buf, size_t count) {
 extern char _end[];               /* _end is set in the linker command file.  */
 char* heap_ptr;
 void* _sbrk(intptr_t increment) {
+  char buf[128];
   char* base;
-
   if (!heap_ptr)
     heap_ptr = (char*)&_end;
   base = heap_ptr;
   heap_ptr += increment;
 
+  //_syscall_(SYS_brk, heap_ptr, base, increment);
+  assert(base);
   return base;
 }
 
