@@ -34,9 +34,10 @@ void* malloc(size_t size) {
   static int i = 0;
   if (i == 0) {
     i++;
+    printf("malloc init\n");
     init_memory_pool(heap.end - heap.start + 1, heap.start);
   }
-
+  printf("malloc\n");
   return tlsf_malloc(size);
 }
 

@@ -42,31 +42,31 @@
  * is 3.14 here. :)
  */
 
-/*-
- * Copyright (c) 2010-2012 Ivan Voras <ivoras@freebsd.org>
- * Copyright (c) 2012 Tim Hartrick <tim@edgecast.com>
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- */
+ /*-
+  * Copyright (c) 2010-2012 Ivan Voras <ivoras@freebsd.org>
+  * Copyright (c) 2012 Tim Hartrick <tim@edgecast.com>
+  *
+  * Redistribution and use in source and binary forms, with or without
+  * modification, are permitted provided that the following conditions
+  * are met:
+  * 1. Redistributions of source code must retain the above copyright
+  *    notice, this list of conditions and the following disclaimer.
+  * 2. Redistributions in binary form must reproduce the above copyright
+  *    notice, this list of conditions and the following disclaimer in the
+  *    documentation and/or other materials provided with the distribution.
+  *
+  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+  * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+  * SUCH DAMAGE.
+  */
 
 #ifndef FIXEDPT_BITS
 #define FIXEDPT_BITS	32
@@ -79,15 +79,15 @@ extern "C" {
 #endif
 
 #if FIXEDPT_BITS == 32
-typedef int32_t fixedpt;
-typedef	int64_t	fixedptd;
-typedef	uint32_t fixedptu;
-typedef	uint64_t fixedptud;
+	typedef int32_t fixedpt;
+	typedef	int64_t	fixedptd;
+	typedef	uint32_t fixedptu;
+	typedef	uint64_t fixedptud;
 #elif FIXEDPT_BITS == 64
-typedef int64_t fixedpt;
-typedef	__int128_t fixedptd;
-typedef	uint64_t fixedptu;
-typedef	__uint128_t fixedptud;
+	typedef int64_t fixedpt;
+	typedef	__int128_t fixedptd;
+	typedef	uint64_t fixedptu;
+	typedef	__uint128_t fixedptud;
 #else
 #error "FIXEDPT_BITS must be equal to 32 or 64"
 #endif
@@ -120,113 +120,134 @@ typedef	__uint128_t fixedptud;
 #define FIXEDPT_HALF_PI	fixedpt_rconst(3.14159265358979323846 / 2)
 #define FIXEDPT_E	fixedpt_rconst(2.7182818284590452354)
 
-/* fixedpt is meant to be usable in environments without floating point support
- * (e.g. microcontrollers, kernels), so we can't use floating point types directly.
- * Putting them only in macros will effectively make them optional. */
+	/* fixedpt is meant to be usable in environments without floating point support
+	 * (e.g. microcontrollers, kernels), so we can't use floating point types directly.
+	 * Putting them only in macros will effectively make them optional. */
 #define fixedpt_tofloat(T) ((float) ((T)*((float)(1)/(float)(1L << FIXEDPT_FBITS))))
 
-/* Multiplies a fixedpt number with an integer, returns the result. */
-static inline fixedpt fixedpt_muli(fixedpt A, int B) {
-	return 0;
-}
+	 /* Multiplies a fixedpt number with an integer, returns the result. */
+	static inline fixedpt fixedpt_muli(fixedpt A, int B) {
+		return ((fixedptd)A * B);
+	}
 
-/* Divides a fixedpt number with an integer, returns the result. */
-static inline fixedpt fixedpt_divi(fixedpt A, int B) {
-	return 0;
-}
+	/* Divides a fixedpt number with an integer, returns the result. */
+	static inline fixedpt fixedpt_divi(fixedpt A, int B) {
+		if (B == 0) {
+			return 0;
+		}
 
-/* Multiplies two fixedpt numbers, returns the result. */
-static inline fixedpt fixedpt_mul(fixedpt A, fixedpt B) {
-	return 0;
-}
+		return ((fixedptd)A / B);
+	}
 
+	/* Multiplies two fixedpt numbers, returns the result. */
+	static inline fixedpt fixedpt_mul(fixedpt A, fixedpt B) {
 
-/* Divides two fixedpt numbers, returns the result. */
-static inline fixedpt fixedpt_div(fixedpt A, fixedpt B) {
-	return 0;
-}
-
-static inline fixedpt fixedpt_abs(fixedpt A) {
-	return 0;
-}
-
-static inline fixedpt fixedpt_floor(fixedpt A) {
-	return 0;
-}
-
-static inline fixedpt fixedpt_ceil(fixedpt A) {
-	return 0;
-}
-
-/*
- * Note: adding and substracting fixedpt numbers can be done by using
- * the regular integer operators + and -.
- */
-
-/**
- * Convert the given fixedpt number to a decimal string.
- * The max_dec argument specifies how many decimal digits to the right
- * of the decimal point to generate. If set to -1, the "default" number
- * of decimal digits will be used (2 for 32-bit fixedpt width, 10 for
- * 64-bit fixedpt width); If set to -2, "all" of the digits will
- * be returned, meaning there will be invalid, bogus digits outside the
- * specified precisions.
- */
-void fixedpt_str(fixedpt A, char *str, int max_dec);
-
-/* Converts the given fixedpt number into a string, using a static
- * (non-threadsafe) string buffer */
-static inline char* fixedpt_cstr(const fixedpt A, const int max_dec) {
-	static char str[25];
-
-	fixedpt_str(A, str, max_dec);
-	return (str);
-}
+		return (((fixedptd)A * (fixedptd)B) >> FIXEDPT_FBITS);
+	}
 
 
-/* Returns the square root of the given number, or -1 in case of error */
-fixedpt fixedpt_sqrt(fixedpt A);
+	/* Divides two fixedpt numbers, returns the result. */
+	static inline fixedpt fixedpt_div(fixedpt A, fixedpt B) {
+		if (B == 0) {
+			return 0;
+		}
 
+		return (((fixedptd)A << FIXEDPT_FBITS) / (fixedptd)B);
+	}
 
-/* Returns the sine of the given fixedpt number. 
- * Note: the loss of precision is extraordinary! */
-fixedpt fixedpt_sin(fixedpt fp);
+	static inline fixedpt fixedpt_abs(fixedpt A) {
+		return ((A) < 0 ? -(A) : (A));
+	}
 
-
-/* Returns the cosine of the given fixedpt number */
-static inline fixedpt fixedpt_cos(fixedpt A) {
-	return (fixedpt_sin(FIXEDPT_HALF_PI - A));
-}
-
-
-/* Returns the tangens of the given fixedpt number */
-static inline fixedpt fixedpt_tan(fixedpt A) {
-	return fixedpt_div(fixedpt_sin(A), fixedpt_cos(A));
-}
-
-
-/* Returns the value exp(x), i.e. e^x of the given fixedpt number. */
-fixedpt fixedpt_exp(fixedpt fp);
-
-
-/* Returns the natural logarithm of the given fixedpt number. */
-fixedpt fixedpt_ln(fixedpt x);
-
-
-/* Returns the logarithm of the given base of the given fixedpt number */
-static inline fixedpt fixedpt_log(fixedpt x, fixedpt base) {
-	return (fixedpt_div(fixedpt_ln(x), fixedpt_ln(base)));
-}
-
-
-/* Return the power value (n^exp) of the given fixedpt numbers */
-static inline fixedpt fixedpt_pow(fixedpt n, fixedpt exp) {
-	if (exp == 0)
-		return (FIXEDPT_ONE);
-	if (n < 0)
+	static inline fixedpt fixedpt_floor(fixedpt A) {
+		if ((A == 0) || (fixedpt_fracpart(A) == 0)) {
+			return A;
+		}
+		else {
+			return(A) & (~FIXEDPT_FMASK);
+		}
 		return 0;
-	return (fixedpt_exp(fixedpt_mul(fixedpt_ln(n), exp)));
-}
+	}
+
+	static inline fixedpt fixedpt_ceil(fixedpt A) {
+		if ((A == 0) || (fixedpt_fracpart(A) == 0)) {
+			return A;
+		}
+		else {
+			return fixedpt_floor(A + FIXEDPT_ONE);
+		}
+		return 0;
+	}
+
+	/*
+	 * Note: adding and substracting fixedpt numbers can be done by using
+	 * the regular integer operators + and -.
+	 */
+
+	 /**
+	  * Convert the given fixedpt number to a decimal string.
+	  * The max_dec argument specifies how many decimal digits to the right
+	  * of the decimal point to generate. If set to -1, the "default" number
+	  * of decimal digits will be used (2 for 32-bit fixedpt width, 10 for
+	  * 64-bit fixedpt width); If set to -2, "all" of the digits will
+	  * be returned, meaning there will be invalid, bogus digits outside the
+	  * specified precisions.
+	  */
+	void fixedpt_str(fixedpt A, char* str, int max_dec);
+
+	/* Converts the given fixedpt number into a string, using a static
+	 * (non-threadsafe) string buffer */
+	static inline char* fixedpt_cstr(const fixedpt A, const int max_dec) {
+		static char str[25];
+
+		fixedpt_str(A, str, max_dec);
+		return (str);
+	}
+
+
+	/* Returns the square root of the given number, or -1 in case of error */
+	fixedpt fixedpt_sqrt(fixedpt A);
+
+
+	/* Returns the sine of the given fixedpt number.
+	 * Note: the loss of precision is extraordinary! */
+	fixedpt fixedpt_sin(fixedpt fp);
+
+
+	/* Returns the cosine of the given fixedpt number */
+	static inline fixedpt fixedpt_cos(fixedpt A) {
+		return (fixedpt_sin(FIXEDPT_HALF_PI - A));
+	}
+
+
+	/* Returns the tangens of the given fixedpt number */
+	static inline fixedpt fixedpt_tan(fixedpt A) {
+		return fixedpt_div(fixedpt_sin(A), fixedpt_cos(A));
+	}
+
+
+	/* Returns the value exp(x), i.e. e^x of the given fixedpt number. */
+	fixedpt fixedpt_exp(fixedpt fp);
+
+
+	/* Returns the natural logarithm of the given fixedpt number. */
+	fixedpt fixedpt_ln(fixedpt x);
+
+
+	/* Returns the logarithm of the given base of the given fixedpt number */
+	static inline fixedpt fixedpt_log(fixedpt x, fixedpt base) {
+		return (fixedpt_div(fixedpt_ln(x), fixedpt_ln(base)));
+	}
+
+
+	/* Return the power value (n^exp) of the given fixedpt numbers */
+	static inline fixedpt fixedpt_pow(fixedpt n, fixedpt exp) {
+		if (exp == 0)
+			return (FIXEDPT_ONE);
+		if (n < 0)
+			return 0;
+		return (fixedpt_exp(fixedpt_mul(fixedpt_ln(n), exp)));
+	}
 
 #ifdef __cplusplus
 }
