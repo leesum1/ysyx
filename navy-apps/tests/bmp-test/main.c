@@ -13,11 +13,10 @@ int main() {
   void* bmp = BMP_Load("/share/pictures/projectn.bmp", &w, &h);
   printf("BMP_Load ends! Spinning...\n");
   assert(bmp);
-  w += 150;
-  h += 150;
+
   NDL_OpenCanvas(&w, &h);
   printf("w:%d,h:%d\n", w, h);
-  NDL_DrawRect(bmp, 0, 0, w, h);
+  NDL_DrawRect(bmp, 0 + 150, 0 + 150, w + 150, h + 150);
   //free(bmp);
   NDL_Quit();
   printf("Test ends! Spinning...\n");
