@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <stdio.h>
+#include <malloc.h>
 
 int main() {
   write(1, "Hello World!\n", 13);
@@ -11,6 +12,10 @@ int main() {
   // printf("    program text (etext)      %10p\n", &etext);
   // printf("    initialized data (edata)  %10p\n", &edata);
   // printf("    uninitialized data (end)  %10p\n", &end);
+  void* p = malloc(1024);
+  printf("malloc ok\n");
+  free(p);
+  printf("free ok\n");
 
   while (1) {
     j++;
