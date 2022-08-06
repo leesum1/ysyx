@@ -62,8 +62,7 @@ static uintptr_t loader(PCB* pcb, const char* filename) {
     if (Phdr[i].p_type == PT_LOAD) {
       fs_lseek(fd, Phdr[i].p_offset, 0);
       fs_read(fd, (void*)Phdr[i].p_vaddr, Phdr[i].p_filesz);
-      // 清理未使用空间
-
+      // 清理未使用空间 !!!! 血的教训,清理空间的长度为 (p_memsz - p_filesz + 1),少一个byte都不行,不然 free 会报错
       memset((char*)(Phdr[i].p_vaddr + Phdr[i].p_filesz), 0, Phdr[i].p_memsz - Phdr[i].p_filesz + 1);
     }
   }
