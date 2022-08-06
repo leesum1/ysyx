@@ -44,7 +44,7 @@ void* BMP_Load(const char* filename, int* width, int* height) {
       pixels[w * i + j] = (r << 16) | (g << 8) | b;
     }
   }
-  // fclose(fp);
+  fclose(fp);
   if (width) *width = w;
   if (height) *height = h;
   return pixels;
