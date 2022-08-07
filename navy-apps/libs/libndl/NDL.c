@@ -77,17 +77,24 @@ void NDL_OpenCanvas(int* w, int* h) {
     close(fbctl);
   }
 }
-
+#define WIDTH 400
+#define HEIGHT 300
 void NDL_DrawRect(uint32_t* pixels, int x, int y, int w, int h) {
   static int first = 0;
   static int fd;
-  if (!first) {
-    fd = open("/dev/fb", O_RDWR);
+  fd = open("/dev/fb", O_RDWR);
+
+
+  size_t offset = (x * WIDTH + y) * 4;
+  for (size_t c_h = 0; c_h < h; c_h++) {
+    offset += WIDTH * 4 * c_h;
+    pixels += w * c_h;
+    lseek(fd, offset, SEEK_SET);
+    write(fd, pixels, w * 4);
   }
-  size_t offset = ((size_t)x << 32) | y;
-  size_t len = ((size_t)w << 32) | h;
-  lseek(fd, offset, SEEK_SET);
-  write(fd, pixels, len);
+  // lseek(fd, offset, SEEK_SET);
+  // write(fd, pixels, len);
+  close(fd);
 
 }
 

@@ -63,19 +63,30 @@ size_t dispinfo_read(void* buf, size_t offset, size_t len) {
  * @return size_t
  */
 size_t fb_write(const void* buf, size_t offset, size_t len) {
-  int x = (offset >> 32);
-  int y = (offset);
-  int w = (len >> 32);
-  int h = len;
+  // int x = (offset >> 32);
+  // int y = (offset);
+  // int w = (len >> 32);
+  // int h = len;
+  // AM_GPU_FBDRAW_T fbctrl;
+  // fbctrl.pixels = (void*)buf;
+  // fbctrl.sync = true;
+  // fbctrl.x = x;
+  // fbctrl.y = y;
+  // fbctrl.w = w;
+  // fbctrl.h = h;
+  // Log("fb_write,x:%d,y:%d,w:%d,h:%d", x, y, w, h);
+  // // fbctrl.
+  // ioe_write(AM_GPU_FBDRAW, &fbctrl);
+  // return len;
+
+  /* 按行 */
+  offset /= 4;
   AM_GPU_FBDRAW_T fbctrl;
-  fbctrl.pixels = (void*)buf;
-  fbctrl.sync = true;
-  fbctrl.x = x;
-  fbctrl.y = y;
-  fbctrl.w = w;
-  fbctrl.h = h;
-  Log("fb_write,x:%d,y:%d,w:%d,h:%d", x, y, w, h);
-  // fbctrl.
+  fbctrl.x = offset / 400;
+  fbctrl.y = offset % 400;
+  fbctrl.w = len;
+  fbctrl.h = 1;
+  fbctrl.sync = 1;
   ioe_write(AM_GPU_FBDRAW, &fbctrl);
   return len;
 }
