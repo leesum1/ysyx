@@ -101,7 +101,6 @@ void NDL_DrawRect(uint32_t* pixels, int x, int y, int w, int h) {
     pixels += w;
     offset += screen_w;
   }
-
   close(fb);
 }
 
