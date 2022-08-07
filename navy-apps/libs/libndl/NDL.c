@@ -47,21 +47,22 @@ int NDL_PollEvent(char* buf, int len) {
 static int ndl_w, ndl_h;
 void NDL_OpenCanvas(int* w, int* h) {
   // 获取屏幕大小
-  // char dispinfo[32];
-  // int dispinfo_fd = open("/proc/dispinfo", O_RDONLY);
-  // read(dispinfo_fd, dispinfo, sizeof(dispinfo));
+  char dispinfo[32];
+  int dispinfo_fd = open("/proc/dispinfo", O_RDONLY);
+  read(dispinfo_fd, dispinfo, sizeof(dispinfo));
 
-  // sscanf(dispinfo, "WIDTH:%d\nHEIGHT:%d\n", &ndl_w, &ndl_h);
-  // screen_w = ndl_w;
-  // screen_h = ndl_h;
-  // close(dispinfo_fd);
-  // // 将全屏幕设置为画布
-  // if (*w == 0 && *h == 0) {
-  //   *w = ndl_w;
-  //   *h = ndl_h;
-  // }
+  sscanf(dispinfo, "WIDTH:%d\nHEIGHT:%d\n", &ndl_w, &ndl_h);
+  screen_w = ndl_w;
+  screen_h = ndl_h;
+  close(dispinfo_fd);
+  // 将全屏幕设置为画布
+  if (*w == 0 && *h == 0) {
+    *w = ndl_w;
+    *h = ndl_h;
+  }
 
   if (getenv("NWM_APP")) {
+    printf("NWM_APP!\n");
     int fbctl = 4;
     fbdev = 5;
     screen_w = *w; screen_h = *h;
@@ -92,7 +93,6 @@ void NDL_DrawRect(uint32_t* pixels, int x, int y, int w, int h) {
   size_t len = ((size_t)w << 32) | h;
   lseek(fd, offset, SEEK_SET);
   write(fd, pixels, len);
-
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples) {
