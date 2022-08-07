@@ -80,7 +80,7 @@ size_t fb_write(const void* buf, size_t offset, size_t len) {
   // return len;
 
   /* 按行 */
-  offset /= 4;
+  // offset /= 4;
   AM_GPU_FBDRAW_T fbctrl;
   fbctrl.x = offset / 400;
   fbctrl.y = offset % 400;
