@@ -84,24 +84,16 @@ void NDL_OpenCanvas(int* w, int* h) {
 #define WIDTH 400
 #define HEIGHT 300
 void NDL_DrawRect(uint32_t* pixels, int x, int y, int w, int h) {
-
-  printf("w:%d,h%d\n", screen_w, screen_h);
-  printf("in NDL_UpdateRect\n");
-  int fb = open("/dev/fb", 0, 0);
-  printf("%p\n", pixels);
-  int screen_offset = screen_w * ((screen_h - canvas_h) / 2 + y) + (screen_w - canvas_w) / 2;
-  int canvas_offset = y * w + x;
-  int offset = screen_offset + canvas_offset;// offset by pixels, *4 by bytes
-  uint32_t* current_row = pixels;
-  // arbitrary canvas
-  for (int i = 0;i < h;i++) {
-    lseek(fb, offset * 4, SEEK_SET);
-    write(fb, current_row, w * 4);
-    current_row += w;
-    pixels += w;
-    offset += screen_w;
+  static int first = 0;
+  static int fd;
+  if (!first) {
+    fd = open("/dev/fb", O_RDWR);
   }
-  close(fb);
+  size_t offset = ((size_t)x << 32) | y;
+  size_t len = ((size_t)w << 32) | h;
+  lseek(fd, offset, SEEK_SET);
+  write(fd, pixels, len);
+
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples) {
