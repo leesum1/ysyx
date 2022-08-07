@@ -153,27 +153,27 @@ static void display_menu(int n) {
     draw_text_row(buf, i);
   }
 
-  // i = 11;
+  i = 11;
 
-  // sprintf(buf, "  page = %2d, #total apps = %d", page, nitems);
-  // draw_text_row(buf, i);
-  // i++;
+  sprintf(buf, "  page = %2d, #total apps = %d", page, nitems);
+  draw_text_row(buf, i);
+  i++;
 
-  // sprintf(buf, "  help:");
-  // draw_text_row(buf, i);
-  // i++;
+  sprintf(buf, "  help:");
+  draw_text_row(buf, i);
+  i++;
 
-  // sprintf(buf, "  <-  Prev Page");
-  // draw_text_row(buf, i);
-  // i++;
+  sprintf(buf, "  <-  Prev Page");
+  draw_text_row(buf, i);
+  i++;
 
-  // sprintf(buf, "  ->  Next Page");
-  // draw_text_row(buf, i);
-  // i++;
+  sprintf(buf, "  ->  Next Page");
+  draw_text_row(buf, i);
+  i++;
 
-  // sprintf(buf, "  0-9 Choose");
-  // draw_text_row(buf, i);
-  // i++;
+  sprintf(buf, "  0-9 Choose");
+  draw_text_row(buf, i);
+  i++;
 
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 

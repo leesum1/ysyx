@@ -46,9 +46,9 @@ void SDL_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst, SDL_
   // 像素指针
   uint32_t* dstbuf = (uint32_t*)dst->pixels;
   uint32_t* srcbuf = (uint32_t*)src->pixels;
-  // 偏移量
-  uint16_t src_offset = src_y * src->w + src_x;
-  uint16_t des_offset = des_y * dst->w + des_x;
+  // 偏移量 必须使用 uint32_t, uint16_t 不够
+  uint32_t src_offset = src_y * src->w + src_x;
+  uint32_t des_offset = des_y * dst->w + des_x;
   // printf("des_x:%d,des_y:%d,des_w:%d,des_h:%d\n", des_x, des_y, des_w, des_h);
   // printf("src_x:%d,src_y:%d,src_w:%d,src_h:%d\n", src_x, src_y, src_w, src_h);
   // printf("src_offset:%d,des_offset:%d\n", src_offset, des_offset);
