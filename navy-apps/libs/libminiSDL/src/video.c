@@ -27,6 +27,8 @@ void SDL_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst, SDL_
   if (dstrect != NULL) {
     des_x = dstrect->x;
     des_y = dstrect->y;
+    des_w = dstrect->w;
+    des_h = dstrect->h;
   }
   // src 区域选择
   uint16_t src_x = 0;
@@ -45,27 +47,55 @@ void SDL_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst, SDL_
   uint32_t* dstbuf = (uint32_t*)dst->pixels;
   uint32_t* srcbuf = (uint32_t*)src->pixels;
   for (size_t c_h = 0; c_h < valid_h; c_h++) {
-    uint16_t src_offset = (src_x + src_y * srcrect->w) + c_h * srcrect->w;
-    uint16_t dest_offset = (des_x + des_y * dstrect->w) + c_h * dstrect->w;
+    uint16_t src_offset = (src_x + src_y * src_w) + c_h * src_w;
+    uint16_t dest_offset = (des_x + des_y * des_w) + c_h * des_w;
     for (size_t c_w = 0; c_w < valid_w; c_w++) {
       dstbuf[dest_offset + c_w] = srcbuf[src_offset + c_w];
     }
   }
 }
-
+/**
+ * @brief 测试通过
+ *
+ * @param dst
+ * @param dstrect
+ * @param color
+ */
 void SDL_FillRect(SDL_Surface* dst, SDL_Rect* dstrect, uint32_t color) {
-  uint32_t bufsize = dstrect->h * dstrect->w * sizeof(color);
+
+  SDL_Rect rect_temp;
+  if (dstrect == NULL) {
+    rect_temp.x = 0;
+    rect_temp.y = 0;
+    rect_temp.w = dst->w;
+    rect_temp.h = dst->h;
+  }
+  else {
+    rect_temp = *dstrect;
+  }
+
+  uint32_t bufsize = rect_temp.h * rect_temp.w * sizeof(color);
+
   uint8_t* lastpixels = dst->pixels;
   uint32_t* currentPixels = malloc(bufsize);
+
   for (size_t i = 0; i < bufsize / sizeof(color); i++) {
     currentPixels[i] = color;
   }
   dst->pixels = (uint8_t*)currentPixels;
-  SDL_UpdateRect(dst, dstrect->x, dstrect->y, dstrect->w, dstrect->h);
+  SDL_UpdateRect(dst, rect_temp.x, rect_temp.y, rect_temp.w, rect_temp.h);
   dst->pixels = lastpixels;
   free(currentPixels);
 }
-
+/**
+ * @brief 测试通过
+ *
+ * @param s
+ * @param x
+ * @param y
+ * @param w
+ * @param h
+ */
 void SDL_UpdateRect(SDL_Surface* s, int x, int y, int w, int h) {
   if (s) {
     // SDL_Rect rect;
@@ -78,13 +108,7 @@ void SDL_UpdateRect(SDL_Surface* s, int x, int y, int w, int h) {
       return;
     if ((int)(y + h) > s->h)
       return;
-    /* Fill the rectangle */
-    // rect.x = (Sint16)x;
-    // rect.y = (Sint16)y;
-    // rect.w = (Uint16)w;
-    // rect.h = (Uint16)h;
     NDL_DrawRect(s->pixels, x, y, w, h);
-    // SDL_UpdateRects(s, 1, &rect);
   }
 }
 
