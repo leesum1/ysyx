@@ -30,6 +30,7 @@ void SDL_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst, SDL_
     des_w = dstrect->w;
     des_h = dstrect->h;
   }
+  printf("des_x:%d,des_y:%d,des_w:%d,des_h:%d\n", des_x, des_y, des_w, des_h);
   // src 区域选择
   uint16_t src_x = 0;
   uint16_t src_y = 0;
@@ -41,6 +42,7 @@ void SDL_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst, SDL_
     src_w = srcrect->w;
     src_h = srcrect->h;
   }
+  printf("src_x:%d,src_y:%d,src_w:%d,src_h:%d\n", src_x, src_y, src_w, src_h);
   assert(src_w <= (des_w - des_x));
   assert(src_h <= (des_h - des_y));
   uint32_t* dstbuf = (uint32_t*)dst->pixels;

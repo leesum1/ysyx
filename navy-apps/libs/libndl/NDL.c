@@ -8,7 +8,6 @@
 static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
-static int canvas_w = 0, canvas_h = 0;
 
 uint32_t NDL_GetTicks() {
   static struct timeval tv;
