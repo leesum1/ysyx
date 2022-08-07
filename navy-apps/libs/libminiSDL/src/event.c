@@ -27,7 +27,7 @@ int SDL_WaitEvent(SDL_Event* event) {
 
   event->type = (!strcmp(kb_state, "kd")) ? SDL_KEYDOWN : SDL_KEYUP;
 
-  for (size_t i = 0; i < 83; i++) {
+  for (size_t i = 0; i < 10; i++) {
     printf("%d:,%s\n", keyname[i]);
   }
 
