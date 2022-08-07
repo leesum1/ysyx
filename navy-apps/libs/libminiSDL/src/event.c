@@ -23,7 +23,7 @@ int SDL_WaitEvent(SDL_Event* event) {
   char kb_state[5];
   char kb_name[20];
   sscanf(ndl_event, "%s %s", kb_state, kb_name);
-  printf(ndl_event, "%s %s %d\n", kb_state, kb_name, keyname[0]);
+  printf(ndl_event, "%s %s %s\n", kb_state, kb_name, keyname[0]);
 
   event->type = (!strcmp(kb_state, "kd")) ? SDL_KEYDOWN : SDL_KEYUP;
 
