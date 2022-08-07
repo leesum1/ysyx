@@ -17,6 +17,13 @@ uint32_t NDL_GetTicks() {
   return time_ms;
 }
 
+/**
+ * @brief 获取键盘事件
+ *
+ * @param buf 事件缓存
+ * @param len 缓存长度
+ * @return int 1:有事件
+ */
 int NDL_PollEvent(char* buf, int len) {
   // 使用 open 打开设备文件
 
