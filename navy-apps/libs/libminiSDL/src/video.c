@@ -3,13 +3,67 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
+
+#define MAX(x, y)     (((x) > (y)) ? (x) : (y))
+#define MIN(x, y)     (((x) < (y)) ? (x) : (y))
+/**
+ * @brief https://blog.csdn.net/caimouse/article/details/53482775
+ *
+ * @param src
+ * @param srcrect NULL:全部拷贝
+ * @param dst
+ * @param dstrect NULL:拷贝到 (0,0) 坐标上
+ */
 void SDL_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst, SDL_Rect* dstrect) {
   assert(dst && src);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
+  // dst 区域选择
+  uint16_t des_x = 0;
+  uint16_t des_y = 0;
+  uint16_t des_w = dst->w;
+  uint16_t des_h = dst->h;
+  if (dstrect != NULL) {
+    des_x = dstrect->x;
+    des_y = dstrect->y;
+  }
+  // src 区域选择
+  uint16_t src_x = 0;
+  uint16_t src_y = 0;
+  uint16_t src_w = src->w;
+  uint16_t src_h = src->h;
+  if (srcrect != NULL) {
+    src_x = srcrect->x;
+    src_y = srcrect->y;
+    src_w = srcrect->w;
+    src_h = srcrect->h;
+  }
+  uint16_t valid_w = MIN(src_w - src_x, des_w - des_x);
+  uint16_t valid_h = MIN(src_h - src_y, des_h - des_y);
+
+  uint32_t* dstbuf = (uint32_t*)dst->pixels;
+  uint32_t* srcbuf = (uint32_t*)src->pixels;
+  for (size_t c_h = 0; c_h < valid_h; c_h++) {
+    uint16_t src_offset = (src_x + src_y * srcrect->w) + c_h * srcrect->w;
+    uint16_t dest_offset = (des_x + des_y * dstrect->w) + c_h * dstrect->w;
+    for (size_t c_w = 0; c_w < valid_w; c_w++) {
+      dstbuf[dest_offset + c_w] = srcbuf[src_offset + c_w];
+    }
+  }
 }
 
 void SDL_FillRect(SDL_Surface* dst, SDL_Rect* dstrect, uint32_t color) {
+  uint32_t bufsize = dstrect->h * dstrect->w * sizeof(color);
+  uint8_t* lastpixels = dst->pixels;
+  uint32_t* currentPixels = malloc(bufsize);
+  for (size_t i = 0; i < bufsize / sizeof(color); i++) {
+    currentPixels[i] = color;
+  }
+  dst->pixels = (uint8_t*)currentPixels;
+  SDL_UpdateRect(dst, dstrect->x, dstrect->y, dstrect->w, dstrect->h);
+  dst->pixels = lastpixels;
+  free(currentPixels);
 }
 
 void SDL_UpdateRect(SDL_Surface* s, int x, int y, int w, int h) {
