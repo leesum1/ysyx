@@ -87,16 +87,15 @@ void SDL_FillRect(SDL_Surface* dst, SDL_Rect* dstrect, uint32_t color) {
 
   uint32_t bufsize = rect_temp.h * rect_temp.w * sizeof(color);
 
-  uint8_t* lastpixels = dst->pixels;
-  uint32_t* currentPixels = malloc(bufsize);
+  uint32_t* lastpixels = dst->pixels;
 
   for (size_t i = 0; i < bufsize / sizeof(color); i++) {
-    currentPixels[i] = color;
+    lastpixels[i] = color;
   }
-  dst->pixels = (uint8_t*)currentPixels;
-  SDL_UpdateRect(dst, rect_temp.x, rect_temp.y, rect_temp.w, rect_temp.h);
-  dst->pixels = lastpixels;
-  free(currentPixels);
+  // dst->pixels = (uint8_t*)currentPixels;
+  // SDL_UpdateRect(dst, rect_temp.x, rect_temp.y, rect_temp.w, rect_temp.h);
+  // dst->pixels = lastpixels;
+  // free(currentPixels);
 }
 /**
  * @brief 测试通过
