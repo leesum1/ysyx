@@ -74,26 +74,7 @@ int main(int argc, char* argv[], char* envp[]) {
   font = new BDF_Font(font_fname);
   logo_sf = SDL_LoadBMP("/share/pictures/projectn.bmp");
   assert(logo_sf);
-  printf("SDL_LoadBMP\n");
   set_i_max();
-
-  SDL_Rect recttemp1 = {
-    .x = 0,
-    .y = 0,
-    .w = 100,
-    .h = 100
-  };
-  SDL_Rect recttemp2 = {
-  .x = 100,
-  .y = 0,
-  .w = 100,
-  .h = 200
-  };
-
-
-  SDL_FillRect(screen, NULL, 0x800000);
-  SDL_FillRect(screen, &recttemp1, 0xFF99CC);
-  SDL_FillRect(screen, &recttemp2, 0xE5FFCC);
 
   while (1) {
     display_menu(i_max);

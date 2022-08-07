@@ -27,10 +27,8 @@ void SDL_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst, SDL_
   if (dstrect != NULL) {
     des_x = dstrect->x;
     des_y = dstrect->y;
-    des_w = dstrect->w;
-    des_h = dstrect->h;
   }
-  printf("des_x:%d,des_y:%d,des_w:%d,des_h:%d\n", des_x, des_y, des_w, des_h);
+
   // src 区域选择
   uint16_t src_x = 0;
   uint16_t src_y = 0;
@@ -42,39 +40,30 @@ void SDL_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst, SDL_
     src_w = srcrect->w;
     src_h = srcrect->h;
   }
-  printf("src_x:%d,src_y:%d,src_w:%d,src_h:%d\n", src_x, src_y, src_w, src_h);
+
   assert(src_w <= (des_w - des_x));
   assert(src_h <= (des_h - des_y));
+  // 像素指针
   uint32_t* dstbuf = (uint32_t*)dst->pixels;
   uint32_t* srcbuf = (uint32_t*)src->pixels;
-
+  // 偏移量
   uint16_t src_offset = src_y * src->w + src_x;
   uint16_t des_offset = des_y * dst->w + des_x;
+  // printf("des_x:%d,des_y:%d,des_w:%d,des_h:%d\n", des_x, des_y, des_w, des_h);
+  // printf("src_x:%d,src_y:%d,src_w:%d,src_h:%d\n", src_x, src_y, src_w, src_h);
+  // printf("src_offset:%d,des_offset:%d\n", src_offset, des_offset);
+  // printf("src_offset:%d,des_offset:%d\n", src_offset, des_offset);
 
+  // 按行复制数据
   for (size_t i = 0; i < src_h; i++) {
-    des_offset += i * dst->w;
-    src_offset += i * src->w;
-    for (size_t j = 0; j < src_w; i++) {
-      dstbuf[des_offset + j] = srcbuf[des_offset + j];
+    // 复制一行
+    for (size_t j = 0; j < src_w; j++) {
+      dstbuf[des_offset + j] = srcbuf[src_offset + j];
     }
+    // 偏移量移动到下一行
+    des_offset += dst->w;
+    src_offset += src->w;
   }
-
-
-
-  /*******************/
-    // uint16_t valid_w = MIN(src_w - src_x, des_w - des_x);
-    // uint16_t valid_h = MIN(src_h - src_y, des_h - des_y);
-
-    // uint32_t* dstbuf = (uint32_t*)dst->pixels;
-    // uint32_t* srcbuf = (uint32_t*)src->pixels;
-
-    // for (size_t c_h = 0; c_h < valid_h; c_h++) {
-    //   uint16_t src_offset = (src_x + src_y * src_w) + c_h * src_w;
-    //   uint16_t dest_offset = (des_x + des_y * des_w) + c_h * des_w;
-    //   for (size_t c_w = 0; c_w < valid_w; c_w++) {
-    //     dstbuf[dest_offset + c_w] = srcbuf[src_offset + c_w];
-    //   }
-    // }
 }
 /**
  * @brief 测试通过
