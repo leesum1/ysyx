@@ -47,21 +47,19 @@ int NDL_PollEvent(char* buf, int len) {
 static int ndl_w, ndl_h;
 void NDL_OpenCanvas(int* w, int* h) {
   // 获取屏幕大小
-  char dispinfo[32];
-  int dispinfo_fd = open("/proc/dispinfo", O_RDONLY);
-  read(dispinfo_fd, dispinfo, sizeof(dispinfo));
+  // char dispinfo[32];
+  // int dispinfo_fd = open("/proc/dispinfo", O_RDONLY);
+  // read(dispinfo_fd, dispinfo, sizeof(dispinfo));
 
-  sscanf(dispinfo, "WIDTH:%d\nHEIGHT:%d\n", &ndl_w, &ndl_h);
-  screen_w = ndl_w;
-  screen_h = ndl_h;
-  close(dispinfo_fd);
-  // 将全屏幕设置为画布
-  if (*w == 0 && *h == 0) {
-    *w = ndl_w;
-    *h = ndl_h;
-  }
-  canvas_h = *h;
-  canvas_w = *w;
+  // sscanf(dispinfo, "WIDTH:%d\nHEIGHT:%d\n", &ndl_w, &ndl_h);
+  // screen_w = ndl_w;
+  // screen_h = ndl_h;
+  // close(dispinfo_fd);
+  // // 将全屏幕设置为画布
+  // if (*w == 0 && *h == 0) {
+  //   *w = ndl_w;
+  //   *h = ndl_h;
+  // }
 
   if (getenv("NWM_APP")) {
     int fbctl = 4;
