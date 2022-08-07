@@ -89,7 +89,7 @@ void NDL_DrawRect(uint32_t* pixels, int x, int y, int w, int h) {
     offset += WIDTH * 4 * c_h;
     pixels += w * c_h;
     lseek(fd, offset, SEEK_SET);
-    write(fd, pixels, w);
+    write(fd, pixels, w * 4);
   }
   // lseek(fd, offset, SEEK_SET);
   // write(fd, pixels, len);
