@@ -3,15 +3,102 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
+
+#define MAX(x, y)     (((x) > (y)) ? (x) : (y))
+#define MIN(x, y)     (((x) < (y)) ? (x) : (y))
+/**
+ * @brief https://blog.csdn.net/caimouse/article/details/53482775
+ *
+ * @param src
+ * @param srcrect NULL:全部拷贝
+ * @param dst
+ * @param dstrect NULL:拷贝到 (0,0) 坐标上
+ */
 void SDL_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst, SDL_Rect* dstrect) {
   assert(dst && src);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
-}
+  // dst 区域选择
+  uint16_t des_x = 0;
+  uint16_t des_y = 0;
+  uint16_t des_w = dst->w;
+  uint16_t des_h = dst->h;
+  if (dstrect != NULL) {
+    des_x = dstrect->x;
+    des_y = dstrect->y;
+  }
+  // src 区域选择
+  uint16_t src_x = 0;
+  uint16_t src_y = 0;
+  uint16_t src_w = src->w;
+  uint16_t src_h = src->h;
+  if (srcrect != NULL) {
+    src_x = srcrect->x;
+    src_y = srcrect->y;
+    src_w = srcrect->w;
+    src_h = srcrect->h;
+  }
 
+  assert(src_w <= (des_w - des_x));
+  assert(src_h <= (des_h - des_y));
+  // 像素指针
+  uint32_t* dstbuf = (uint32_t*)dst->pixels;
+  uint32_t* srcbuf = (uint32_t*)src->pixels;
+  // 偏移量 必须使用 uint32_t, uint16_t 不够
+  uint32_t src_offset = src_y * src->w + src_x;
+  uint32_t des_offset = des_y * dst->w + des_x;
+  // printf("des_x:%d,des_y:%d,des_w:%d,des_h:%d\n", des_x, des_y, des_w, des_h);
+  // printf("src_x:%d,src_y:%d,src_w:%d,src_h:%d\n", src_x, src_y, src_w, src_h);
+  // printf("src_offset:%d,des_offset:%d\n", src_offset, des_offset);
+  // printf("src_offset:%d,des_offset:%d\n", src_offset, des_offset);
+
+  // 按行复制数据
+  for (size_t i = 0; i < src_h; i++) {
+    // 复制一行
+    for (size_t j = 0; j < src_w; j++) {
+      dstbuf[des_offset + j] = srcbuf[src_offset + j];
+    }
+    // 偏移量移动到下一行
+    des_offset += dst->w;
+    src_offset += src->w;
+  }
+}
+/**
+ * @brief 测试通过
+ *
+ * @param dst
+ * @param dstrect
+ * @param color
+ */
 void SDL_FillRect(SDL_Surface* dst, SDL_Rect* dstrect, uint32_t color) {
-}
 
+  SDL_Rect rect_temp;
+  // 边界情况处理
+  if (dstrect == NULL) {
+    rect_temp.x = 0;
+    rect_temp.y = 0;
+    rect_temp.w = dst->w;
+    rect_temp.h = dst->h;
+  }
+  else {
+    rect_temp = *dstrect;
+  }
+  uint32_t bufsize = rect_temp.h * rect_temp.w;
+  uint32_t* pixels = dst->pixels;
+  for (size_t i = 0; i < bufsize; i++) {
+    pixels[i] = color;
+  }
+}
+/**
+ * @brief 测试通过
+ *
+ * @param s
+ * @param x
+ * @param y
+ * @param w
+ * @param h
+ */
 void SDL_UpdateRect(SDL_Surface* s, int x, int y, int w, int h) {
   if (s) {
     // SDL_Rect rect;
@@ -24,13 +111,7 @@ void SDL_UpdateRect(SDL_Surface* s, int x, int y, int w, int h) {
       return;
     if ((int)(y + h) > s->h)
       return;
-    /* Fill the rectangle */
-    // rect.x = (Sint16)x;
-    // rect.y = (Sint16)y;
-    // rect.w = (Uint16)w;
-    // rect.h = (Uint16)h;
     NDL_DrawRect(s->pixels, x, y, w, h);
-    // SDL_UpdateRects(s, 1, &rect);
   }
 }
 

@@ -63,6 +63,7 @@ size_t dispinfo_read(void* buf, size_t offset, size_t len) {
  * @return size_t
  */
 size_t fb_write(const void* buf, size_t offset, size_t len) {
+  /* 按页 */
   int x = (offset >> 32);
   int y = (offset);
   int w = (len >> 32);
@@ -78,6 +79,17 @@ size_t fb_write(const void* buf, size_t offset, size_t len) {
   // fbctrl.
   ioe_write(AM_GPU_FBDRAW, &fbctrl);
   return len;
+
+  // /* 按行 */
+  // offset /= 4;
+  // AM_GPU_FBDRAW_T fbctrl;
+  // fbctrl.x = offset / 400;
+  // fbctrl.y = offset % 400;
+  // fbctrl.w = len;
+  // fbctrl.h = 1;
+  // fbctrl.sync = 1;
+  // ioe_write(AM_GPU_FBDRAW, &fbctrl);
+  // return len;
 }
 
 void init_device() {

@@ -12,16 +12,13 @@ int main() {
   printf("BMP_Load ends! Spinning...\n");
   assert(bmp);
 
-  int t1, t2;
-  NDL_OpenCanvas(&t1, &t2);
+  NDL_OpenCanvas(&w, &h);
 
   printf("w:%d,h:%d\n", w, h);
   NDL_DrawRect(bmp, 100, 100, w, h);
-  //free(bmp);
+  free(bmp);
   NDL_Quit();
   printf("Test ends! Spinning...\n");
-  while (1) {
-    NDL_DrawRect(bmp, 100, 100, w, h);
-  }
+  while (1);
   return 0;
 }

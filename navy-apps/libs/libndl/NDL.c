@@ -52,6 +52,8 @@ void NDL_OpenCanvas(int* w, int* h) {
   read(dispinfo_fd, dispinfo, sizeof(dispinfo));
 
   sscanf(dispinfo, "WIDTH:%d\nHEIGHT:%d\n", &ndl_w, &ndl_h);
+  screen_w = ndl_w;
+  screen_h = ndl_h;
   close(dispinfo_fd);
   // 将全屏幕设置为画布
   if (*w == 0 && *h == 0) {
@@ -60,6 +62,7 @@ void NDL_OpenCanvas(int* w, int* h) {
   }
 
   if (getenv("NWM_APP")) {
+    printf("NWM_APP!\n");
     int fbctl = 4;
     fbdev = 5;
     screen_w = *w; screen_h = *h;
@@ -77,8 +80,10 @@ void NDL_OpenCanvas(int* w, int* h) {
     close(fbctl);
   }
 }
-
+#define WIDTH 400
+#define HEIGHT 300
 void NDL_DrawRect(uint32_t* pixels, int x, int y, int w, int h) {
+  /* 按页 */
   static int first = 0;
   static int fd;
   if (!first) {
@@ -88,7 +93,6 @@ void NDL_DrawRect(uint32_t* pixels, int x, int y, int w, int h) {
   size_t len = ((size_t)w << 32) | h;
   lseek(fd, offset, SEEK_SET);
   write(fd, pixels, len);
-
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples) {
