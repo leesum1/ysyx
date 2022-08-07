@@ -17,7 +17,12 @@ int SDL_PollEvent(SDL_Event* ev) {
 }
 
 int SDL_WaitEvent(SDL_Event* event) {
-
+  char ndl_event[32];
+  while (!NDL_PollEvent(ndl_event, sizeof(ndl_event)));
+  char kb_state[5];
+  char kb_name[20];
+  sscanf(ndl_event, "%s %s", kb_state, kb_name);
+  printf(ndl_event, "%s %s\n", kb_state, kb_name);
   return 1;
 }
 
