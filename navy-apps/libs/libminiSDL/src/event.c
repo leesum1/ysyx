@@ -23,13 +23,13 @@ int SDL_WaitEvent(SDL_Event* event) {
   char kb_state[5];
   char kb_name[20];
   sscanf(ndl_event, "%s %s", kb_state, kb_name);
-  printf(ndl_event, "%s %s %s\n", kb_state, kb_name, keyname[0]);
+  printf(ndl_event, "%s %s \n", kb_state, kb_name);
 
   event->type = (!strcmp(kb_state, "kd")) ? SDL_KEYDOWN : SDL_KEYUP;
 
-  // for (size_t i = 0; i < sizeof(keyname); i++) {
-  //   /* code */
-  // }
+  for (size_t i = 0; i < 83; i++) {
+    printf("%d:,%s\n", keyname[i]);
+  }
 
   // event->key.keysym = 
   // event->key = 
