@@ -84,6 +84,7 @@ void NDL_OpenCanvas(int* w, int* h) {
 #define WIDTH 400
 #define HEIGHT 300
 void NDL_DrawRect(uint32_t* pixels, int x, int y, int w, int h) {
+  /* 按页 */
   static int first = 0;
   static int fd;
   if (!first) {

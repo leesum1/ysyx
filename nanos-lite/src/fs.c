@@ -100,7 +100,6 @@ int fs_open(const char* pathname, int flags, int mode) {
       return i;
     }
   }
-
   //找不到文件
   assert(0);
   return -1;
@@ -124,14 +123,16 @@ size_t fs_read(int fd, void* buf, size_t len) {
   }
   // ramdisk
   else {
-    // 若读取的数超出文件大小,读取到文件尾为止,此时 read_len < len
+
     size_t read_len = len;
+    // 若读取的数超出文件大小,读取到文件尾为止,此时 read_len < len
     if ((open_offset + len) > file_size) {
-      read_len = open_offset + len - file_size;
+      // 读取剩余大小
+      read_len = file_size - open_offset + 1;
     }
 
     ramdisk_read(buf, disk_offset + open_offset, read_len);
-    file_table[fd].open_offset += len;
+    file_table[fd].open_offset += read_len;
     return read_len;
   }
   return -1;
@@ -187,6 +188,7 @@ size_t fs_lseek(int fd, size_t offset, int whence) {
     assert(0);
     break;
   }
+
   return file_table[fd].open_offset;
 }
 /**
