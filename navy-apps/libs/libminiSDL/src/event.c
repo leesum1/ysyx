@@ -26,13 +26,15 @@ int SDL_WaitEvent(SDL_Event* event) {
   printf(ndl_event, "%s %s \n", kb_state, kb_name);
 
   event->type = (!strcmp(kb_state, "kd")) ? SDL_KEYDOWN : SDL_KEYUP;
-
-  for (size_t i = 0; i < 10; i++) {
-    printf("%d:,%s\n", i, keyname[i]);
+  event->key.keysym.sym = SDLK_NONE;
+  for (size_t i = 0; i < 83; i++) {
+    if (!strcmp(kb_name, keyname[i])) {
+      event->key.keysym.sym = i;
+      printf("match key:%s\n", keyname[i]);
+      break;
+    }
   }
 
-  // event->key.keysym = 
-  // event->key = 
   return 1;
 }
 
