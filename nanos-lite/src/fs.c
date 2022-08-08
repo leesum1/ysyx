@@ -101,6 +101,7 @@ int fs_open(const char* pathname, int flags, int mode) {
     }
   }
   //找不到文件
+  Log("找不到文件:%s", pathname);
   assert(0);
   return -1;
 }
