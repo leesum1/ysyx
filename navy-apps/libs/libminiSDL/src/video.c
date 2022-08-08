@@ -28,7 +28,6 @@ void SDL_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst, SDL_
     des_x = dstrect->x;
     des_y = dstrect->y;
   }
-
   // src 区域选择
   uint16_t src_x = 0;
   uint16_t src_y = 0;

@@ -13,9 +13,37 @@ int SDL_PushEvent(SDL_Event* ev) {
 }
 
 int SDL_PollEvent(SDL_Event* ev) {
-  return 0;
+
+  char ndl_event[32];
+  // return 0 if no NDL events
+  if (!NDL_PollEvent(ndl_event, sizeof(ndl_event)))
+    return 0;
+
+  char kb_state[5];
+  char kb_name[20];
+  // prase NDL events, <kd/ku> <keyname> 
+  sscanf(ndl_event, "%s %s", kb_state, kb_name);
+  printf(ndl_event, "%s %s \n", kb_state, kb_name);
+  // pack SDL_event form NDL events
+  ev->type = (!strcmp(kb_state, "kd")) ? SDL_KEYDOWN : SDL_KEYUP;
+  ev->key.keysym.sym = SDLK_NONE;
+  // get sdl keyname
+  for (size_t i = 0; i < 83; i++) {
+    if (!strcmp(kb_name, keyname[i])) {
+      ev->key.keysym.sym = i;
+      printf("match key:%s\n", keyname[i]);
+      break;
+    }
+  }
+  return 1;
 }
 
+/**
+ * @brief 阻塞等待事件
+ *
+ * @param event
+ * @return int 1:有事件 0:无事件
+ */
 int SDL_WaitEvent(SDL_Event* event) {
 
   char ndl_event[32];
