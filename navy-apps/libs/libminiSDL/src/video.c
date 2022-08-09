@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-
+#include "fixedptc.h"
 
 #define MAX(x, y)     (((x) > (y)) ? (x) : (y))
 #define MIN(x, y)     (((x) < (y)) ? (x) : (y))
@@ -220,7 +220,21 @@ void SDL_SoftStretch(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst, SDL_
     SDL_BlitSurface(src, &rect, dst, dstrect);
   }
   else {
-    assert(0);
+    // TODO:没有测试
+    //printf("src_w:%d,src_h:%d,dst_w:%d,dst_h:%d\n", w, h, dstrect->w, dstrect->h);
+    fixedpt Stretch_w = fixedpt_div(fixedpt_fromint(dstrect->w), fixedpt_fromint(w));
+    fixedpt Stretch_h = fixedpt_div(fixedpt_fromint(dstrect->h), fixedpt_fromint(h));
+    assert(Stretch_w = Stretch_h);
+    int temp_w = fixedpt_toint(Stretch_w);
+    for (size_t i = 0; i < h; i++) {
+      for (size_t j = 0; j < w; j++) {
+        for (size_t k = 0; k < temp_w; k++) {
+          dst->pixels[(i * w + j) * temp_w + k] = src->pixels[i * w];
+        }
+      }
+    }
+
+    //assert(0);
   }
 }
 
@@ -293,9 +307,10 @@ uint32_t SDL_MapRGBA(SDL_PixelFormat* fmt, uint8_t r, uint8_t g, uint8_t b, uint
   return p;
 }
 
+// pal
 int SDL_LockSurface(SDL_Surface* s) {
   return 0;
 }
-
+// pal
 void SDL_UnlockSurface(SDL_Surface* s) {
 }
