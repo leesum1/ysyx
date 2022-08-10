@@ -1,4 +1,4 @@
-#if 1
+#if 0
 #include <NDL.h>
 #include <sdl-video.h>
 #include <assert.h>
