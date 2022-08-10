@@ -335,9 +335,12 @@ void Vtop___024root___settle__TOP__3(Vtop___024root* vlSelf) {
                                                       == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op))) 
                                                   | (9U 
                                                      == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op)));
-    vlSelf->top__DOT__u_memory__DOT___ls32byte = ((3U 
-                                                   == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op)) 
-                                                  | (0xaU 
+    vlSelf->top__DOT__u_memory__DOT___ls32byte = ((
+                                                   (3U 
+                                                    == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op)) 
+                                                   | (0xaU 
+                                                      == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op))) 
+                                                  | (7U 
                                                      == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op)));
     vlSelf->top__DOT__u_memory__DOT___unsigned = ((
                                                    (5U 
