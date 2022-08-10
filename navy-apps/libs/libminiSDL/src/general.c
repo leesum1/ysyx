@@ -22,10 +22,14 @@ int SDL_SetError(const char* fmt, ...) {
   va_end(args);
   return -1;
 }
-
+// pal
 int SDL_ShowCursor(int toggle) {
+  printf("SDL_ShowCursor\n");
+  assert(0);
   return 0;
 }
-
+// pal
 void SDL_WM_SetCaption(const char* title, const char* icon) {
+  printf("SDL_WM_SetCaption\n");
+  //assert(0);
 }
