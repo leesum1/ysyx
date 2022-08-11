@@ -34,6 +34,7 @@ GCC_LIB += ${LLVM_LIB}
 GCC_LDFLAGS := $(addprefix -LDFLAGS ,${GCC_LIB})
 GCC_CFLAGS :=  $(addprefix -CFLAGS ,${GCC_INC_PATH})
 GCC_CFLAGS += $(addprefix -CFLAGS ,${LLVM_FLAGS})
+GCC_CFLAGS += $(addprefix -CFLAGS ,${CFLAGS})
 GCC_FLAGS := ${GCC_CFLAGS} ${GCC_LDFLAGS}
 
 # run info:
