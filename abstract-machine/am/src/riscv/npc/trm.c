@@ -1,5 +1,6 @@
 #include <am.h>
 #include <klib-macros.h>
+#include <stdio.h>
 #include "npc.h" // add by leesum
 
 extern char _heap_start;
@@ -27,6 +28,7 @@ void halt(int code) {
 }
 
 void _trm_init() {
+    //printf("mainargs:%s\n", mainargs);
     int ret = main(mainargs);
     halt(ret);
 }

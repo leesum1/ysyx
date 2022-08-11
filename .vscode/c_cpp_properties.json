@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/npc/obj_dir/*",
+                "/usr/local/share/verilator/include/*",
+                // "/usr/include/SDL2/*",
+                "abstract-machine/am/include/arch/**",
+                "/home/leesum/ysyx-workbench/navy-apps/**",
+                "nanos-lite/include/*",
+                "abstract-machine/am/include/*",
+                "/home/leesum/ysyx-workbench/navy-apps/libs/libminiSDL/include/*"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "linux-clang-x64",
+            "configurationProvider": "ms-vscode.makefile-tools"
+        }
+    ],
+    "version": 4
+}

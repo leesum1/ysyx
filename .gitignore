@@ -5,11 +5,15 @@
 !/nexus-am/*
 !/nanos-lite/*
 !/navy-apps/*
+!/abstract-machine/*
+!/am-kernels/*
 !/npc/*
+!/nvboard/*
+!.vscode/*
 !Makefile
 !README.md
 !.gitignore
 !init.sh
-/nvboard
-/am-kernels
-/fceux-am
+# /nvboard
+# /am-kernels
+# /fceux-am
