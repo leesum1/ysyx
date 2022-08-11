@@ -20,8 +20,8 @@ GCC_INC_PATH = -I/home/leesum/ysyx-workbench/npc/csrc/include  \
 			   -I/home/leesum/ysyx-workbench/npc/csrc/ringbuff \
 
 # llvm
-LLVM_LIB = $(shell llvm-config --libs)
-LLVM_FLAGS = $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config --cxxflags))
+LLVM_LIB = $(shell llvm-config-13 --libs)
+LLVM_FLAGS = $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config-13 --cxxflags))
 
 #-lasan(内存检查)
 GCC_LIB = -lreadline \
