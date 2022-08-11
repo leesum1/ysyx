@@ -35,9 +35,9 @@ VM_PREFIX = Vtop
 VM_MODPREFIX = Vtop
 # User CFLAGS (from -CFLAGS on Verilator command line)
 VM_USER_CFLAGS = \
-	-I/csrc/include \
-	-I/csrc/devices/include \
-	-I/csrc/ringbuff \
+	-I/media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/include \
+	-I/media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/devices/include \
+	-I/media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/ringbuff \
 	-I/usr/lib/llvm-13/include \
 	-std=c++14 \
 	-fno-exceptions \
