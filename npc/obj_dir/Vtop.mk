@@ -35,9 +35,9 @@ VM_PREFIX = Vtop
 VM_MODPREFIX = Vtop
 # User CFLAGS (from -CFLAGS on Verilator command line)
 VM_USER_CFLAGS = \
-	-I/home/leesum/ysyx-workbench/npc/csrc/include \
-	-I/home/leesum/ysyx-workbench/npc/csrc/devices/include \
-	-I/home/leesum/ysyx-workbench/npc/csrc/ringbuff \
+	-I/media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/include \
+	-I/media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/devices/include \
+	-I/media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/ringbuff \
 	-I/usr/lib/llvm-13/include \
 	-std=c++14 \
 	-fno-exceptions \
@@ -75,10 +75,10 @@ VM_USER_CLASSES = \
 
 # User .cpp directories (from .cpp's on Verilator command line)
 VM_USER_DIR = \
-	/home/leesum/ysyx-workbench/npc/csrc \
-	/home/leesum/ysyx-workbench/npc/csrc/cppreadline \
-	/home/leesum/ysyx-workbench/npc/csrc/devices \
-	/home/leesum/ysyx-workbench/npc/csrc/sdb \
+	/media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc \
+	/media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/cppreadline \
+	/media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/devices \
+	/media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/sdb \
 
 
 ### Default rules...
@@ -90,39 +90,39 @@ include $(VERILATOR_ROOT)/include/verilated.mk
 ### Executable rules... (from --exe)
 VPATH += $(VM_USER_DIR)
 
-Console.o: /home/leesum/ysyx-workbench/npc/csrc/cppreadline/Console.cpp
+Console.o: /media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/cppreadline/Console.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-deviceManager.o: /home/leesum/ysyx-workbench/npc/csrc/devices/deviceManager.cpp
+deviceManager.o: /media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/devices/deviceManager.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-devicebase.o: /home/leesum/ysyx-workbench/npc/csrc/devices/devicebase.cpp
+devicebase.o: /media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/devices/devicebase.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-devicekb.o: /home/leesum/ysyx-workbench/npc/csrc/devices/devicekb.cpp
+devicekb.o: /media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/devices/devicekb.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-devicetimer.o: /home/leesum/ysyx-workbench/npc/csrc/devices/devicetimer.cpp
+devicetimer.o: /media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/devices/devicetimer.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-deviceuart.o: /home/leesum/ysyx-workbench/npc/csrc/devices/deviceuart.cpp
+deviceuart.o: /media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/devices/deviceuart.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-devicevga.o: /home/leesum/ysyx-workbench/npc/csrc/devices/devicevga.cpp
+devicevga.o: /media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/devices/devicevga.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-main.o: /home/leesum/ysyx-workbench/npc/csrc/main.cpp
+main.o: /media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/main.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-mydpic.o: /home/leesum/ysyx-workbench/npc/csrc/mydpic.cpp
+mydpic.o: /media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/mydpic.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-difftest.o: /home/leesum/ysyx-workbench/npc/csrc/sdb/difftest.cpp
+difftest.o: /media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/sdb/difftest.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-expr.o: /home/leesum/ysyx-workbench/npc/csrc/sdb/expr.cpp
+expr.o: /media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/sdb/expr.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-exprinternal.o: /home/leesum/ysyx-workbench/npc/csrc/sdb/exprinternal.cpp
+exprinternal.o: /media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/sdb/exprinternal.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-itrace.o: /home/leesum/ysyx-workbench/npc/csrc/sdb/itrace.cpp
+itrace.o: /media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/sdb/itrace.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-mysdb.o: /home/leesum/ysyx-workbench/npc/csrc/sdb/mysdb.cpp
+mysdb.o: /media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/sdb/mysdb.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-watchpoint.o: /home/leesum/ysyx-workbench/npc/csrc/sdb/watchpoint.cpp
+watchpoint.o: /media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/sdb/watchpoint.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-simMem.o: /home/leesum/ysyx-workbench/npc/csrc/simMem.cpp
+simMem.o: /media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/simMem.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-simtop.o: /home/leesum/ysyx-workbench/npc/csrc/simtop.cpp
+simtop.o: /media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/csrc/simtop.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 
 ### Link rules... (from --exe)

@@ -8,14 +8,12 @@
 #ifndef VERILATED_VTOP_H_
 #define VERILATED_VTOP_H_  // guard
 
-#include "verilated_heavy.h"
+#include "verilated.h"
 #include "svdpi.h"
 
 class Vtop__Syms;
 class Vtop___024root;
 class VerilatedVcdC;
-class Vtop_VerilatedVcd;
-
 
 // This class is the main interface to the Verilated model
 class Vtop VL_NOT_FINAL {

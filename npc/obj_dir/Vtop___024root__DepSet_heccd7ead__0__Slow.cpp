@@ -2,254 +2,56 @@
 // DESCRIPTION: Verilator output: Design implementation internals
 // See Vtop.h for the primary calling header
 
-#include "Vtop___024root.h"
-#include "Vtop__Syms.h"
-
+#include "verilated.h"
 #include "verilated_dpi.h"
 
-//==========
+#include "Vtop___024root.h"
 
-extern "C" void pmem_read(long long raddr, long long* rdata);
+void Vtop___024root____Vdpiimwrap_top__DOT__u_rv64reg__DOT__set_gpr_ptr__Vdpioc2_TOP(const VlUnpacked<QData/*63:0*/, 32> &a);
 
-VL_INLINE_OPT void Vtop___024root____Vdpiimwrap_top__DOT__u_fetch__DOT__pmem_read_TOP(QData/*63:0*/ raddr, QData/*63:0*/ &rdata) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root____Vdpiimwrap_top__DOT__u_fetch__DOT__pmem_read_TOP\n"); );
-    // Body
-    long long raddr__Vcvt;
-    for (size_t raddr__Vidx = 0; raddr__Vidx < 1; ++raddr__Vidx) raddr__Vcvt = raddr;
-    long long rdata__Vcvt;
-    pmem_read(raddr__Vcvt, &rdata__Vcvt);
-    rdata = rdata__Vcvt;
-}
-
-extern "C" void get_pc(long long pc);
-
-VL_INLINE_OPT void Vtop___024root____Vdpiimwrap_top__DOT__u_fetch__DOT__get_pc_TOP(QData/*63:0*/ pc) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root____Vdpiimwrap_top__DOT__u_fetch__DOT__get_pc_TOP\n"); );
-    // Body
-    long long pc__Vcvt;
-    for (size_t pc__Vidx = 0; pc__Vidx < 1; ++pc__Vidx) pc__Vcvt = pc;
-    get_pc(pc__Vcvt);
-}
-
-extern "C" void set_gpr_ptr(const svOpenArrayHandle a);
-
-VL_INLINE_OPT void Vtop___024root____Vdpiimwrap_top__DOT__u_rv64reg__DOT__set_gpr_ptr__Vdpioc2_TOP(const VlUnpacked<QData/*63:0*/, 32> &a) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root____Vdpiimwrap_top__DOT__u_rv64reg__DOT__set_gpr_ptr__Vdpioc2_TOP\n"); );
-    // Body
-    static const int a__Vopenprops__ulims[2] = {31, 0};
-    static const VerilatedVarProps a__Vopenprops(VLVT_UINT64, VLVD_IN, VerilatedVarProps::Packed(), 63, 0, VerilatedVarProps::Unpacked(), 1, a__Vopenprops__ulims);
-    VerilatedDpiOpenVar a__Vopenarray (&a__Vopenprops, &a);
-    set_gpr_ptr(&a__Vopenarray);
-}
-
-extern "C" void pmem_write(long long waddr, long long wdata, char wmask);
-
-VL_INLINE_OPT void Vtop___024root____Vdpiimwrap_top__DOT__u_memory__DOT__pmem_write_TOP(QData/*63:0*/ waddr, QData/*63:0*/ wdata, CData/*7:0*/ wmask) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root____Vdpiimwrap_top__DOT__u_memory__DOT__pmem_write_TOP\n"); );
-    // Body
-    long long waddr__Vcvt;
-    for (size_t waddr__Vidx = 0; waddr__Vidx < 1; ++waddr__Vidx) waddr__Vcvt = waddr;
-    long long wdata__Vcvt;
-    for (size_t wdata__Vidx = 0; wdata__Vidx < 1; ++wdata__Vidx) wdata__Vcvt = wdata;
-    char wmask__Vcvt;
-    for (size_t wmask__Vidx = 0; wmask__Vidx < 1; ++wmask__Vidx) wmask__Vcvt = wmask;
-    pmem_write(waddr__Vcvt, wdata__Vcvt, wmask__Vcvt);
-}
-
-VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
+VL_ATTR_COLD void Vtop___024root___initial__TOP__0(Vtop___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___sequent__TOP__1\n"); );
-    // Variables
-    CData/*0:0*/ top__DOT__u_dcode__DOT___type_load;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___type_jalr;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___type_jal;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___type_op_imm;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___type_op;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___type_system;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___type_auipc;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___type_lui;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___type_op_imm_32;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___type_op_32;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___inst_jalr;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___inst_ecall;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___inst_ebreak;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___inst_csrrw;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___inst_csrrs;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___inst_csrrc;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___inst_csrrwi;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___inst_csrrsi;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___inst_csrrci;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___inst_mret;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___U_type;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___isNeed_csr;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___csr_set;
-    CData/*0:0*/ top__DOT__u_dcode__DOT___csr_clear;
-    CData/*0:0*/ top__DOT__u_execute__DOT___rs1_rs2;
-    CData/*0:0*/ top__DOT__u_execute__DOT___rs1_imm;
-    CData/*0:0*/ top__DOT__u_execute__DOT___pc_4;
-    CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___isCMP;
-    CData/*0:0*/ top__DOT__u_execute__DOT__u_alu__DOT___isSUBop;
-    CData/*4:0*/ __Vdlyvdim0__top__DOT__u_rv64reg__DOT__rf__v0;
-    VlWide<3>/*64:0*/ top__DOT__u_execute__DOT__u_alu__DOT___alu_a;
-    VlWide<3>/*64:0*/ top__DOT__u_execute__DOT__u_alu__DOT___alu_b;
-    VlWide<3>/*95:0*/ __Vtemp6;
-    VlWide<4>/*127:0*/ __Vtemp7;
-    VlWide<3>/*95:0*/ __Vtemp8;
-    VlWide<4>/*127:0*/ __Vtemp9;
-    VlWide<4>/*127:0*/ __Vtemp10;
-    VlWide<3>/*95:0*/ __Vtemp13;
-    VlWide<3>/*95:0*/ __Vtemp14;
-    VlWide<3>/*95:0*/ __Vtemp15;
-    QData/*63:0*/ top__DOT__u_execute__DOT__u_alu__DOT___alu_out;
-    QData/*63:0*/ top__DOT__u_execute__DOT__u_execute_csr__DOT___csr_op2;
-    QData/*63:0*/ __Vtask_top__DOT__u_memory__DOT__pmem_read__3__rdata;
-    QData/*63:0*/ __Vdlyvval__top__DOT__u_rv64reg__DOT__rf__v0;
+    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___initial__TOP__0\n"); );
     // Body
-    Vtop___024root____Vdpiimwrap_top__DOT__u_fetch__DOT__pmem_read_TOP(vlSelf->top__DOT__u_memory__DOT___addr, __Vtask_top__DOT__u_memory__DOT__pmem_read__3__rdata);
-    vlSelf->top__DOT__u_memory__DOT___mem_read = __Vtask_top__DOT__u_memory__DOT__pmem_read__3__rdata;
-    Vtop___024root____Vdpiimwrap_top__DOT__u_memory__DOT__pmem_write_TOP(vlSelf->top__DOT__u_memory__DOT___addr, 
-                                                                         ((IData)(vlSelf->top__DOT__u_memory__DOT___ls8byte)
-                                                                           ? (QData)((IData)(
-                                                                                (0xffU 
-                                                                                & (IData)(vlSelf->top__DOT__rs2_data))))
-                                                                           : 
-                                                                          ((IData)(vlSelf->top__DOT__u_memory__DOT___ls16byte)
-                                                                            ? (QData)((IData)(
-                                                                                (0xffffU 
-                                                                                & (IData)(vlSelf->top__DOT__rs2_data))))
-                                                                            : 
-                                                                           ((IData)(vlSelf->top__DOT__u_memory__DOT___ls32byte)
-                                                                             ? (QData)((IData)(vlSelf->top__DOT__rs2_data))
-                                                                             : vlSelf->top__DOT__rs2_data))), 
-                                                                         ((((((8U 
-                                                                               == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op)) 
-                                                                              | (0xbU 
-                                                                                == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op))) 
-                                                                             | (9U 
-                                                                                == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op))) 
-                                                                            | (0xaU 
-                                                                               == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op))) 
-                                                                           & (0U 
-                                                                              != (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op)))
-                                                                           ? 
-                                                                          (0xffU 
-                                                                           & ((((1U 
-                                                                                & (- (IData)((IData)(vlSelf->top__DOT__u_memory__DOT___ls8byte)))) 
-                                                                                | (3U 
-                                                                                & (- (IData)((IData)(vlSelf->top__DOT__u_memory__DOT___ls16byte))))) 
-                                                                               | (0xfU 
-                                                                                & (- (IData)((IData)(vlSelf->top__DOT__u_memory__DOT___ls32byte))))) 
-                                                                              | (- (IData)(
-                                                                                ((6U 
-                                                                                == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op)) 
-                                                                                | (0xbU 
-                                                                                == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op)))))))
-                                                                           : 0U));
-    if (vlSelf->rst) {
-        vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mstatus_q = 0xa00001800ULL;
-    } else if (vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mstatus_en) {
-        vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mstatus_q 
-            = ((IData)(vlSelf->top__DOT__csr_mstatus_i_en)
-                ? vlSelf->top__DOT__csr_mstatus_i : vlSelf->top__DOT__u_execute__DOT__u_execute_csr__DOT___csr_exe_result);
-    }
-    if (vlSelf->rst) {
-        vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtvec_q = 0ULL;
-    } else if (vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtvec_en) {
-        vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtvec_q 
-            = ((IData)(vlSelf->top__DOT__csr_mtvec_i_en)
-                ? vlSelf->top__DOT__csr_mtvec_i : vlSelf->top__DOT__u_execute__DOT__u_execute_csr__DOT___csr_exe_result);
-    }
-    if (vlSelf->rst) {
-        vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mcause_q = 0ULL;
-    } else if (vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mcause_en) {
-        vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mcause_q 
-            = ((1U & (IData)(vlSelf->top__DOT__u_dcode__DOT___decode_trap_bus))
-                ? 0xbULL : vlSelf->top__DOT__u_execute__DOT__u_execute_csr__DOT___csr_exe_result);
-    }
-    __Vdlyvval__top__DOT__u_rv64reg__DOT__rf__v0 = 
-        ((0U == (IData)(vlSelf->top__DOT__u_dcode__DOT___rd_idx))
-          ? 0ULL : (((IData)(vlSelf->top__DOT__u_memory__DOT___unsigned) 
-                     | (IData)(vlSelf->top__DOT__u_memory__DOT___signed))
-                     ? ((IData)(vlSelf->top__DOT__u_memory__DOT___signed)
-                         ? ((IData)(vlSelf->top__DOT__u_memory__DOT___ls8byte)
-                             ? (((- (QData)((IData)(
-                                                    (1U 
-                                                     & (IData)(
-                                                               (vlSelf->top__DOT__u_memory__DOT___mem_read 
-                                                                >> 7U)))))) 
-                                 << 8U) | (QData)((IData)(
-                                                          (0xffU 
-                                                           & (IData)(vlSelf->top__DOT__u_memory__DOT___mem_read)))))
-                             : ((IData)(vlSelf->top__DOT__u_memory__DOT___ls16byte)
-                                 ? (((- (QData)((IData)(
-                                                        (1U 
-                                                         & (IData)(
-                                                                   (vlSelf->top__DOT__u_memory__DOT___mem_read 
-                                                                    >> 0xfU)))))) 
-                                     << 0x10U) | (QData)((IData)(
-                                                                 (0xffffU 
-                                                                  & (IData)(vlSelf->top__DOT__u_memory__DOT___mem_read)))))
-                                 : ((IData)(vlSelf->top__DOT__u_memory__DOT___ls32byte)
-                                     ? (((QData)((IData)(
-                                                         (- (IData)(
-                                                                    (1U 
-                                                                     & (IData)(
-                                                                               (vlSelf->top__DOT__u_memory__DOT___mem_read 
-                                                                                >> 0x1fU))))))) 
-                                         << 0x20U) 
-                                        | (QData)((IData)(vlSelf->top__DOT__u_memory__DOT___mem_read)))
-                                     : vlSelf->top__DOT__u_memory__DOT___mem_read)))
-                         : ((IData)(vlSelf->top__DOT__u_memory__DOT___unsigned)
-                             ? ((IData)(vlSelf->top__DOT__u_memory__DOT___ls8byte)
-                                 ? (QData)((IData)(
-                                                   (0xffU 
-                                                    & (IData)(vlSelf->top__DOT__u_memory__DOT___mem_read))))
-                                 : ((IData)(vlSelf->top__DOT__u_memory__DOT___ls16byte)
-                                     ? (QData)((IData)(
-                                                       (0xffffU 
-                                                        & (IData)(vlSelf->top__DOT__u_memory__DOT___mem_read))))
-                                     : ((IData)(vlSelf->top__DOT__u_memory__DOT___ls32byte)
-                                         ? (QData)((IData)(vlSelf->top__DOT__u_memory__DOT___mem_read))
-                                         : vlSelf->top__DOT__u_memory__DOT___mem_read)))
-                             : 0ULL)) : vlSelf->top__DOT__exc_out));
-    __Vdlyvdim0__top__DOT__u_rv64reg__DOT__rf__v0 = vlSelf->top__DOT__u_dcode__DOT___rd_idx;
-    if (vlSelf->rst) {
-        vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtval_q = 0ULL;
-    } else if (vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtval_en) {
-        vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtval_q 
-            = ((1U & (IData)(vlSelf->top__DOT__u_dcode__DOT___decode_trap_bus))
-                ? (QData)((IData)(vlSelf->top__DOT__u_fetch__DOT___mem_data))
-                : vlSelf->top__DOT__u_execute__DOT__u_execute_csr__DOT___csr_exe_result);
-    }
-    if (vlSelf->rst) {
-        vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mepc_q = 0ULL;
-    } else if (vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mepc_en) {
-        vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mepc_q 
-            = ((1U & (IData)(vlSelf->top__DOT__u_dcode__DOT___decode_trap_bus))
-                ? vlSelf->top__DOT__u_pc__DOT___pc_current
-                : vlSelf->top__DOT__u_execute__DOT__u_execute_csr__DOT___csr_exe_result);
-    }
-    vlSelf->top__DOT__u_rv64reg__DOT__rf[__Vdlyvdim0__top__DOT__u_rv64reg__DOT__rf__v0] 
-        = __Vdlyvval__top__DOT__u_rv64reg__DOT__rf__v0;
-    vlSelf->top__DOT__u_pc__DOT___pc_current = ((IData)(vlSelf->rst)
-                                                 ? 0x80000000ULL
-                                                 : vlSelf->top__DOT__u_pc__DOT___pc_next);
+    Vtop___024root____Vdpiimwrap_top__DOT__u_rv64reg__DOT__set_gpr_ptr__Vdpioc2_TOP(vlSelf->top__DOT__u_rv64reg__DOT__rf);
+}
+
+void Vtop___024root____Vdpiimwrap_top__DOT__u_fetch__DOT__pmem_read_TOP(QData/*63:0*/ raddr, QData/*63:0*/ &rdata);
+void Vtop___024root____Vdpiimwrap_top__DOT__u_fetch__DOT__get_pc_TOP(QData/*63:0*/ pc);
+
+VL_ATTR_COLD void Vtop___024root___settle__TOP__0(Vtop___024root* vlSelf) {
+    if (false && vlSelf) {}  // Prevent unused
+    Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
+    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___settle__TOP__0\n"); );
+    // Init
+    VlWide<3>/*95:0*/ __Vtemp_h04fc83eb__0;
+    VlWide<4>/*127:0*/ __Vtemp_h0cb879c2__0;
+    VlWide<3>/*95:0*/ __Vtemp_hebddb8c0__0;
+    VlWide<4>/*127:0*/ __Vtemp_h5fcd9299__0;
+    VlWide<4>/*127:0*/ __Vtemp_hc55f67af__0;
+    VlWide<3>/*95:0*/ __Vtemp_hbd6eb384__0;
+    VlWide<3>/*95:0*/ __Vtemp_h9e4a833c__0;
+    VlWide<3>/*95:0*/ __Vtemp_hcd58b436__0;
+    // Body
     Vtop___024root____Vdpiimwrap_top__DOT__u_fetch__DOT__pmem_read_TOP(vlSelf->top__DOT__u_pc__DOT___pc_current, vlSelf->__Vtask_top__DOT__u_fetch__DOT__pmem_read__0__rdata);
     vlSelf->top__DOT__u_fetch__DOT___mem_data = vlSelf->__Vtask_top__DOT__u_fetch__DOT__pmem_read__0__rdata;
     Vtop___024root____Vdpiimwrap_top__DOT__u_fetch__DOT__get_pc_TOP(vlSelf->top__DOT__u_pc__DOT___pc_current);
-    top__DOT__u_dcode__DOT___type_jal = (IData)((0x6fULL 
-                                                 == 
-                                                 (0x7fULL 
-                                                  & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
-    top__DOT__u_dcode__DOT___type_auipc = (IData)((0x17ULL 
-                                                   == 
-                                                   (0x7fULL 
-                                                    & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
-    top__DOT__u_dcode__DOT___type_lui = (IData)((0x37ULL 
-                                                 == 
-                                                 (0x7fULL 
-                                                  & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
+    vlSelf->top__DOT__u_dcode__DOT___type_jal = (IData)(
+                                                        (0x6fULL 
+                                                         == 
+                                                         (0x7fULL 
+                                                          & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
+    vlSelf->top__DOT__u_dcode__DOT___type_auipc = (IData)(
+                                                          (0x17ULL 
+                                                           == 
+                                                           (0x7fULL 
+                                                            & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
+    vlSelf->top__DOT__u_dcode__DOT___type_lui = (IData)(
+                                                        (0x37ULL 
+                                                         == 
+                                                         (0x7fULL 
+                                                          & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
     vlSelf->top__DOT__u_dcode__DOT___type_store = (IData)(
                                                           (0x23ULL 
                                                            == 
@@ -260,210 +62,167 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                             == 
                                                             (0x7fULL 
                                                              & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
-    top__DOT__u_dcode__DOT___type_op = (IData)((0x33ULL 
-                                                == 
-                                                (0x7fULL 
-                                                 & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
-    top__DOT__u_dcode__DOT___type_op_32 = (IData)((0x3bULL 
-                                                   == 
-                                                   (0x7fULL 
-                                                    & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
-    top__DOT__u_dcode__DOT___type_op_imm = (IData)(
-                                                   (0x13ULL 
-                                                    == 
-                                                    (0x7fULL 
-                                                     & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
-    top__DOT__u_dcode__DOT___type_op_imm_32 = (IData)(
-                                                      (0x1bULL 
-                                                       == 
-                                                       (0x7fULL 
-                                                        & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
-    top__DOT__u_dcode__DOT___type_load = (IData)((3ULL 
-                                                  == 
-                                                  (0x7fULL 
-                                                   & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
-    top__DOT__u_dcode__DOT___type_jalr = (IData)((0x67ULL 
-                                                  == 
-                                                  (0x7fULL 
-                                                   & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
-    top__DOT__u_dcode__DOT___type_system = (IData)(
-                                                   (0x73ULL 
-                                                    == 
-                                                    (0x7fULL 
-                                                     & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
-    top__DOT__u_dcode__DOT___U_type = ((IData)(top__DOT__u_dcode__DOT___type_auipc) 
-                                       | (IData)(top__DOT__u_dcode__DOT___type_lui));
-    vlSelf->top__DOT__u_dcode__DOT___R_type = ((IData)(top__DOT__u_dcode__DOT___type_op) 
-                                               | (IData)(top__DOT__u_dcode__DOT___type_op_32));
+    vlSelf->top__DOT__u_dcode__DOT___type_op = (IData)(
+                                                       (0x33ULL 
+                                                        == 
+                                                        (0x7fULL 
+                                                         & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
+    vlSelf->top__DOT__u_dcode__DOT___type_op_32 = (IData)(
+                                                          (0x3bULL 
+                                                           == 
+                                                           (0x7fULL 
+                                                            & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
+    vlSelf->top__DOT__u_dcode__DOT___type_op_imm = (IData)(
+                                                           (0x13ULL 
+                                                            == 
+                                                            (0x7fULL 
+                                                             & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
+    vlSelf->top__DOT__u_dcode__DOT___type_op_imm_32 
+        = (IData)((0x1bULL == (0x7fULL & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
+    vlSelf->top__DOT__u_dcode__DOT___type_load = (IData)(
+                                                         (3ULL 
+                                                          == 
+                                                          (0x7fULL 
+                                                           & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
+    vlSelf->top__DOT__u_dcode__DOT___type_jalr = (IData)(
+                                                         (0x67ULL 
+                                                          == 
+                                                          (0x7fULL 
+                                                           & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
+    vlSelf->top__DOT__u_dcode__DOT___type_system = (IData)(
+                                                           (0x73ULL 
+                                                            == 
+                                                            (0x7fULL 
+                                                             & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
+    vlSelf->top__DOT__u_dcode__DOT___U_type = ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_auipc) 
+                                               | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_lui));
+    vlSelf->top__DOT__u_dcode__DOT___R_type = ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op) 
+                                               | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_32));
     vlSelf->top__DOT__u_dcode__DOT___mem_op = (((((
                                                    ((((((1U 
                                                          & (- (IData)(
-                                                                      ((IData)(top__DOT__u_dcode__DOT___type_load) 
-                                                                       & (0U 
+                                                                      ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_load) 
+                                                                       & (0ULL 
                                                                           == 
-                                                                          (7U 
-                                                                           & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU)))))))) 
+                                                                          (0x7000ULL 
+                                                                           & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))) 
                                                         | (4U 
                                                            & (- (IData)(
-                                                                        ((IData)(top__DOT__u_dcode__DOT___type_load) 
-                                                                         & (4U 
+                                                                        ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_load) 
+                                                                         & (0x4000ULL 
                                                                             == 
-                                                                            (7U 
-                                                                             & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU))))))))) 
+                                                                            (0x7000ULL 
+                                                                             & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
                                                        | (2U 
                                                           & (- (IData)(
-                                                                       ((IData)(top__DOT__u_dcode__DOT___type_load) 
-                                                                        & (1U 
+                                                                       ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_load) 
+                                                                        & (0x1000ULL 
                                                                            == 
-                                                                           (7U 
-                                                                            & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU))))))))) 
+                                                                           (0x7000ULL 
+                                                                            & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
                                                       | (3U 
                                                          & (- (IData)(
-                                                                      ((IData)(top__DOT__u_dcode__DOT___type_load) 
-                                                                       & (2U 
+                                                                      ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_load) 
+                                                                       & (0x2000ULL 
                                                                           == 
-                                                                          (7U 
-                                                                           & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU))))))))) 
+                                                                          (0x7000ULL 
+                                                                           & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
                                                      | (5U 
                                                         & (- (IData)(
-                                                                     ((IData)(top__DOT__u_dcode__DOT___type_load) 
-                                                                      & (5U 
+                                                                     ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_load) 
+                                                                      & (0x5000ULL 
                                                                          == 
-                                                                         (7U 
-                                                                          & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU))))))))) 
+                                                                         (0x7000ULL 
+                                                                          & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
                                                     | (8U 
                                                        & (- (IData)(
                                                                     ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_store) 
-                                                                     & (0U 
+                                                                     & (0ULL 
                                                                         == 
-                                                                        (7U 
-                                                                         & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU))))))))) 
+                                                                        (0x7000ULL 
+                                                                         & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
                                                    | (9U 
                                                       & (- (IData)(
                                                                    ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_store) 
-                                                                    & (1U 
+                                                                    & (0x1000ULL 
                                                                        == 
-                                                                       (7U 
-                                                                        & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU))))))))) 
+                                                                       (0x7000ULL 
+                                                                        & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
                                                   | (0xaU 
                                                      & (- (IData)(
                                                                   ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_store) 
-                                                                   & (2U 
+                                                                   & (0x2000ULL 
                                                                       == 
-                                                                      (7U 
-                                                                       & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU))))))))) 
+                                                                      (0x7000ULL 
+                                                                       & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
                                                  | (7U 
                                                     & (- (IData)(
-                                                                 ((IData)(top__DOT__u_dcode__DOT___type_load) 
-                                                                  & (6U 
+                                                                 ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_load) 
+                                                                  & (0x6000ULL 
                                                                      == 
-                                                                     (7U 
-                                                                      & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU))))))))) 
+                                                                     (0x7000ULL 
+                                                                      & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
                                                 | (6U 
                                                    & (- (IData)(
-                                                                ((IData)(top__DOT__u_dcode__DOT___type_load) 
-                                                                 & (3U 
+                                                                ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_load) 
+                                                                 & (0x3000ULL 
                                                                     == 
-                                                                    (7U 
-                                                                     & (IData)(
-                                                                               (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU))))))))) 
+                                                                    (0x7000ULL 
+                                                                     & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
                                                | (0xbU 
                                                   & (- (IData)(
                                                                ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_store) 
-                                                                & (3U 
+                                                                & (0x3000ULL 
                                                                    == 
-                                                                   (7U 
-                                                                    & (IData)(
-                                                                              (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                               >> 0xcU)))))))));
-    top__DOT__u_dcode__DOT___inst_jalr = ((IData)(top__DOT__u_dcode__DOT___type_jalr) 
-                                          & (0U == 
-                                             (7U & (IData)(
-                                                           (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                            >> 0xcU)))));
-    top__DOT__u_dcode__DOT___inst_ecall = (IData)((
-                                                   (1U 
-                                                    == 
-                                                    (1U 
-                                                     & (IData)(top__DOT__u_dcode__DOT___type_system))) 
+                                                                   (0x7000ULL 
+                                                                    & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))));
+    vlSelf->top__DOT__u_dcode__DOT___inst_jalr = ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_jalr) 
+                                                  & (0ULL 
+                                                     == 
+                                                     (0x7000ULL 
+                                                      & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
+    vlSelf->top__DOT__u_dcode__DOT___inst_ecall = ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_system) 
                                                    & (0ULL 
                                                       == 
                                                       (0xfff07000ULL 
-                                                       & vlSelf->top__DOT__u_fetch__DOT___mem_data))));
-    top__DOT__u_dcode__DOT___inst_mret = (IData)(((1U 
-                                                   == 
-                                                   (1U 
-                                                    & (IData)(top__DOT__u_dcode__DOT___type_system))) 
+                                                       & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
+    vlSelf->top__DOT__u_dcode__DOT___inst_mret = ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_system) 
                                                   & (0x30200000ULL 
                                                      == 
                                                      (0xfff07000ULL 
-                                                      & vlSelf->top__DOT__u_fetch__DOT___mem_data))));
-    vlSelf->top__DOT__u_dcode__DOT___I_type = (((((IData)(top__DOT__u_dcode__DOT___type_load) 
-                                                  | (IData)(top__DOT__u_dcode__DOT___type_op_imm)) 
-                                                 | (IData)(top__DOT__u_dcode__DOT___type_op_imm_32)) 
-                                                | (IData)(top__DOT__u_dcode__DOT___type_jalr)) 
-                                               | (IData)(top__DOT__u_dcode__DOT___type_system));
-    top__DOT__u_dcode__DOT___inst_ebreak = (IData)(
-                                                   ((1U 
-                                                     == 
-                                                     (1U 
-                                                      & (IData)(top__DOT__u_dcode__DOT___type_system))) 
-                                                    & (0x100000ULL 
-                                                       == 
-                                                       (0xfff07000ULL 
-                                                        & vlSelf->top__DOT__u_fetch__DOT___mem_data))));
-    top__DOT__u_dcode__DOT___inst_csrrw = ((IData)(top__DOT__u_dcode__DOT___type_system) 
-                                           & (1U == 
-                                              (7U & (IData)(
-                                                            (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                             >> 0xcU)))));
-    top__DOT__u_dcode__DOT___inst_csrrs = ((IData)(top__DOT__u_dcode__DOT___type_system) 
-                                           & (2U == 
-                                              (7U & (IData)(
-                                                            (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                             >> 0xcU)))));
-    top__DOT__u_dcode__DOT___inst_csrrc = ((IData)(top__DOT__u_dcode__DOT___type_system) 
-                                           & (3U == 
-                                              (7U & (IData)(
-                                                            (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                             >> 0xcU)))));
-    top__DOT__u_dcode__DOT___inst_csrrwi = ((IData)(top__DOT__u_dcode__DOT___type_system) 
-                                            & (5U == 
-                                               (7U 
-                                                & (IData)(
-                                                          (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                           >> 0xcU)))));
-    top__DOT__u_dcode__DOT___inst_csrrsi = ((IData)(top__DOT__u_dcode__DOT___type_system) 
-                                            & (6U == 
-                                               (7U 
-                                                & (IData)(
-                                                          (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                           >> 0xcU)))));
-    top__DOT__u_dcode__DOT___inst_csrrci = ((IData)(top__DOT__u_dcode__DOT___type_system) 
-                                            & (7U == 
-                                               (7U 
-                                                & (IData)(
-                                                          (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                           >> 0xcU)))));
+                                                      & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
+    vlSelf->top__DOT__u_dcode__DOT___I_type = (((((IData)(vlSelf->top__DOT__u_dcode__DOT___type_load) 
+                                                  | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_imm)) 
+                                                 | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_imm_32)) 
+                                                | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_jalr)) 
+                                               | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_system));
+    vlSelf->top__DOT__u_dcode__DOT___inst_ebreak = 
+        ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_system) 
+         & (0x100000ULL == (0xfff07000ULL & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
+    vlSelf->top__DOT__u_dcode__DOT___inst_csrrw = ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_system) 
+                                                   & (0x1000ULL 
+                                                      == 
+                                                      (0x7000ULL 
+                                                       & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
+    vlSelf->top__DOT__u_dcode__DOT___inst_csrrs = ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_system) 
+                                                   & (0x2000ULL 
+                                                      == 
+                                                      (0x7000ULL 
+                                                       & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
+    vlSelf->top__DOT__u_dcode__DOT___inst_csrrc = ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_system) 
+                                                   & (0x3000ULL 
+                                                      == 
+                                                      (0x7000ULL 
+                                                       & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
+    vlSelf->top__DOT__u_dcode__DOT___inst_csrrwi = 
+        ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_system) 
+         & (0x5000ULL == (0x7000ULL & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
+    vlSelf->top__DOT__u_dcode__DOT___inst_csrrsi = 
+        ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_system) 
+         & (0x6000ULL == (0x7000ULL & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
+    vlSelf->top__DOT__u_dcode__DOT___inst_csrrci = 
+        ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_system) 
+         & (0x7000ULL == (0x7000ULL & vlSelf->top__DOT__u_fetch__DOT___mem_data)));
     vlSelf->top__DOT__rs2_data = vlSelf->top__DOT__u_rv64reg__DOT__rf
         [((((IData)(vlSelf->top__DOT__u_dcode__DOT___R_type) 
             | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_store)) 
@@ -507,20 +266,20 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                    == (IData)(vlSelf->top__DOT__u_dcode__DOT___mem_op)));
     vlSelf->top__DOT__u_dcode__DOT___pc_op = ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_branch)
                                                ? 1U
-                                               : ((IData)(top__DOT__u_dcode__DOT___type_jal)
+                                               : ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_jal)
                                                    ? 2U
                                                    : 
-                                                  ((IData)(top__DOT__u_dcode__DOT___inst_jalr)
+                                                  ((IData)(vlSelf->top__DOT__u_dcode__DOT___inst_jalr)
                                                     ? 3U
                                                     : 
-                                                   (((IData)(top__DOT__u_dcode__DOT___inst_mret) 
-                                                     | (IData)(top__DOT__u_dcode__DOT___inst_ecall))
+                                                   (((IData)(vlSelf->top__DOT__u_dcode__DOT___inst_mret) 
+                                                     | (IData)(vlSelf->top__DOT__u_dcode__DOT___inst_ecall))
                                                      ? 5U
                                                      : 4U))));
     vlSelf->top__DOT__u_dcode__DOT___rd_idx = (((((IData)(vlSelf->top__DOT__u_dcode__DOT___R_type) 
                                                   | (IData)(vlSelf->top__DOT__u_dcode__DOT___I_type)) 
-                                                 | (IData)(top__DOT__u_dcode__DOT___U_type)) 
-                                                | (IData)(top__DOT__u_dcode__DOT___type_jal))
+                                                 | (IData)(vlSelf->top__DOT__u_dcode__DOT___U_type)) 
+                                                | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_jal))
                                                 ? (0x1fU 
                                                    & (IData)(
                                                              (vlSelf->top__DOT__u_fetch__DOT___mem_data 
@@ -579,7 +338,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 8U)) 
                                                                                 << 1U))))))))) 
-                                                  | ((- (QData)((IData)(top__DOT__u_dcode__DOT___U_type))) 
+                                                  | ((- (QData)((IData)(vlSelf->top__DOT__u_dcode__DOT___U_type))) 
                                                      & (((- (QData)((IData)(
                                                                             (1U 
                                                                              & (IData)(
@@ -597,7 +356,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 (vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                                                 >> 0xcU)) 
                                                                                 << 0xcU)))))))) 
-                                                 | ((- (QData)((IData)(top__DOT__u_dcode__DOT___type_jal))) 
+                                                 | ((- (QData)((IData)(vlSelf->top__DOT__u_dcode__DOT___type_jal))) 
                                                     & (((- (QData)((IData)(
                                                                            (1U 
                                                                             & (IData)(
@@ -626,41 +385,41 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                                 >> 0x15U)) 
                                                                                 << 1U))))))))));
     vlSelf->top__DOT__u_dcode__DOT___decode_trap_bus 
-        = (((IData)(top__DOT__u_dcode__DOT___inst_mret) 
-            << 2U) | (((IData)(top__DOT__u_dcode__DOT___inst_ebreak) 
-                       << 1U) | (IData)(top__DOT__u_dcode__DOT___inst_ecall)));
-    top__DOT__u_dcode__DOT___csr_set = ((IData)(top__DOT__u_dcode__DOT___inst_csrrs) 
-                                        | (IData)(top__DOT__u_dcode__DOT___inst_csrrsi));
-    top__DOT__u_dcode__DOT___csr_clear = ((IData)(top__DOT__u_dcode__DOT___inst_csrrc) 
-                                          | (IData)(top__DOT__u_dcode__DOT___inst_csrrci));
+        = (((IData)(vlSelf->top__DOT__u_dcode__DOT___inst_mret) 
+            << 2U) | (((IData)(vlSelf->top__DOT__u_dcode__DOT___inst_ebreak) 
+                       << 1U) | (IData)(vlSelf->top__DOT__u_dcode__DOT___inst_ecall)));
+    vlSelf->top__DOT__u_dcode__DOT___csr_set = ((IData)(vlSelf->top__DOT__u_dcode__DOT___inst_csrrs) 
+                                                | (IData)(vlSelf->top__DOT__u_dcode__DOT___inst_csrrsi));
+    vlSelf->top__DOT__u_dcode__DOT___csr_clear = ((IData)(vlSelf->top__DOT__u_dcode__DOT___inst_csrrc) 
+                                                  | (IData)(vlSelf->top__DOT__u_dcode__DOT___inst_csrrci));
     vlSelf->top__DOT__u_dcode__DOT___isNeed_immCSR 
-        = (((IData)(top__DOT__u_dcode__DOT___inst_csrrci) 
-            | (IData)(top__DOT__u_dcode__DOT___inst_csrrsi)) 
-           | (IData)(top__DOT__u_dcode__DOT___inst_csrrwi));
-    top__DOT__u_dcode__DOT___isNeed_csr = ((((((IData)(top__DOT__u_dcode__DOT___inst_csrrc) 
-                                               | (IData)(top__DOT__u_dcode__DOT___inst_csrrci)) 
-                                              | (IData)(top__DOT__u_dcode__DOT___inst_csrrs)) 
-                                             | (IData)(top__DOT__u_dcode__DOT___inst_csrrsi)) 
-                                            | (IData)(top__DOT__u_dcode__DOT___inst_csrrw)) 
-                                           | (IData)(top__DOT__u_dcode__DOT___inst_csrrwi));
-    vlSelf->top__DOT__u_dcode__DOT___csr_op = ((((IData)(top__DOT__u_dcode__DOT___csr_set) 
-                                                 | (IData)(top__DOT__u_dcode__DOT___csr_clear)) 
-                                                & (0U 
-                                                   == 
-                                                   (0x1fU 
-                                                    & (IData)(
-                                                              (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                               >> 0xfU)))))
+        = (((IData)(vlSelf->top__DOT__u_dcode__DOT___inst_csrrci) 
+            | (IData)(vlSelf->top__DOT__u_dcode__DOT___inst_csrrsi)) 
+           | (IData)(vlSelf->top__DOT__u_dcode__DOT___inst_csrrwi));
+    vlSelf->top__DOT__u_dcode__DOT___isNeed_csr = (
+                                                   (((((IData)(vlSelf->top__DOT__u_dcode__DOT___inst_csrrc) 
+                                                       | (IData)(vlSelf->top__DOT__u_dcode__DOT___inst_csrrci)) 
+                                                      | (IData)(vlSelf->top__DOT__u_dcode__DOT___inst_csrrs)) 
+                                                     | (IData)(vlSelf->top__DOT__u_dcode__DOT___inst_csrrsi)) 
+                                                    | (IData)(vlSelf->top__DOT__u_dcode__DOT___inst_csrrw)) 
+                                                   | (IData)(vlSelf->top__DOT__u_dcode__DOT___inst_csrrwi));
+    vlSelf->top__DOT__u_dcode__DOT___csr_op = ((IData)(
+                                                       ((0ULL 
+                                                         == 
+                                                         (0xf8000ULL 
+                                                          & vlSelf->top__DOT__u_fetch__DOT___mem_data)) 
+                                                        & ((IData)(vlSelf->top__DOT__u_dcode__DOT___csr_set) 
+                                                           | (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_clear))))
                                                 ? 1U
                                                 : (
                                                    ((2U 
                                                      & (- (IData)(
-                                                                  ((IData)(top__DOT__u_dcode__DOT___inst_csrrw) 
-                                                                   | (IData)(top__DOT__u_dcode__DOT___inst_csrrwi))))) 
+                                                                  ((IData)(vlSelf->top__DOT__u_dcode__DOT___inst_csrrw) 
+                                                                   | (IData)(vlSelf->top__DOT__u_dcode__DOT___inst_csrrwi))))) 
                                                     | (3U 
-                                                       & (- (IData)((IData)(top__DOT__u_dcode__DOT___csr_set))))) 
+                                                       & (- (IData)((IData)(vlSelf->top__DOT__u_dcode__DOT___csr_set))))) 
                                                    | (4U 
-                                                      & (- (IData)((IData)(top__DOT__u_dcode__DOT___csr_clear))))));
+                                                      & (- (IData)((IData)(vlSelf->top__DOT__u_dcode__DOT___csr_clear))))));
     vlSelf->top__DOT__rs1_data = vlSelf->top__DOT__u_rv64reg__DOT__rf
         [((((((IData)(vlSelf->top__DOT__u_dcode__DOT___R_type) 
               | (IData)(vlSelf->top__DOT__u_dcode__DOT___I_type)) 
@@ -669,7 +428,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
            & (~ (IData)(vlSelf->top__DOT__u_dcode__DOT___isNeed_immCSR)))
            ? (0x1fU & (IData)((vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                >> 0xfU))) : 0U)];
-    vlSelf->top__DOT__u_dcode__DOT___csr_idx = ((IData)(top__DOT__u_dcode__DOT___isNeed_csr)
+    vlSelf->top__DOT__u_dcode__DOT___csr_idx = ((IData)(vlSelf->top__DOT__u_dcode__DOT___isNeed_csr)
                                                  ? 
                                                 (0xfffU 
                                                  & (IData)(
@@ -679,506 +438,345 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
     vlSelf->top__DOT__u_dcode__DOT___alu_op = (((((
                                                    (((((((((((((((((((((((((((1U 
                                                                               & (- (IData)(
-                                                                                (((((((((((IData)(
-                                                                                ((1U 
+                                                                                ((((((((((((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op) 
+                                                                                & (0ULL 
                                                                                 == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
+                                                                                (0xfe007000ULL 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))) 
+                                                                                | ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_32) 
                                                                                 & (0ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
                                                                                 & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
-                                                                                | (IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_32))) 
+                                                                                | ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_imm) 
                                                                                 & (0ULL 
                                                                                 == 
-                                                                                (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))) 
-                                                                                | ((IData)(top__DOT__u_dcode__DOT___type_op_imm) 
-                                                                                & (0U 
+                                                                                (0x7000ULL 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
+                                                                                | ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_imm_32) 
+                                                                                & (0ULL 
                                                                                 == 
-                                                                                (7U 
-                                                                                & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU)))))) 
-                                                                                | ((IData)(top__DOT__u_dcode__DOT___type_op_imm_32) 
-                                                                                & (0U 
-                                                                                == 
-                                                                                (7U 
-                                                                                & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU)))))) 
-                                                                                | (IData)(top__DOT__u_dcode__DOT___type_load)) 
+                                                                                (0x7000ULL 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
+                                                                                | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_load)) 
                                                                                 | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_store)) 
-                                                                                | (IData)(top__DOT__u_dcode__DOT___type_jal)) 
-                                                                                | (IData)(top__DOT__u_dcode__DOT___inst_jalr)) 
-                                                                                | (IData)(top__DOT__u_dcode__DOT___type_auipc)) 
-                                                                                | (IData)(top__DOT__u_dcode__DOT___type_lui)) 
-                                                                                | (IData)(top__DOT__u_dcode__DOT___isNeed_csr))))) 
+                                                                                | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_jal)) 
+                                                                                | (IData)(vlSelf->top__DOT__u_dcode__DOT___inst_jalr)) 
+                                                                                | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_auipc)) 
+                                                                                | (IData)(vlSelf->top__DOT__u_dcode__DOT___type_lui)) 
+                                                                                | (IData)(vlSelf->top__DOT__u_dcode__DOT___isNeed_csr))))) 
                                                                              | (2U 
                                                                                 & (- (IData)(
-                                                                                ((IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
+                                                                                (((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op) 
                                                                                 & (0x40000000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
-                                                                                | (IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_32))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))) 
+                                                                                | ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_32) 
                                                                                 & (0x40000000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
                                                                             | (3U 
                                                                                & (- (IData)(
-                                                                                ((IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
+                                                                                (((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op) 
                                                                                 & (0x4000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
-                                                                                | ((IData)(top__DOT__u_dcode__DOT___type_op_imm) 
-                                                                                & (4U 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))) 
+                                                                                | ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_imm) 
+                                                                                & (0x4000ULL 
                                                                                 == 
-                                                                                (7U 
-                                                                                & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU)))))))))) 
+                                                                                (0x7000ULL 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
                                                                            | (4U 
                                                                               & (- (IData)(
-                                                                                ((IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
+                                                                                (((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op) 
                                                                                 & (0x6000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
-                                                                                | ((IData)(top__DOT__u_dcode__DOT___type_op_imm) 
-                                                                                & (6U 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))) 
+                                                                                | ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_imm) 
+                                                                                & (0x6000ULL 
                                                                                 == 
-                                                                                (7U 
-                                                                                & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU)))))))))) 
+                                                                                (0x7000ULL 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
                                                                           | (5U 
                                                                              & (- (IData)(
-                                                                                ((IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
+                                                                                (((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op) 
                                                                                 & (0x7000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
-                                                                                | ((IData)(top__DOT__u_dcode__DOT___type_op_imm) 
-                                                                                & (7U 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))) 
+                                                                                | ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_imm) 
+                                                                                & (0x7000ULL 
                                                                                 == 
-                                                                                (7U 
-                                                                                & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU)))))))))) 
+                                                                                (0x7000ULL 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
                                                                          | (6U 
                                                                             & (- (IData)(
-                                                                                ((IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
+                                                                                (((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op) 
                                                                                 & (0x1000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
-                                                                                | (IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_imm))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))) 
+                                                                                | ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_imm) 
                                                                                 & (0x1000ULL 
                                                                                 == 
                                                                                 (0xfc007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
                                                                         | (7U 
                                                                            & (- (IData)(
-                                                                                ((IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
+                                                                                (((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op) 
                                                                                 & (0x5000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
-                                                                                | (IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_imm))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))) 
+                                                                                | ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_imm) 
                                                                                 & (0x5000ULL 
                                                                                 == 
                                                                                 (0xfc007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
                                                                        | (8U 
                                                                           & (- (IData)(
-                                                                                ((IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
+                                                                                (((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op) 
                                                                                 & (0x40005000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
-                                                                                | (IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_imm))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))) 
+                                                                                | ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_imm) 
                                                                                 & (0x40005000ULL 
                                                                                 == 
                                                                                 (0xfc007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
                                                                       | (9U 
                                                                          & (- (IData)(
-                                                                                ((IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_imm_32))) 
+                                                                                (((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_imm_32) 
                                                                                 & (0x1000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
-                                                                                | (IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_32))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))) 
+                                                                                | ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_32) 
                                                                                 & (0x1000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
                                                                      | (0xaU 
                                                                         & (- (IData)(
-                                                                                ((IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_imm_32))) 
+                                                                                (((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_imm_32) 
                                                                                 & (0x5000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
-                                                                                | (IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_32))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))) 
+                                                                                | ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_32) 
                                                                                 & (0x5000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
                                                                     | (0xbU 
                                                                        & (- (IData)(
-                                                                                ((IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_imm_32))) 
+                                                                                (((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_imm_32) 
                                                                                 & (0x40005000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
-                                                                                | (IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_32))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))) 
+                                                                                | ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_32) 
                                                                                 & (0x40005000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))))) 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
                                                                    | (0xcU 
                                                                       & (- (IData)(
-                                                                                ((IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
+                                                                                (((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op) 
                                                                                 & (0x2000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
-                                                                                | ((IData)(top__DOT__u_dcode__DOT___type_op_imm) 
-                                                                                & (2U 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))) 
+                                                                                | ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_imm) 
+                                                                                & (0x2000ULL 
                                                                                 == 
-                                                                                (7U 
-                                                                                & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU)))))))))) 
+                                                                                (0x7000ULL 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
                                                                   | (0xdU 
                                                                      & (- (IData)(
-                                                                                ((IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
+                                                                                (((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op) 
                                                                                 & (0x3000ULL 
                                                                                 == 
                                                                                 (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))) 
-                                                                                | ((IData)(top__DOT__u_dcode__DOT___type_op_imm) 
-                                                                                & (3U 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))) 
+                                                                                | ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_imm) 
+                                                                                & (0x3000ULL 
                                                                                 == 
-                                                                                (7U 
-                                                                                & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU)))))))))) 
+                                                                                (0x7000ULL 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
                                                                  | (0xeU 
                                                                     & (- (IData)(
                                                                                 ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_branch) 
-                                                                                & (0U 
+                                                                                & (0ULL 
                                                                                 == 
-                                                                                (7U 
-                                                                                & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU))))))))) 
+                                                                                (0x7000ULL 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
                                                                 | (0xfU 
                                                                    & (- (IData)(
                                                                                 ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_branch) 
-                                                                                & (1U 
+                                                                                & (0x1000ULL 
                                                                                 == 
-                                                                                (7U 
-                                                                                & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU))))))))) 
+                                                                                (0x7000ULL 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
                                                                | (0x10U 
                                                                   & (- (IData)(
                                                                                ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_branch) 
-                                                                                & (4U 
+                                                                                & (0x4000ULL 
                                                                                 == 
-                                                                                (7U 
-                                                                                & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU))))))))) 
+                                                                                (0x7000ULL 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
                                                               | (0x11U 
                                                                  & (- (IData)(
                                                                               ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_branch) 
-                                                                               & (5U 
+                                                                               & (0x5000ULL 
                                                                                 == 
-                                                                                (7U 
-                                                                                & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU))))))))) 
+                                                                                (0x7000ULL 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
                                                              | (0x12U 
                                                                 & (- (IData)(
                                                                              ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_branch) 
-                                                                              & (6U 
+                                                                              & (0x6000ULL 
                                                                                 == 
-                                                                                (7U 
-                                                                                & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU))))))))) 
+                                                                                (0x7000ULL 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
                                                             | (0x13U 
                                                                & (- (IData)(
                                                                             ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_branch) 
-                                                                             & (7U 
+                                                                             & (0x7000ULL 
                                                                                 == 
-                                                                                (7U 
-                                                                                & (IData)(
-                                                                                (vlSelf->top__DOT__u_fetch__DOT___mem_data 
-                                                                                >> 0xcU))))))))) 
+                                                                                (0x7000ULL 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
                                                            | (0x14U 
-                                                              & (- (IData)((IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
-                                                                                & (0x2000000ULL 
-                                                                                == 
-                                                                                (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
-                                                          | (0x15U 
-                                                             & (- (IData)((IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
-                                                                                & (0x2001000ULL 
-                                                                                == 
-                                                                                (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
-                                                         | (0x16U 
-                                                            & (- (IData)((IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
-                                                                                & (0x2002000ULL 
-                                                                                == 
-                                                                                (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
-                                                        | (0x17U 
-                                                           & (- (IData)((IData)(
-                                                                                ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
-                                                                                & (0x2003000ULL 
-                                                                                == 
-                                                                                (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
-                                                       | (0x18U 
-                                                          & (- (IData)((IData)(
-                                                                               ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op_32))) 
-                                                                                & (0x2000000ULL 
-                                                                                == 
-                                                                                (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
-                                                      | (0x19U 
-                                                         & (- (IData)((IData)(
-                                                                              ((1U 
-                                                                                == 
-                                                                                (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
-                                                                               & (0x2004000ULL 
-                                                                                == 
-                                                                                (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
-                                                     | (0x1aU 
-                                                        & (- (IData)((IData)(
-                                                                             ((1U 
-                                                                               == 
-                                                                               (1U 
-                                                                                & (IData)(top__DOT__u_dcode__DOT___type_op))) 
-                                                                              & (0x2005000ULL 
-                                                                                == 
-                                                                                (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
-                                                    | (0x1bU 
-                                                       & (- (IData)((IData)(
-                                                                            ((1U 
-                                                                              == 
-                                                                              (1U 
-                                                                               & (IData)(top__DOT__u_dcode__DOT___type_op))) 
-                                                                             & (0x2006000ULL 
-                                                                                == 
-                                                                                (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
-                                                   | (0x1cU 
-                                                      & (- (IData)((IData)(
-                                                                           ((1U 
-                                                                             == 
-                                                                             (1U 
-                                                                              & (IData)(top__DOT__u_dcode__DOT___type_op))) 
-                                                                            & (0x2007000ULL 
+                                                              & (- (IData)(
+                                                                           ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op) 
+                                                                            & (0x2000000ULL 
                                                                                == 
                                                                                (0xfe007000ULL 
-                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
-                                                  | (0x1dU 
-                                                     & (- (IData)((IData)(
-                                                                          ((1U 
-                                                                            == 
-                                                                            (1U 
-                                                                             & (IData)(top__DOT__u_dcode__DOT___type_op_32))) 
-                                                                           & (0x2004000ULL 
+                                                                                & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
+                                                          | (0x15U 
+                                                             & (- (IData)(
+                                                                          ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op) 
+                                                                           & (0x2001000ULL 
                                                                               == 
                                                                               (0xfe007000ULL 
-                                                                               & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
-                                                 | (0x1eU 
-                                                    & (- (IData)((IData)(
-                                                                         ((1U 
-                                                                           == 
-                                                                           (1U 
-                                                                            & (IData)(top__DOT__u_dcode__DOT___type_op_32))) 
-                                                                          & (0x2005000ULL 
+                                                                               & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
+                                                         | (0x16U 
+                                                            & (- (IData)(
+                                                                         ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op) 
+                                                                          & (0x2002000ULL 
                                                                              == 
                                                                              (0xfe007000ULL 
-                                                                              & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
-                                                | (0x1fU 
-                                                   & (- (IData)((IData)(
-                                                                        ((1U 
-                                                                          == 
-                                                                          (1U 
-                                                                           & (IData)(top__DOT__u_dcode__DOT___type_op_32))) 
-                                                                         & (0x2006000ULL 
+                                                                              & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
+                                                        | (0x17U 
+                                                           & (- (IData)(
+                                                                        ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op) 
+                                                                         & (0x2003000ULL 
                                                                             == 
                                                                             (0xfe007000ULL 
-                                                                             & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))))) 
-                                               | (0x20U 
-                                                  & (- (IData)((IData)(
-                                                                       ((1U 
-                                                                         == 
-                                                                         (1U 
-                                                                          & (IData)(top__DOT__u_dcode__DOT___type_op_32))) 
-                                                                        & (0x2007000ULL 
+                                                                             & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
+                                                       | (0x18U 
+                                                          & (- (IData)(
+                                                                       ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_32) 
+                                                                        & (0x2000000ULL 
                                                                            == 
                                                                            (0xfe007000ULL 
-                                                                            & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))));
+                                                                            & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
+                                                      | (0x19U 
+                                                         & (- (IData)(
+                                                                      ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op) 
+                                                                       & (0x2004000ULL 
+                                                                          == 
+                                                                          (0xfe007000ULL 
+                                                                           & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
+                                                     | (0x1aU 
+                                                        & (- (IData)(
+                                                                     ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op) 
+                                                                      & (0x2005000ULL 
+                                                                         == 
+                                                                         (0xfe007000ULL 
+                                                                          & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
+                                                    | (0x1bU 
+                                                       & (- (IData)(
+                                                                    ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op) 
+                                                                     & (0x2006000ULL 
+                                                                        == 
+                                                                        (0xfe007000ULL 
+                                                                         & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
+                                                   | (0x1cU 
+                                                      & (- (IData)(
+                                                                   ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op) 
+                                                                    & (0x2007000ULL 
+                                                                       == 
+                                                                       (0xfe007000ULL 
+                                                                        & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
+                                                  | (0x1dU 
+                                                     & (- (IData)(
+                                                                  ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_32) 
+                                                                   & (0x2004000ULL 
+                                                                      == 
+                                                                      (0xfe007000ULL 
+                                                                       & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
+                                                 | (0x1eU 
+                                                    & (- (IData)(
+                                                                 ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_32) 
+                                                                  & (0x2005000ULL 
+                                                                     == 
+                                                                     (0xfe007000ULL 
+                                                                      & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
+                                                | (0x1fU 
+                                                   & (- (IData)(
+                                                                ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_32) 
+                                                                 & (0x2006000ULL 
+                                                                    == 
+                                                                    (0xfe007000ULL 
+                                                                     & vlSelf->top__DOT__u_fetch__DOT___mem_data))))))) 
+                                               | (0x20U 
+                                                  & (- (IData)(
+                                                               ((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_32) 
+                                                                & (0x2007000ULL 
+                                                                   == 
+                                                                   (0xfe007000ULL 
+                                                                    & vlSelf->top__DOT__u_fetch__DOT___mem_data)))))));
     vlSelf->top__DOT__u_dcode__DOT___exc_op = (((((
                                                    ((((((((1U 
-                                                           & (- (IData)((IData)(top__DOT__u_dcode__DOT___type_auipc)))) 
+                                                           & (- (IData)((IData)(vlSelf->top__DOT__u_dcode__DOT___type_auipc)))) 
                                                           | (2U 
-                                                             & (- (IData)((IData)(top__DOT__u_dcode__DOT___type_lui))))) 
+                                                             & (- (IData)((IData)(vlSelf->top__DOT__u_dcode__DOT___type_lui))))) 
                                                          | (3U 
-                                                            & (- (IData)((IData)(top__DOT__u_dcode__DOT___type_jal))))) 
+                                                            & (- (IData)((IData)(vlSelf->top__DOT__u_dcode__DOT___type_jal))))) 
                                                         | (4U 
-                                                           & (- (IData)((IData)(top__DOT__u_dcode__DOT___type_jalr))))) 
+                                                           & (- (IData)((IData)(vlSelf->top__DOT__u_dcode__DOT___type_jalr))))) 
                                                        | (5U 
-                                                          & (- (IData)((IData)(top__DOT__u_dcode__DOT___type_load))))) 
+                                                          & (- (IData)((IData)(vlSelf->top__DOT__u_dcode__DOT___type_load))))) 
                                                       | (6U 
                                                          & (- (IData)((IData)(vlSelf->top__DOT__u_dcode__DOT___type_store))))) 
                                                      | (7U 
                                                         & (- (IData)((IData)(vlSelf->top__DOT__u_dcode__DOT___type_branch))))) 
                                                     | (8U 
-                                                       & (- (IData)((IData)(top__DOT__u_dcode__DOT___type_op_imm))))) 
+                                                       & (- (IData)((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_imm))))) 
                                                    | (9U 
-                                                      & (- (IData)((IData)(top__DOT__u_dcode__DOT___type_op_imm_32))))) 
+                                                      & (- (IData)((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_imm_32))))) 
                                                   | (0xaU 
-                                                     & (- (IData)((IData)(top__DOT__u_dcode__DOT___type_op))))) 
+                                                     & (- (IData)((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op))))) 
                                                  | (0xbU 
-                                                    & (- (IData)((IData)(top__DOT__u_dcode__DOT___type_op_32))))) 
+                                                    & (- (IData)((IData)(vlSelf->top__DOT__u_dcode__DOT___type_op_32))))) 
                                                 | (0xcU 
-                                                   & (- (IData)((IData)(top__DOT__u_dcode__DOT___isNeed_csr))))) 
+                                                   & (- (IData)((IData)(vlSelf->top__DOT__u_dcode__DOT___isNeed_csr))))) 
                                                | (0xdU 
-                                                  & (- (IData)((IData)(top__DOT__u_dcode__DOT___inst_ebreak)))));
+                                                  & (- (IData)((IData)(vlSelf->top__DOT__u_dcode__DOT___inst_ebreak)))));
     vlSelf->top__DOT__u_execute__DOT___csr_exe_valid 
         = (1U & (~ ((0U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_op)) 
                     | (1U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_op)))));
-    top__DOT__u_execute__DOT__u_execute_csr__DOT___csr_op2 
+    vlSelf->top__DOT__u_execute__DOT__u_execute_csr__DOT___csr_op2 
         = ((IData)(vlSelf->top__DOT__u_dcode__DOT___isNeed_immCSR)
             ? (QData)((IData)((0x1fU & (IData)((vlSelf->top__DOT__u_fetch__DOT___mem_data 
                                                 >> 0xfU)))))
             : vlSelf->top__DOT__rs1_data);
-    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___csr_readdata 
-        = ((0x300U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))
-            ? vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mstatus_q
-            : ((0x341U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))
-                ? vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mepc_q
-                : ((0x342U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))
-                    ? vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mcause_q
-                    : ((0x343U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))
-                        ? vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtval_q
-                        : ((0x305U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))
-                            ? vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtvec_q
-                            : 0ULL)))));
     vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___is_div_signed 
         = ((((0x19U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
              | (0x1dU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
@@ -1198,37 +796,83 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
     vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___shift_sll 
         = ((6U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
            | (9U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)));
-    top__DOT__u_execute__DOT__u_alu__DOT___isCMP = 
-        ((((((((0xcU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
-               | (0x13U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
-              | (0xdU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
-             | (0xeU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
-            | (0xfU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
-           | (0x10U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
-          | (0x11U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
-         | (0x12U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)));
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isCMP 
+        = ((((((((0xcU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
+                 | (0x13U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
+                | (0xdU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
+               | (0xeU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
+              | (0xfU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
+             | (0x10U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
+            | (0x11U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
+           | (0x12U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)));
     vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isshift32 
         = (((9U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
             | (0xbU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
            | (0xaU == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)));
+    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___csr_readdata 
+        = ((0x300U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))
+            ? vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mstatus_q
+            : ((0x341U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))
+                ? vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mepc_q
+                : ((0x342U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))
+                    ? vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mcause_q
+                    : ((0x343U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))
+                        ? vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtval_q
+                        : ((0x305U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))
+                            ? vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtvec_q
+                            : 0ULL)))));
     if (VL_UNLIKELY((0xdU == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op)))) {
-        VL_FINISH_MT("/home/leesum/ysyx-workbench/npc/vsrc/usr/execute.v", 101, "");
+        VL_FINISH_MT("/media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/npc/vsrc/usr/execute.v", 101, "");
     }
-    top__DOT__u_execute__DOT___rs1_rs2 = (((0xbU == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op)) 
-                                           | (0xaU 
-                                              == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op))) 
-                                          | (7U == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op)));
-    top__DOT__u_execute__DOT___rs1_imm = ((((8U == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op)) 
-                                            | (9U == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op))) 
-                                           | (5U == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op))) 
-                                          | (6U == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op)));
-    top__DOT__u_execute__DOT___pc_4 = ((3U == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op)) 
-                                       | (4U == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op)));
+    vlSelf->top__DOT__u_execute__DOT___rs1_rs2 = ((
+                                                   (0xbU 
+                                                    == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op)) 
+                                                   | (0xaU 
+                                                      == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op))) 
+                                                  | (7U 
+                                                     == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op)));
+    vlSelf->top__DOT__u_execute__DOT___rs1_imm = ((
+                                                   ((8U 
+                                                     == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op)) 
+                                                    | (9U 
+                                                       == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op))) 
+                                                   | (5U 
+                                                      == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op))) 
+                                                  | (6U 
+                                                     == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op)));
+    vlSelf->top__DOT__u_execute__DOT___pc_4 = ((3U 
+                                                == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op)) 
+                                               | (4U 
+                                                  == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op)));
+    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mstatus_en 
+        = vlSelf->top__DOT__csr_mstatus_i_en;
+    if ((0x300U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))) {
+        vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mstatus_en 
+            = vlSelf->top__DOT__u_execute__DOT___csr_exe_valid;
+    }
+    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mepc_en 
+        = (1U & (IData)(vlSelf->top__DOT__u_dcode__DOT___decode_trap_bus));
+    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mcause_en 
+        = (1U & (IData)(vlSelf->top__DOT__u_dcode__DOT___decode_trap_bus));
+    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtval_en 
+        = (1U & (IData)(vlSelf->top__DOT__u_dcode__DOT___decode_trap_bus));
     vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtvec_en 
         = vlSelf->top__DOT__csr_mtvec_i_en;
     if ((0x300U != (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))) {
+        if ((0x341U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))) {
+            vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mepc_en 
+                = vlSelf->top__DOT__u_execute__DOT___csr_exe_valid;
+        }
         if ((0x341U != (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))) {
+            if ((0x342U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))) {
+                vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mcause_en 
+                    = vlSelf->top__DOT__u_execute__DOT___csr_exe_valid;
+            }
             if ((0x342U != (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))) {
+                if ((0x343U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))) {
+                    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtval_en 
+                        = vlSelf->top__DOT__u_execute__DOT___csr_exe_valid;
+                }
                 if ((0x343U != (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))) {
                     if ((0x305U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))) {
                         vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtvec_en 
@@ -1238,67 +882,31 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
             }
         }
     }
-    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtval_en 
-        = (1U & (IData)(vlSelf->top__DOT__u_dcode__DOT___decode_trap_bus));
-    if ((0x300U != (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))) {
-        if ((0x341U != (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))) {
-            if ((0x342U != (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))) {
-                if ((0x343U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))) {
-                    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtval_en 
-                        = vlSelf->top__DOT__u_execute__DOT___csr_exe_valid;
-                }
-            }
-        }
-    }
-    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mcause_en 
-        = (1U & (IData)(vlSelf->top__DOT__u_dcode__DOT___decode_trap_bus));
-    if ((0x300U != (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))) {
-        if ((0x341U != (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))) {
-            if ((0x342U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))) {
-                vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mcause_en 
-                    = vlSelf->top__DOT__u_execute__DOT___csr_exe_valid;
-            }
-        }
-    }
-    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mstatus_en 
-        = vlSelf->top__DOT__csr_mstatus_i_en;
-    if ((0x300U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))) {
-        vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mstatus_en 
-            = vlSelf->top__DOT__u_execute__DOT___csr_exe_valid;
-    }
-    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mepc_en 
-        = (1U & (IData)(vlSelf->top__DOT__u_dcode__DOT___decode_trap_bus));
-    if ((0x300U != (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))) {
-        if ((0x341U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_idx))) {
-            vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mepc_en 
-                = vlSelf->top__DOT__u_execute__DOT___csr_exe_valid;
-        }
-    }
     vlSelf->top__DOT__u_execute__DOT__u_execute_csr__DOT___csr_exe_result 
         = (((((- (QData)((IData)((2U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_op))))) 
-              & top__DOT__u_execute__DOT__u_execute_csr__DOT___csr_op2) 
+              & vlSelf->top__DOT__u_execute__DOT__u_execute_csr__DOT___csr_op2) 
              | ((- (QData)((IData)((3U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_op))))) 
                 & (vlSelf->top__DOT__u_rv64_csr_regfile__DOT___csr_readdata 
-                   | top__DOT__u_execute__DOT__u_execute_csr__DOT___csr_op2))) 
+                   | vlSelf->top__DOT__u_execute__DOT__u_execute_csr__DOT___csr_op2))) 
             | ((- (QData)((IData)((4U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_op))))) 
                & (vlSelf->top__DOT__u_rv64_csr_regfile__DOT___csr_readdata 
-                  & (~ top__DOT__u_execute__DOT__u_execute_csr__DOT___csr_op2)))) 
+                  & (~ vlSelf->top__DOT__u_execute__DOT__u_execute_csr__DOT___csr_op2)))) 
            | ((- (QData)((IData)((1U == (IData)(vlSelf->top__DOT__u_dcode__DOT___csr_op))))) 
               & vlSelf->top__DOT__u_rv64_csr_regfile__DOT___csr_readdata));
-    top__DOT__u_execute__DOT__u_alu__DOT___isSUBop 
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isSUBop 
         = ((2U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
-           | (IData)(top__DOT__u_execute__DOT__u_alu__DOT___isCMP));
+           | (IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isCMP));
     vlSelf->top__DOT__u_execute__DOT___alu_in2 = ((
-                                                   ((((- (QData)((IData)(top__DOT__u_execute__DOT___rs1_rs2))) 
+                                                   ((((- (QData)((IData)(vlSelf->top__DOT__u_execute__DOT___rs1_rs2))) 
                                                       & vlSelf->top__DOT__rs2_data) 
-                                                     | ((- (QData)((IData)(top__DOT__u_execute__DOT___rs1_imm))) 
+                                                     | ((- (QData)((IData)(vlSelf->top__DOT__u_execute__DOT___rs1_imm))) 
                                                         & vlSelf->top__DOT__u_dcode__DOT___imm_data)) 
                                                     | ((- (QData)((IData)(
                                                                           (0xcU 
                                                                            == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op))))) 
                                                        & vlSelf->top__DOT__u_rv64_csr_regfile__DOT___csr_readdata)) 
                                                    | (4ULL 
-                                                      & (- (QData)((IData)(top__DOT__u_execute__DOT___pc_4))))) 
+                                                      & (- (QData)((IData)(vlSelf->top__DOT__u_execute__DOT___pc_4))))) 
                                                   | (0xfffffffffffff000ULL 
                                                      & ((- (QData)((IData)(
                                                                            ((1U 
@@ -1308,76 +916,79 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                         & vlSelf->top__DOT__u_dcode__DOT___imm_data)));
     vlSelf->top__DOT__u_execute__DOT___alu_in1 = ((
                                                    (- (QData)((IData)(
-                                                                      ((IData)(top__DOT__u_execute__DOT___rs1_rs2) 
-                                                                       | (IData)(top__DOT__u_execute__DOT___rs1_imm))))) 
+                                                                      ((IData)(vlSelf->top__DOT__u_execute__DOT___rs1_rs2) 
+                                                                       | (IData)(vlSelf->top__DOT__u_execute__DOT___rs1_imm))))) 
                                                    & vlSelf->top__DOT__rs1_data) 
                                                   | ((- (QData)((IData)(
-                                                                        ((IData)(top__DOT__u_execute__DOT___pc_4) 
+                                                                        ((IData)(vlSelf->top__DOT__u_execute__DOT___pc_4) 
                                                                          | (1U 
                                                                             == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op)))))) 
                                                      & vlSelf->top__DOT__u_pc__DOT___pc_current));
-    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shifter_in2 
-        = (0x3fU & ((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isshift32)
-                     ? (0x1fU & (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2))
-                     : (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2)));
-    top__DOT__u_execute__DOT__u_alu__DOT___alu_b[0U] 
+    if (vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isshift32) {
+        vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shifter_in2 
+            = (0x3fU & (0x1fU & (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2)));
+        vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num 
+            = (QData)((IData)(vlSelf->top__DOT__u_execute__DOT___alu_in1));
+    } else {
+        vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shifter_in2 
+            = (0x3fU & (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2));
+        vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num 
+            = vlSelf->top__DOT__u_execute__DOT___alu_in1;
+    }
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___alu_b[0U] 
         = ((IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2) 
-           ^ (- (IData)((IData)(top__DOT__u_execute__DOT__u_alu__DOT___isSUBop))));
-    top__DOT__u_execute__DOT__u_alu__DOT___alu_b[1U] 
+           ^ (- (IData)((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isSUBop))));
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___alu_b[1U] 
         = ((IData)((vlSelf->top__DOT__u_execute__DOT___alu_in2 
-                    >> 0x20U)) ^ (- (IData)((IData)(top__DOT__u_execute__DOT__u_alu__DOT___isSUBop))));
-    top__DOT__u_execute__DOT__u_alu__DOT___alu_b[2U] 
+                    >> 0x20U)) ^ (- (IData)((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isSUBop))));
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___alu_b[2U] 
         = (1U & ((1U & (IData)((vlSelf->top__DOT__u_execute__DOT___alu_in2 
-                                >> 0x3fU))) ^ (- (IData)((IData)(top__DOT__u_execute__DOT__u_alu__DOT___isSUBop)))));
-    __Vtemp6[0U] = (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in1);
-    __Vtemp6[1U] = (IData)((vlSelf->top__DOT__u_execute__DOT___alu_in1 
-                            >> 0x20U));
-    __Vtemp6[2U] = (((((0x14U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
-                       | (0x15U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
-                      | (0x16U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
-                     | (0x18U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
-                    & (IData)((vlSelf->top__DOT__u_execute__DOT___alu_in1 
-                               >> 0x3fU)));
-    VL_EXTEND_WW(128,65, __Vtemp7, __Vtemp6);
-    __Vtemp8[0U] = (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2);
-    __Vtemp8[1U] = (IData)((vlSelf->top__DOT__u_execute__DOT___alu_in2 
-                            >> 0x20U));
-    __Vtemp8[2U] = ((((0x14U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
-                      | (0x15U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
-                     | (0x18U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
-                    & (IData)((vlSelf->top__DOT__u_execute__DOT___alu_in2 
-                               >> 0x3fU)));
-    VL_EXTEND_WW(128,65, __Vtemp9, __Vtemp8);
-    VL_MUL_W(4, __Vtemp10, __Vtemp7, __Vtemp9);
+                                >> 0x3fU))) ^ (- (IData)((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isSUBop)))));
+    __Vtemp_h04fc83eb__0[0U] = (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in1);
+    __Vtemp_h04fc83eb__0[1U] = (IData)((vlSelf->top__DOT__u_execute__DOT___alu_in1 
+                                        >> 0x20U));
+    __Vtemp_h04fc83eb__0[2U] = (((((0x14U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
+                                   | (0x15U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
+                                  | (0x16U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
+                                 | (0x18U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
+                                & (IData)((vlSelf->top__DOT__u_execute__DOT___alu_in1 
+                                           >> 0x3fU)));
+    VL_EXTEND_WW(128,65, __Vtemp_h0cb879c2__0, __Vtemp_h04fc83eb__0);
+    __Vtemp_hebddb8c0__0[0U] = (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in2);
+    __Vtemp_hebddb8c0__0[1U] = (IData)((vlSelf->top__DOT__u_execute__DOT___alu_in2 
+                                        >> 0x20U));
+    __Vtemp_hebddb8c0__0[2U] = ((((0x14U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
+                                  | (0x15U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
+                                 | (0x18U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op))) 
+                                & (IData)((vlSelf->top__DOT__u_execute__DOT___alu_in2 
+                                           >> 0x3fU)));
+    VL_EXTEND_WW(128,65, __Vtemp_h5fcd9299__0, __Vtemp_hebddb8c0__0);
+    VL_MUL_W(4, __Vtemp_hc55f67af__0, __Vtemp_h0cb879c2__0, __Vtemp_h5fcd9299__0);
     vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_mul_top__DOT___mul_result[0U] 
-        = __Vtemp10[0U];
+        = __Vtemp_hc55f67af__0[0U];
     vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_mul_top__DOT___mul_result[1U] 
-        = __Vtemp10[1U];
+        = __Vtemp_hc55f67af__0[1U];
     vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_mul_top__DOT___mul_result[2U] 
-        = __Vtemp10[2U];
+        = __Vtemp_hc55f67af__0[2U];
     vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_mul_top__DOT___mul_result[3U] 
-        = __Vtemp10[3U];
-    top__DOT__u_execute__DOT__u_alu__DOT___alu_a[0U] 
+        = __Vtemp_hc55f67af__0[3U];
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___alu_a[0U] 
         = (IData)(vlSelf->top__DOT__u_execute__DOT___alu_in1);
-    top__DOT__u_execute__DOT__u_alu__DOT___alu_a[1U] 
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___alu_a[1U] 
         = (IData)((vlSelf->top__DOT__u_execute__DOT___alu_in1 
                    >> 0x20U));
-    top__DOT__u_execute__DOT__u_alu__DOT___alu_a[2U] 
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___alu_a[2U] 
         = (1U & (IData)((vlSelf->top__DOT__u_execute__DOT___alu_in1 
                          >> 0x3fU)));
-    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num 
-        = ((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isshift32)
-            ? (QData)((IData)(vlSelf->top__DOT__u_execute__DOT___alu_in1))
-            : vlSelf->top__DOT__u_execute__DOT___alu_in1);
-    VL_ADD_W(3, __Vtemp13, top__DOT__u_execute__DOT__u_alu__DOT___alu_a, top__DOT__u_execute__DOT__u_alu__DOT___alu_b);
-    VL_EXTEND_WI(65,1, __Vtemp14, (IData)(top__DOT__u_execute__DOT__u_alu__DOT___isSUBop));
-    VL_ADD_W(3, __Vtemp15, __Vtemp13, __Vtemp14);
+    VL_ADD_W(3, __Vtemp_hbd6eb384__0, vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___alu_a, vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___alu_b);
+    VL_EXTEND_WI(65,1, __Vtemp_h9e4a833c__0, (IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isSUBop));
+    VL_ADD_W(3, __Vtemp_hcd58b436__0, __Vtemp_hbd6eb384__0, __Vtemp_h9e4a833c__0);
     vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[0U] 
-        = __Vtemp15[0U];
+        = __Vtemp_hcd58b436__0[0U];
     vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[1U] 
-        = __Vtemp15[1U];
+        = __Vtemp_hcd58b436__0[1U];
     vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[2U] 
-        = (1U & __Vtemp15[2U]);
+        = (1U & __Vtemp_hcd58b436__0[2U]);
     vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num_inv 
         = ((0xfffffffffffffff8ULL & vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num_inv) 
            | (IData)((IData)(((4U & ((IData)((vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num 
@@ -1676,23 +1287,20 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
            | ((QData)((IData)((1U & (IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num)))) 
               << 0x3fU));
     vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isSLT 
-        = (1U & ((vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[1U] 
-                  >> 0x1fU) ^ (vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[2U] 
-                               ^ (vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[1U] 
-                                  >> 0x1fU))));
+        = (1U & vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[2U]);
     vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isCF 
-        = (1U & ((IData)(top__DOT__u_execute__DOT__u_alu__DOT___isSUBop) 
-                 ^ (((((top__DOT__u_execute__DOT__u_alu__DOT___alu_a[2U] 
-                        | top__DOT__u_execute__DOT__u_alu__DOT___alu_b[2U]) 
+        = (1U & ((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isSUBop) 
+                 ^ (((((vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___alu_a[2U] 
+                        | vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___alu_b[2U]) 
                        | vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[2U]) 
-                      & ((top__DOT__u_execute__DOT__u_alu__DOT___alu_a[2U] 
-                          | (~ top__DOT__u_execute__DOT__u_alu__DOT___alu_b[2U])) 
+                      & ((vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___alu_a[2U] 
+                          | (~ vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___alu_b[2U])) 
                          | (~ vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[2U]))) 
-                     & (((~ top__DOT__u_execute__DOT__u_alu__DOT___alu_a[2U]) 
-                         | top__DOT__u_execute__DOT__u_alu__DOT___alu_b[2U]) 
+                     & (((~ vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___alu_a[2U]) 
+                         | vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___alu_b[2U]) 
                         | (~ vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[2U]))) 
-                    & (((~ top__DOT__u_execute__DOT__u_alu__DOT___alu_a[2U]) 
-                        | (~ top__DOT__u_execute__DOT__u_alu__DOT___alu_b[2U])) 
+                    & (((~ vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___alu_a[2U]) 
+                        | (~ vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___alu_b[2U])) 
                        | vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[2U]))));
     vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shifter_res 
         = (((- (QData)((IData)((((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___shift_sra) 
@@ -2000,7 +1608,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
         = ((0x7fffffffffffffffULL & vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___srl_res) 
            | ((QData)((IData)((1U & (IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shifter_res)))) 
               << 0x3fU));
-    top__DOT__u_execute__DOT__u_alu__DOT___alu_out 
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___alu_out 
         = (((((((((((- (QData)((IData)(((1U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
                                         | (2U == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)))))) 
                     & (((QData)((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out[1U])) 
@@ -2076,7 +1684,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                   : ((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___is_div_signed)
                       ? VL_MODDIVS_QQQ(64, vlSelf->top__DOT__u_execute__DOT___alu_in1, vlSelf->top__DOT__u_execute__DOT___alu_in2)
                       : VL_MODDIV_QQQ(64, vlSelf->top__DOT__u_execute__DOT___alu_in1, vlSelf->top__DOT__u_execute__DOT___alu_in2)))));
-    vlSelf->top__DOT__u_execute__DOT___alu_out = ((IData)(top__DOT__u_execute__DOT__u_alu__DOT___isCMP)
+    vlSelf->top__DOT__u_execute__DOT___alu_out = ((IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isCMP)
                                                    ? (QData)((IData)(
                                                                      ((((((((0xcU 
                                                                              == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
@@ -2108,7 +1716,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                                       | ((0x13U 
                                                                           == (IData)(vlSelf->top__DOT__u_dcode__DOT___alu_op)) 
                                                                          & (~ (IData)(vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isCF))))))
-                                                   : top__DOT__u_execute__DOT__u_alu__DOT___alu_out);
+                                                   : vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___alu_out);
     vlSelf->top__DOT__exc_out = (((9U == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op)) 
                                   | (0xbU == (IData)(vlSelf->top__DOT__u_dcode__DOT___exc_op)))
                                   ? (((QData)((IData)(
@@ -2165,48 +1773,140 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
                                                    & (- (QData)((IData)(vlSelf->top__DOT__u_pc__DOT___isready_inc4))))));
 }
 
-void Vtop___024root___eval(Vtop___024root* vlSelf) {
+VL_ATTR_COLD void Vtop___024root___eval_initial(Vtop___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___eval\n"); );
+    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___eval_initial\n"); );
     // Body
-    if (((IData)(vlSelf->clk) & (~ (IData)(vlSelf->__Vclklast__TOP__clk)))) {
-        Vtop___024root___sequent__TOP__1(vlSelf);
-        vlSelf->__Vm_traceActivity[1U] = 1U;
-    }
-    // Final
     vlSelf->__Vclklast__TOP__clk = vlSelf->clk;
+    Vtop___024root___initial__TOP__0(vlSelf);
 }
 
-QData Vtop___024root___change_request_1(Vtop___024root* vlSelf);
-
-VL_INLINE_OPT QData Vtop___024root___change_request(Vtop___024root* vlSelf) {
+VL_ATTR_COLD void Vtop___024root___eval_settle(Vtop___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___change_request\n"); );
+    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___eval_settle\n"); );
     // Body
-    return (Vtop___024root___change_request_1(vlSelf));
+    Vtop___024root___settle__TOP__0(vlSelf);
+    vlSelf->__Vm_traceActivity[1U] = 1U;
+    vlSelf->__Vm_traceActivity[0U] = 1U;
 }
 
-VL_INLINE_OPT QData Vtop___024root___change_request_1(Vtop___024root* vlSelf) {
+VL_ATTR_COLD void Vtop___024root___final(Vtop___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___change_request_1\n"); );
-    // Body
-    // Change detection
-    QData __req = false;  // Logically a bool
-    return __req;
+    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___final\n"); );
 }
 
-#ifdef VL_DEBUG
-void Vtop___024root___eval_debug_assertions(Vtop___024root* vlSelf) {
+VL_ATTR_COLD void Vtop___024root___ctor_var_reset(Vtop___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___eval_debug_assertions\n"); );
+    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___ctor_var_reset\n"); );
     // Body
-    if (VL_UNLIKELY((vlSelf->clk & 0xfeU))) {
-        Verilated::overWidthError("clk");}
-    if (VL_UNLIKELY((vlSelf->rst & 0xfeU))) {
-        Verilated::overWidthError("rst");}
+    vlSelf->clk = VL_RAND_RESET_I(1);
+    vlSelf->rst = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__rs1_data = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__rs2_data = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__csr_mtvec_i = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__csr_mstatus_i = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__csr_mtvec_i_en = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__csr_mstatus_i_en = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__exc_out = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__u_pc__DOT___isready_branch = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_pc__DOT___isready_inc4 = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_pc__DOT___pc_next = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__u_pc__DOT___pc_current = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__u_fetch__DOT___mem_data = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__u_dcode__DOT___type_load = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___type_store = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___type_branch = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___type_jalr = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___type_jal = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___type_op_imm = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___type_op = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___type_system = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___type_auipc = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___type_lui = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___type_op_imm_32 = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___type_op_32 = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___inst_jalr = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___inst_ecall = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___inst_ebreak = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___inst_csrrw = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___inst_csrrs = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___inst_csrrc = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___inst_csrrwi = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___inst_csrrsi = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___inst_csrrci = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___inst_mret = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___R_type = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___I_type = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___U_type = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___isNeed_immCSR = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___isNeed_csr = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___rd_idx = VL_RAND_RESET_I(5);
+    vlSelf->top__DOT__u_dcode__DOT___csr_idx = VL_RAND_RESET_I(12);
+    vlSelf->top__DOT__u_dcode__DOT___imm_data = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__u_dcode__DOT___csr_set = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___csr_clear = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_dcode__DOT___csr_op = VL_RAND_RESET_I(3);
+    vlSelf->top__DOT__u_dcode__DOT___alu_op = VL_RAND_RESET_I(6);
+    vlSelf->top__DOT__u_dcode__DOT___exc_op = VL_RAND_RESET_I(5);
+    vlSelf->top__DOT__u_dcode__DOT___mem_op = VL_RAND_RESET_I(4);
+    vlSelf->top__DOT__u_dcode__DOT___pc_op = VL_RAND_RESET_I(4);
+    vlSelf->top__DOT__u_dcode__DOT___decode_trap_bus = VL_RAND_RESET_I(3);
+    for (int __Vi0=0; __Vi0<32; ++__Vi0) {
+        vlSelf->top__DOT__u_rv64reg__DOT__rf[__Vi0] = VL_RAND_RESET_Q(64);
+    }
+    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mstatus_q = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mstatus_en = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mepc_q = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mepc_en = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mcause_q = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mcause_en = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtval_q = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtval_en = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtvec_q = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___mtvec_en = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_rv64_csr_regfile__DOT___csr_readdata = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__u_execute__DOT___rs1_rs2 = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_execute__DOT___rs1_imm = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_execute__DOT___pc_4 = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_execute__DOT___alu_in1 = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__u_execute__DOT___alu_in2 = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__u_execute__DOT___alu_out = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__u_execute__DOT___csr_exe_valid = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isCMP = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isSUBop = VL_RAND_RESET_I(1);
+    VL_RAND_RESET_W(65, vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___alu_a);
+    VL_RAND_RESET_W(65, vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___alu_b);
+    VL_RAND_RESET_W(65, vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___add_out);
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isCF = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isSLT = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___shift_sra = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___shift_srl = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___shift_sll = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___isshift32 = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___is_div_signed = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___is_div32 = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT___alu_out = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shift_num_inv = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shifter_in2 = VL_RAND_RESET_I(6);
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___shifter_res = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_shift__DOT___srl_res = VL_RAND_RESET_Q(64);
+    VL_RAND_RESET_W(128, vlSelf->top__DOT__u_execute__DOT__u_alu__DOT__u_alu_mul_top__DOT___mul_result);
+    vlSelf->top__DOT__u_execute__DOT__u_execute_csr__DOT___csr_op2 = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__u_execute__DOT__u_execute_csr__DOT___csr_exe_result = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__u_memory__DOT___ls8byte = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_memory__DOT___ls16byte = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_memory__DOT___ls32byte = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_memory__DOT___unsigned = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_memory__DOT___signed = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__u_memory__DOT___mem_read = VL_RAND_RESET_Q(64);
+    vlSelf->top__DOT__u_memory__DOT___addr = VL_RAND_RESET_Q(64);
+    vlSelf->__Vtask_top__DOT__u_fetch__DOT__pmem_read__0__rdata = 0;
+    for (int __Vi0=0; __Vi0<2; ++__Vi0) {
+        vlSelf->__Vm_traceActivity[__Vi0] = VL_RAND_RESET_I(1);
+    }
 }
-#endif  // VL_DEBUG

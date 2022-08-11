@@ -15,9 +15,9 @@ VERILATOR_FLAGS += --top ${TOP_MODULE}
 
 
 # gcc flags 
-GCC_INC_PATH = -I/home/leesum/ysyx-workbench/npc/csrc/include  \
-			   -I/home/leesum/ysyx-workbench/npc/csrc/devices/include \
-			   -I/home/leesum/ysyx-workbench/npc/csrc/ringbuff \
+GCC_INC_PATH = -I$(NPC_HOME)/csrc/include  \
+			   -I$(NPC_HOME)/csrc/devices/include \
+			   -I$(NPC_HOME)/csrc/ringbuff \
 
 # llvm
 LLVM_LIB = $(shell llvm-config-13 --libs)
