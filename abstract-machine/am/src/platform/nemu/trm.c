@@ -1,8 +1,8 @@
 #include <am.h>
 #include <nemu.h>
-
+#include <stdio.h>
 extern char _heap_start;
-int main(const char *args);
+int main(const char* args);
 
 Area heap = RANGE(&_heap_start, PMEM_END);
 #ifndef MAINARGS
@@ -22,6 +22,7 @@ void halt(int code) {
 }
 
 void _trm_init() {
+  //printf("mainargs:%s\n", mainargs);
   int ret = main(mainargs);
   halt(ret);
 }

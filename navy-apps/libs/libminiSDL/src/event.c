@@ -9,6 +9,8 @@ static const char* keyname[] = {
   _KEYS(keyname)
 };
 
+static uint8_t keystate[83] = {};
+
 int SDL_PushEvent(SDL_Event* ev) {
   printf("SDL_PushEvent\n");
   assert(0);
@@ -34,6 +36,7 @@ int SDL_PollEvent(SDL_Event* ev) {
   for (size_t i = 0; i < 83; i++) {
     if (!strcmp(kb_name, keyname[i])) {
       ev->key.keysym.sym = i;
+      keystate[i] = (!strcmp(kb_state, "kd")) ? 1 : 0;
       printf("match key:%s\n", keyname[i]);
       break;
     }
@@ -63,8 +66,9 @@ int SDL_WaitEvent(SDL_Event* event) {
   // get sdl keyname
   for (size_t i = 0; i < 83; i++) {
     if (!strcmp(kb_name, keyname[i])) {
-      event->key.keysym.sym = i;
       printf("match key:%s\n", keyname[i]);
+      event->key.keysym.sym = i;
+      keystate[i] = (!strcmp(kb_state, "kd")) ? 1 : 0;
       break;
     }
   }
@@ -78,17 +82,9 @@ int SDL_PeepEvents(SDL_Event* ev, int numevents, int action, uint32_t mask) {
   return 0;
 }
 // TODO:PAL
-static uint8_t keystate[83] = {};
+
 uint8_t* SDL_GetKeyState(int* numkeys) {
   //printf("SDL_GetKeyState\n");
-  // memset(keystate, 0, sizeof(keystate));
-  SDL_Event e;
-  if (SDL_PollEvent(&e)) {
-    if (e.type == SDL_KEYDOWN) {
-      keystate[e.key.keysym.sym] = 1;
-    }
-  }
-  assert(keystate);
   return &keystate[0];
   //return NULL;
 }

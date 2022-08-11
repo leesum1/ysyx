@@ -34,7 +34,7 @@ module memory (
   /* 读取或写入的 byte */
   wire _ls8byte = _memop_lb | _memop_lbu | _memop_sb;
   wire _ls16byte = _memop_lh | _memop_lhu | _memop_sh;
-  wire _ls32byte = _memop_lw | _memop_sw;
+  wire _ls32byte = _memop_lw | _memop_sw | _memop_lwu;
   wire _ls64byte = _memop_ld | _memop_sd;
 
   /* 是否进行符号扩展 */

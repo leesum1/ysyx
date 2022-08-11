@@ -9,5 +9,7 @@ build/
 !*.cpp
 !*.hpp
 !*.h
+!.vscode/*
 !.gitignore
 !README.md
+obj_dir

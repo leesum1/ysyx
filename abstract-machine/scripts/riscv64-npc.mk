@@ -20,6 +20,7 @@ CFLAGS += -DMAINARGS=\"$(mainargs)\"
 image: $(IMAGE).elf
 	@$(OBJDUMP) -d $(IMAGE).elf > $(IMAGE).txt
 	@echo + OBJCOPY "->" $(IMAGE_REL).bin
+	@echo $(mainargs)
 	@$(OBJCOPY) -S --set-section-flags .bss=alloc,contents -O binary $(IMAGE).elf $(IMAGE).bin
 # add by leesum
 run: image

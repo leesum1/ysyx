@@ -15,13 +15,13 @@ VERILATOR_FLAGS += --top ${TOP_MODULE}
 
 
 # gcc flags 
-GCC_INC_PATH = -I/home/leesum/ysyx-workbench/npc/csrc/include  \
-			   -I/home/leesum/ysyx-workbench/npc/csrc/devices/include \
-			   -I/home/leesum/ysyx-workbench/npc/csrc/ringbuff \
+GCC_INC_PATH = -I$(NPC_HOME)/csrc/include  \
+			   -I$(NPC_HOME)/csrc/devices/include \
+			   -I$(NPC_HOME)/csrc/ringbuff \
 
 # llvm
-LLVM_LIB = $(shell llvm-config --libs)
-LLVM_FLAGS = $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config --cxxflags))
+LLVM_LIB = $(shell llvm-config-13 --libs)
+LLVM_FLAGS = $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config-13 --cxxflags))
 
 #-lasan(内存检查)
 GCC_LIB = -lreadline \

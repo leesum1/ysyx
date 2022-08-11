@@ -4,7 +4,7 @@
 #include <klib-macros.h>
 
 #include ISA_H // the macro `ISA_H` is defined in CFLAGS
-               // it will be expanded as "x86/x86.h", "mips/mips32.h", ...
+// it will be expanded as "x86/x86.h", "mips/mips32.h", ...
 
 #if defined(__ISA_X86__)
 # define nemu_trap(code) asm volatile ("int3" : :"a"(code))
@@ -34,7 +34,7 @@
 #define AUDIO_SBUF_ADDR (MMIO_BASE   + 0x1200000)
 
 extern char _pmem_start;
-#define PMEM_SIZE (128 * 1024 * 1024)
+#define PMEM_SIZE (512 * 1024 * 1024)
 #define PMEM_END  ((uintptr_t)&_pmem_start + PMEM_SIZE)
 #define NEMU_PADDR_SPACE \
   RANGE(&_pmem_start, PMEM_END), \

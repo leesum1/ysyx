@@ -1,0 +1,6 @@
+make -f /media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/nemu/Makefile -C /media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/nemu/ --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/nemu'
+make: Leaving directory '/media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/nemu'
+ 
+/media/leesum/E0E0923EE0921ABC/WorkHome/ysyx-workbench/nemu/Makefile:18: *** NEMU_HOME= is not a NEMU repo.  Stop.
+
