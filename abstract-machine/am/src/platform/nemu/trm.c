@@ -22,7 +22,7 @@ void halt(int code) {
 }
 
 void _trm_init() {
-  printf("mainargs:%s\n", mainargs);
+  //printf("mainargs:%s\n", mainargs);
   int ret = main(mainargs);
   halt(ret);
 }
