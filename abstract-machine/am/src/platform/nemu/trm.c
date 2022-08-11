@@ -23,6 +23,6 @@ void halt(int code) {
 
 void _trm_init() {
   printf("mainargs:%s\n", mainargs);
-  int ret = main("t");
+  int ret = main(mainargs);
   halt(ret);
 }
