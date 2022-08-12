@@ -26,7 +26,7 @@ GCC_INC_PATH = -I$(NPC_HOME)/csrc/include  \
 LLVM_LIB = $(shell llvm-config-13 --libs)
 LLVM_FLAGS = $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config-13 --cxxflags))
 
-LLVM_FLAGS += -O3
+LLVM_FLAGS += -O3 -flto
 #-lasan(内存检查)
 GCC_LIB = -lreadline \
 		  -ldl \
