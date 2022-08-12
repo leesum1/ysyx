@@ -22,7 +22,7 @@ module fetch (
   import "DPI-C" function void get_pc(input longint pc);
   /*  仿真使用,传递当前 pc 给仿真环境,根据pc 取指令 */
   wire [7:0] _rmask = 8'b1111_1111;
-  always @(posedge clk) begin
+  always @(*) begin
     pmem_read(inst_addr, _mem_data, _rmask);
     get_pc(inst_addr);
   end
