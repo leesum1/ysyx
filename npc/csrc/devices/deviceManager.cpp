@@ -129,7 +129,7 @@ Devicebase* DeviceManager::createDevice(const char* name) {
  */
 bool DeviceManager::installDevice(const char* className, const char* deviceName) {
     if (findDevicebyName(deviceName) != nullptr) {
-        printf("%s,already installed\n");
+        printf("%s,already installed\n", deviceName);
         return false;
     };
     Devicebase* base = createDevice(className);

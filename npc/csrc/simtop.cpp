@@ -213,7 +213,7 @@ Vtop* Simtop::getTop() {
  */
 void Simtop::sdbOn(const char* sdbname) {
     /* 打开所有 sdb 调试工具 */
-    if (!(sdbname, "all")) {
+    if (!strcmp(sdbname, "all")) {
         for (auto& iter : sdbToollist) {
             iter.isok = true;
 
@@ -236,7 +236,7 @@ void Simtop::sdbOn(const char* sdbname) {
  */
 void Simtop::sdbOff(const char* sdbname) {
     /* 关闭所有 sdb 调试工具 */
-    if (!(sdbname, "all")) {
+    if (!strcmp(sdbname, "all")) {
         for (auto& iter : sdbToollist) {
             iter.isok = false;
 
