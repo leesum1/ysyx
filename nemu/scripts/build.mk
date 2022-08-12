@@ -4,7 +4,7 @@
 ifeq ($(SHARE),1)
 SO = -so
 CFLAGS  += -fPIC
-LDFLAGS += -rdynamic -shared -fPIC -fuse-ld=gold
+LDFLAGS += -rdynamic -shared -fPIC 
 endif
 
 WORK_DIR  = $(shell pwd)
@@ -17,7 +17,7 @@ BINARY   = $(BUILD_DIR)/$(NAME)$(SO)
 
 # Compilation flags
 ifeq ($(CC),clang)
-CXX := clang++
+CXX := clang++-13
 else
 CXX := g++
 endif
