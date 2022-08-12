@@ -23,7 +23,7 @@ CXX := g++
 endif
 LD := $(CXX)
 INCLUDES = $(addprefix -I, $(INC_PATH))
-CFLAGS  := -O2 -MMD -Wall  $(INCLUDES) $(CFLAGS) #-Werror 不需要
+CFLAGS  := -O2 -MMD -Wall  -fPIC $(INCLUDES) $(CFLAGS) #-Werror 不需要
 LDFLAGS := -O2 $(LDFLAGS)
 
 CXXSRC += $(WORK_DIR)/src/monitor/sdb/exprresult.cc
