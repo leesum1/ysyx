@@ -12,7 +12,7 @@ VERILATOR_INC_PATH := -I./vsrc \
 
 # verilator flags: 
 #VERILATOR_FLAGS +=  --trace
-VERILATOR_FLAGS +=  -cc --exe -O3  -noassert --build --threads 2 -Wno-UNOPTTHREADS -threads-dpi none --clk clk
+VERILATOR_FLAGS +=  -cc --exe -O3  -noassert --build  -Wno-UNOPTTHREADS -threads-dpi none --clk clk #--threads 2
 VERILATOR_FLAGS += ${VERILATOR_INC_PATH}
 VERILATOR_FLAGS += --top ${TOP_MODULE}
 
