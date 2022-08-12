@@ -12,7 +12,7 @@ VERILATOR_INC_PATH := -I./vsrc \
 
 # verilator flags: 
 #VERILATOR_FLAGS +=  --trace
-VERILATOR_FLAGS +=  -cc --exe -O3 -x-assign fast -noassert --build
+VERILATOR_FLAGS +=  -cc --exe -O3  -noassert --build --threads 2 -Wno-UNOPTTHREADS
 VERILATOR_FLAGS += ${VERILATOR_INC_PATH}
 VERILATOR_FLAGS += --top ${TOP_MODULE}
 
@@ -31,7 +31,8 @@ LLVM_FLAGS += -O3
 GCC_LIB = -lreadline \
 		  -ldl \
 		  -lnemu \
-		  -lSDL2
+		  -lSDL2 \
+		  -lpthread
 GCC_LIB += ${LLVM_LIB}
 
 
