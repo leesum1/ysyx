@@ -80,7 +80,7 @@ namespace expr_namespace {
      */
     Expr::word_t Expr::getResult(char* e, bool* success) {
         if (!make_token(e)) {
-            *success == false;
+            *success = false;
             printf("make_token fail!\n");
             exit(0);
             return 0;

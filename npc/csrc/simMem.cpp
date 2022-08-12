@@ -149,7 +149,7 @@ bool SimMem::loadImage(const char* img) {
     ifstream binaryimg;
     size_t img_size = getImgSize(img);
     binaryimg.open(img, ios::in | ios::binary);
-    if (!binaryimg.is_open() | img_size == -1) {
+    if (!binaryimg.is_open() || (img_size == -1)) {
         memcpy(pmem, defimg, sizeof(defimg));
         cout << "load default img" << endl;
         return true;

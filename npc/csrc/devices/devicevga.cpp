@@ -54,12 +54,13 @@ void Devicevga::write(paddr_t addr, word_t data, uint32_t len) {
         }
         else {
             vgaregs.sync = (uint32_t)data;
-            vga_update_screen();
+            //vga_update_screen();
         }
     }
     /* fb 缓存 */
     else if (atRange(deviceinfo.at(1).addr, deviceinfo.at(1).addr + deviceinfo.at(1).len - 1, addr)) {
         offset = addr - deviceinfo.at(1).addr;
+        // 4byte
         vgaregs.fbbuff[offset >> 2] = (uint32_t)data;
     }
 }
@@ -140,7 +141,7 @@ void Devicevga::vga_update_screen() {
     }
 }
 void Devicevga::update() {
-    //vga_update_screen();
+    vga_update_screen();
 }
 
 

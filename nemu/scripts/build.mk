@@ -4,25 +4,26 @@
 ifeq ($(SHARE),1)
 SO = -so
 CFLAGS  += -fPIC
-LDFLAGS += -rdynamic -shared -fPIC
+LDFLAGS += -rdynamic -shared -fPIC 
 endif
 
 WORK_DIR  = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
 
 INC_PATH := $(WORK_DIR)/include $(INC_PATH)
+INC_PATH += /usr/include/SDL2
 OBJ_DIR  = $(BUILD_DIR)/obj-$(NAME)$(SO)
 BINARY   = $(BUILD_DIR)/$(NAME)$(SO)
 
 # Compilation flags
 ifeq ($(CC),clang)
-CXX := clang++
+CXX := clang++-13
 else
 CXX := g++
 endif
 LD := $(CXX)
 INCLUDES = $(addprefix -I, $(INC_PATH))
-CFLAGS  := -O2 -MMD -Wall  $(INCLUDES) $(CFLAGS) #-Werror 不需要
+CFLAGS  := -O2 -MMD -Wall  -fPIC $(INCLUDES) $(CFLAGS) #-Werror 不需要
 LDFLAGS := -O2 $(LDFLAGS)
 
 CXXSRC += $(WORK_DIR)/src/monitor/sdb/exprresult.cc

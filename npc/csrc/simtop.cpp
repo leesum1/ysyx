@@ -11,22 +11,26 @@ static const char* regs[] = {
 Simtop::Simtop() {
     cout << "SimtopStart!" << endl;
     mem = new SimMem;
-
-    /* 波形数据 */
-    contextp = new VerilatedContext;
     top = new Vtop;
+    /* 波形数据 */
+#ifdef TOP_TRACE
+    contextp = new VerilatedContext;
     tfp = new VerilatedVcdC;
     contextp->traceEverOn(true);
     top->trace(tfp, 0);
     tfp->open("sim.vcd");
-
+#endif
     this->top_status = TOP_RUNNING;
 }
 
 Simtop::~Simtop() {
+#ifdef TOP_TRACE
     tfp->close();
     delete tfp;
+    delete contextp;
+    delete mem;
     delete top;
+#endif
     cout << "SimtopEnd!" << endl;
 }
 
@@ -48,8 +52,10 @@ void Simtop::changeCLK() {
 
 
 void Simtop::dampWave() {
+#ifdef TOP_TRACE
     contextp->timeInc(1);
     tfp->dump(contextp->time());
+#endif
 }
 
 /**
@@ -61,17 +67,22 @@ void Simtop::stepCycle(bool val) {
     if (top_status != TOP_RUNNING) {
         return;
     }
-
+#ifdef TOP_TRACE
     if (!top->rst && isSdbOk("itrace")) {
         u_itrace.llvmDis();
     }
+#endif
     changeCLK(); // 上升沿
     /* 上升沿和下降沿都要保存波形数据 */
+#ifdef TOP_TRACE
     if (isSdbOk("wave")) {
         this->dampWave();
     }
+#endif
     changeCLK();// 下降沿
+#ifdef TOP_TRACE
     sdbRun();
+#endif
 }
 
 const char* Simtop::getRegName(int idx) {
@@ -202,7 +213,7 @@ Vtop* Simtop::getTop() {
  */
 void Simtop::sdbOn(const char* sdbname) {
     /* 打开所有 sdb 调试工具 */
-    if (!(sdbname, "all")) {
+    if (!strcmp(sdbname, "all")) {
         for (auto& iter : sdbToollist) {
             iter.isok = true;
 
@@ -225,7 +236,7 @@ void Simtop::sdbOn(const char* sdbname) {
  */
 void Simtop::sdbOff(const char* sdbname) {
     /* 关闭所有 sdb 调试工具 */
-    if (!(sdbname, "all")) {
+    if (!strcmp(sdbname, "all")) {
         for (auto& iter : sdbToollist) {
             iter.isok = false;
 
