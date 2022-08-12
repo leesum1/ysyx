@@ -67,17 +67,22 @@ void Simtop::stepCycle(bool val) {
     if (top_status != TOP_RUNNING) {
         return;
     }
-
+#ifdef TOP_TRACE
     if (!top->rst && isSdbOk("itrace")) {
         u_itrace.llvmDis();
     }
+#endif
     changeCLK(); // 上升沿
     /* 上升沿和下降沿都要保存波形数据 */
+#ifdef TOP_TRACE
     if (isSdbOk("wave")) {
         this->dampWave();
     }
+#endif
     changeCLK();// 下降沿
+#ifdef TOP_TRACE
     sdbRun();
+#endif
 }
 
 const char* Simtop::getRegName(int idx) {
