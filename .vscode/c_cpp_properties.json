@@ -8,10 +8,10 @@
                 "/usr/local/share/verilator/include/*",
                 // "/usr/include/SDL2/*",
                 "abstract-machine/am/include/arch/**",
-                "${workspaceFolder}/navy-apps/**",
+                "/home/leesum/ysyx-workbench/navy-apps/**",
                 "nanos-lite/include/*",
                 "abstract-machine/am/include/*",
-                "${workspaceFolder}/navy-apps/libs/libminiSDL/include/*"
+                "/home/leesum/ysyx-workbench/navy-apps/libs/libminiSDL/include/*"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

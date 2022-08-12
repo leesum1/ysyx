@@ -5,7 +5,6 @@
 * 取指模块
 */
 module fetch (
-    input clk,
     //指令地址
     input wire [`XLEN-1:0] inst_addr,
     //指令内容
@@ -14,16 +13,16 @@ module fetch (
 
   wire [`XLEN-1:0] _mem_data;
   import "DPI-C" function void pmem_read(
-    input longint raddr,
-    output longint rdata,
-    input byte rmask
+    input  longint raddr,
+    output longint rdata
   );
 
-  import "DPI-C" function void get_pc(input longint pc);
-  /*  仿真使用,传递当前 pc 给仿真环境,根据pc 取指令 */
-  wire [7:0] _rmask = 8'b1111_1111;
+  import "DPI-C" function void get_pc(
+    input  longint pc,
+  );
+/*  仿真使用,传递当前 pc 给仿真环境,根据pc 取指令 */
   always @(*) begin
-    pmem_read(inst_addr, _mem_data, _rmask);
+    pmem_read(inst_addr, _mem_data);
     get_pc(inst_addr);
   end
 

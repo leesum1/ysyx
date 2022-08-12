@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
   size_t imgsize = mysim_p->mem->getImgSize(mysim_p->mem->imgpath.c_str());
 
   mysim_p->reset();
-  //mysim_p->u_difftest.init(nemu_so_path, imgsize, 0);
+  mysim_p->u_difftest.init(nemu_so_path, imgsize, 0);
   /* 注册命令 */
   cr::Console c(">:");
   c.registerCommand("info", cmd_info);

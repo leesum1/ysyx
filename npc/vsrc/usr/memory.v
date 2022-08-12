@@ -81,7 +81,6 @@ module memory (
                      ({8{_ls64byte}}&8'b1111_1111);
 
   wire [7:0] _wmask = (_isstore) ? _mask : 8'b0000_0000;
-  wire [7:0] _rmask = (_isload) ? _mask : 8'b0000_0000;
 
   /* 地址 */
   wire [`XLEN-1:0] _addr = (_memop_none) ? `PC_RESET_ADDR : exc_in;
@@ -90,9 +89,8 @@ module memory (
 
   /***************************内存读写**************************/
   import "DPI-C" function void pmem_read(
-    input longint raddr,
-    output longint rdata,
-    input byte rmask
+    input  longint raddr,
+    output longint rdata
   );
   import "DPI-C" function void pmem_write(
     input longint waddr,
@@ -106,7 +104,7 @@ module memory (
   // end
 
   always @(posedge clk) begin
-    pmem_read(_raddr, _mem_read, _rmask);
+    pmem_read(_raddr, _mem_read);
     pmem_write(_waddr, _mem_write, _wmask);
   end
 

@@ -25,7 +25,6 @@ module top (
   /* 取指模块 */
   wire [`INST_LEN-1:0] inst_data;
   fetch u_fetch (
-      .clk(clk),
       //指令地址
       .inst_addr(pc),
       //指令内容
