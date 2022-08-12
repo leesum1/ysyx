@@ -11,22 +11,26 @@ static const char* regs[] = {
 Simtop::Simtop() {
     cout << "SimtopStart!" << endl;
     mem = new SimMem;
-
-    /* 波形数据 */
-    contextp = new VerilatedContext;
     top = new Vtop;
+    /* 波形数据 */
+#ifdef TOP_TRACE
+    contextp = new VerilatedContext;
     tfp = new VerilatedVcdC;
     contextp->traceEverOn(true);
     top->trace(tfp, 0);
     tfp->open("sim.vcd");
-
+#endif
     this->top_status = TOP_RUNNING;
 }
 
 Simtop::~Simtop() {
+#ifdef TOP_TRACE
     tfp->close();
     delete tfp;
+    delete contextp;
+    delete mem;
     delete top;
+#endif
     cout << "SimtopEnd!" << endl;
 }
 
@@ -48,8 +52,10 @@ void Simtop::changeCLK() {
 
 
 void Simtop::dampWave() {
+#ifdef TOP_TRACE
     contextp->timeInc(1);
     tfp->dump(contextp->time());
+#endif
 }
 
 /**
