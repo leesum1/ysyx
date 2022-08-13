@@ -59,9 +59,20 @@ void Devicevga::write(paddr_t addr, word_t data, uint32_t len) {
     }
     /* fb 缓存 */
     else if (atRange(deviceinfo.at(1).addr, deviceinfo.at(1).addr + deviceinfo.at(1).len - 1, addr)) {
-        offset = addr - deviceinfo.at(1).addr;
-        // 4byte
-        vgaregs.fbbuff[offset >> 2] = (uint32_t)data;
+        offset = addr - deviceinfo.at(1).addr + (paddr_t)vgaregs.fbbuff;
+
+        switch (len) {
+        case 4:
+            *(uint32_t*)offset = (uint32_t)data;
+            break;
+        case 8:
+            *(uint64_t*)offset = (uint64_t)data;
+            break;
+        default:
+            printf("len:%d\n", len);
+            assert(0);
+            break;
+        }
     }
 }
 word_t Devicevga::read(paddr_t addr) {
