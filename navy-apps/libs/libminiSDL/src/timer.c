@@ -17,14 +17,12 @@ int SDL_RemoveTimer(SDL_TimerID id) {
 uint32_t SDL_GetTicks() {
   return  NDL_GetTicks();
 }
-// PAL
+// 速度过慢,不需要延迟
 void SDL_Delay(uint32_t ms) {
   // printf("SDL_Delay\n");
   // uint32_t now = SDL_GetTicks();
   // while (SDL_GetTicks() - now < ms) {
   //   //printf("SDL_Delay\n");
   // }
-
-
   //assert(0);
 }

@@ -10,7 +10,7 @@
 
 /**
  * @brief https://blog.csdn.net/caimouse/article/details/53482775
- *    TODO:8位改造
+ *
  * @param src
  * @param srcrect NULL:全部拷贝
  * @param dst
@@ -44,7 +44,7 @@ void SDL_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst, SDL_
   // 偏移量 必须使用 uint32_t, uint16_t 不够
   uint32_t src_offset = src_y * src->w + src_x;
   uint32_t des_offset = des_y * dst->w + des_x;
-  // printf("des_x:%d,des_y:%d,des_w:%d,des_h:%d\n", des_x, des_y, des_w, des_h);
+  // printf("des_x:%d,des_y:%d,des_w:%d,des->h:%d\n", des_x, des_y, des_w, des->h);
   // printf("src_x:%d,src_y:%d,src_w:%d,src_h:%d\n", src_x, src_y, src_w, src_h);
   // printf("src_offset:%d,des_offset:%d\n", src_offset, des_offset);
   // printf("src_offset:%d,des_offset:%d\n", src_offset, des_offset);
@@ -80,7 +80,7 @@ void SDL_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst, SDL_
   }
 }
 /**
- * @brief 测试通过 TODO:8位改造
+ * @brief
  *
  * @param dst
  * @param dstrect
@@ -111,7 +111,7 @@ void SDL_FillRect(SDL_Surface* dst, SDL_Rect* dstrect, uint32_t color) {
     break;
   }
   case 8: {
-    uint8_t* pixels8 = (uint8_t*)dst->pixels;
+    uint8_t* pixels8 = (uint8_t*)(dst->pixels + (rect_temp.y * dst->w + rect_temp.x));
     for (size_t i = 0; i < bufsize; i++) {
       *(pixels8++) = (uint8_t)color;
     }
@@ -134,45 +134,32 @@ void SDL_FillRect(SDL_Surface* dst, SDL_Rect* dstrect, uint32_t color) {
  */
 void SDL_UpdateRect(SDL_Surface* s, int x, int y, int w, int h) {
 
-  if (s) {
-    // SDL_Rect rect;
-    /* Perform some checking */
-    if (w == 0)
-      w = s->w;
-    if (h == 0)
-      h = s->h;
-    if ((int)(x + w) > s->w)
-      return;
-    if ((int)(y + h) > s->h)
-      return;
-
-    if (s->format->BitsPerPixel == 8) {
-      uint32_t s_h = s->h, s_w = s->w;
-      if (w == 0 || w > s_w) w = s_w;
-      if (h == 0 || h > s_h) h = s_h;
-      uint32_t* pixels8to32 = malloc(sizeof(uint32_t) * w * h);
-      uint32_t src_offset = y * s_w + x;
-      uint32_t* des_offset = pixels8to32;
-      for (int i = 0;i < h;i++) {
-        uint32_t off1 = (i + y) * s_w + x;
-        src_offset += s_w;
-        for (int j = 0;j < w;j++) {
-          SDL_Color2 color32;
-          color32.a = s->format->palette->colors[s->pixels[src_offset + j]].a;
-          color32.b = s->format->palette->colors[s->pixels[src_offset + j]].b;
-          color32.g = s->format->palette->colors[s->pixels[src_offset + j]].g;
-          color32.r = s->format->palette->colors[s->pixels[src_offset + j]].r;
-          *(des_offset++) = color32.val;
-        }
+  assert(s);
+  if (w == 0 || w > s->w) w = s->w;
+  if (h == 0 || h > s->h) h = s->h;
+  if (s->format->BitsPerPixel == 8) {
+    uint32_t* pixels8to32 = malloc(sizeof(uint32_t) * w * h);
+    uint32_t src_offset = y * s->w + x;
+    uint32_t* des_offset = pixels8to32;
+    for (int i = 0;i < h;i++) {
+      for (int j = 0;j < w;j++) {
+        /* 转换为 NDL 色彩格式 */
+        SDL_Color2 color32;
+        color32.a = s->format->palette->colors[s->pixels[src_offset + j]].a;
+        color32.b = s->format->palette->colors[s->pixels[src_offset + j]].b;
+        color32.g = s->format->palette->colors[s->pixels[src_offset + j]].g;
+        color32.r = s->format->palette->colors[s->pixels[src_offset + j]].r;
+        *(des_offset++) = color32.val;
       }
-      //printf("SDL_UpdateRect,x:%d,y:%d,w:%d,h:%d\n", x, y, w, h);
-      NDL_DrawRect(pixels8to32, x, y, w, h);
-      free(pixels8to32);
+      src_offset += s->w;
     }
-    /*s->format->BitsPerPixel == 32*/
-    else {
-      NDL_DrawRect((uint32_t*)s->pixels, x, y, w, h);
-    }
+    //printf("SDL_UpdateRect,x:%d,y:%d,w:%d,h:%d\n", x, y, w, h);
+    NDL_DrawRect(pixels8to32, x, y, w, h);
+    free(pixels8to32);
+  }
+  /*s->format->BitsPerPixel == 32*/
+  else {
+    NDL_DrawRect((uint32_t*)s->pixels, x, y, w, h);
   }
 }
 
