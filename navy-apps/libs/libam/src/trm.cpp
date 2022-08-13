@@ -1,6 +1,7 @@
 #include <am.h>
 #include <stdio.h>
 #include <assert.h>
+#include <stdlib.h>
 Area heap;
 
 void putch(char ch) {
@@ -8,6 +9,5 @@ void putch(char ch) {
 }
 
 void halt(int code) {
-    assert(code);
-
+    exit(code);
 }
