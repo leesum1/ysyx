@@ -3,9 +3,9 @@
 #include <unistd.h>
 #include <SDL.h>
 
-char handle_key(SDL_Event *ev);
+char handle_key(SDL_Event* ev);
 
-static void sh_printf(const char *format, ...) {
+static void sh_printf(const char* format, ...) {
   static char buf[256] = {};
   va_list ap;
   va_start(ap, format);
@@ -22,7 +22,7 @@ static void sh_prompt() {
   sh_printf("sh> ");
 }
 
-static void sh_handle_cmd(const char *cmd) {
+static void sh_handle_cmd(const char* cmd) {
 }
 
 void builtin_sh_run() {
@@ -33,7 +33,7 @@ void builtin_sh_run() {
     SDL_Event ev;
     if (SDL_PollEvent(&ev)) {
       if (ev.type == SDL_KEYUP || ev.type == SDL_KEYDOWN) {
-        const char *res = term->keypress(handle_key(&ev));
+        const char* res = term->keypress(handle_key(&ev));
         if (res) {
           sh_handle_cmd(res);
           sh_prompt();

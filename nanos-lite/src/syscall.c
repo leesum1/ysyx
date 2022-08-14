@@ -3,6 +3,7 @@
 #include <sys/time.h>
 #include "syscall.h"
 #include <fs.h>
+#include <proc.h>
 // #define STRACE
 
 void do_syscall(Context* c) {
@@ -30,7 +31,8 @@ void do_syscall(Context* c) {
 #ifdef STRACE
     printf("SYS_exit\n");
 #endif
-    halt(c->GPRx);
+    naive_uload(NULL, "/bin/menu");
+    halt(a[1]);
     break;
   case SYS_write:
 #ifdef STRACE
@@ -84,6 +86,12 @@ void do_syscall(Context* c) {
       tv->tv_usec = us % 1000000;
     }
     c->GPRx = 0;
+    break;
+  case SYS_execve:
+#ifdef STRACE
+    printf("SYS_execve a1:%s,a2:%d,a3:%d\n", a[1], a[2], a[3]);
+#endif
+    naive_uload(NULL, (char*)a[1]);
     break;
   default:
     panic("Unhandled syscall ID = %d\n", a[0]);

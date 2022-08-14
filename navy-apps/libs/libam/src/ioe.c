@@ -1,5 +1,5 @@
 #include <am.h>
-
+#include <stdlib.h>
 void __am_gpu_init();
 void __am_input_keybrd(AM_INPUT_KEYBRD_T*);
 void __am_timer_rtc(AM_TIMER_RTC_T*);
@@ -16,6 +16,11 @@ static void __am_uart_config(AM_UART_CONFIG_T* cfg) { cfg->present = false; }
 
 bool ioe_init() {
   __am_gpu_init();
+  // #define PMEM_SIZE (128 * 1024 * 1024) in trm.cpp
+  // 初始化 am 堆区
+  heap.start = malloc(64 * 1024 * 1024);
+  heap.end = heap.start + 64 * 1024 * 1024 - 1;
+
   return true;
 }
 

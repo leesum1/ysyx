@@ -81,6 +81,9 @@ int main() {
         break;
       }
     }
+    if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE) {
+      break;
+    }
   }
 
   return 0;
