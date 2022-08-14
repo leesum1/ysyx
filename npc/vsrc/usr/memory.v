@@ -2,30 +2,30 @@
 module memory (
     input                      clk,
     input                      rst,
-    input [         `XLEN-1:0] pc,
-    input [`REG_ADDRWIDTH-1:0] rd_idx,
-    input [         `XLEN-1:0] rs1_data,
-    input [         `XLEN-1:0] rs2_data,
-    input [      `IMM_LEN-1:0] imm_data,
-    input [    `MEMOP_LEN-1:0] mem_op,    // 访存操作码
+    input [         `XLEN-1:0] pc_i,
+    input [`REG_ADDRWIDTH-1:0] rd_idx_i,
+    input [         `XLEN-1:0] rs1_data_i,
+    input [         `XLEN-1:0] rs2_data_i,
+    input [      `IMM_LEN-1:0] imm_data_i,
+    input [    `MEMOP_LEN-1:0] mem_op_i,    // 访存操作码
 
     input [`XLEN-1:0] exc_in,
 
     output [`XLEN-1:0] mem_out,
     output             isloadEnable  //读数据使能
 );
-  wire _memop_none = (mem_op == `MEMOP_NONE);
-  wire _memop_lb = (mem_op == `MEMOP_LB);
-  wire _memop_lbu = (mem_op == `MEMOP_LBU);
-  wire _memop_sb = (mem_op == `MEMOP_SB);
-  wire _memop_lh = (mem_op == `MEMOP_LH);
-  wire _memop_lhu = (mem_op == `MEMOP_LHU);
-  wire _memop_sh = (mem_op == `MEMOP_SH);
-  wire _memop_lw = (mem_op == `MEMOP_LW);
-  wire _memop_lwu = (mem_op == `MEMOP_LWU);
-  wire _memop_sw = (mem_op == `MEMOP_SW);
-  wire _memop_ld = (mem_op == `MEMOP_LD);
-  wire _memop_sd = (mem_op == `MEMOP_SD);
+  wire _memop_none = (mem_op_i == `MEMOP_NONE);
+  wire _memop_lb = (mem_op_i == `MEMOP_LB);
+  wire _memop_lbu = (mem_op_i == `MEMOP_LBU);
+  wire _memop_sb = (mem_op_i == `MEMOP_SB);
+  wire _memop_lh = (mem_op_i == `MEMOP_LH);
+  wire _memop_lhu = (mem_op_i == `MEMOP_LHU);
+  wire _memop_sh = (mem_op_i == `MEMOP_SH);
+  wire _memop_lw = (mem_op_i == `MEMOP_LW);
+  wire _memop_lwu = (mem_op_i == `MEMOP_LWU);
+  wire _memop_sw = (mem_op_i == `MEMOP_SW);
+  wire _memop_ld = (mem_op_i == `MEMOP_LD);
+  wire _memop_sd = (mem_op_i == `MEMOP_SD);
 
   /* 写入还是读取 */
   wire _isload = (_memop_lb |_memop_lbu |_memop_ld|_memop_lh|_memop_lhu|_memop_lw|_memop_lwu)&(~_memop_none);
@@ -69,10 +69,10 @@ module memory (
 
 
   /* 写入数据 */
-  wire [`XLEN-1:0] _mem_write = (_ls8byte) ? {56'b0, rs2_data[7:0]} :
-                                (_ls16byte) ? {48'b0, rs2_data[15:0]}:
-                                (_ls32byte) ? {32'b0, rs2_data[31:0]}:
-                                 rs2_data;
+  wire [`XLEN-1:0] _mem_write = (_ls8byte) ? {56'b0, rs2_data_i[7:0]} :
+                                (_ls16byte) ? {48'b0, rs2_data_i[15:0]}:
+                                (_ls32byte) ? {32'b0, rs2_data_i[31:0]}:
+                                 rs2_data_i;
 
   /* 写数据 mask 选择,_mask:初步选择 _wmask:最终选择 */
   wire [7:0] _mask = ({8{_ls8byte}}&8'b0000_0001) |

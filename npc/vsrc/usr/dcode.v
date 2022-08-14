@@ -3,28 +3,28 @@
 
 module dcode (
     /* 输入信号 */
-    input  [         `INST_LEN-1:0] inst_data,
+    input  [         `INST_LEN-1:0] inst_data_i,
     /*输出信号： */
-    output [    `REG_ADDRWIDTH-1:0] rs1_idx,
-    output [    `REG_ADDRWIDTH-1:0] rs2_idx,
-    output [    `REG_ADDRWIDTH-1:0] rd_idx,
-    output [          `IMM_LEN-1:0] imm_data,
+    output [    `REG_ADDRWIDTH-1:0] rs1_idx_o,
+    output [    `REG_ADDRWIDTH-1:0] rs2_idx_o,
+    output [    `REG_ADDRWIDTH-1:0] rd_idx_o,
+    output [          `IMM_LEN-1:0] imm_data_o,
     /* CSR 译码结果 */
-    output [          `IMM_LEN-1:0] immCSR,
-    output                          isNeedimmCSR,
-    output [`CSR_REG_ADDRWIDTH-1:0] csr_idx,
+    output [          `IMM_LEN-1:0] csr_imm_o,
+    output                          csr_imm_valid_o,
+    output [`CSR_REG_ADDRWIDTH-1:0] csr_idx_o,
 
-    output [`ALUOP_LEN-1:0] alu_op,  // alu 操作码
-    output [`MEMOP_LEN-1:0] mem_op,  // mem 操作码
-    output [`EXCOP_LEN-1:0] exc_op,  // exc 操作码
-    output [`PCOP_LEN-1:0] pc_op,  // pc 操作码
-    output [`CSROP_LEN-1:0] csr_op,  // csr 操作码
+    output [`ALUOP_LEN-1:0] alu_op_o,  // alu 操作码
+    output [`MEMOP_LEN-1:0] mem_op_o,  // mem 操作码
+    output [`EXCOP_LEN-1:0] exc_op_o,  // exc 操作码
+    output [`PCOP_LEN-1:0] pc_op_o,  // pc 操作码
+    output [`CSROP_LEN-1:0] csr_op_o,  // csr 操作码
     /* TARP 总线 */
     output wire [`TRAP_BUS] trap_bus_o
 
 );
 
-  wire [`INST_LEN-1:0] _inst = inst_data;
+  wire [`INST_LEN-1:0] _inst = inst_data_i;
   /* 指令分解 */
   wire [4:0] _rd = _inst[11:7];
   wire [2:0] _func3 = _inst[14:12];
@@ -299,15 +299,15 @@ module dcode (
                                   ({`IMM_LEN{_J_type}}&_immJ);
 
   /* 输出指定 */
-  assign rs1_idx = _rs1_idx;
-  assign rs2_idx = _rs2_idx;
-  assign rd_idx = _rd_idx;
-  assign csr_idx = _csr_idx;
-  assign imm_data = _imm_data;
+  assign rs1_idx_o = _rs1_idx;
+  assign rs2_idx_o = _rs2_idx;
+  assign rd_idx_o = _rd_idx;
+  assign csr_idx_o = _csr_idx;
+  assign imm_data_o = _imm_data;
 
   // CSR 中的立即数 特殊处理
-  assign isNeedimmCSR = _isNeed_immCSR;
-  assign immCSR = _immCSR;
+  assign csr_imm_valid_o = _isNeed_immCSR;
+  assign csr_imm_o = _immCSR;
 
 
 
@@ -323,7 +323,7 @@ module dcode (
                  ({`CSROP_LEN{_csr_write}}&`CSROP_WRITE)|
                  ({`CSROP_LEN{_csr_set}}&`CSROP_SET)|
                  ({`CSROP_LEN{_csr_clear}}&`CSROP_CLEAR));
-  assign csr_op = _csr_op;
+  assign csr_op_o = _csr_op;
 
   /* ALU_OP */
   //加减和逻辑
@@ -403,7 +403,7 @@ module dcode (
                                   ({`ALUOP_LEN{_alu_remw}} & `ALUOP_REMW)|
                                   ({`ALUOP_LEN{_alu_remuw}} & `ALUOP_REMUW);
 
-  assign alu_op = _alu_op;
+  assign alu_op_o = _alu_op;
 
   /* EXC_OP */
   wire [`EXCOP_LEN-1:0] _exc_op = ({`EXCOP_LEN{_type_auipc}}&`EXCOP_AUIPC) |
@@ -421,7 +421,7 @@ module dcode (
                                   ({`EXCOP_LEN{_inst_ebreak}}&`EXCOP_EBREAK) | //TODO:暂时对 ebreak 特殊处理
   ({`EXCOP_LEN{_NONE_type}} & `EXCOP_NONE);
 
-  assign exc_op = _exc_op;
+  assign exc_op_o = _exc_op;
 
 
   /* MEM_OP */
@@ -436,7 +436,7 @@ module dcode (
                                    ({`MEMOP_LEN{_inst_lwu}}&`MEMOP_LWU)|
                                    ({`MEMOP_LEN{_inst_ld}}&`MEMOP_LD)|
                                    ({`MEMOP_LEN{_inst_sd}}&`MEMOP_SD);
-  assign mem_op = _mem_op;
+  assign mem_op_o = _mem_op;
 
   /* PC_OP  */  //TODO:这里是优先选择器,怎么改还没想好
   wire [`PCOP_LEN-1:0] _pc_op = (_B_type)?`PCOP_BRANCH:
@@ -444,7 +444,7 @@ module dcode (
                                 (_inst_jalr)?`PCOP_JALR:
                                 (_inst_mret|_inst_ecall)?`PCOP_TRAP:
                                 `PCOP_INC4;
-  assign pc_op = _pc_op;
+  assign pc_op_o = _pc_op;
 
 
   /* trap_bus TODO:add more*/

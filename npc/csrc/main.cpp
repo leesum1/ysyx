@@ -14,23 +14,22 @@ namespace cr = CppReadline;
 using ret = cr::Console::ReturnCode;
 
 const char* nemu_so_path = "/lib/libnemu.so";
+const char* img_path = " ";
 
 Simtop* mysim_p;
 int main(int argc, char* argv[]) {
 
-  int i;
-  const char* path = "123";
-  printf("argc:%d\n", argc);
-  for (i = 0;i < argc;i++) {
+  /* 解析参数 */
+  for (int i = 0;i < argc;i++) {
     printf("argv:%s\n", argv[i]);
     if (i == 1) {
-      path = argv[i];
+      img_path = argv[i];
     }
   }
-  /* 不知道为什么将 Simtop mysim 声明为全局变量会崩溃*/
+  /* 不知道为什么将 Simtop mysim 声明为全局变量会崩溃(已有思路,全局对象的特性)*/
   mysim_p = new Simtop;
   /* 加载镜像 */
-  mysim_p->mem->imgpath.append(path);
+  mysim_p->mem->imgpath.append(img_path);
   mysim_p->mem->loadImage(mysim_p->mem->imgpath.c_str());
 
   size_t imgsize = mysim_p->mem->getImgSize(mysim_p->mem->imgpath.c_str());
