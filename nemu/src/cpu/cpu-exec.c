@@ -25,7 +25,8 @@
   */
 #define MAX_INST_TO_PRINT 10
 
-CPU_state cpu = {};
+  // 为了 difftest https://ysyx.oscc.cc/docs/ics-pa/3.2.html#%E8%A7%A6%E5%8F%91%E8%87%AA%E9%99%B7%E6%93%8D%E4%BD%9C
+CPU_state cpu = { .csr[mstatus] = 0xa00001800 };
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
@@ -48,7 +49,7 @@ static void trace_and_difftest(Decode* _this, vaddr_t dnpc) {
 
   uint8_t istarp = (_this->isa.inst.val == 0x73);
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc, istarp));
-}
+  }
 
 static void exec_once(Decode* s, vaddr_t pc) {
   s->pc = pc;

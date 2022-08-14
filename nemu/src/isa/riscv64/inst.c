@@ -17,7 +17,7 @@
 #include <cpu/cpu.h>
 #include <cpu/ifetch.h>
 #include <cpu/decode.h>
-
+#include <isa.h>
 #define R(i) gpr(i)
 #define Mr vaddr_read
 #define Mw vaddr_write
