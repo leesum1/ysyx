@@ -1,5 +1,5 @@
 `include "sysconfig.v"
-module execute (
+module execute_top (
     input [         `XLEN-1:0] pc,
     input [`REG_ADDRWIDTH-1:0] rd_idx,
     input [         `XLEN-1:0] rs1_data_i,

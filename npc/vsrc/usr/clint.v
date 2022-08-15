@@ -10,22 +10,22 @@ module clint (
     input wire [`TRAP_BUS] trap_bus_i,
 
     /* trap 所需寄存器，来自于 csr (读)*/
-    input wire [`XLEN-1:0] csr_mstatus_clint_i,
-    input wire [`XLEN-1:0] csr_mepc_clint_i,
-    input wire [`XLEN-1:0] csr_mcause_clint_i,
-    input wire [`XLEN-1:0] csr_mtval_clint_i,
-    input wire [`XLEN-1:0] csr_mtvec_clint_i,
+    input wire [`XLEN-1:0] csr_mstatus_readdata_i,
+    input wire [`XLEN-1:0] csr_mepc_readdata_i,
+    input wire [`XLEN-1:0] csr_mcause_readdata_i,
+    input wire [`XLEN-1:0] csr_mtval_readdata_i,
+    input wire [`XLEN-1:0] csr_mtvec_readdata_i,
     /* trap 所需寄存器，来自于 csr (写)*/
-    output wire [`XLEN-1:0] csr_mstatus_clint_o,
-    output wire [`XLEN-1:0] csr_mepc_clint_o,
-    output wire [`XLEN-1:0] csr_mcause_clint_o,
-    output wire [`XLEN-1:0] csr_mtval_clint_o,
-    output wire [`XLEN-1:0] csr_mtvec_clint_o,
-    output wire csr_mstatus_clint_valid_o,
-    output wire csr_mepc_clint_valid_o,
-    output wire csr_mcause_clint_valid_o,
-    output wire csr_mtval_clint_valid_o,
-    output wire csr_mtvec_clint_valid_o,
+    output wire [`XLEN-1:0] csr_mstatus_writedata_o,
+    output wire [`XLEN-1:0] csr_mepc_writedata_o,
+    output wire [`XLEN-1:0] csr_mcause_writedata_o,
+    output wire [`XLEN-1:0] csr_mtval_writedata_o,
+    output wire [`XLEN-1:0] csr_mtvec_writedata_o,
+    output wire csr_mstatus_write_valid_o,
+    output wire csr_mepc_write_valid_o,
+    output wire csr_mcause_write_valid_o,
+    output wire csr_mtval_write_valid_o,
+    output wire csr_mtvec_write_valid_o,
 
     /* 输出至取指阶段 */
     output wire [`XLEN-1:0] clint_pc_o,
@@ -40,20 +40,20 @@ module clint (
   /* set the csr register and new pc if traps happened */
 
   // step 1: save current pc 
-  assign csr_mepc_clint_o = pc_i;
-  assign csr_mepc_clint_valid_o = _trap_ecall;
+  assign csr_mepc_writedata_o   = pc_i;
+  assign csr_mepc_write_valid_o = _trap_ecall;
   // step 2: set the trap pc
-  wire [`XLEN-1:0]_trap_pc_o = csr_mtvec_clint_i;  // TODO:now only suppot direct mode,need to add vector mode
+  wire [`XLEN-1:0]_trap_pc_o = csr_mtvec_readdata_i;  // TODO:now only suppot direct mode,need to add vector mode
   wire _trap_pc_valid_o = _trap_ecall;
   // step 3: save trap cuase to mcause
-  assign csr_mcause_clint_o = 11; //TODO:now,only support ecall from mathine mode(11),need to add more
-  assign csr_mcause_clint_valid_o = _trap_ecall;
+  assign csr_mcause_writedata_o = 11; //TODO:now,only support ecall from mathine mode(11),need to add more
+  assign csr_mcause_write_valid_o = _trap_ecall;
   // step 4: save inst_data to mtval
-  assign csr_mtval_clint_o = {32'b0, inst_data_i};
-  assign csr_mtval_clint_valid_o = _trap_ecall;
+  assign csr_mtval_writedata_o = {32'b0, inst_data_i};
+  assign csr_mtval_write_valid_o = _trap_ecall;
 
   /* restore pc and csr register if mret happened*/
-  wire [`XLEN-1:0] _mret_pc_o = csr_mepc_clint_i;
+  wire [`XLEN-1:0] _mret_pc_o = csr_mepc_readdata_i;
   wire _mret_pc_valid_o = _trap_mret;
 
 
