@@ -1,5 +1,5 @@
 `include "./../sysconfig.v"
-module alu (
+module alu_top (
     /* ALU 端口 */
     input [`XLEN-1:0] alu_a_i,
     input [`XLEN-1:0] alu_b_i,

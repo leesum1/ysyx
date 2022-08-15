@@ -16,8 +16,8 @@ module execute (
     input  [`EXCOP_LEN-1:0] exc_op_i,  // exc 操作码
     input [`CSROP_LEN-1:0] csr_op_i,   // exc_csr 操作码
 
-    output [     `XLEN-1:0] exc_alu_out_o,
-    output [     `XLEN-1:0] exc_csr_out_o,
+    output [     `XLEN-1:0] exc_alu_data_o,
+    output [     `XLEN-1:0] exc_csr_data_o,
     output exc_csr_valid_o
 );
 
@@ -62,7 +62,7 @@ module execute (
 
   wire [`XLEN-1:0] _alu_out;
   wire _compare_out;
-  alu u_alu (
+  alu_top u_alu (
       /* ALU 端口 */
       .alu_a_i(_alu_in1),
       .alu_b_i(_alu_in2),
@@ -73,7 +73,7 @@ module execute (
   /* alu计算结果需要符号扩展 */
   wire _alu_sext = _excop_opimm32 | _excop_op32;
   wire [`XLEN-1:0] _alu_sext_out = {{32{_alu_out[31]}}, _alu_out[31:0]};
-  assign exc_alu_out_o = (_alu_sext) ? _alu_sext_out : _alu_out;
+  assign exc_alu_data_o = (_alu_sext) ? _alu_sext_out : _alu_out;
 
   //assign exc_out = _alu_out;
 
@@ -92,7 +92,7 @@ execute_csr u_execute_csr (
 );
 
 
-assign exc_csr_out_o = _csr_exe_data;
+assign exc_csr_data_o = _csr_exe_data;
 assign exc_csr_valid_o = _csr_exe_data_valid;
 
   /*************ebreak仿真使用**************************/

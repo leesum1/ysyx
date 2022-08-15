@@ -9,10 +9,10 @@ module memory (
     input [      `IMM_LEN-1:0] imm_data_i,
     input [    `MEMOP_LEN-1:0] mem_op_i,    // 访存操作码
 
-    input [`XLEN-1:0] exc_in,
+    input [`XLEN-1:0] exc_alu_data_i,
 
-    output [`XLEN-1:0] mem_out,
-    output             isloadEnable  //读数据使能
+    output [`XLEN-1:0] mem_data_o,
+    output             load_valid_o  //读数据使能
 );
   wire _memop_none = (mem_op_i == `MEMOP_NONE);
   wire _memop_lb = (mem_op_i == `MEMOP_LB);
@@ -44,7 +44,7 @@ module memory (
 
   /* 输出使能端口 */
   wire _isloadEnable = _unsigned | _signed;
-  assign isloadEnable = _isloadEnable;
+  assign load_valid_o = _isloadEnable;
 
   /* 从内存中读取的数据 */
   wire [`XLEN-1:0] _mem_read;
@@ -64,7 +64,7 @@ module memory (
                                (_unsigned)? _mem__unsigned_out:
                                `XLEN'b0;
 
-  assign mem_out = _mem_out;
+  assign mem_data_o = _mem_out;
 
 
 
@@ -84,7 +84,7 @@ module memory (
   wire [7:0] _rmask = (_isload) ? _mask : 8'b0000_0000;
 
   /* 地址 */
-  wire [`XLEN-1:0] _addr = (_memop_none) ? `PC_RESET_ADDR : exc_in;
+  wire [`XLEN-1:0] _addr = (_memop_none) ? `PC_RESET_ADDR : exc_alu_data_i;
   wire [`XLEN-1:0] _raddr = _addr;
   wire [`XLEN-1:0] _waddr = _addr;
 

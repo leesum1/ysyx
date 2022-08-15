@@ -18,7 +18,7 @@ module top (
       .rs1_data_i      (rs1_data),
       .imm_data_i      (imm_data),
       .pc_out_o        (pc),             // to fetch
-      .exc_data_i      (exc_out),        // from exe
+      .exc_data_i      (exc_alu_data),   // from exe
       .clint_pc_i      (clint_pc),       // from clint
       .clint_pc_valid_i(clint_pc_valid)  // from clint
   );
@@ -41,7 +41,7 @@ module top (
   wire [`CSR_REG_ADDRWIDTH-1:0 ] csr_idx;
   wire [          `IMM_LEN-1:0 ] imm_data;
   wire [          `IMM_LEN-1:0 ] imm_csr;
-  wire                           isNeedimmCSR;
+  wire                           csr_imm_valid;
 
   /* 译码器输出的控制信号 */
   wire [        `ALUOP_LEN-1:0 ] alu_op;
@@ -60,7 +60,7 @@ module top (
       .imm_data_o     (imm_data),
       /* CSR 译码结果 */
       .csr_imm_o      (imm_csr),
-      .csr_imm_valid_o(isNeedimmCSR),
+      .csr_imm_valid_o(csr_imm_valid),
       .csr_idx_o      (csr_idx),
       .alu_op_o       (alu_op),
       // alu 操作码
@@ -72,7 +72,7 @@ module top (
       // pc 操作码
       // csr 操作码
       .csr_op_o       (csr_op),
-      .trap_bus_o     (trap_bus)       //to clint
+      .trap_bus_o     (trap_bus)        //to clint
   );
 
 
@@ -122,7 +122,7 @@ module top (
   /* 写入数据端口 */
   reg [`CSR_REG_ADDRWIDTH-1:0] csr_writeaddr = csr_idx;
   wire write_enable = exc_csr_valid;
-  wire [`XLEN-1:0] csr_writedata = exc_csr_out;
+  wire [`XLEN-1:0] csr_writedata = exc_csr_data;
 
   rv64_csr_regfile u_rv64_csr_regfile (
       .clk                (clk),
@@ -155,51 +155,51 @@ module top (
 
   /**********************执行模块**********************/
 
-  wire [`XLEN-1:0] exc_out;
-  wire [`XLEN-1:0] exc_csr_out;
+  wire [`XLEN-1:0] exc_alu_data;
+  wire [`XLEN-1:0] exc_csr_data;
   wire exc_csr_valid;
   execute u_execute (
       .pc             (pc),
       .rd_idx         (rd_idx),
-      .rs1_data_i     (rs1_data),      // rs1 数据
-      .rs2_data_i     (rs2_data),      // rs2 数据
-      .imm_data_i     (imm_data),      // 立即数数据
-      .csr_data_i     (csr_readdata),  // csr 数据
-      .csr_imm_i      (imm_csr),       // csr 立即数
-      .csr_imm_valid_i(isNeedimmCSR),  // 是否需要 csr 立即数
-      .alu_op_i       (alu_op),        // alu 操作码
-      .mem_op_i       (mem_op),        // 访存操作码
-      .exc_op_i       (exc_op),        // exc 操作码
-      .csr_op_i       (csr_op),        // csr 操作码
-      .exc_alu_out_o  (exc_out),       // 执行阶段 alu 输出
-      .exc_csr_out_o  (exc_csr_out),   // csr 写回数据
-      .exc_csr_valid_o(exc_csr_valid)  // csr 写回使能
+      .rs1_data_i     (rs1_data),       // rs1 数据
+      .rs2_data_i     (rs2_data),       // rs2 数据
+      .imm_data_i     (imm_data),       // 立即数数据
+      .csr_data_i     (csr_readdata),   // csr 数据
+      .csr_imm_i      (imm_csr),        // csr 立即数
+      .csr_imm_valid_i(csr_imm_valid),  // 是否需要 csr 立即数
+      .alu_op_i       (alu_op),         // alu 操作码
+      .mem_op_i       (mem_op),         // 访存操作码
+      .exc_op_i       (exc_op),         // exc 操作码
+      .csr_op_i       (csr_op),         // csr 操作码
+      .exc_alu_data_o (exc_alu_data),   // 执行阶段 alu 输出
+      .exc_csr_data_o (exc_csr_data),   // csr 写回数据
+      .exc_csr_valid_o(exc_csr_valid)   // csr 写回使能
   );
 
   /*******************访存模块*************************/
-  wire [`XLEN-1:0] mem_out;
-  wire isloadEnable;
+  wire [`XLEN-1:0] mem_data;
+  wire load_valid;
   memory u_memory (
-      .clk         (clk),
-      .rst         (rst),
-      .pc_i        (pc),
-      .rd_idx_i    (rd_idx),
-      .rs1_data_i  (rs1_data),
-      .rs2_data_i  (rs2_data),
-      .imm_data_i  (imm_data),
-      .mem_op_i    (mem_op),
+      .clk           (clk),
+      .rst           (rst),
+      .pc_i          (pc),
+      .rd_idx_i      (rd_idx),
+      .rs1_data_i    (rs1_data),
+      .rs2_data_i    (rs2_data),
+      .imm_data_i    (imm_data),
+      .mem_op_i      (mem_op),
       // 访存操作码
-      .exc_in      (exc_out),
-      .mem_out     (mem_out),
-      .isloadEnable(isloadEnable)
+      .exc_alu_data_i(exc_alu_data),
+      .mem_data_o    (mem_data),
+      .load_valid_o  (load_valid)
   );
 
   /**************写回模块******************************/
   wire [`XLEN-1:0] wb_data;
   writeback u_writeback (
-      .exc_data_i  (exc_out),
-      .mem_data_i  (mem_out),
-      .load_valid_i(isloadEnable),
+      .exc_alu_data_i  (exc_alu_data),
+      .mem_data_i  (mem_data),
+      .load_valid_i(load_valid),
       .wb_data_o   (wb_data)
   );
 
