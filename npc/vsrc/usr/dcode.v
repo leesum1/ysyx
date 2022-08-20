@@ -2,27 +2,61 @@
 
 
 module dcode (
-    /* 输入信号 */
-    input  [         `INST_LEN-1:0] inst_data_i,
-    /*输出信号： */
+    /* from if/id */
+    input [`XLEN_BUS] inst_addr_i,
+    input [`INST_LEN-1:0] inst_data_i,
+    input [`TRAP_BUS] trap_bus_i,
+    /* from gpr regs */
+    input [`XLEN_BUS] rs1_data_i,
+    input [`XLEN_BUS] rs2_data_i,
+    /* from csr regs */
+    input [`XLEN_BUS] csr_data_i,
+    /* from id/ex stage */
+    input [`EXCOP_LEN-1:0] id_ex_exc_op_i, // 上一条指令的类型，用于判断上一条指令是否是访存指令
+    /* from exc bypass */
+    input [`XLEN_BUS] ex_rd_data_i,
+    input [`XLEN_BUS] ex_rd_addr_i,
+    input [`XLEN_BUS] ex_csr_writeaddr_i,
+    input [`XLEN_BUS] ex_csr_writedata_i,
+    /* from mem bypass */
+    input [`XLEN_BUS] mem_rd_data_i,
+    input [`XLEN_BUS] mem_rd_addr_i,
+
+
+    /*通用寄存器译码结果：to id/ex */
     output [    `REG_ADDRWIDTH-1:0] rs1_idx_o,
     output [    `REG_ADDRWIDTH-1:0] rs2_idx_o,
     output [    `REG_ADDRWIDTH-1:0] rd_idx_o,
+    output [             `XLEN_BUS] rs1_data_o,
+    output [             `XLEN_BUS] rs2_data_o,
     output [          `IMM_LEN-1:0] imm_data_o,
-    /* CSR 译码结果 */
+    /* CSR 译码结果：to id/ex*/
     output [          `IMM_LEN-1:0] csr_imm_o,
     output                          csr_imm_valid_o,
     output [`CSR_REG_ADDRWIDTH-1:0] csr_idx_o,
+    output [             `XLEN_BUS] csr_readdata_o,
 
     output [`ALUOP_LEN-1:0] alu_op_o,  // alu 操作码
     output [`MEMOP_LEN-1:0] mem_op_o,  // mem 操作码
     output [`EXCOP_LEN-1:0] exc_op_o,  // exc 操作码
-    output [`PCOP_LEN-1:0] pc_op_o,  // pc 操作码
+    output [ `PCOP_LEN-1:0] pc_op_o,   // pc 操作码
     output [`CSROP_LEN-1:0] csr_op_o,  // csr 操作码
+
+
+    output [`XLEN_BUS] inst_addr_o,
+    output [`INST_LEN-1:0] inst_data_o,
+    // 请求暂停流水线
+    output id_stall_req_valid_o,
     /* TARP 总线 */
     output wire [`TRAP_BUS] trap_bus_o
 
 );
+  assign inst_addr_o = inst_addr_i;
+  assign inst_data_o = inst_data_i;
+
+
+
+
 
   wire [`INST_LEN-1:0] _inst = inst_data_i;
   /* 指令分解 */
@@ -277,10 +311,10 @@ module dcode (
 
   /*获取操作数  */  //TODO:一些特殊指令没有归类ecall,ebreak
   wire _isNeed_imm = (_I_type | _S_type | _B_type | _U_type | _J_type);
-  wire _isNeed_immCSR = (_inst_csrrci | _inst_csrrsi | _inst_csrrwi);
+  wire _csr_imm_valid = (_inst_csrrci | _inst_csrrsi | _inst_csrrwi);
 
   // I 型指令中, CSR 立即数占了 rs1 的位置
-  wire _isNeed_rs1 = (_R_type | _I_type | _S_type | _B_type) & (~_isNeed_immCSR);
+  wire _isNeed_rs1 = (_R_type | _I_type | _S_type | _B_type) & (~_csr_imm_valid);
   wire _isNeed_rs2 = (_R_type | _S_type | _B_type);
   wire _isNeed_rd = (_R_type | _I_type | _U_type | _J_type);
   wire _isNeed_csr = (_inst_csrrc|_inst_csrrci|_inst_csrrs|_inst_csrrsi|_inst_csrrw|_inst_csrrwi);
@@ -306,10 +340,38 @@ module dcode (
   assign imm_data_o = _imm_data;
 
   // CSR 中的立即数 特殊处理
-  assign csr_imm_valid_o = _isNeed_immCSR;
+  assign csr_imm_valid_o = _csr_imm_valid;
   assign csr_imm_o = _immCSR;
 
+  /******************************************冲突处理***************************************************/
+  wire _pre_inst_is_load = (id_ex_exc_op_i == `EXCOP_LOAD);
+  // exc stage bypass
+  wire _rs1_exc_bypass_valid = (_rs1_idx == ex_rd_addr_i);
+  wire _rs2_exc_bypass_valid = (_rs2_idx == ex_rd_addr_i);
+  // mem stage bypass
+  wire _rs1_mem_bypass_valid = (_rs1_idx == mem_rd_addr_i);
+  wire _rs2_mem_bypass_valid = (_rs2_idx == mem_rd_addr_i);
+  // wb stage bypass was enabled in gpr
 
+
+  // 优先级选择权 ex > mem > wb > gpr (wb 和 gpr 的优先级在通用寄存器堆中实现)
+  wire [`XLEN_BUS] _rs1_data = (_rs1_exc_bypass_valid)?ex_rd_data_i:
+                                (_rs1_mem_bypass_valid)?mem_rd_data_i:
+                                rs1_data_i;
+  // 优先级选择权 ex > mem > wb > gpr
+  wire [`XLEN_BUS] _rs2_data = (_rs2_exc_bypass_valid)?ex_rd_data_i:
+                                (_rs2_mem_bypass_valid)?mem_rd_data_i:
+                                rs2_data_i;
+  // load-use hazard: 前一条指令为 load 类型，且下一条 rs1、rs2 为 load 指令的 rd，
+  // https://courses.cs.vt.edu/cs2506/Spring2013/Notes/L12.PipelineStalls.pdf
+  wire _stall_req_valid = _pre_inst_is_load & (_rs1_exc_bypass_valid | _rs2_exc_bypass_valid);
+
+  // 输出指定
+  assign rs1_data_o = _rs1_data;
+  assign rs2_data_o = _rs2_data;
+  assign id_stall_req_valid_o = _stall_req_valid;
+
+  /******************************************×××××××***************************************************/
 
   /* CSR_OP */
   wire _csr_write = _inst_csrrw | _inst_csrrwi;
@@ -439,11 +501,12 @@ module dcode (
   assign mem_op_o = _mem_op;
 
   /* PC_OP  */  //TODO:这里是优先选择器,怎么改还没想好
+  //TODO:mret and ecall处理  放到 clint 中
   wire [`PCOP_LEN-1:0] _pc_op = (_B_type)?`PCOP_BRANCH:
                                 (_inst_jal)?`PCOP_JAL:
                                 (_inst_jalr)?`PCOP_JALR:
-                                (_inst_mret|_inst_ecall)?`PCOP_TRAP:
-                                `PCOP_INC4;
+                                (_inst_mret|_inst_ecall)?`PCOP_TRAP:`PCOP_INC4;
+
   assign pc_op_o = _pc_op;
 
 

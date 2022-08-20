@@ -5,7 +5,7 @@
         "**/*.{sv,v,svh,vh}"
     ],
     "systemverilog.documentSymbolsPrecision": "full",
-    "systemverilog.launchConfigurationVerilator": "verilator  --lint-only --language 1800-2012 --Wall -y /home/leesum/ysyx-workbench/npc/vsrc  -I./vsrc -I./vsrc/usr -I./vsrc/lib  ",
+    "systemverilog.launchConfigurationVerilator": "verilator  --lint-only --language 1800-2012 --Wall -y ./vsrc/usr/pipeline -y ./vsrc/lib -y ./vsrc -y ./vsrc/usr",
     "files.associations": {
         "Makefile": "makefile",
         "*.nxdc": "makefile",
