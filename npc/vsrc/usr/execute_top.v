@@ -35,6 +35,7 @@ module execute_top (
     output [         `XLEN_BUS] csr_data_o,
     output [          `IMM_LEN-1:0] csr_imm_o,
     output  csr_imm_valid_o,
+    output [`CSR_REG_ADDRWIDTH-1:0]exc_csr_addr_o,
     output  [`MEMOP_LEN-1:0] mem_op_o,  // 访存操作码
     output  [`PCOP_LEN-1:0]  pc_op_o,
 
@@ -62,6 +63,7 @@ module execute_top (
   assign csr_data_o = csr_data_i;
   assign csr_imm_o = csr_imm_i;
   assign csr_imm_valid_o = csr_imm_valid_i;
+  assign exc_csr_addr_o = csr_readaddr_i;
   assign trap_bus_o = trap_bus_i;
   assign ex_stall_req_valid_o = 1'b0;
 

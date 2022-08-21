@@ -12,7 +12,7 @@ module pc_reg (
     input [`PCOP_LEN-1:0] pc_op_i,        // pc 操作码,在docode阶段生成,来自ex/mem
     input [    `XLEN_BUS] rs1_data_i,     //用于branch计算,来自ex/mem
     input [    `XLEN_BUS] imm_data_i,     //用于branch计算,来自ex/mem
-    input [    `XLEN_BUS] exc_alu_data_i, //branch 跳转是否成立,ex/mem
+    input [    `XLEN_BUS] alu_data_i,     //branch 跳转是否成立,ex/mem
 
     input  [`XLEN_BUS] clint_pc_i,        //trap pc,来自mem
     input              clint_pc_valid_i,  //trap pc valide,来自mem
@@ -28,7 +28,7 @@ module pc_reg (
   wire _pcop_trap = (pc_op_i == `PCOP_TRAP) | clint_pc_valid_i;  // trap 指令: pc = clint_pc_i
   wire _pcop_none = (pc_op_i == `PCOP_NONE);  // 暂停: pc = pc
 
-  wire _isready_branch = (exc_alu_data_i == `XLEN'b1) & _pcop_branch;  //条件跳转指令
+  wire _isready_branch = (alu_data_i == `XLEN'b1) & _pcop_branch;  //条件跳转指令
   wire _isready_inc4 = (_pcop_inc4) | ((~_isready_branch) & _pcop_branch);// 跳转指令退化成 +4
 
   /* 并行选择器:根据操作码选择跳转位置 */

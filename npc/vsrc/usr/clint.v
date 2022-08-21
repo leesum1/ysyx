@@ -26,7 +26,6 @@ module clint (
     output wire csr_mcause_write_valid_o,
     output wire csr_mtval_write_valid_o,
     output wire csr_mtvec_write_valid_o,
-
     /* 输出至取指阶段 */
     output wire [`XLEN-1:0] clint_pc_o,
     output wire clint_pc_valid_o

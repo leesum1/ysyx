@@ -1,7 +1,8 @@
-`include "./../sysconfig.v"
+`include "sysconfig.v"
 
-module rv64reg (
+module rv64_gpr_regfile (
     input clk,
+    input rst,
     /* 读取数据 */
     input wire [`REG_ADDRWIDTH-1:0] rs1_idx_i,
     input wire [`REG_ADDRWIDTH-1:0] rs2_idx_i,

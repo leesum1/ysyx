@@ -13,6 +13,9 @@ module id_ex (
     input      [          `IMM_LEN-1:0] imm_data_id_ex_i,
     input      [          `IMM_LEN-1:0] csr_imm_id_ex_i,
     input                               csr_imm_valid_id_ex_i,
+    input      [             `XLEN_BUS] rs1_data_id_ex_i,
+    input      [             `XLEN_BUS] rs2_data_id_ex_i,
+    input      [             `XLEN_BUS] csr_data_id_ex_i,
     input      [`CSR_REG_ADDRWIDTH-1:0] csr_idx_id_ex_i,
     input      [        `ALUOP_LEN-1:0] alu_op_id_ex_i,         // alu 操作码
     input      [        `MEMOP_LEN-1:0] mem_op_id_ex_i,         // mem 操作码
@@ -31,6 +34,9 @@ module id_ex (
     output      [          `IMM_LEN-1:0] imm_data_id_ex_o,
     output      [          `IMM_LEN-1:0] csr_imm_id_ex_o,
     output                               csr_imm_valid_id_ex_o,
+    output      [             `XLEN_BUS] rs1_data_id_ex_o,
+    output      [             `XLEN_BUS] rs2_data_id_ex_o,
+    output      [             `XLEN_BUS] csr_data_id_ex_o,
     output      [`CSR_REG_ADDRWIDTH-1:0] csr_idx_id_ex_o,
     output      [        `ALUOP_LEN-1:0] alu_op_id_ex_o,         // alu 操作码
     output      [        `MEMOP_LEN-1:0] mem_op_id_ex_o,         // mem 操作码
@@ -184,6 +190,55 @@ module id_ex (
   assign csr_idx_id_ex_o = _csr_idx_id_ex_q;
 
 
+  /* rs1_data 寄存器 */
+  wire [`XLEN-1:0] _rs1_data_id_ex_d = rs1_data_id_ex_i;
+  reg [`XLEN-1:0] _rs1_data_id_ex_q;
+  regTemplate #(
+      .WIDTH    (`XLEN),
+      .RESET_VAL(`XLEN'b0)  //TODO:默认值未设置
+  ) u_rs1_data_id_ex (
+      .clk (clk),
+      .rst (rst),
+      .din (_rs1_data_id_ex_d),
+      .dout(_rs1_data_id_ex_q),
+      .wen (1'b1)
+  );
+  assign rs1_data_id_ex_o = _rs1_data_id_ex_q;
+
+
+  /* rs2_data 寄存器 */
+  wire [`XLEN-1:0] _rs2_data_id_ex_d = rs2_data_id_ex_i;
+  reg [`XLEN-1:0] _rs2_data_id_ex_q;
+  regTemplate #(
+      .WIDTH    (`XLEN),
+      .RESET_VAL(`XLEN'b0)  //TODO:默认值未设置
+  ) u_rs2_data_id_ex (
+      .clk (clk),
+      .rst (rst),
+      .din (_rs2_data_id_ex_d),
+      .dout(_rs2_data_id_ex_q),
+      .wen (1'b1)
+  );
+  assign rs2_data_id_ex_o = _rs2_data_id_ex_q;
+
+
+
+  /* csr_data 寄存器 */
+  wire [`XLEN-1:0] _csr_data_id_ex_d = csr_data_id_ex_i;
+  reg [`XLEN-1:0] _csr_data_id_ex_q;
+  regTemplate #(
+      .WIDTH    (`XLEN),
+      .RESET_VAL(`XLEN'b0)  //TODO:默认值未设置
+  ) u_csr_data_id_ex (
+      .clk (clk),
+      .rst (rst),
+      .din (_csr_data_id_ex_d),
+      .dout(_csr_data_id_ex_q),
+      .wen (1'b1)
+  );
+  assign csr_data_id_ex_o = _csr_data_id_ex_q;
+
+
   /* alu_op 寄存器 */
   wire [`ALUOP_LEN-1:0] _alu_op_id_ex_d = alu_op_id_ex_i;
   reg [`ALUOP_LEN-1:0] _alu_op_id_ex_q;
@@ -278,6 +333,10 @@ module id_ex (
       .wen (1'b1)
   );
   assign trap_bus_id_ex_o = _trap_bus_id_ex_q;
+
+
+
+
 
 
 endmodule

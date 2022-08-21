@@ -15,12 +15,12 @@ module dcode (
     input [`EXCOP_LEN-1:0] id_ex_exc_op_i, // 上一条指令的类型，用于判断上一条指令是否是访存指令
     /* from exc bypass */
     input [`XLEN_BUS] ex_rd_data_i,
-    input [`XLEN_BUS] ex_rd_addr_i,
-    input [`XLEN_BUS] ex_csr_writeaddr_i,
+    input [`REG_ADDRWIDTH-1:0] ex_rd_addr_i,
+    input [`CSR_REG_ADDRWIDTH-1:0] ex_csr_writeaddr_i,
     input [`XLEN_BUS] ex_csr_writedata_i,
     /* from mem bypass */
     input [`XLEN_BUS] mem_rd_data_i,
-    input [`XLEN_BUS] mem_rd_addr_i,
+    input [`REG_ADDRWIDTH-1:0] mem_rd_addr_i,
 
 
     /*通用寄存器译码结果：to id/ex */
