@@ -93,10 +93,10 @@ module execute_top (
   wire [`XLEN_BUS] _rs1_add_imm;
   assign _rs1_add_imm = rs1_data_i + imm_data_i;
 
-  wire [`XLEN_BUS] _branch_pc = {`XLEN{_excop_jal|_excop_branch}}&_pc_add_imm|
-                                {`XLEN{_excop_jalr}}&_rs1_add_imm;
-
-  wire _branch_pc_valid = _compare_out | _excop_jal|_excop_jalr;
+  wire [`XLEN_BUS] _branch_pc = ({`XLEN{_excop_jal|_excop_branch}}&_pc_add_imm)|
+                                ({`XLEN{_excop_jalr}}&_rs1_add_imm);
+  // TODO 还需要完善
+  wire _branch_pc_valid = (_compare_out&_excop_branch) | _excop_jal|_excop_jalr;
 
   assign branch_pc_o = _branch_pc;
   assign branch_pc_valid_o = _branch_pc_valid;

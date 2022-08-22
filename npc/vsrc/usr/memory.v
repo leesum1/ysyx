@@ -58,8 +58,8 @@ module memory (
   wire _memop_sd = (mem_op_i == `MEMOP_SD);
 
   /* 写入还是读取 */
-  wire _isload = (_memop_lb |_memop_lbu |_memop_ld|_memop_lh|_memop_lhu|_memop_lw|_memop_lwu)&(~_memop_none);
-  wire _isstore = (_memop_sb | _memop_sd | _memop_sh | _memop_sw) & (~_memop_none);
+  wire _isload = (_memop_lb |_memop_lbu |_memop_ld|_memop_lh|_memop_lhu|_memop_lw|_memop_lwu);
+  wire _isstore = (_memop_sb | _memop_sd | _memop_sh | _memop_sw);
 
   /* 读取或写入的 byte */
   wire _ls8byte = _memop_lb | _memop_lbu | _memop_sb;
@@ -77,7 +77,7 @@ module memory (
   //assign load_valid_o = _load_valid;
 
   /* 从内存中读取的数据 */
-  wire [`XLEN_BUS] _mem_read;
+  reg [`XLEN_BUS] _mem_read;
 
   /* 符号扩展后的结果 TODO:改成并行编码*/
   wire [     `XLEN_BUS] _mem__signed_out = (_ls8byte)?{{`XLEN-8{_mem_read[7]}},_mem_read[7:0]}:
@@ -132,9 +132,12 @@ module memory (
     input byte wmask
   );
 
-  always @(posedge clk) begin
-    pmem_read(_raddr, _mem_read, _rmask);
-    pmem_write(_waddr, _mem_write, _wmask);
+  always @(*) begin
+    _mem_read = `XLEN'b0;
+    if (_isload) begin
+      pmem_read(_raddr, _mem_read, _rmask);
+    end else if (_isstore) begin
+      pmem_write(_waddr, _mem_write, _wmask);
+    end
   end
-
 endmodule

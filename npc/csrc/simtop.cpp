@@ -80,6 +80,7 @@ void Simtop::stepCycle(bool val) {
     if (isSdbOk("wave")) {
         this->dampWave();
     }
+    // 提交的时候进行 difftest
     if (this->cpu_commit_valid == true) {
         sdbRun();
     }
@@ -273,9 +274,11 @@ void Simtop::sdbStatus() {
 
 void Simtop::sdbRun(void) {
     printf("commit:%p\n", (void*)this->pc);
-    if (isSdbOk("difftest")) {
-        this->u_difftest.difftest_step();
-    }
+    // if (isSdbOk("difftest")) {
+    //     this->u_difftest.difftest_step();
+    // }
+    this->u_difftest.difftest_step();
+
     if (!top->rst && isSdbOk("itrace")) {
         u_itrace.llvmDis();
     }

@@ -6,6 +6,7 @@
 */
 module fetch (
     //指令地址
+    input rst,
     input [`XLEN_BUS] inst_addr_i,  // from pc_reg
     // //指令内容
     // input [`INST_LEN-1:0] inst_data_i,
@@ -20,7 +21,7 @@ module fetch (
 
   //TODO:add more exceptons
   assign trap_bus_o  = 0;
-  wire [`XLEN-1:0] _mem_data;
+  reg [`XLEN-1:0] _mem_data;
   import "DPI-C" function void pmem_inst_read(
     input longint raddr,
     output longint rdata,
@@ -29,7 +30,11 @@ module fetch (
   /*  仿真使用,传递当前 pc 给仿真环境,根据pc 取指令 */
   wire [7:0] _rmask = 8'b1111_1111;
   always @(*) begin
-    pmem_inst_read(inst_addr_i, _mem_data, _rmask);
+    if (rst) begin
+      pmem_inst_read(`PC_RESET_ADDR, _mem_data, _rmask);
+    end else begin
+      pmem_inst_read(inst_addr_i, _mem_data, _rmask);
+    end
   end
 
   assign inst_data_o = _mem_data[31:0];

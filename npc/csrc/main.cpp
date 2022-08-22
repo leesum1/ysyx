@@ -37,6 +37,7 @@ int main(int argc, char* argv[]) {
   cout << "imgsize:" << imgsize << endl;
   mysim_p->reset();
   mysim_p->u_difftest.init(nemu_so_path, imgsize, 0);
+
   /* 注册命令 */
   cr::Console c(">:");
   c.registerCommand("info", cmd_info);
@@ -51,21 +52,25 @@ int main(int argc, char* argv[]) {
   c.registerCommand("sdboff", cmd_sdboff);
   c.registerCommand("sdb", cmd_sdb);
   int retCode;
-  do {
-    retCode = c.readLine();
-    // We can also change the prompt based on last return value:
-    if (retCode == ret::Ok)
-      c.setGreeting(">");
-    else
-      c.setGreeting("!>");
 
-    if (retCode == 1) {
-      std::cout << "Received error code 1\n";
-    }
-    else if (retCode == 2) {
-      std::cout << "Received error code 2\n";
-    }
-  } while (retCode != ret::Quit);
+  c.executeCommand("sdb on difftest");
+  c.executeCommand("c");
+  // do {
+  //   retCode = c.readLine();
+  //   // We can also change the prompt based on last return value:
+  //   if (retCode == ret::Ok)
+  //     c.setGreeting(">");
+  //   else
+  //     c.setGreeting("!>");
+
+  //   if (retCode == 1) {
+  //     std::cout << "Received error code 1\n";
+  //   }
+  //   else if (retCode == 2) {
+  //     std::cout << "Received error code 2\n";
+  //   }
+  // } while (retCode != ret::Quit);
+
   mysim_p->excute(1);
   int hitgood = mysim_p->npcTrap();
   delete mysim_p;

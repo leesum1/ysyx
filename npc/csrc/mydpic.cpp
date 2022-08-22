@@ -23,12 +23,12 @@ extern "C" void inst_commit(long long pc, svBit commit_valid) {
 
 extern "C" void pmem_inst_read(long long raddr, long long* rdata, char rmask) {
     // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
-    if (raddr < 20 || rmask == 0) {
+    if (rmask == 0) {
         return;
     }
-
+    printf("pmem_inst_read:%llx,", raddr);
     *rdata = mysim_p->mem->paddr_read(raddr, 8);
-    printf("readaddr:%08x\n", raddr);
+    printf("data:%llx\n", *rdata);
 };
 
 
@@ -37,7 +37,9 @@ extern "C" void pmem_read(long long raddr, long long* rdata, char rmask) {
     if (raddr < 20 || rmask == 0) {
         return;
     }
+    printf("pmem_read:%llx,", raddr);
     *rdata = mysim_p->mem->paddr_read(raddr, 8);
+    printf("data:%llx\n", *rdata);
 };
 extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
     // 总是往地址为`waddr & ~0x7ull`的8字节按写掩码`wmask`写入`wdata`
@@ -45,6 +47,10 @@ extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
     // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
     /* 隐式格式转换很坑 */
     uint32_t temp = (uint8_t)wmask;
+    if (wmask == 0) {
+        return;
+    }
+    printf("pmem_write:%llx,data:%llx\n", waddr, wdata);
     switch (temp) {
     case 1:   mysim_p->mem->paddr_write(waddr, 1, wdata); break; // 0000_0001, 1byte.
     case 3:   mysim_p->mem->paddr_write(waddr, 2, wdata); break; // 0000_0011, 2byte.

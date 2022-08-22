@@ -27,6 +27,7 @@ module top (
   wire [`INST_LEN-1:0] inst_data_if;
   wire [`TRAP_BUS] trap_bus_if;
   fetch u_fetch (
+      .rst(rst),
       .inst_addr_i(inst_addr),  // from pc_reg
       /* to if/id */
       .inst_addr_o(inst_addr_if),
