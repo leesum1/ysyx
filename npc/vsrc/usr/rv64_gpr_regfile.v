@@ -27,8 +27,11 @@ module rv64_gpr_regfile (
   end
 
   /* 读取数据 */
-  assign rs1_data_o = rf[rs1_idx_i];
-  assign rs2_data_o = rf[rs2_idx_i];
+  wire _rs1_bypass_valid = rs1_idx_i == write_idx_i;
+  wire _rs2_bypass_valid = rs2_idx_i == write_idx_i;
+
+  assign rs1_data_o = _rs1_bypass_valid ? _write_data : rf[rs1_idx_i];
+  assign rs2_data_o = _rs2_bypass_valid ? _write_data : rf[rs2_idx_i];
 
 
   /************仿真使用：传递二维数组指针************/

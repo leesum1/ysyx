@@ -6,6 +6,12 @@
 `define REG_ADDRWIDTH 5     //寄存器地址宽度
 `define PC_RESET_ADDR `XLEN'h0000000080000000
 
+
+
+`define INST_NOP 32'h00000013           //ADDI x0, x0, 0
+`define TRUE 1'b1
+`define FALSE 1'b0
+
 /* BUS */
 `define XLEN_BUS `XLEN-1:0
 

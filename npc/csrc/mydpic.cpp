@@ -24,7 +24,7 @@ extern "C" void pmem_read(long long raddr, long long* rdata, char rmask) {
         return;
     }
     *rdata = mysim_p->mem->paddr_read(raddr, 8);
-    //printf("readaddr:%08x\n", raddr);
+    printf("readaddr:%08x\n", raddr);
 };
 extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
     // 总是往地址为`waddr & ~0x7ull`的8字节按写掩码`wmask`写入`wdata`

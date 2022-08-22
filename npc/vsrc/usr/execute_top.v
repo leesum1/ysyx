@@ -45,6 +45,9 @@ module execute_top (
     /************************to id *************************************/
     output  [`EXCOP_LEN-1:0] exc_op_o,  // exc 操作码
 
+    /************************to pc_reg ******************************************/
+    output [`XLEN_BUS] branch_pc_o,
+    output branch_pc_valid_o,
 
     // 请求暂停流水线
     output ex_stall_req_valid_o,
@@ -82,6 +85,25 @@ module execute_top (
   wire _excop_csr = (exc_op_i == `EXCOP_CSR);
   wire _excop_ebreak = (exc_op_i == `EXCOP_EBREAK);
   wire _excop_none = (exc_op_i == `EXCOP_NONE);
+
+  /*****************************branch 操作********************************/
+  wire [`XLEN_BUS] _pc_add_imm;
+  assign _pc_add_imm = pc_i + imm_data_i;
+
+  wire [`XLEN_BUS] _rs1_add_imm;
+  assign _rs1_add_imm = rs1_data_i + imm_data_i;
+
+  wire [`XLEN_BUS] _branch_pc = {`XLEN{_excop_jal|_excop_branch}}&_pc_add_imm|
+                                {`XLEN{_excop_jalr}}&_rs1_add_imm;
+
+  wire _branch_pc_valid = _compare_out | _excop_jal|_excop_jalr;
+
+  assign branch_pc_o = _branch_pc;
+  assign branch_pc_valid_o = _branch_pc_valid;
+
+
+
+/****************************** ALU 操作******************************************/
 
   /* ALU 两端操作数选择 */
   wire _rs1_rs2 = _excop_op32 | _excop_op | _excop_branch;
@@ -123,7 +145,7 @@ module execute_top (
 
   //assign exc_out = _alu_out;
 
-/************* CSR 执行操作 **************************/
+/***************************** CSR 执行操作 **************************/
 
 wire [`XLEN_BUS] _csr_exe_data;
 wire _csr_exe_data_valid;
@@ -137,10 +159,8 @@ execute_csr u_execute_csr (
     .csr_exe_data_valid_o     (_csr_exe_data_valid)
 );
 
-
 assign exc_csr_data_o = _csr_exe_data;
 assign exc_csr_valid_o = _csr_exe_data_valid;
-
   /*************ebreak仿真使用**************************/
   always @(*) begin
     if (_excop_ebreak) begin

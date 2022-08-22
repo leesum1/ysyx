@@ -2,12 +2,19 @@
 /* 与 mem 位于同一阶段 */
 module clint (
     // input wire clk,
-    // input wire rst,
+    input wire rst,
 
     input [`XLEN-1:0] pc_i,
     input [`INST_LEN-1:0] inst_data_i,
     /* TARP 总线 */
     input wire [`TRAP_BUS] trap_bus_i,
+
+    /* ----- stall request from other modules 各个阶段请求流水线暂停请求 --------*/
+    input wire stallreq_from_if_i,
+    input wire stallreq_from_id_i,
+    input wire stallreq_from_ex_i,
+    input wire stallreq_from_mem_i,
+
 
     /* trap 所需寄存器，来自于 csr (读)*/
     input wire [`XLEN-1:0] csr_mstatus_readdata_i,
@@ -28,8 +35,40 @@ module clint (
     output wire csr_mtvec_write_valid_o,
     /* 输出至取指阶段 */
     output wire [`XLEN-1:0] clint_pc_o,
-    output wire clint_pc_valid_o
+    output wire clint_pc_valid_o,
+
+    /* ---signals to other stages of the pipeline  ----*/
+    output reg[5:0]              stall_o,   // stall request to PC,IF_ID, ID_EX, EX_MEM, MEM_WB， one bit for one stage respectively
+    output wire flush_o  // flush the whole pipleline, exception or interrupt happens
 );
+
+  /* --------------------- handle the stall request -------------------*/
+  assign flush_o = _trap_valid;
+
+
+  always @(*) begin
+    if (rst) begin
+      stall_o = 6'b000000;
+      // stall request from lsu: need to stop the ifu(0), IF_ID(1), ID_EXE(2), EXE_MEM(3), MEM_WB(4)
+    end else if (stallreq_from_mem_i == `TRUE) begin
+      stall_o = 6'b011111;
+      // stall request from exu: stop the PC,IF_ID, ID_EXE, EXE_MEM
+    end else if (stallreq_from_ex_i == `TRUE) begin
+      stall_o = 6'b001111;
+      // stall request from id: stop PC,IF_ID, ID_EXE
+    end else if (stallreq_from_id_i == `TRUE) begin
+      stall_o = 6'b000111;
+      // stall request from if: stop the PC,IF_ID, ID_EXE
+    end else if (stallreq_from_if_i == `TRUE) begin
+      stall_o = 6'b000111;
+    end else begin
+      stall_o = 6'b000000;
+    end  // if
+  end  // always
+
+
+
+
   /* type of trap */
   wire _trap_ecall = trap_bus_i[`TRAP_ECALL];
   wire _trap_ebreak = trap_bus_i[`TRAP_EBREAK];

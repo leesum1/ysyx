@@ -2,6 +2,8 @@
 #include "simtop.h"
 using namespace std;
 
+#define TOP_TRACE
+
 static const char* regs[] = {
     "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
     "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
@@ -11,12 +13,13 @@ static const char* regs[] = {
 Simtop::Simtop() {
     cout << "SimtopStart!" << endl;
     mem = new SimMem;
-    top = new Vtop;
+
     /* 波形数据 */
 #ifdef TOP_TRACE
     contextp = new VerilatedContext;
     tfp = new VerilatedVcdC;
     contextp->traceEverOn(true);
+    top = new Vtop;
     top->trace(tfp, 0);
     tfp->open("sim.vcd");
 #endif
