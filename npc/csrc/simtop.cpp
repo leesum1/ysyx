@@ -31,7 +31,7 @@ Simtop::~Simtop() {
     tfp->close();
     delete tfp;
     delete contextp;
-    delete mem;
+    // delete mem;
     delete top;
 #endif
     cout << "SimtopEnd!" << endl;
@@ -49,8 +49,6 @@ void Simtop::reset() {
 void Simtop::changeCLK() {
     top->clk = !top->clk;
     top->eval();
-    this->registerfile = cpu_gpr;
-    this->pc = cpu_pc;
 }
 
 
@@ -70,11 +68,6 @@ void Simtop::stepCycle(bool val) {
     if (top_status != TOP_RUNNING) {
         return;
     }
-#ifdef TOP_TRACE
-    if (!top->rst && isSdbOk("itrace")) {
-        u_itrace.llvmDis();
-    }
-#endif
     changeCLK(); // 上升沿
     /* 上升沿和下降沿都要保存波形数据 */
 #ifdef TOP_TRACE
@@ -84,7 +77,12 @@ void Simtop::stepCycle(bool val) {
 #endif
     changeCLK();// 下降沿
 #ifdef TOP_TRACE
-    sdbRun();
+    if (isSdbOk("wave")) {
+        this->dampWave();
+    }
+    if (this->cpu_commit_valid == true) {
+        sdbRun();
+    }
 #endif
 }
 
@@ -99,7 +97,6 @@ const char* Simtop::getRegName(int idx) {
  * @return uint64_t
  */
 uint64_t Simtop::getRegVal(int idx) {
-    this->registerfile = cpu_gpr;
     return registerfile[idx];
 }
 /**
@@ -136,7 +133,7 @@ void  Simtop::printRegisterFile() {
             << setw(20) << left << getRegVal(i + 16)
             << endl;
     }
-    cout << "\npc:" << "\t" << hex << cpu_pc << endl;
+    cout << "\npc:" << "\t" << hex << this->pc << endl;
 }
 
 
@@ -275,18 +272,30 @@ void Simtop::sdbStatus() {
 }
 
 void Simtop::sdbRun(void) {
+    printf("commit:%p\n", (void*)this->pc);
     if (isSdbOk("difftest")) {
         this->u_difftest.difftest_step();
     }
+    if (!top->rst && isSdbOk("itrace")) {
+        u_itrace.llvmDis();
+    }
     if (isSdbOk("wp")) {
         this->u_wp.praseAllwp();
-    }
-    if (isSdbOk("wave")) {
-        this->dampWave();
     }
     if (isSdbOk("reg")) {
         this->printRegisterFile();
     }
     //TODO:add more
+}
+
+
+void Simtop::setPC(uint64_t val) {
+    this->pc = val;
+}
+void Simtop::setCommit_valid(uint8_t val) {
+    this->cpu_commit_valid = val;
+}
+void Simtop::setGPRregs(uint64_t* ptr) {
+    this->registerfile = ptr;
 }
 

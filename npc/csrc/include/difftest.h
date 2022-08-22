@@ -10,10 +10,14 @@ class Difftest {
 
 
 private:
+
     struct CPU_state {
         uint64_t gpr[32];
         uint64_t pc;
-    };
+        uint64_t csr[4];
+        // CSR 寄存器
+    };//需要时刻和 nemu 保持一致
+
     enum {
         DIFFTEST_TO_DUT,
         DIFFTEST_TO_REF

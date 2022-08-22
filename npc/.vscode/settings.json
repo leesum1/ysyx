@@ -9,6 +9,7 @@
     "files.associations": {
         "Makefile": "makefile",
         "*.nxdc": "makefile",
+        "*.S": "bat",
         "iostream": "cpp",
         "ostream": "cpp",
         "*.tcc": "cpp",
@@ -58,6 +59,7 @@
         "sstream": "cpp",
         "thread": "cpp",
         "tuple": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "random": "cpp"
     }
 }

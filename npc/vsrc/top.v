@@ -528,6 +528,25 @@ module top (
   );
 
 
+
+  /***************************写回阶段***********************************/
+  writeback u_writeback (
+      .clk           (clk),
+      .rst           (rst),
+      .pc_wb_i       (pc_mem_wb),
+      .inst_data_wb_i(inst_data_mem_wb)
+      //   .mem_data_i     (mem_data_mem_wb),
+      //   .rd_idx_i       (rd_addr_mem_wb),
+      //   .csr_addr_i     (csr_addr_mem_wb),
+      //   .exc_csr_data_i (exc_csr_data_mem_wb),
+      //   .exc_csr_valid_i(exc_csr_valid_mem_wb),
+      //   /* TO GPR,CSR REGFILE */
+      //   .mem_data_o     (mem_data_o),
+      //   .rd_idx_o       (rd_idx_o),
+      //   .csr_addr_o     (csr_addr_o),
+      //   .exc_csr_data_o (exc_csr_data_o),
+      //   .exc_csr_valid_o(exc_csr_valid_o)
+  );
   /******************** gpr 寄存器组、csr 寄存器组 ************************/
 
   wire [`XLEN_BUS] rs1_data_gpr;

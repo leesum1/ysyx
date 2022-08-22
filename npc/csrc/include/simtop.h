@@ -23,6 +23,7 @@ private:
     VerilatedVcdC* tfp;
     uint64_t* registerfile;
     uint64_t pc;
+    uint8_t cpu_commit_valid;
 
     struct sdbTool_t {
         string name;
@@ -61,6 +62,9 @@ public:
     int npcTrap();
     uint64_t getRegVal(int idx);
     uint64_t getRegVal(const char* str);
+    void setPC(uint64_t val);
+    void setCommit_valid(uint8_t val);
+    void setGPRregs(uint64_t* ptr);
     void printRegisterFile();
     void scanMem(paddr_t addr, uint32_t len);
     void excute(int32_t t);

@@ -135,16 +135,17 @@ void Difftest::difftest_step() {
     /* 跳过当前指令的 difftest ,以 dut 为准 */
     if (is_skip_ref == true) {
         CPU_state dutregs = getDutregs();
+        printf("test\n");
         diff_regcpy(&dutregs, DIFFTEST_TO_REF);
         is_skip_ref = false;
         return;
     }
 
     diff_exec(1);
-    if (!checkregs()) {
-        /* 停止指令执行 */
-        mysim_p->top_status = mysim_p->TOP_STOP;
-    }
+    // if (!checkregs()) {
+    //     /* 停止指令执行 */
+    //     mysim_p->top_status = mysim_p->TOP_STOP;
+    // }
 }
 
 void Difftest::difftest_skip_ref() {

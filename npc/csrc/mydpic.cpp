@@ -5,17 +5,31 @@
 #include "verilated_dpi.h"
 #include "simtop.h"
 
-uint64_t* cpu_gpr;
-uint64_t cpu_pc;
+// uint64_t* cpu_gpr;
+// uint64_t cpu_pc;
+// uint8_t cpu_commit_valid;
+
 extern Simtop* mysim_p;
+
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
-    cpu_gpr = (uint64_t*)(((VerilatedDpiOpenVar*)r)->datap());
+    mysim_p->setGPRregs((uint64_t*)(((VerilatedDpiOpenVar*)r)->datap()));
+    // cpu_gpr = (uint64_t*)(((VerilatedDpiOpenVar*)r)->datap());
 }
 
-
-extern "C" void get_pc(long long pc) {
-    cpu_pc = pc;
+extern "C" void inst_commit(long long pc, svBit commit_valid) {
+    mysim_p->setPC(pc);
+    mysim_p->setCommit_valid(commit_valid);
 }
+
+extern "C" void pmem_inst_read(long long raddr, long long* rdata, char rmask) {
+    // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
+    if (raddr < 20 || rmask == 0) {
+        return;
+    }
+
+    *rdata = mysim_p->mem->paddr_read(raddr, 8);
+    printf("readaddr:%08x\n", raddr);
+};
 
 
 extern "C" void pmem_read(long long raddr, long long* rdata, char rmask) {
@@ -24,7 +38,6 @@ extern "C" void pmem_read(long long raddr, long long* rdata, char rmask) {
         return;
     }
     *rdata = mysim_p->mem->paddr_read(raddr, 8);
-    printf("readaddr:%08x\n", raddr);
 };
 extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
     // 总是往地址为`waddr & ~0x7ull`的8字节按写掩码`wmask`写入`wdata`
