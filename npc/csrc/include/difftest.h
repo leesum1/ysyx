@@ -3,7 +3,7 @@
 
 #include <dlfcn.h>
 #include <iostream>
-
+#include <list>
 using namespace std;
 
 class Difftest {
@@ -34,7 +34,7 @@ private:
     ref_Difftest_exec diff_exec;
     ref_Difftest_raise_intr diff_raise_intr;
     ref_difftest_init diff_init;
-    volatile bool is_skip_ref = false;
+    list<uint64_t> skip_pc;
 public:
     Difftest(/* args */);
     ~Difftest();

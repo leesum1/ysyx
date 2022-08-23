@@ -135,11 +135,13 @@ void Difftest::difftest_step() {
     /* 寄存器不一样 */
 
     /* 跳过当前指令的 difftest ,以 dut 为准 */
-    if (is_skip_ref == true) {
-        CPU_state dutregs = getDutregs();
-        printf("test\n");
+    CPU_state dutregs = getDutregs();
+
+    if (!skip_pc.empty() && mysim_p->cpu_commit.inst.front().inst_pc == skip_pc.front()) {
+        // printf("is_skip_ref\n");
+        // printf("pc:%p\n", (void*)skip_pc.front());
         diff_regcpy(&dutregs, DIFFTEST_TO_REF);
-        is_skip_ref = false;
+        skip_pc.pop_front();
         return;
     }
 
@@ -151,5 +153,5 @@ void Difftest::difftest_step() {
 }
 
 void Difftest::difftest_skip_ref() {
-    is_skip_ref = true;
+    skip_pc.push_back(mysim_p->mem_pc);
 }

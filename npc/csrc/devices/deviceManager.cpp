@@ -45,12 +45,12 @@ void DeviceManager::DeviceManagerInit(void) {
     ret = installDevice("Devicetimer", "timer0");
     assert(ret == true);
     printf("timer0 init\n");
-    // ret = installDevice("Devicekb", "kb0");
-    // assert(ret == true);
-    // printf("keyboard0 init\n");
-    // ret = installDevice("Devicevga", "vga0");
-    // assert(ret == true);
-    // printf("vga0 init\n");
+    ret = installDevice("Devicekb", "kb0");
+    assert(ret == true);
+    printf("keyboard0 init\n");
+    ret = installDevice("Devicevga", "vga0");
+    assert(ret == true);
+    printf("vga0 init\n");
 
     SDL_CreateThread(thread_func, "DeviceUpdate", this);
 }

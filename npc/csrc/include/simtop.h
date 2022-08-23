@@ -2,6 +2,7 @@
 #define __SIMTOP_H__
 
 #include <iostream>
+#include <list>
 #include <verilated_vcd_c.h>
 #include <verilated.h>
 #include <Vtop.h>
@@ -25,6 +26,16 @@ private:
     uint64_t pc;
     uint8_t cpu_commit_valid;
 
+
+    struct inst_t {
+        uint64_t inst_pc;
+        uint32_t inst_data;
+    };
+    struct commited_info_t {
+        list<inst_t> inst;
+        list<uint64_t>nextpc;
+    };
+
     struct sdbTool_t {
         string name;
         bool isok;
@@ -45,6 +56,7 @@ private:
     void changeCLK();
     void dampWave();
 public:
+    uint64_t mem_pc;
     uint32_t top_status;
     enum {
         TOP_STOP,
@@ -52,6 +64,7 @@ public:
     };
     SimMem* mem;
     Watchpoint u_wp;
+    commited_info_t cpu_commit;
     expr_namespace::Expr u_expr;
     Difftest u_difftest;
     Itrace u_itrace;
@@ -65,6 +78,7 @@ public:
     void setPC(uint64_t val);
     void setCommit_valid(uint8_t val);
     void setGPRregs(uint64_t* ptr);
+    void addCommitedInst(uint64_t inst_pc, uint32_t inst_data);
     void printRegisterFile();
     void scanMem(paddr_t addr, uint32_t len);
     void excute(int32_t t);

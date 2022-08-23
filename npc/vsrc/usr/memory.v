@@ -122,22 +122,30 @@ module memory (
 
   /***************************内存读写**************************/
   import "DPI-C" function void pmem_read(
+    input longint pc,
     input longint raddr,
     output longint rdata,
     input byte rmask
   );
   import "DPI-C" function void pmem_write(
+    input longint pc,
     input longint waddr,
     input longint wdata,
     input byte wmask
   );
-
   always @(*) begin
     _mem_read = `XLEN'b0;
     if (_isload) begin
-      pmem_read(_raddr, _mem_read, _rmask);
+      pmem_read(pc_i, _raddr, _mem_read, _rmask);
     end else if (_isstore) begin
-      pmem_write(_waddr, _mem_write, _wmask);
+      pmem_write(pc_i, _waddr, _mem_write, _wmask);
     end
   end
+  /************************××××××向仿真环境传递 PC *****************************/
+  import "DPI-C" function void set_nextpc(input longint nextpc);
+
+  always @(posedge clk) begin
+    set_nextpc(pc_i);
+  end
+
 endmodule

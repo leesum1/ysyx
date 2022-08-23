@@ -81,8 +81,13 @@ void Simtop::stepCycle(bool val) {
         this->dampWave();
     }
     // 提交的时候进行 difftest
-    if (this->cpu_commit_valid == true) {
+    while ((!cpu_commit.nextpc.empty()) && !(cpu_commit.inst.empty())) {
+        setPC(cpu_commit.nextpc.front());
+        // cout << "nextpc" << hex << cpu_commit.nextpc.front()
+        //     << "commitpc" << cpu_commit.inst.front().inst_pc << endl;
         sdbRun();
+        cpu_commit.inst.pop_front();
+        cpu_commit.nextpc.pop_front();
     }
 #endif
 }
@@ -273,12 +278,9 @@ void Simtop::sdbStatus() {
 }
 
 void Simtop::sdbRun(void) {
-    printf("commit:%p\n", (void*)this->pc);
-    // if (isSdbOk("difftest")) {
-    //     this->u_difftest.difftest_step();
-    // }
-    this->u_difftest.difftest_step();
-
+    if (isSdbOk("difftest")) {
+        this->u_difftest.difftest_step();
+    }
     if (!top->rst && isSdbOk("itrace")) {
         u_itrace.llvmDis();
     }
@@ -302,3 +304,10 @@ void Simtop::setGPRregs(uint64_t* ptr) {
     this->registerfile = ptr;
 }
 
+void Simtop::addCommitedInst(uint64_t inst_pc, uint32_t inst_data) {
+
+    inst_t temp_inst;
+    temp_inst.inst_data = inst_data;
+    temp_inst.inst_pc = inst_pc;
+    this->cpu_commit.inst.push_back(temp_inst);
+}
