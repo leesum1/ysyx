@@ -345,12 +345,17 @@ module dcode (
 
   /******************************************冲突处理***************************************************/
   wire _pre_inst_is_load = (id_ex_exc_op_i == `EXCOP_LOAD);
+
+  // 0 号寄存器特殊处理，不然出错
+  wire _rs1_idx_not_zero = (_rs1_idx != `REG_ADDRWIDTH'b0);
+  wire _rs2_idx_not_zero = (_rs2_idx != `REG_ADDRWIDTH'b0);
+
   // exc stage bypass
-  wire _rs1_exc_bypass_valid = (_rs1_idx == ex_rd_addr_i);
-  wire _rs2_exc_bypass_valid = (_rs2_idx == ex_rd_addr_i);
+  wire _rs1_exc_bypass_valid = (_rs1_idx == ex_rd_addr_i) && (_rs1_idx_not_zero);
+  wire _rs2_exc_bypass_valid = (_rs2_idx == ex_rd_addr_i) && (_rs2_idx_not_zero);
   // mem stage bypass
-  wire _rs1_mem_bypass_valid = (_rs1_idx == mem_rd_addr_i);
-  wire _rs2_mem_bypass_valid = (_rs2_idx == mem_rd_addr_i);
+  wire _rs1_mem_bypass_valid = (_rs1_idx == mem_rd_addr_i) && (_rs1_idx_not_zero);
+  wire _rs2_mem_bypass_valid = (_rs2_idx == mem_rd_addr_i) && (_rs2_idx_not_zero);
   // wb stage bypass was enabled in gpr
 
 
