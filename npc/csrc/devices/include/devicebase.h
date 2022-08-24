@@ -22,6 +22,8 @@ namespace Topdevice {
 
     typedef uint64_t paddr_t;
     typedef uint64_t word_t;
+
+    // 设备的地址信息
     struct deviceinfo_t {
         string name;
         paddr_t addr;
@@ -31,6 +33,7 @@ namespace Topdevice {
     class Devicebase {
     private:
     public:
+        // 每个设备可能有多块地址
         vector<deviceinfo_t> deviceinfo;
         virtual ~Devicebase() {};
         virtual void write(paddr_t addr, word_t data, uint32_t len) = 0;

@@ -1,5 +1,5 @@
 #ifndef  __SIMTOP_H__
-#define __SIMTOP_H__
+#define  __SIMTOP_H__
 
 #include <iostream>
 #include <list>
@@ -13,9 +13,8 @@
 #include "expr.h"
 #include "difftest.h"
 #include "itrace.h"
+#include "ringbuff.hpp"
 
-extern uint64_t* cpu_gpr;
-extern uint64_t cpu_pc;
 
 class Simtop {
 private:
@@ -24,16 +23,14 @@ private:
     VerilatedVcdC* tfp;
     uint64_t* registerfile;
     uint64_t pc;
-    uint8_t cpu_commit_valid;
-
 
     struct inst_t {
         uint64_t inst_pc;
         uint32_t inst_data;
     };
     struct commited_info_t {
-        list<inst_t> inst;
-        list<uint64_t>nextpc;
+        jm::circular_buffer <inst_t, 10> inst;
+        jm::circular_buffer <uint64_t, 10> nextpc;
     };
 
     struct sdbTool_t {
@@ -56,7 +53,7 @@ private:
     void changeCLK();
     void dampWave();
 public:
-    uint64_t mem_pc;
+    uint64_t mem_pc; // 记录当前访存指令的 PC,用于 difftest device 的 skip 处理 
     uint32_t top_status;
     enum {
         TOP_STOP,
@@ -64,19 +61,19 @@ public:
     };
     SimMem* mem;
     Watchpoint u_wp;
-    commited_info_t cpu_commit;
     expr_namespace::Expr u_expr;
     Difftest u_difftest;
     Itrace u_itrace;
+    commited_info_t commited_list;
+
     Simtop();
     ~Simtop();
     Vtop* getTop();
     void reset();
-    int npcTrap();
+    bool npcHitGood();
     uint64_t getRegVal(int idx);
     uint64_t getRegVal(const char* str);
     void setPC(uint64_t val);
-    void setCommit_valid(uint8_t val);
     void setGPRregs(uint64_t* ptr);
     void addCommitedInst(uint64_t inst_pc, uint32_t inst_data);
     void printRegisterFile();

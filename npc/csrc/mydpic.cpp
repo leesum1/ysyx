@@ -4,17 +4,9 @@
 #include <Vtop.h>
 #include "verilated_dpi.h"
 #include "simtop.h"
-
-// uint64_t* cpu_gpr;
-// uint64_t cpu_pc;
-// uint8_t cpu_commit_valid;
-
-//#define MTRACH
-
+#include "simconf.h"
 
 extern Simtop* mysim_p;
-
-
 extern "C" void set_nextpc(long long nextpc) {
     static bool isfirst_inst = true;
     if (nextpc == 0) {
@@ -26,11 +18,10 @@ extern "C" void set_nextpc(long long nextpc) {
         isfirst_inst = false;
         return;
     }
-    mysim_p->cpu_commit.nextpc.push_back(nextpc);
+    mysim_p->commited_list.nextpc.push_back(nextpc);
 }
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
     mysim_p->setGPRregs((uint64_t*)(((VerilatedDpiOpenVar*)r)->datap()));
-    // cpu_gpr = (uint64_t*)(((VerilatedDpiOpenVar*)r)->datap());
 }
 
 extern "C" void inst_commit(long long pc, int inst, svBit commit_valid) {
@@ -64,7 +55,7 @@ extern "C" void pmem_read(long long pc, long long raddr, long long* rdata, char 
     if (raddr < 20 || rmask == 0) {
         return;
     }
-    mysim_p->mem_pc = pc;
+    mysim_p->mem_pc = pc; // 记录访存指令的 PC
 #ifdef MTRACH
     printf("pmem_read:%llx,", raddr);
 #endif
@@ -86,7 +77,7 @@ extern "C" void pmem_write(long long pc, long long waddr, long long wdata, char 
 #ifdef MTRACH
     printf("pmem_write:%llx,data:%llx\n", waddr, wdata);
 #endif
-    mysim_p->mem_pc = pc;
+    mysim_p->mem_pc = pc; // 记录访存指令的 PC
     switch (temp) {
     case 1:   mysim_p->mem->paddr_write(waddr, 1, wdata); break; // 0000_0001, 1byte.
     case 3:   mysim_p->mem->paddr_write(waddr, 2, wdata); break; // 0000_0011, 2byte.

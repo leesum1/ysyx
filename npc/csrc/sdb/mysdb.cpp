@@ -3,8 +3,8 @@
 #include "simtop.h"
 #include "expr.h"
 #include "watchpoint.h"
-
 extern Simtop* mysim_p;
+
 unsigned cmd_help(const std::vector<std::string>&) {
     std::cout << "Welcome to the example console. This command does not really\n"
         << "do anything aside from printing this statement. Thus it does\n"
@@ -48,6 +48,7 @@ unsigned cmd_si(const std::vector<std::string>& input) {
         sscanf(input[1].c_str(), "%d", &n);
         mysim_p->excute(n);
     }
+    // by defaut excute once
     else {
         mysim_p->excute(1);
     }
@@ -107,11 +108,10 @@ unsigned cmd_p(const std::vector<std::string>& input) {
     for (size_t i = 1; i < input.size(); i++) {
         inputall.append(input[i]);
     }
-    cout << "cmd_p\t" << inputall << endl;
+    cout << "cmd_p:\t" << inputall << endl;
     bool ret;
-    // extern uint64_t exprgetResult(char* e, bool* success);
+
     char* c = const_cast<char*>(inputall.c_str());
-    // exprgetResult(c, &ret);
     mysim_p->u_expr.getResult(c, &ret);
     return 0;
 }
@@ -126,7 +126,7 @@ unsigned cmd_w(const std::vector<std::string>& input) {
     if (input.size() == 1) {
         // The first element of the input array is always the name of the
         // command as registered in the console.
-        std::cout << "Usage: " << input[0] << " expr\n";
+        std::cout << "Usage: " << input[0] << " <expr>\n";
         // We can return an arbitrary error code, which we can catch later
         // as Console will return it.
         return 1;
@@ -151,7 +151,7 @@ unsigned cmd_d(const std::vector<std::string>& input) {
     if (input.size() != 2) {
         // The first element of the input array is always the name of the
         // command as registered in the console.
-        std::cout << "Usage: " << input[0] << " d n\n";
+        std::cout << "Usage: " << input[0] << " d <no>\n";
         // We can return an arbitrary error code, which we can catch later
         // as Console will return it.
         return 1;
@@ -162,25 +162,6 @@ unsigned cmd_d(const std::vector<std::string>& input) {
     return 0;
 }
 
-unsigned cmd_sdbon(const std::vector<std::string>& input) {
-
-    if (input.size() != 2) {
-        std::cout << "Usage: " << input[0] << " all difftest wp wave itrace mtrace ftrace dtrace\n";
-        return 1;
-    }
-    mysim_p->sdbOn(input[1].c_str());
-    return 0;
-}
-
-unsigned cmd_sdboff(const std::vector<std::string>& input) {
-
-    if (input.size() != 2) {
-        std::cout << "Usage: " << input[0] << " all difftest wp wave itrace mtrace ftrace dtrace\n";
-        return 1;
-    }
-    mysim_p->sdbOff(input[1].c_str());
-    return 0;
-}
 
 unsigned cmd_sdb(const std::vector<std::string>& input) {
 
@@ -188,23 +169,27 @@ unsigned cmd_sdb(const std::vector<std::string>& input) {
         std::cout << "Usage: " << " <sdb status> or <sdb on/off name>\n";
         return 1;
     }
-
+    // show sdb status
     if (input[1] == "status") {
         mysim_p->sdbStatus();
     }
+    // turn on specific sdbtool
     else if (input[1] == "on") {
         if (input.size() != 3) {
             std::cout << "Usage: " << " <sdb status> or <sdb on/off name>\n";
             return 1;
         }
         mysim_p->sdbOn(input[2].c_str());
+        mysim_p->sdbStatus();
     }
+    // turn off specific sdbtool
     else if (input[1] == "off") {
         if (input.size() != 3) {
             std::cout << "Usage: " << " <sdb status> or <sdb on/off name>\n";
             return 1;
         }
         mysim_p->sdbOff(input[2].c_str());
+        mysim_p->sdbStatus();
     }
     else {
         std::cout << "Usage: " << " <sdb status> or <sdb on/off name>\n";

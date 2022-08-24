@@ -1,7 +1,8 @@
-#include "simMem.h"
-
 #include <sys/time.h>
 #include <time.h>
+#include "simMem.h"
+#include "simconf.h"
+
 
 
 /* 默认程序 */
@@ -20,12 +21,17 @@ const uint32_t defimg[] = {
 
 
 SimMem::SimMem(/* args */) {
-    cout << "npc内存初始化开始" << endl;
+    cout << COLOR_BLUE "creat SimMem,MemSize:"
+        << MEMSIZE / (1024 * 1024) << "M"
+        << COLOR_END << endl;
+
     Device = new Topdevice::DeviceManager;
 }
 
 SimMem::~SimMem() {
-    cout << "npc内存销毁完毕" << endl;
+    cout << COLOR_BLUE "destroy SimMem,MemSize:"
+        << dec << (MEMSIZE / (1024 * 1024)) << "M"
+        << COLOR_END << endl;
     delete Device;
 }
 /**
@@ -104,7 +110,7 @@ word_t SimMem::paddr_read(paddr_t addr, int len) {
     if (in_pmem(addr)) {
         return pmem_read(addr, len);
     }
-
+    // ioe
     return Device->read(addr);
     out_of_bound(addr);
     return 0;
@@ -115,21 +121,21 @@ void SimMem::paddr_write(paddr_t addr, int len, word_t data) {
         pmem_write(addr, len, data);
         return;
     }
-
+    // ioe
     Device->write(addr, data, len);
     out_of_bound(addr);
 }
 /**
  * @brief 获取 bin 文件大小
  *
- * @param img 文件路径
+ * @param
  * @return size_t 若文件存在返回文件大小,负责返回默认镜像大小
  */
-size_t SimMem::getImgSize(const char* img) {
+size_t SimMem::getImgSize() {
     // 这是一个存储文件(夹)信息的结构体，其中有文件大小和创建时间、访问时间、修改时间等
     struct stat statbuf;
     // 提供文件名字符串，获得文件属性结构体
-    int ret = stat(img, &statbuf);
+    int ret = stat(imgpath.c_str(), &statbuf);
     // 获取文件大小
     if (0 == ret) {
         size_t filesize = statbuf.st_size;
@@ -141,22 +147,43 @@ size_t SimMem::getImgSize(const char* img) {
 /**
  * @brief 加载bin镜像文件,若文件不存在会加载默认程序
  *
- * @param img 文件路径
+ * @param
  * @return true
  * @return false
  */
-bool SimMem::loadImage(const char* img) {
+bool SimMem::loadImage() {
     ifstream binaryimg;
-    size_t img_size = getImgSize(img);
-    binaryimg.open(img, ios::in | ios::binary);
+    size_t img_size = getImgSize();
+
+    cout << COLOR_BLUE
+        << "imgsize:" << img_size
+        << COLOR_END << endl;
+
+    binaryimg.open(imgpath, ios::in | ios::binary);
+
     if (!binaryimg.is_open() || (img_size == -1)) {
-        memcpy(pmem, defimg, sizeof(defimg));
-        cout << "load default img" << endl;
+        memcpy(pmem, defimg, img_size);
+        cout << COLOR_BLUE
+            << "can not open image:" << imgpath
+            << "load default img"
+            << COLOR_END << endl;
         return true;
     }
-    cout << "imgsize:" << img_size << endl;
+    cout << COLOR_BLUE
+        << "load img:" << imgpath
+        << COLOR_END << endl;
     binaryimg.read((char*)pmem, img_size);
     return true;
+}
+
+
+void SimMem::setImagePath(const char* img) {
+    string path(img);
+    imgpath.clear();
+    imgpath.append(img);
+    cout << COLOR_BLUE "ImgPath: "
+        << imgpath
+        << COLOR_END << endl;
 }
 
 paddr_t SimMem::getMEMBASE() {

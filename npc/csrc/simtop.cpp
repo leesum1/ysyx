@@ -1,8 +1,10 @@
 
 #include "simtop.h"
+#include "simconf.h"
+
 using namespace std;
 
-#define TOP_TRACE
+
 
 static const char* regs[] = {
     "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
@@ -19,7 +21,9 @@ Simtop::Simtop() {
     contextp = new VerilatedContext;
     tfp = new VerilatedVcdC;
     contextp->traceEverOn(true);
+#endif
     top = new Vtop;
+#ifdef TOP_TRACE
     top->trace(tfp, 0);
     tfp->open("sim.vcd");
 #endif
@@ -31,9 +35,9 @@ Simtop::~Simtop() {
     tfp->close();
     delete tfp;
     delete contextp;
-    // delete mem;
-    delete top;
 #endif
+    delete mem;
+    delete top;
     cout << "SimtopEnd!" << endl;
 }
 
@@ -80,17 +84,21 @@ void Simtop::stepCycle(bool val) {
     if (isSdbOk("wave")) {
         this->dampWave();
     }
-    // 提交的时候进行 difftest
-    while ((!cpu_commit.nextpc.empty()) && !(cpu_commit.inst.empty())) {
-        setPC(cpu_commit.nextpc.front());
+    /* 提交的时候进行 difftest
+     * commited_list.nextpc 和 commited_list.inst，不为空
+     * 表示 NPC 指令已经提交，并且得到了下一条提交指令的 pc
+     * 分别位 inst，nextpc 的队首
+     */
+    while ((!commited_list.nextpc.empty()) && !(commited_list.inst.empty())) {
+        setPC(commited_list.nextpc.front());
         // cout << "nextpc" << hex << cpu_commit.nextpc.front()
         //     << "commitpc" << cpu_commit.inst.front().inst_pc << endl;
         sdbRun();
-        cpu_commit.inst.pop_front();
-        cpu_commit.nextpc.pop_front();
-    }
-#endif
+        commited_list.inst.pop_front();
+        commited_list.nextpc.pop_front();
 }
+#endif
+    }
 
 const char* Simtop::getRegName(int idx) {
     return regs[idx];
@@ -147,15 +155,15 @@ void  Simtop::printRegisterFile() {
  * @brief HIT GOOD / BAD TRAP
  * 在程序退出时调用
  */
-int Simtop::npcTrap() {
+bool Simtop::npcHitGood() {
     uint64_t a0 = registerfile[10];
     cout << "a0:" << a0 << endl;
     if (a0 == 0) {
-        cout << "PC:" << hex << pc << "\tHIT GOOD" << endl;
+        cout << COLOR_GREEN "PC:" << hex << pc << "\tHIT GOOD" COLOR_END << endl;
         return 0;
     }
     else {
-        cout << "PC:" << hex << pc << "\tBAD TRAP" << endl;
+        cout << COLOR_RED "PC:" << hex << pc << "\tBAD TRAP" COLOR_END << endl;
 
     }
     return 1;
@@ -273,7 +281,7 @@ bool Simtop::isSdbOk(const char* sdbname) {
 void Simtop::sdbStatus() {
     /* 只读遍历 */
     for (auto iter : sdbToollist) {
-        cout << iter.name << ": " << iter.isok << endl;
+        cout << setw(8) << iter.name << ": " << setw(4) << iter.isok << endl;
     }
 }
 
@@ -297,9 +305,7 @@ void Simtop::sdbRun(void) {
 void Simtop::setPC(uint64_t val) {
     this->pc = val;
 }
-void Simtop::setCommit_valid(uint8_t val) {
-    this->cpu_commit_valid = val;
-}
+
 void Simtop::setGPRregs(uint64_t* ptr) {
     this->registerfile = ptr;
 }
@@ -309,5 +315,5 @@ void Simtop::addCommitedInst(uint64_t inst_pc, uint32_t inst_data) {
     inst_t temp_inst;
     temp_inst.inst_data = inst_data;
     temp_inst.inst_pc = inst_pc;
-    this->cpu_commit.inst.push_back(temp_inst);
+    this->commited_list.inst.push_back(temp_inst);
 }

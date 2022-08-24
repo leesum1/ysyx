@@ -1,11 +1,12 @@
+#include <SDL2/SDL.h>
 #include "deviceManager.h"
 #include "deviceuart.h"
 #include "devicetimer.h"
 #include "devicevga.h"
 #include "devicekb.h"
 #include "assert.h"
-#include <SDL2/SDL.h>
 #include "simtop.h"
+#include "simconf.h"
 
 using namespace Topdevice;
 
@@ -41,16 +42,19 @@ void DeviceManager::DeviceManagerInit(void) {
     bool ret;
     ret = installDevice("deviceuart", "uart0");
     assert(ret == true);
-    printf("uart0 init\n");
+    printf(COLOR_BLUE "uart0 init\n" COLOR_END);
+
     ret = installDevice("Devicetimer", "timer0");
     assert(ret == true);
-    printf("timer0 init\n");
+    printf(COLOR_BLUE"timer0 init\n" COLOR_END);
+
     ret = installDevice("Devicekb", "kb0");
     assert(ret == true);
-    printf("keyboard0 init\n");
+    printf(COLOR_BLUE"keyboard0 init\n" COLOR_END);
+
     ret = installDevice("Devicevga", "vga0");
     assert(ret == true);
-    printf("vga0 init\n");
+    printf(COLOR_BLUE"vga0 init\n" COLOR_END);
 
     SDL_CreateThread(thread_func, "DeviceUpdate", this);
 }
@@ -129,19 +133,20 @@ Devicebase* DeviceManager::createDevice(const char* name) {
  */
 bool DeviceManager::installDevice(const char* className, const char* deviceName) {
     if (findDevicebyName(deviceName) != nullptr) {
-        printf("%s,already installed\n", deviceName);
+        printf(COLOR_RED "%s,already installed\n" COLOR_END, deviceName);
+        assert(0);
         return false;
     };
     Devicebase* base = createDevice(className);
     if (base == nullptr) {
-        printf("device has not %s\n", className);
+        printf(COLOR_RED "device has not %s\n" COLOR_END, className);
+        assert(0);
         return false;
     }
     if (deviceName == nullptr) {
-        printf("deviceName has not set");
+        printf(COLOR_YELLOW "deviceName has not set" COLOR_END);
         deviceName = className;
     }
-
     base->init(deviceName);
     devicePool.push_back(base);
     return true;
@@ -170,7 +175,8 @@ Devicebase* DeviceManager::findDevicebyName(const char* name) {
 word_t DeviceManager::read(paddr_t addr) {
     Devicebase* base = findDevicebyaddr(addr);
     if (base == nullptr) {
-        cout << hex << addr << " is out of device addr" << endl;
+        cout << COLOR_RED << hex
+            << addr << " is out of device addr" COLOR_END << endl;
         assert(base);
         return 0;
     }
@@ -189,7 +195,8 @@ void DeviceManager::write(paddr_t addr, word_t data, uint32_t len) {
     assert(len >= 1 && len <= 8);
     Devicebase* base = findDevicebyaddr(addr);
     if (base == nullptr) {
-        cout << hex << addr << " is out of device addr" << endl;
+        cout << COLOR_RED << hex
+            << addr << " is out of device addr" COLOR_END << endl;
         assert(base);
         return;
     }

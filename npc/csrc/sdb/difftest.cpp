@@ -1,6 +1,7 @@
 #include "difftest.h"
 #include "assert.h"
 #include "simtop.h"
+#include "simconf.h"
 
 extern Simtop* mysim_p;
 static const char* regs[] = {
@@ -49,6 +50,7 @@ void Difftest::init(const char* ref_so_file, long img_size, int port) {
     /* 让 dut 和 ref 寄存器初始值一样 */
     regs.pc = 0x80000000;//TODO:先凑合，后面再改
     diff_regcpy(&regs, DIFFTEST_TO_REF);
+    cout << COLOR_BLUE "difftest init!" COLOR_END << endl;
 }
 
 /**
@@ -137,7 +139,7 @@ void Difftest::difftest_step() {
     /* 跳过当前指令的 difftest ,以 dut 为准 */
     CPU_state dutregs = getDutregs();
 
-    if (!skip_pc.empty() && mysim_p->cpu_commit.inst.front().inst_pc == skip_pc.front()) {
+    if (!skip_pc.empty() && mysim_p->commited_list.inst.front().inst_pc == skip_pc.front()) {
         // printf("is_skip_ref\n");
         // printf("pc:%p\n", (void*)skip_pc.front());
         diff_regcpy(&dutregs, DIFFTEST_TO_REF);

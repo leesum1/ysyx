@@ -12,7 +12,7 @@ VERILATOR_INC_PATH := -I./vsrc \
 
 # verilator flags: 
 VERILATOR_FLAGS +=  --trace
-VERILATOR_FLAGS +=  -O3 -noassert --x-assign fast --x-initial fast --compiler clang -j 2
+VERILATOR_FLAGS +=  -O3 -noassert --x-assign fast --x-initial fast --compiler clang 
 VERILATOR_FLAGS +=  -cc --exe  --build  --clk clk  --timescale-override 1ns
 VERILATOR_FLAGS += ${VERILATOR_INC_PATH}
 VERILATOR_FLAGS += --top ${TOP_MODULE}
