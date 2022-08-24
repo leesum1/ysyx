@@ -10,7 +10,7 @@ module memory (
     // input  [         `XLEN_BUS] rs1_data_i,
     input  [             `XLEN_BUS] rs2_data_i,
     // input  [      `IMM_LEN-1:0] imm_data_i,
-    input  [        `MEMOP_LEN-1:0] mem_op_i,               // 访存操作码
+    input  [        `MEMOP_LEN-1:0] mem_op_i,         // 访存操作码
     input  [             `XLEN_BUS] exc_alu_data_i,
     input  [`CSR_REG_ADDRWIDTH-1:0] csr_addr_i,
     input  [             `XLEN_BUS] exc_csr_data_i,
@@ -20,19 +20,17 @@ module memory (
     /* to mem/wb */
     output [             `XLEN_BUS] pc_o,
     output [         `INST_LEN-1:0] inst_data_o,
-    output [             `XLEN_BUS] mem_data_o,             //同时送回 id 阶段（bypass）
+    output [             `XLEN_BUS] mem_data_o,       //同时送回 id 阶段（bypass）
     //output                          load_valid_o,          
     output [    `REG_ADDRWIDTH-1:0] rd_idx_o,
     output [`CSR_REG_ADDRWIDTH-1:0] csr_addr_o,
     output [             `XLEN_BUS] exc_csr_data_o,
     output                          exc_csr_valid_o,
-    // 请求暂停流水线
-    output                          mem_stall_req_valid_o,
+
     /* TARP 总线 */
-    output [             `TRAP_BUS] trap_bus_o
+    output [`TRAP_BUS] trap_bus_o
 );
 
-  assign mem_stall_req_valid_o = 1'b0;
   assign trap_bus_o = trap_bus_i;
   assign pc_o = pc_i;
   assign inst_data_o = inst_data_i;

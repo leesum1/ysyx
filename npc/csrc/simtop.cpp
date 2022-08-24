@@ -36,7 +36,7 @@ Simtop::~Simtop() {
     delete tfp;
     delete contextp;
 #endif
-    delete mem;
+    //delete mem;
     delete top;
     cout << "SimtopEnd!" << endl;
 }
@@ -96,9 +96,9 @@ void Simtop::stepCycle(bool val) {
         sdbRun();
         commited_list.inst.pop_front();
         commited_list.nextpc.pop_front();
-}
-#endif
     }
+#endif
+}
 
 const char* Simtop::getRegName(int idx) {
     return regs[idx];

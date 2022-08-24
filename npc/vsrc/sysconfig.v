@@ -165,6 +165,13 @@
 `define TRAP_MRET 2
 
 
+//PC,IF_ID, ID_EX, EX_MEM, MEM_WB
+`define CTRLBUS_PC 0
+`define CTRLBUS_IF_ID 1
+`define CTRLBUS_ID_EX 2
+`define CTRLBUS_EX_MEM 3
+`define CTRLBUS_MEM_WB 4
+
 
 
 

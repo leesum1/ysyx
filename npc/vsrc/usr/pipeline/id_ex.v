@@ -1,12 +1,10 @@
 `include "sysconfig.v"
 
 module id_ex (
-    input       clk,
-    input       rst,
-    input       flush_valid_i,
-    input [5:0] stall_i,
-    input       branch_pc_valid_i,
-
+    input                               clk,
+    input                               rst,
+    input                               flush_valid_i,
+    input                               stall_valid_i,
     /* 输入 */
     input wire [             `XLEN-1:0] pc_id_ex_i,
     input wire [         `INST_LEN-1:0] inst_data_id_ex_i,
@@ -53,9 +51,10 @@ module id_ex (
   //   wire reg_wen = (~stall_i[2]) | flush_valid_i;
   //   wire _flush_valid = flush_valid_i | branch_pc_valid_i;
 
-  wire _load_hazed = (stall_i[2] == `TRUE && stall_i[3] == `FALSE);
-  wire reg_wen = _load_hazed | flush_valid_i | (~stall_i[2]);
-  wire _flush_valid = flush_valid_i | branch_pc_valid_i | _load_hazed;
+  //   wire _load_hazed = (stall_i[2] == `TRUE && stall_i[3] == `FALSE);
+
+  wire reg_wen = !stall_valid_i;
+  wire _flush_valid = flush_valid_i;
 
   /* pc 寄存器 */
   wire [`XLEN-1:0] _pc_id_ex_d = (_flush_valid) ? `XLEN'b0 : pc_id_ex_i;

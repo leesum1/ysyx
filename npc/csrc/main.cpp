@@ -33,11 +33,8 @@ int main(int argc, char* argv[]) {
   /* 加载镜像 */
   mysim_p->mem->setImagePath(img_path);
   mysim_p->mem->loadImage();
-
   mysim_p->reset();
-#ifdef TOP_TRACH
-  mysim_p->u_difftest.init(nemu_so_path, mysim_p->mem->getImgSize(), 0);
-#endif
+
   /* 注册命令 */
   cr::Console c(">:");
   c.registerCommand("info", cmd_info);
@@ -51,9 +48,14 @@ int main(int argc, char* argv[]) {
   c.registerCommand("sdb", cmd_sdb);
   int retCode;
 
-  // c.executeCommand("sdb on difftest");
-  c.executeCommand("c");
+#ifdef TOP_TRACE
+  mysim_p->u_difftest.init(nemu_so_path, mysim_p->mem->getImgSize(), 0);
+  c.executeCommand("sdb on difftest");
+#endif
 
+#ifdef AUTO_RUN
+  //c.executeCommand("c");
+#else
   do {
     retCode = c.readLine();
     // We can also change the prompt based on last return value:
@@ -62,6 +64,7 @@ int main(int argc, char* argv[]) {
     else
       c.setGreeting("!>");
   } while (retCode != ret::Quit);
+#endif
 
   mysim_p->excute(1);
   bool hitgood = mysim_p->npcHitGood();

@@ -51,11 +51,11 @@ module mem_wb (
     output [             `XLEN-1:0] mem_data_mem_wb_o        //访存阶段的数据
 );
 
-  wire reg_wen = (~stall_valid_i) | flush_valid_i;
-
+  wire reg_wen = !stall_valid_i;
+  wire _flush_valid = flush_valid_i;
 
   //   /* pc 寄存器 */
-  //   wire [`XLEN_BUS] _pc_mem_wb_d = (flush_valid_i) ? `XLEN'b0 : pc_mem_wb_i;
+  //   wire [`XLEN_BUS] _pc_mem_wb_d = (_flush_valid) ? `XLEN'b0 : pc_mem_wb_i;
   //   reg [`XLEN_BUS] _pc_mem_wb_q;
   //   regTemplate #(
   //       .WIDTH    (`XLEN),
@@ -71,7 +71,7 @@ module mem_wb (
 
 
   //   /* inst_data 寄存器 */
-  //   wire [`INST_LEN-1:0] _inst_data_mem_wb_d = (flush_valid_i) ? `INST_NOP : inst_data_mem_wb_i;
+  //   wire [`INST_LEN-1:0] _inst_data_mem_wb_d = (_flush_valid) ? `INST_NOP : inst_data_mem_wb_i;
   //   reg [`INST_LEN-1:0] _inst_data_mem_wb_q;
   //   regTemplate #(
   //       .WIDTH    (`INST_LEN),
@@ -88,7 +88,7 @@ module mem_wb (
 
 
   /* csr_mtvec_write_valid寄存器 */
-  wire _csr_mtvec_write_valid_mem_wb_d = (flush_valid_i) ? `FALSE : csr_mtvec_write_valid_mem_wb_i;
+  wire _csr_mtvec_write_valid_mem_wb_d = (_flush_valid) ? `FALSE : csr_mtvec_write_valid_mem_wb_i;
   reg _csr_mtvec_write_valid_mem_wb_q;
   regTemplate #(
       .WIDTH    (1),
@@ -104,7 +104,7 @@ module mem_wb (
 
 
   /* csr_mtval_write_valid寄存器 */
-  wire _csr_mtval_write_valid_mem_wb_d = (flush_valid_i) ? `FALSE : csr_mtval_write_valid_mem_wb_i;
+  wire _csr_mtval_write_valid_mem_wb_d = (_flush_valid) ? `FALSE : csr_mtval_write_valid_mem_wb_i;
   reg _csr_mtval_write_valid_mem_wb_q;
   regTemplate #(
       .WIDTH    (1),
@@ -120,7 +120,7 @@ module mem_wb (
 
 
   /* csr_mcause_write_valid寄存器 */
-  wire _csr_mcause_write_valid_mem_wb_d = (flush_valid_i) ? `FALSE :csr_mcause_write_valid_mem_wb_i;
+  wire _csr_mcause_write_valid_mem_wb_d = (_flush_valid) ? `FALSE : csr_mcause_write_valid_mem_wb_i;
   reg _csr_mcause_write_valid_mem_wb_q;
   regTemplate #(
       .WIDTH    (1),
@@ -135,7 +135,7 @@ module mem_wb (
   assign csr_mcause_write_valid_mem_wb_o = _csr_mcause_write_valid_mem_wb_q;
 
   /* csr_mepc_write_valid寄存器 */
-  wire _csr_mepc_write_valid_mem_wb_d = (flush_valid_i) ? `FALSE : csr_mepc_write_valid_mem_wb_i;
+  wire _csr_mepc_write_valid_mem_wb_d = (_flush_valid) ? `FALSE : csr_mepc_write_valid_mem_wb_i;
   reg _csr_mepc_write_valid_mem_wb_q;
   regTemplate #(
       .WIDTH    (1),
@@ -151,7 +151,7 @@ module mem_wb (
 
 
   /* csr_mstatus_write_valid寄存器 */
-  wire _csr_mstatus_write_valid_mem_wb_d = (flush_valid_i) ? `FALSE :csr_mstatus_write_valid_mem_wb_i;
+  wire _csr_mstatus_write_valid_mem_wb_d = (_flush_valid) ? `FALSE :csr_mstatus_write_valid_mem_wb_i;
   reg _csr_mstatus_write_valid_mem_wb_q;
   regTemplate #(
       .WIDTH    (1),
@@ -167,7 +167,7 @@ module mem_wb (
 
 
   /* csr_mtvec_writedata寄存器 */
-  wire [`XLEN-1:0] _csr_mtvec_writedata_mem_wb_d = (flush_valid_i) ? `XLEN'b0 : csr_mtvec_writedata_mem_wb_i;
+  wire [`XLEN-1:0] _csr_mtvec_writedata_mem_wb_d = (_flush_valid) ? `XLEN'b0 : csr_mtvec_writedata_mem_wb_i;
   reg [`XLEN-1:0] _csr_mtvec_writedata_mem_wb_q;
   regTemplate #(
       .WIDTH    (`XLEN),
@@ -182,7 +182,7 @@ module mem_wb (
   assign csr_mtvec_writedata_mem_wb_o = _csr_mtvec_writedata_mem_wb_q;
 
   /* csr_mtval_writedata寄存器 */
-  wire [`XLEN-1:0] _csr_mtval_writedata_mem_wb_d = (flush_valid_i) ? `XLEN'b0 :csr_mtval_writedata_mem_wb_i;
+  wire [`XLEN-1:0] _csr_mtval_writedata_mem_wb_d = (_flush_valid) ? `XLEN'b0 :csr_mtval_writedata_mem_wb_i;
   reg [`XLEN-1:0] _csr_mtval_writedata_mem_wb_q;
   regTemplate #(
       .WIDTH    (`XLEN),
@@ -198,7 +198,7 @@ module mem_wb (
 
 
   /* csr_mcause_writedata寄存器 */
-  wire [`XLEN-1:0] _csr_mcause_writedata_mem_wb_d = (flush_valid_i) ? `XLEN'b0 :csr_mcause_writedata_mem_wb_i;
+  wire [`XLEN-1:0] _csr_mcause_writedata_mem_wb_d = (_flush_valid) ? `XLEN'b0 :csr_mcause_writedata_mem_wb_i;
   reg [`XLEN-1:0] _csr_mcause_writedata_mem_wb_q;
   regTemplate #(
       .WIDTH    (`XLEN),
@@ -213,7 +213,7 @@ module mem_wb (
   assign csr_mcause_writedata_mem_wb_o = _csr_mcause_writedata_mem_wb_q;
 
   /* csr_mepc_writedata寄存器 */
-  wire [`XLEN-1:0] _csr_mepc_writedata_mem_wb_d = (flush_valid_i) ? `XLEN'b0 :csr_mepc_writedata_mem_wb_i;
+  wire [`XLEN-1:0] _csr_mepc_writedata_mem_wb_d = (_flush_valid) ? `XLEN'b0 :csr_mepc_writedata_mem_wb_i;
   reg [`XLEN-1:0] _csr_mepc_writedata_mem_wb_q;
   regTemplate #(
       .WIDTH    (`XLEN),
@@ -228,7 +228,7 @@ module mem_wb (
   assign csr_mepc_writedata_mem_wb_o = _csr_mepc_writedata_mem_wb_q;
 
   /* csr_mstatus_writedata寄存器 */
-  wire [`XLEN-1:0] _csr_mstatus_writedata_mem_wb_d = (flush_valid_i) ? `XLEN'b0 :csr_mstatus_writedata_mem_wb_i;
+  wire [`XLEN-1:0] _csr_mstatus_writedata_mem_wb_d = (_flush_valid) ? `XLEN'b0 :csr_mstatus_writedata_mem_wb_i;
   reg [`XLEN-1:0] _csr_mstatus_writedata_mem_wb_q;
   regTemplate #(
       .WIDTH    (`XLEN),
@@ -244,7 +244,7 @@ module mem_wb (
 
 
   /* pc寄存器 */
-  wire [`XLEN-1:0] _pc_mem_wb_d = (flush_valid_i) ? `XLEN'b0 : pc_mem_wb_i;
+  wire [`XLEN-1:0] _pc_mem_wb_d = (_flush_valid) ? `XLEN'b0 : pc_mem_wb_i;
   reg [`XLEN-1:0] _pc_mem_wb_q;
   regTemplate #(
       .WIDTH    (`XLEN),
@@ -259,7 +259,7 @@ module mem_wb (
   assign pc_mem_wb_o = _pc_mem_wb_q;
 
   /* inst_data寄存器 */
-  wire [`INST_LEN-1:0] _inst_data_mem_wb_d = (flush_valid_i) ? `INST_NOP : inst_data_mem_wb_i;
+  wire [`INST_LEN-1:0] _inst_data_mem_wb_d = (_flush_valid) ? `INST_NOP : inst_data_mem_wb_i;
   reg [`INST_LEN-1:0] _inst_data_mem_wb_q;
   regTemplate #(
       .WIDTH    (`INST_LEN),
@@ -290,7 +290,7 @@ module mem_wb (
   //   assign exc_alu_data_mem_wb_o = _exc_alu_data_mem_wb_q;
 
   /* mem_data寄存器 */
-  wire [`XLEN-1:0] _mem_data_mem_wb_d = (flush_valid_i) ? `XLEN'b0 : mem_data_mem_wb_i;
+  wire [`XLEN-1:0] _mem_data_mem_wb_d = (_flush_valid) ? `XLEN'b0 : mem_data_mem_wb_i;
   reg [`XLEN-1:0] _mem_data_mem_wb_q;
   regTemplate #(
       .WIDTH    (`XLEN),
@@ -321,7 +321,7 @@ module mem_wb (
   //   assign load_valid_mem_wb_o = _load_valid_mem_wb_q;
 
   /* csr_addr 寄存器 */
-  wire [`CSR_REG_ADDRWIDTH-1:0] _csr_addr_mem_wb_d = (flush_valid_i) ? `CSR_REG_ADDRWIDTH'b0 :csr_addr_mem_wb_i;
+  wire [`CSR_REG_ADDRWIDTH-1:0] _csr_addr_mem_wb_d = (_flush_valid) ? `CSR_REG_ADDRWIDTH'b0 :csr_addr_mem_wb_i;
   reg [`CSR_REG_ADDRWIDTH-1:0] _csr_addr_mem_wb_q;
   regTemplate #(
       .WIDTH    (`CSR_REG_ADDRWIDTH),
@@ -337,7 +337,7 @@ module mem_wb (
 
 
   /* exc_csr_data 寄存器 */
-  wire [`XLEN_BUS] _exc_csr_data_mem_wb_d = (flush_valid_i) ? `XLEN'b0 : exc_csr_data_mem_wb_i;
+  wire [`XLEN_BUS] _exc_csr_data_mem_wb_d = (_flush_valid) ? `XLEN'b0 : exc_csr_data_mem_wb_i;
   reg [`XLEN_BUS] _exc_csr_data_mem_wb_q;
   regTemplate #(
       .WIDTH    (`XLEN),
@@ -353,7 +353,7 @@ module mem_wb (
 
 
   /* exc_csr_valid 寄存器 */
-  wire _exc_csr_valid_mem_wb_d = (flush_valid_i) ? `FALSE : exc_csr_valid_mem_wb_i;
+  wire _exc_csr_valid_mem_wb_d = (_flush_valid) ? `FALSE : exc_csr_valid_mem_wb_i;
   reg _exc_csr_valid_mem_wb_q;
   regTemplate #(
       .WIDTH    (1),
@@ -369,7 +369,7 @@ module mem_wb (
 
 
   /* rd_addr 寄存器 */
-  wire [`REG_ADDRWIDTH-1:0] _rd_addr_mem_wb_d = (flush_valid_i) ? `REG_ADDRWIDTH'b0 : rd_addr_mem_wb_i;
+  wire [`REG_ADDRWIDTH-1:0] _rd_addr_mem_wb_d = (_flush_valid) ? `REG_ADDRWIDTH'b0 : rd_addr_mem_wb_i;
   reg [`REG_ADDRWIDTH-1:0] _rd_addr_mem_wb_q;
   regTemplate #(
       .WIDTH    (`REG_ADDRWIDTH),

@@ -50,7 +50,8 @@ module execute_top (
     output branch_pc_valid_o,
 
     // 请求暂停流水线
-    output ex_stall_req_valid_o,
+    output jump_hazard_valid_o,
+    
     /* TARP 总线 */
     output wire [`TRAP_BUS] trap_bus_o
 );
@@ -68,7 +69,7 @@ module execute_top (
   assign csr_imm_valid_o = csr_imm_valid_i;
   assign exc_csr_addr_o = csr_readaddr_i;
   assign trap_bus_o = trap_bus_i;
-  assign ex_stall_req_valid_o = 1'b0;
+
 
 
   wire _excop_auipc = (exc_op_i == `EXCOP_AUIPC);
@@ -100,8 +101,9 @@ module execute_top (
 
   assign branch_pc_o = _branch_pc;
   assign branch_pc_valid_o = _branch_pc_valid;
-
-
+  
+  // 若跳转指令有效，通知控制模块，中断流水线
+  assign jump_hazard_valid_o = _branch_pc_valid;
 
 /****************************** ALU 操作******************************************/
 

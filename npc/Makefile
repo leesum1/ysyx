@@ -20,6 +20,7 @@ VERILATOR_FLAGS += --top ${TOP_MODULE}
 
 # gcc flags 
 GCC_INC_PATH = -I$(NPC_HOME)/csrc/include  \
+			   -I$(NPC_HOME)/csrc  \
 			   -I$(NPC_HOME)/csrc/devices/include \
 			   -I$(NPC_HOME)/csrc/ringbuff \
 			   -I/usr/include/SDL2 \

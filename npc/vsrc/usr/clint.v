@@ -8,13 +8,10 @@ module clint (
     input [`INST_LEN-1:0] inst_data_i,
     /* TARP 总线 */
     input wire [`TRAP_BUS] trap_bus_i,
-
     /* ----- stall request from other modules 各个阶段请求流水线暂停请求 --------*/
-    input wire stallreq_from_if_i,
-    input wire stallreq_from_id_i,
-    input wire stallreq_from_ex_i,
-    input wire stallreq_from_mem_i,
-
+    input wire load_use_valid_id_i,  //load-use data hazard from id
+    input wire jump_valid_ex_i,  // branch hazard from ex
+    // input wire mutiple_alu_inst_valid_ex_i,  // div and mul isnt from ex
 
     /* trap 所需寄存器，来自于 csr (读)*/
     input wire [`XLEN-1:0] csr_mstatus_readdata_i,
@@ -39,32 +36,57 @@ module clint (
 
     /* ---signals to other stages of the pipeline  ----*/
     output reg[5:0]              stall_o,   // stall request to PC,IF_ID, ID_EX, EX_MEM, MEM_WB， one bit for one stage respectively
-    output wire flush_o  // flush the whole pipleline, exception or interrupt happens
+    output wire [5:0] flush_o  // flush the whole pipleline, exception or interrupt happens
 );
 
   /* --------------------- handle the stall request -------------------*/
-  assign flush_o = _trap_valid;
+  // assign flush_o = _trap_valid;
+
+  //stall request to PC,IF_ID, ID_EX, EX_MEM, MEM_WB
+  localparam load_use_flush = 6'b000100;
+  localparam load_use_stall = 6'b000011;
+  localparam jump_flush = 6'b000110;
+  localparam jump_stall = 6'b000000;
+  // localparam mutiple_alu_inst_flush = 6'b000011;
+  // localparam mutiple_alu_inst_stall = 6'b000000;
+
 
 
   always @(*) begin
     if (rst) begin
       stall_o = 6'b000000;
-      // stall request from lsu: need to stop the ifu(0), IF_ID(1), ID_EXE(2), EXE_MEM(3), MEM_WB(4)
-    end else if (stallreq_from_mem_i == `TRUE) begin
-      stall_o = 6'b011111;
-      // stall request from exu: stop the PC,IF_ID, ID_EXE, EXE_MEM
-    end else if (stallreq_from_ex_i == `TRUE) begin
-      stall_o = 6'b001111;
-      // stall request from id: stop PC,IF_ID, ID_EXE
-    end else if (stallreq_from_id_i == `TRUE) begin
-      stall_o = 6'b000111;
-      // stall request from if: stop the PC,IF_ID, ID_EXE
-    end else if (stallreq_from_if_i == `TRUE) begin
-      stall_o = 6'b000111;
+      flush_o = 6'b000000;
+    end else if (jump_valid_ex_i) begin
+      stall_o = jump_stall;
+      flush_o = jump_flush;
+    end else if (load_use_valid_id_i) begin
+      stall_o = load_use_stall;
+      flush_o = load_use_flush;
     end else begin
       stall_o = 6'b000000;
-    end  // if
-  end  // always
+      flush_o = 6'b000000;
+    end
+  end
+
+  // always @(*) begin
+  //   if (rst) begin
+  //     stall_o = 6'b000000;
+  //     // stall request from lsu: need to stop the ifu(0), IF_ID(1), ID_EXE(2), EXE_MEM(3), MEM_WB(4)
+  //   end else if (stallreq_from_mem_i == `TRUE) begin
+  //     stall_o = 6'b011111;
+  //     // stall request from exu: stop the PC,IF_ID, ID_EXE, EXE_MEM
+  //   end else if (stallreq_from_ex_i == `TRUE) begin
+  //     stall_o = 6'b001111;
+  //     // stall request from id: stop PC,IF_ID, ID_EXE
+  //   end else if (stallreq_from_id_i == `TRUE) begin
+  //     stall_o = 6'b000111;
+  //     // stall request from if: stop the PC,IF_ID, ID_EXE
+  //   end else if (stallreq_from_if_i == `TRUE) begin
+  //     stall_o = 6'b000111;
+  //   end else begin
+  //     stall_o = 6'b000000;
+  //   end  // if
+  // end  // always
 
 
 

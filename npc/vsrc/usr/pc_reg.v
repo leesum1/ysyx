@@ -9,6 +9,7 @@ module pc_reg (
     input clk,
     input rst,
     input stall_valid_i,
+    input flush_valid_i,  // 没有用到，PC 不可以 flush
 
     input  [`XLEN_BUS] branch_pc_i,        // branch pc,来自 exc
     input              branch_pc_valid_i,
@@ -26,6 +27,7 @@ module pc_reg (
 
 
   wire _pc_reg_wen = ~stall_valid_i;
+
   regTemplate #(
       .WIDTH    (`XLEN),
       .RESET_VAL(`PC_RESET_ADDR)

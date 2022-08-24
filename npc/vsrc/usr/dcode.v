@@ -46,7 +46,7 @@ module dcode (
     output [`XLEN_BUS] inst_addr_o,
     output [`INST_LEN-1:0] inst_data_o,
     // 请求暂停流水线
-    output id_stall_req_valid_o,
+    output _load_use_valid_o,
     /* TARP 总线 */
     output wire [`TRAP_BUS] trap_bus_o
 
@@ -369,12 +369,12 @@ module dcode (
                                 rs2_data_i;
   // load-use hazard: 前一条指令为 load 类型，且下一条 rs1、rs2 为 load 指令的 rd，
   // https://courses.cs.vt.edu/cs2506/Spring2013/Notes/L12.PipelineStalls.pdf
-  wire _stall_req_valid = _pre_inst_is_load & (_rs1_exc_bypass_valid | _rs2_exc_bypass_valid);
+  wire _load_use_data_hazard_valid = _pre_inst_is_load & (_rs1_exc_bypass_valid | _rs2_exc_bypass_valid);
 
   // 输出指定
   assign rs1_data_o = _rs1_data;
   assign rs2_data_o = _rs2_data;
-  assign id_stall_req_valid_o = _stall_req_valid;
+  assign _load_use_valid_o = _load_use_data_hazard_valid;
 
   /******************************************×××××××***************************************************/
 

@@ -12,7 +12,8 @@ module top (
   pc_reg u_pc_reg (
       .clk              (clk),
       .rst              (rst),
-      .stall_valid_i    (stall_clint[0]),
+      .stall_valid_i    (stall_clint[`CTRLBUS_PC]),
+      .flush_valid_i    (flush_clint[`CTRLBUS_PC]),
       .branch_pc_i      (branch_pc),
       .branch_pc_valid_i(branch_pc_valid),
       .clint_pc_i       (clint_pc),
@@ -42,9 +43,8 @@ module top (
   if_id u_if_id (
       .clk              (clk),
       .rst              (rst),
-      .flush_valid_i    (flush_clint),
-      .stall_valid_i    (stall_clint[1]),
-      .branch_pc_valid_i(branch_pc_valid),
+      .flush_valid_i    (flush_clint[`CTRLBUS_IF_ID]),
+      .stall_valid_i    (stall_clint[`CTRLBUS_IF_ID]),
       //指令地址
       .inst_addr_if_i   (inst_addr_if),
       //指令内容
@@ -81,7 +81,7 @@ module top (
   wire [             `XLEN_BUS]  inst_addr_id;
   wire [         `INST_LEN-1:0 ] inst_data_id;
   // 请求暂停流水线
-  wire                           id_stall_req_valid_id;
+  wire                           load_use_valid;
   /* TARP 总线 */
   wire [             `TRAP_BUS]  trap_bus_id;
 
@@ -130,7 +130,7 @@ module top (
       .inst_addr_o(inst_addr_id),
       .inst_data_o(inst_data_id),
       // 请求暂停流水线 to ctrl
-      .id_stall_req_valid_o(id_stall_req_valid_id),
+      ._load_use_valid_o(load_use_valid),
       /* TARP 总线 */
       .trap_bus_o(trap_bus_id)
   );
@@ -158,9 +158,8 @@ module top (
   id_ex u_id_ex (
       .clk                  (clk),
       .rst                  (rst),
-      .flush_valid_i        (flush_clint),
-      .stall_i              (stall_clint),
-      .branch_pc_valid_i    (branch_pc_valid),
+      .flush_valid_i        (flush_clint[`CTRLBUS_ID_EX]),
+      .stall_valid_i        (stall_clint[`CTRLBUS_ID_EX]),
       /* 输入 */
       .pc_id_ex_i           (inst_addr_id),
       .inst_data_id_ex_i    (inst_data_id),
@@ -232,7 +231,7 @@ module top (
   wire [`CSR_REG_ADDRWIDTH-1:0 ] exc_csr_addr_ex;
   wire [        `EXCOP_LEN-1:0 ] exc_op_ex;  // exc 操作码
   // 请求暂停流水线
-  wire                           ex_stall_req_valid_ex;
+  wire                           jump_hazard_valid;
   /* TARP 总线 */
   wire [             `TRAP_BUS]  trap_bus_ex;
 
@@ -293,11 +292,11 @@ module top (
       // exc 操作码
 
       // 请求暂停流水线
-      .ex_stall_req_valid_o(ex_stall_req_valid_ex),
-      .branch_pc_o         (branch_pc),
-      .branch_pc_valid_o   (branch_pc_valid),
+      .jump_hazard_valid_o(jump_hazard_valid),
+      .branch_pc_o        (branch_pc),
+      .branch_pc_valid_o  (branch_pc_valid),
       /* TARP 总线 */
-      .trap_bus_o          (trap_bus_ex)
+      .trap_bus_o         (trap_bus_ex)
   );
   /**********************  ex/mem 流水线间缓存 **************************/
 
@@ -320,8 +319,8 @@ module top (
   ex_mem u_ex_mem (
       .clk                    (clk),
       .rst                    (rst),
-      .flush_valid_i          (flush_clint),
-      .stall_valid_i          (stall_clint[3]),
+      .flush_valid_i          (flush_clint[`CTRLBUS_EX_MEM]),
+      .stall_valid_i          (stall_clint[`CTRLBUS_EX_MEM]),
       .pc_ex_mem_i            (pc_ex),
       .inst_data_ex_mem_i     (inst_data_ex),
       .imm_data_ex_mem_i      (imm_data_ex),
@@ -363,8 +362,7 @@ module top (
   wire [`CSR_REG_ADDRWIDTH-1:0 ] csr_addr_mem;
   wire [             `XLEN_BUS]  exc_csr_data_mem;
   wire                           exc_csr_valid_mem;
-  // 请求暂停流水线
-  wire                           mem_stall_req_valid_mem;
+
   /* TARP 总线 */
   wire [             `TRAP_BUS]  trap_bus_mem;
 
@@ -395,7 +393,6 @@ module top (
       .csr_addr_o(csr_addr_mem),  // csr 写回地址
       .exc_csr_data_o(exc_csr_data_mem),  // csr 写回数据
       .exc_csr_valid_o(exc_csr_valid_mem),  // 写回数据有效位
-      .mem_stall_req_valid_o(mem_stall_req_valid_mem),  // 请求暂停流水线
       .trap_bus_o(trap_bus_mem)  /* TARP 总线 */
   );
 
@@ -415,17 +412,15 @@ module top (
   wire clint_pc_valid;
 
   reg[5:0]stall_clint;  // stall request to PC,IF_ID, ID_EX, EX_MEM, MEM_WB， one bit for one stage respectively
-  wire flush_clint;
+  wire [5:0] flush_clint;
 
   clint u_clint (
       // input wire clk,
       .rst(rst),
       .pc_i(pc_ex_mem),
       .inst_data_i(inst_data_ex_mem),
-      .stallreq_from_if_i(`FALSE),
-      .stallreq_from_id_i(id_stall_req_valid_id),
-      .stallreq_from_ex_i(`FALSE),
-      .stallreq_from_mem_i(`FALSE),
+      .load_use_valid_id_i(load_use_valid),  //load-use data hazard from id
+      .jump_valid_ex_i(jump_hazard_valid),  // branch hazard from ex
       /* TARP 总线 */
       .trap_bus_i(trap_bus_mem),  // 包括 取指，译码，执行，访存 阶段的 trap 请求
       /* trap 所需寄存器，来自于 csr (读)*/
@@ -486,8 +481,8 @@ module top (
   mem_wb u_mem_wb (
       .clk                             (clk),
       .rst                             (rst),
-      .flush_valid_i                   (flush_clint),
-      .stall_valid_i                   (stall_clint[4]),
+      .flush_valid_i                   (flush_clint[`CTRLBUS_MEM_WB]),
+      .stall_valid_i                   (stall_clint[`CTRLBUS_MEM_WB]),
       /* trap 所需寄存器，来自于 csr (写)*/
       .csr_mstatus_writedata_mem_wb_i  (csr_mstatus_writedata),
       .csr_mepc_writedata_mem_wb_i     (csr_mepc_writedata),
