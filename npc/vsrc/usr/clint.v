@@ -47,6 +47,8 @@ module clint (
   localparam load_use_stall = 6'b000011;
   localparam jump_flush = 6'b000110;
   localparam jump_stall = 6'b000000;
+  localparam trap_flush = 6'b001110;
+  localparam trap_stall = 6'b000000;
   // localparam mutiple_alu_inst_flush = 6'b000011;
   // localparam mutiple_alu_inst_stall = 6'b000000;
 
@@ -56,6 +58,9 @@ module clint (
     if (rst) begin
       stall_o = 6'b000000;
       flush_o = 6'b000000;
+    end else if (_trap_valid) begin
+      stall_o = trap_stall;
+      flush_o = trap_flush;
     end else if (jump_valid_ex_i) begin
       stall_o = jump_stall;
       flush_o = jump_flush;
@@ -68,26 +73,6 @@ module clint (
     end
   end
 
-  // always @(*) begin
-  //   if (rst) begin
-  //     stall_o = 6'b000000;
-  //     // stall request from lsu: need to stop the ifu(0), IF_ID(1), ID_EXE(2), EXE_MEM(3), MEM_WB(4)
-  //   end else if (stallreq_from_mem_i == `TRUE) begin
-  //     stall_o = 6'b011111;
-  //     // stall request from exu: stop the PC,IF_ID, ID_EXE, EXE_MEM
-  //   end else if (stallreq_from_ex_i == `TRUE) begin
-  //     stall_o = 6'b001111;
-  //     // stall request from id: stop PC,IF_ID, ID_EXE
-  //   end else if (stallreq_from_id_i == `TRUE) begin
-  //     stall_o = 6'b000111;
-  //     // stall request from if: stop the PC,IF_ID, ID_EXE
-  //   end else if (stallreq_from_if_i == `TRUE) begin
-  //     stall_o = 6'b000111;
-  //   end else begin
-  //     stall_o = 6'b000000;
-  //   end  // if
-  // end  // always
-
 
 
 
@@ -95,6 +80,7 @@ module clint (
   wire _trap_ecall = trap_bus_i[`TRAP_ECALL];
   wire _trap_ebreak = trap_bus_i[`TRAP_EBREAK];
   wire _trap_mret = trap_bus_i[`TRAP_MRET];
+  wire _trap_ebreak = trap_bus_i[`TRAP_EBREAK];
   wire _trap_valid = (_trap_ecall | _trap_ebreak | _trap_mret);
 
   /* set the csr register and new pc if traps happened */
@@ -116,11 +102,18 @@ module clint (
   wire [`XLEN-1:0] _mret_pc_o = csr_mepc_readdata_i;
   wire _mret_pc_valid_o = _trap_mret;
 
-
-
   /* pc mux */
   assign clint_pc_o = ({`XLEN{_mret_pc_valid_o}}&_mret_pc_o)|
                         ({`XLEN{_trap_pc_valid_o}}&_trap_pc_o);
   assign clint_pc_valid_o = _trap_valid;
+
+
+
+    /*************ebreak仿真使用**************************/
+  always @(*) begin
+    if (_trap_ebreak) begin
+      $finish;
+    end
+  end
 
 endmodule

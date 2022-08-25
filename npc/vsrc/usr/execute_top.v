@@ -2,48 +2,48 @@
 module execute_top (
     /******************************* from id/ex *************************/
     // pc
-    input [         `XLEN_BUS] pc_i,
-    input [`INST_LEN-1:0] inst_data_i,
+    input       [             `XLEN_BUS] pc_i,
+    input       [         `INST_LEN-1:0] inst_data_i,
     // gpr 译码结果
-    input [`REG_ADDRWIDTH-1:0] rd_idx_i,
-    input [         `XLEN_BUS] rs1_data_i,
-    input [         `XLEN_BUS] rs2_data_i,
-    input [      `IMM_LEN-1:0] imm_data_i,
+    input       [    `REG_ADDRWIDTH-1:0] rd_idx_i,
+    input       [             `XLEN_BUS] rs1_data_i,
+    input       [             `XLEN_BUS] rs2_data_i,
+    input       [          `IMM_LEN-1:0] imm_data_i,
     // CSR 译码结果 
-    input [`CSR_REG_ADDRWIDTH-1:0] csr_readaddr_i,
-    input [         `XLEN_BUS] csr_data_i,
-    input [          `IMM_LEN-1:0] csr_imm_i,
-    input  csr_imm_valid_i,
+    input       [`CSR_REG_ADDRWIDTH-1:0] csr_readaddr_i,
+    input       [             `XLEN_BUS] csr_data_i,
+    input       [          `IMM_LEN-1:0] csr_imm_i,
+    input                                csr_imm_valid_i,
     // 指令微码
-    input  [`ALUOP_LEN-1:0] alu_op_i,  // alu 操作码
-    input  [`MEMOP_LEN-1:0] mem_op_i,  // 访存操作码
-    input  [`EXCOP_LEN-1:0] exc_op_i,  // exc 操作码
-    input  [`CSROP_LEN-1:0] csr_op_i,   // exc_csr 操作码
-    input  [`PCOP_LEN-1:0]  pc_op_i,
+    input       [        `ALUOP_LEN-1:0] alu_op_i,         // alu 操作码
+    input       [        `MEMOP_LEN-1:0] mem_op_i,         // 访存操作码
+    input       [        `EXCOP_LEN-1:0] exc_op_i,         // exc 操作码
+    input       [        `CSROP_LEN-1:0] csr_op_i,         // exc_csr 操作码
+    input       [         `PCOP_LEN-1:0] pc_op_i,
     /* TARP 总线 */
-    input wire [`TRAP_BUS] trap_bus_i,
+    input  wire [             `TRAP_BUS] trap_bus_i,
     /********************** to ex/mem **************************/
     // pc
-    output [         `XLEN_BUS] pc_o,
-    output [`INST_LEN-1:0] inst_data_o,
+    output      [             `XLEN_BUS] pc_o,
+    output      [         `INST_LEN-1:0] inst_data_o,
     // gpr 译码结果
-    output [`REG_ADDRWIDTH-1:0] rd_idx_o,
-    output [         `XLEN_BUS] rs1_data_o,
-    output [         `XLEN_BUS] rs2_data_o,
-    output [      `IMM_LEN-1:0] imm_data_o,
+    output      [    `REG_ADDRWIDTH-1:0] rd_idx_o,
+    output      [             `XLEN_BUS] rs1_data_o,
+    output      [             `XLEN_BUS] rs2_data_o,
+    output      [          `IMM_LEN-1:0] imm_data_o,
     // CSR 译码结果 
-    output [         `XLEN_BUS] csr_data_o,
-    output [          `IMM_LEN-1:0] csr_imm_o,
-    output  csr_imm_valid_o,
-    output [`CSR_REG_ADDRWIDTH-1:0]exc_csr_addr_o,
-    output  [`MEMOP_LEN-1:0] mem_op_o,  // 访存操作码
-    output  [`PCOP_LEN-1:0]  pc_op_o,
+    output      [             `XLEN_BUS] csr_data_o,
+    output      [          `IMM_LEN-1:0] csr_imm_o,
+    output                               csr_imm_valid_o,
+    output      [`CSR_REG_ADDRWIDTH-1:0] exc_csr_addr_o,
+    output      [        `MEMOP_LEN-1:0] mem_op_o,         // 访存操作码
+    output      [         `PCOP_LEN-1:0] pc_op_o,
 
-    output [     `XLEN_BUS] exc_alu_data_o,// 同时送给 ID 和 EX/MEM
+    output [     `XLEN_BUS] exc_alu_data_o,   // 同时送给 ID 和 EX/MEM
     output [     `XLEN_BUS] exc_csr_data_o,
-    output exc_csr_valid_o,
+    output                  exc_csr_valid_o,
     /************************to id *************************************/
-    output  [`EXCOP_LEN-1:0] exc_op_o,  // exc 操作码
+    output [`EXCOP_LEN-1:0] exc_op_o,         // exc 操作码
 
     /************************to pc_reg ******************************************/
     output [`XLEN_BUS] branch_pc_o,
@@ -51,7 +51,7 @@ module execute_top (
 
     // 请求暂停流水线
     output jump_hazard_valid_o,
-    
+
     /* TARP 总线 */
     output wire [`TRAP_BUS] trap_bus_o
 );
@@ -68,7 +68,7 @@ module execute_top (
   assign csr_imm_o = csr_imm_i;
   assign csr_imm_valid_o = csr_imm_valid_i;
   assign exc_csr_addr_o = csr_readaddr_i;
-  assign trap_bus_o = trap_bus_i;
+
 
 
 
@@ -96,16 +96,17 @@ module execute_top (
 
   wire [`XLEN_BUS] _branch_pc = ({`XLEN{_excop_jal|_excop_branch}}&_pc_add_imm)|
                                 ({`XLEN{_excop_jalr}}&_rs1_add_imm);
+
   // TODO 还需要完善
-  wire _branch_pc_valid = (_compare_out&_excop_branch) | _excop_jal|_excop_jalr;
+  wire _branch_pc_valid = (_compare_out & _excop_branch) | _excop_jal | _excop_jalr;
 
   assign branch_pc_o = _branch_pc;
   assign branch_pc_valid_o = _branch_pc_valid;
-  
+
   // 若跳转指令有效，通知控制模块，中断流水线
   assign jump_hazard_valid_o = _branch_pc_valid;
 
-/****************************** ALU 操作******************************************/
+  /****************************** ALU 操作******************************************/
 
   /* ALU 两端操作数选择 */
   wire _rs1_rs2 = _excop_op32 | _excop_op | _excop_branch;
@@ -147,26 +148,31 @@ module execute_top (
 
   //assign exc_out = _alu_out;
 
-/***************************** CSR 执行操作 **************************/
+  /***************************** CSR 执行操作 **************************/
 
-wire [`XLEN_BUS] _csr_exe_data;
-wire _csr_exe_data_valid;
-execute_csr u_execute_csr (
-    .csr_imm_i         (csr_imm_i),
-    .csr_imm_valid_i    (csr_imm_valid_i),  // 是否是立即数指令
-    .rs1_data_i        (rs1_data_i),        // rs1 data
-    .csr_data_i        (csr_data_i),        // 读取的 CSR 数据
-    .csr_op_i          (csr_op_i),          // csr 操作码
-    .csr_exe_data_o    (_csr_exe_data),
-    .csr_exe_data_valid_o     (_csr_exe_data_valid)
-);
+  wire [`XLEN_BUS] _csr_exe_data;
+  wire _csr_exe_data_valid;
+  execute_csr u_execute_csr (
+      .csr_imm_i           (csr_imm_i),
+      .csr_imm_valid_i     (csr_imm_valid_i),     // 是否是立即数指令
+      .rs1_data_i          (rs1_data_i),          // rs1 data
+      .csr_data_i          (csr_data_i),          // 读取的 CSR 数据
+      .csr_op_i            (csr_op_i),            // csr 操作码
+      .csr_exe_data_o      (_csr_exe_data),
+      .csr_exe_data_valid_o(_csr_exe_data_valid)
+  );
 
-assign exc_csr_data_o = _csr_exe_data;
-assign exc_csr_valid_o = _csr_exe_data_valid;
-  /*************ebreak仿真使用**************************/
+  assign exc_csr_data_o  = _csr_exe_data;
+  assign exc_csr_valid_o = _csr_exe_data_valid;
+
+
+  /* trap_bus TODO:add more*/
+  reg [`TRAP_BUS] _exc_trap_bus;
+  integer i;
   always @(*) begin
-    if (_excop_ebreak) begin
-      $finish;
+    for (i = 0; i < `TRAP_LEN; i = i + 1) begin
+      _exc_trap_bus[i] = trap_bus_i[i];
     end
   end
+  assign trap_bus_o = _exc_trap_bus;
 endmodule

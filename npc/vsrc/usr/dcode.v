@@ -371,10 +371,16 @@ module dcode (
   // https://courses.cs.vt.edu/cs2506/Spring2013/Notes/L12.PipelineStalls.pdf
   wire _load_use_data_hazard_valid = _pre_inst_is_load & (_rs1_exc_bypass_valid | _rs2_exc_bypass_valid);
 
+
   // 输出指定
   assign rs1_data_o = _rs1_data;
   assign rs2_data_o = _rs2_data;
   assign _load_use_valid_o = _load_use_data_hazard_valid;
+
+
+  /***************CSR 寄存器冲突处理*****************/
+  // TODO ,添加数据旁路
+  assign csr_readdata_o = csr_data_i;
 
   /******************************************×××××××***************************************************/
 
@@ -507,21 +513,41 @@ module dcode (
 
   /* PC_OP  */  //TODO:这里是优先选择器,怎么改还没想好
   //TODO:mret and ecall处理  放到 clint 中
-  wire [`PCOP_LEN-1:0] _pc_op = (_B_type)?`PCOP_BRANCH:
-                                (_inst_jal)?`PCOP_JAL:
-                                (_inst_jalr)?`PCOP_JALR:
-                                (_inst_mret|_inst_ecall)?`PCOP_TRAP:`PCOP_INC4;
+  // wire [`PCOP_LEN-1:0] _pc_op = (_B_type)?`PCOP_BRANCH:
+  //                               (_inst_jal)?`PCOP_JAL:
+  //                               (_inst_jalr)?`PCOP_JALR:
+  //                               (_inst_mret|_inst_ecall)?`PCOP_TRAP:`PCOP_INC4;
 
-  assign pc_op_o = _pc_op;
+  assign pc_op_o  = `PCOP_LEN'b0;
+
+
 
 
   /* trap_bus TODO:add more*/
-  wire [`TRAP_BUS] _decode_trap_bus;
-  assign _decode_trap_bus[`TRAP_ECALL] = _inst_ecall;
-  assign _decode_trap_bus[`TRAP_EBREAK] = _inst_ebreak;
-  assign _decode_trap_bus[`TRAP_MRET] = _inst_mret;
 
+  wire _Illegal_instruction = _NONE_type;
+
+
+  reg [`TRAP_BUS] _decode_trap_bus;
+  integer i;
+  always @(*) begin
+    for (i = 0; i < `TRAP_LEN; i = i + 1) begin
+      if (i == `TRAP_MRET) begin
+        _decode_trap_bus[i] = _inst_mret;
+      end else if (i == `TRAP_EBREAK) begin
+        _decode_trap_bus[i] = _inst_ebreak;
+      end else if (i == `TRAP_ECALL) begin
+        _decode_trap_bus[i] = _inst_ecall;
+      end else if (i == `TRAP_ILLEGAL_INST) begin
+        _decode_trap_bus[i] = _Illegal_instruction;
+      end else begin
+        _decode_trap_bus[i] = trap_bus_i[i];
+      end
+    end
+  end
   assign trap_bus_o = _decode_trap_bus;
 
-
+  // assign _decode_trap_bus[`TRAP_ECALL] = _inst_ecall;
+  // assign _decode_trap_bus[`TRAP_EBREAK] = _inst_ebreak;
+  // assign _decode_trap_bus[`TRAP_MRET] = _inst_mret;
 endmodule

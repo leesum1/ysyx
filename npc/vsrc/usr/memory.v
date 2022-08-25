@@ -31,7 +31,6 @@ module memory (
     output [`TRAP_BUS] trap_bus_o
 );
 
-  assign trap_bus_o = trap_bus_i;
   assign pc_o = pc_i;
   assign inst_data_o = inst_data_i;
   assign rd_idx_o = rd_idx_i;
@@ -139,6 +138,20 @@ module memory (
       pmem_write(pc_i, _waddr, _mem_write, _wmask);
     end
   end
+
+
+  /* trap_bus TODO:add more*/
+  reg [`TRAP_BUS] _mem_trap_bus;
+  integer i;
+  always @(*) begin
+    for (i = 0; i < `TRAP_LEN; i = i + 1) begin
+      _mem_trap_bus[i] = trap_bus_i[i];
+    end
+  end
+  assign trap_bus_o = _mem_trap_bus;
+
+
+
   /************************××××××向仿真环境传递 PC *****************************/
   import "DPI-C" function void set_nextpc(input longint nextpc);
 

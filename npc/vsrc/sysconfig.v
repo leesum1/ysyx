@@ -157,12 +157,32 @@
 
 /**********tarp**********/
 
-`define TRAP_LEN 3
+
+
+
+`define TRAP_INST_ADDR_MISALIGNED 0
+`define TRAP_INST_ACCESS_FAULT 1
+`define TRAP_ILLEGAL_INST 2
+`define TRAP_BREAKPOINT 3
+`define TRAP_LOAD_ADDR_MISALIGNED 4
+`define TRAP_LOAD_ACCESS_FAULT 5
+`define TRAP_STORE_ADDR_MISALIGNED 6
+`define TRAP_STORE_ACCESS_FAULT 7
+`define TRAP_ECALL_U 8
+`define TRAP_ECALL_S 9 
+`define TRAP_RESERVED0 10 
+`define TRAP_ECALL_M 11
+`define TRAP_INST_PAGE_FAULT 12
+`define TRAP_LOAD_PAGE_FAULT 13
+`define TRAP_RESERVED1 14
+`define TRAP_STORE_PAGE_FAULT 15
+`define TRAP_MRET 16 // 把 MRET 当成 trap
+`define TRAP_EBREAK 17 // 把 EBREAK 当成 trap
+`define TRAP_ECALL 18 // 把 ECALL 当成 trap
+
+`define TRAP_LEN 19
 `define TRAP_BUS `TRAP_LEN-1:0
 
-`define TRAP_ECALL 0
-`define TRAP_EBREAK 1
-`define TRAP_MRET 2
 
 
 //PC,IF_ID, ID_EX, EX_MEM, MEM_WB
