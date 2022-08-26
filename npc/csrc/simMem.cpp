@@ -25,6 +25,7 @@ SimMem::SimMem(/* args */) {
         << MEMSIZE / (1024 * 1024) << "M"
         << COLOR_END << endl;
 
+    // 创建设备管理器，用于 IOE
     Device = new Topdevice::DeviceManager;
 }
 
@@ -36,7 +37,7 @@ SimMem::~SimMem() {
 }
 /**
  * @brief 地址映射
- *  将 0x8000000 映射到数组 pmem 0号地址
+ *  将 MEMBASE 映射到数组 pmem 0号地址
  * @param paddr
  * @return uint8_t*
  */
@@ -44,7 +45,7 @@ uint8_t* SimMem::guest_to_host(paddr_t paddr) {
     return pmem + paddr - MEMBASE;
 }
 /**
- * @brief 地址映射,与上面相反
+ * @brief 地址映射,将 pmem 的 0 号地址映射到 MEMBASE
  *
  * @param haddr
  * @return paddr_t
@@ -53,12 +54,24 @@ paddr_t SimMem::host_to_guest(uint8_t* haddr) {
     return haddr - pmem + MEMBASE;
 }
 
-
+/**
+ * @brief 读取物理内存
+ *
+ * @param addr 地址
+ * @param len 长度 1、2、4、8
+ * @return word_t
+ */
 word_t SimMem::pmem_read(paddr_t addr, int len) {
     word_t ret = host_read(guest_to_host(addr), len);
     return ret;
 }
-
+/**
+ * @brief 写物理地址
+ *
+ * @param addr
+ * @param len 长度 1、2、4、8
+ * @param data
+ */
 void SimMem::pmem_write(paddr_t addr, int len, word_t data) {
     // printf("pmem_write:%d\n", len);
     host_write(guest_to_host(addr), len, data);
@@ -106,6 +119,13 @@ bool SimMem::in_pmem(paddr_t addr) {
 void SimMem::out_of_bound(paddr_t addr) {
     //cout << "addr:\t" << hex << addr << " not in pmem!" << endl;
 }
+/**
+ * @brief 提供给外界的接口，读取内存（pmem 和 ioe）
+ *
+ * @param addr
+ * @param len
+ * @return word_t
+ */
 word_t SimMem::paddr_read(paddr_t addr, int len) {
     if (in_pmem(addr)) {
         return pmem_read(addr, len);
@@ -116,6 +136,13 @@ word_t SimMem::paddr_read(paddr_t addr, int len) {
     return 0;
 
 }
+/**
+ * @brief 提供给外界的接口，写内存（pmem 和 ioe）
+ *
+ * @param addr
+ * @param len
+ * @param data
+ */
 void SimMem::paddr_write(paddr_t addr, int len, word_t data) {
     if (in_pmem(addr)) {
         pmem_write(addr, len, data);

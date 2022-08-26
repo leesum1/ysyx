@@ -131,11 +131,27 @@ Itrace::~Itrace() {
 
 void Itrace::llvmDis() {
 
+    static char pc_str[32];
     static char dis_str[64];
     static uint64_t pc;
-    static uint64_t inst;
-    pc = mysim_p->getRegVal("pc");
-    inst = mysim_p->mem->paddr_read(pc, 4);
-    disassemble(dis_str, sizeof(dis_str), pc, (uint8_t*)&inst, 4);
-    printf("pc:%08lx\t%s\n", pc, dis_str);
+    static uint64_t inst_data;
+
+    pc = mysim_p->commited_list.inst.front().inst_pc;
+    inst_data = mysim_p->commited_list.inst.front().inst_data;
+
+    disassemble(dis_str, sizeof(dis_str), pc, (uint8_t*)&inst_data, 4);
+
+    sprintf(pc_str, "pc:%p\t", (void*)pc);
+    string dis_data;
+    dis_data.append(pc_str);
+    dis_data.append(dis_str);
+    this->inst_trace.push_back(dis_data);
+    cout << dis_data << endl;
+}
+
+
+void Itrace::printRecentInst() {
+    for (auto itr : inst_trace) {
+        cout << itr << endl;
+    }
 }

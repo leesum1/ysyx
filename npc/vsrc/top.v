@@ -6,7 +6,6 @@ module top (
     input rst
 );
 
-
   /*×××××××××××××××××××××××××× PC 模块 用于选择吓一跳指令地址 ×××××××××××××××××××××××*/
   wire [`XLEN_BUS] inst_addr;
   pc_reg u_pc_reg (
@@ -555,7 +554,7 @@ module top (
       .rs1_idx_i         (rs1_idx_id),
       .rs2_idx_i         (rs2_idx_id),
       .rs1_data_o        (rs1_data_gpr),
-      .rs2_data_o        (rs2_data_gpr),
+      .rs2_data_o        (rs2_data_gpr),     //TODO 添加 valid 信号
       /* 写入数据 */
       .write_idx_i       (rd_addr_mem_wb),
       .write_data_i      (mem_data_mem_wb),
@@ -594,7 +593,7 @@ module top (
       .csr_mtvec_readdata_o     (csr_mtvec_readdata_csr),
       /* 读取数据端口 */
       .csr_readaddr_i           (csr_idx_id),
-      .csr_readdata_o           (csr_data_csr),                    //tode 添加 valid
+      .csr_readdata_o           (csr_data_csr),                    //TODO 添加 valid
       /* 写入数据端口 */
       .csr_writeaddr_i          (csr_addr_mem_wb),
       .csr_write_valid_i        (exc_csr_valid_mem_wb),

@@ -24,6 +24,9 @@ private:
     void out_of_bound(paddr_t addr);
     word_t pmem_read(paddr_t addr, int len);
     void pmem_write(paddr_t addr, int len, word_t data);
+    word_t host_read(void* addr, int len);
+    void host_write(void* addr, int len, word_t data);
+
 
 public:
     Topdevice::DeviceManager* Device; // 统一的外设入口
@@ -33,8 +36,6 @@ public:
     // 内存读写相关
     uint8_t* guest_to_host(paddr_t paddr);
     paddr_t host_to_guest(uint8_t* haddr);
-    word_t host_read(void* addr, int len);
-    void host_write(void* addr, int len, word_t data);
     word_t paddr_read(paddr_t addr, int len);
     void paddr_write(paddr_t addr, int len, word_t data);
     // 加载镜像相关

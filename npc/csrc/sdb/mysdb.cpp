@@ -94,6 +94,9 @@ unsigned cmd_info(const std::vector<std::string>& input) {
     else if (0 == strcmp(val, "w")) {
         mysim_p->u_wp.showAllwp();
     }
+    else if (0 == strcmp(val, "itrace")) {
+        mysim_p->u_itrace.printRecentInst();
+    }
     return 0;
 }
 /**

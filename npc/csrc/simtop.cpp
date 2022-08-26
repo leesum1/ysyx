@@ -87,7 +87,7 @@ void Simtop::stepCycle(bool val) {
     /* 提交的时候进行 difftest
      * commited_list.nextpc 和 commited_list.inst，不为空
      * 表示 NPC 指令已经提交，并且得到了下一条提交指令的 pc
-     * 分别位 inst，nextpc 的队首
+     * 分别位于 inst，nextpc 的队首
      */
     while ((!commited_list.nextpc.empty()) && !(commited_list.inst.empty())) {
         setPC(commited_list.nextpc.front());
@@ -153,7 +153,7 @@ void  Simtop::printRegisterFile() {
 
 /**
  * @brief HIT GOOD / BAD TRAP
- * 在程序退出时调用
+ *        在程序退出时调用
  */
 bool Simtop::npcHitGood() {
     uint64_t a0 = registerfile[10];
@@ -185,7 +185,7 @@ void Simtop::scanMem(paddr_t addr, uint32_t len) {
     }
 }
 /**
- * @brief 执行指令,执行次数效于4时,打印寄存器值
+ * @brief 执行指令,执行次数小于4时,打印寄存器值
  *
  * @param t 执行的次数
  */
@@ -284,7 +284,10 @@ void Simtop::sdbStatus() {
         cout << setw(8) << iter.name << ": " << setw(4) << iter.isok << endl;
     }
 }
-
+/**
+ * @brief 调试工具
+ *
+ */
 void Simtop::sdbRun(void) {
     if (isSdbOk("difftest")) {
         this->u_difftest.difftest_step();
@@ -301,15 +304,28 @@ void Simtop::sdbRun(void) {
     //TODO:add more
 }
 
-
+/**
+ * @brief 设置 PC寄存器的值，按照 nemu，为已提交指令的下一个指令地址
+ *
+ * @param val
+ */
 void Simtop::setPC(uint64_t val) {
     this->pc = val;
 }
-
+/**
+ * @brief 设置通用寄存器组（共32个）
+ *
+ * @param ptr 通用寄存器组指针
+ */
 void Simtop::setGPRregs(uint64_t* ptr) {
     this->registerfile = ptr;
 }
-
+/**
+ * @brief 记录已经提交的指令
+ *
+ * @param inst_pc 提交指令的 PC
+ * @param inst_data 提交指令的内容
+ */
 void Simtop::addCommitedInst(uint64_t inst_pc, uint32_t inst_data) {
 
     inst_t temp_inst;

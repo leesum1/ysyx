@@ -9,10 +9,18 @@
 extern Simtop* mysim_p;
 extern "C" void set_nextpc(long long nextpc) {
     static bool isfirst_inst = true;
+    // NOP 指令对于的 PC 为 0
     if (nextpc == 0) {
         return;
     }
-    // 第一条指令特殊处理
+    /**
+     * 第一条指令特殊处理
+     * 1. 当第一条指令位于 MEM 阶段时，WB 阶段的指令 为 NOP
+     * 2. 第一条指令之前没有指令
+     * 3. nextpc 与 commited pc 一一对应，nextpc 为 commited pc 下一条所指令的指令
+     * 4. nextpc 为第一条指令时，没有对于的 commited pc
+     *
+     */
     else if (isfirst_inst) {
         printf("isfirst_inst\n");
         isfirst_inst = false;
