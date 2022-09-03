@@ -28,6 +28,14 @@ extern "C" void set_nextpc(long long nextpc) {
     }
     mysim_p->commited_list.nextpc.push_back(nextpc);
 }
+
+extern "C" void set_mem_pc(long long mem_pc) {
+#ifdef MTRACH
+    printf("set_mem_pc:%p\n", (void*)mem_pc);
+#endif
+    mysim_p->mem_pc = mem_pc;
+}
+
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
     mysim_p->setGPRregs((uint64_t*)(((VerilatedDpiOpenVar*)r)->datap()));
 }
@@ -63,8 +71,6 @@ extern "C" void pmem_read(long raddr, long long* rdata, char rmask) {
     if (rmask == 0) {
         return;
     }
-
-    // mysim_p->mem_pc = pc; // 记录访存指令的 PC
 #ifdef MTRACH
     printf("pmem_read:%llx,", raddr);
 #endif
@@ -86,7 +92,6 @@ extern "C" void pmem_write(long waddr, long long wdata, char wmask) {
 #ifdef MTRACH
     printf("pmem_write:%llx,data:%llx\n", waddr, wdata);
 #endif
-    //mysim_p->mem_pc = pc; // 记录访存指令的 PC
     switch (temp) {
     case 1:   mysim_p->mem->paddr_write((paddr_t)waddr, 1, wdata); break; // 0000_0001, 1byte.
     case 3:   mysim_p->mem->paddr_write((paddr_t)waddr, 2, wdata); break; // 0000_0011, 2byte.

@@ -48,13 +48,15 @@ void DeviceManager::DeviceManagerInit(void) {
     assert(ret == true);
     printf(COLOR_BLUE"timer0 init\n" COLOR_END);
 
-    // ret = installDevice("Devicekb", "kb0");
-    // assert(ret == true);
-    // printf(COLOR_BLUE"keyboard0 init\n" COLOR_END);
+#ifdef DEVICE_VGA
+    ret = installDevice("Devicekb", "kb0");
+    assert(ret == true);
+    printf(COLOR_BLUE"keyboard0 init\n" COLOR_END);
 
-    // ret = installDevice("Devicevga", "vga0");
-    // assert(ret == true);
-    // printf(COLOR_BLUE"vga0 init\n" COLOR_END);
+    ret = installDevice("Devicevga", "vga0");
+    assert(ret == true);
+    printf(COLOR_BLUE"vga0 init\n" COLOR_END);
+#endif
 
     SDL_CreateThread(thread_func, "DeviceUpdate", this);
 }

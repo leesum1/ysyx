@@ -45,7 +45,8 @@ module ram_arb (
   );
 
 
-  /* mem 写 状态机 */
+  /* mem 写 状态机(mem 独占一个写端口) */
+  // 设置为 3 时钟周期写一次
   reg [`XLEN_BUS] _ram_wdata;
   reg [`NPC_ADDR_BUS] _ram_waddr;
   reg [7:0] _ram_wmask;
@@ -79,11 +80,28 @@ module ram_arb (
           end
         end
         MEM1: begin
-          _ram_write_state <= MEM2;
+          // 延时一个周期（可设置延时多个周期）
+          _ram_write_ready <= `FALSE;
+          if (mem_write_valid_i) begin
+            _ram_waddr <= mem_write_addr_i;
+            _ram_wmask <= mem_wmask_i;
+            _ram_wdata <= mem_wdata_i;
+            _ram_write_state <= MEM2;
+          end else begin
+            _ram_write_state <= IDLE;
+            _ram_waddr <= 32'b0;
+            _ram_wmask <= 8'b0;
+            _ram_wdata <= `XLEN'b0;
+          end
         end
         MEM2: begin
-          _ram_write_ready <= `TRUE;
+          // 发出写信号
           _ram_write_state <= IDLE;
+          if (mem_write_valid_i) begin
+            _ram_write_ready <= `TRUE;
+          end else begin
+            _ram_write_ready <= `FALSE;
+          end
         end
         default: begin
         end
@@ -103,14 +121,14 @@ module ram_arb (
 
 
 
-  /* mem 读 状态机 */
+  /* mem 读 状态机（if 和 mem 共用一个读端口，mem 优先级高） */
   reg [`XLEN_BUS] _ram_rdata;
   reg [`NPC_ADDR_BUS] _ram_raddr;
   reg [7:0] _ram_rmask;
   reg _ram_read_valid;
 
   reg [STATE_LEN-1:0] _ram_read_state;
-  // 当前访存的部件
+  // 用于记录当前访存部件
   reg _ram_if;
   reg _ram_mem;
   always @(posedge clk) begin
@@ -150,6 +168,7 @@ module ram_arb (
           end
         end
         MEM1: begin
+          // 延时一个周期（可设置延时多个周期）
           if (mem_valid_i & _ram_mem) begin
             _ram_read_state <= MEM2;
           end else if (if_valid_i & _ram_if) begin
@@ -159,15 +178,20 @@ module ram_arb (
           end
         end
         MEM2: begin
-          if (mem_valid_i) begin
+          if (mem_valid_i & _ram_mem) begin
             _ram_raddr <= mem_read_addr_i;
             _ram_rmask <= mem_rmask_i;
-          end else if (if_valid_i) begin
+            _ram_read_state <= IDLE;
+            _ram_read_valid <= `TRUE;
+          end else if (if_valid_i & _ram_if) begin
             _ram_raddr <= if_read_addr_i;
             _ram_rmask <= if_rmask_i;
+            _ram_read_state <= IDLE;
+            _ram_read_valid <= `TRUE;
+          end else begin
+            _ram_read_valid <= `FALSE;
+            _ram_read_state <= IDLE;
           end
-          _ram_read_valid <= `TRUE;
-          _ram_read_state <= IDLE;
         end
         MEM3: begin
         end
@@ -197,12 +221,12 @@ module ram_arb (
     _if_rdata_o = `XLEN'b0;
     _mem_rdata_valid_o = `FALSE;
     _if_rdata_valid_o = `FALSE;
-    // mem 优先
+    // mem 读优先
     if (mem_valid_i & _ram_mem) begin
       _mem_rdata_o = _ram_rdata;
       _mem_rdata_valid_o = _ram_read_valid;
-      // 然后是 if
-    end else if (if_valid_i & _ram_if) begin
+    end  // if 读 
+    else if (if_valid_i & _ram_if) begin
       _if_rdata_o = _ram_rdata;
       _if_rdata_valid_o = _ram_read_valid;
     end
@@ -213,24 +237,6 @@ module ram_arb (
   assign if_rdata_o = _if_rdata_o;
   assign mem_rdata_valid_o = _mem_rdata_valid_o;
   assign if_rdata_valid_o = _if_rdata_valid_o;
-
-  // assign mem_rdata_valid_o = (mem_valid_i) ? _ram_read_valid : `FALSE;
-  // assign if_rdata_valid_o = (if_valid_i & (!mem_valid_i)) ? _ram_read_valid : `FALSE;
-  // assign mem_rdata_o = (mem_rdata_valid_o) ? _ram_rdata : `XLEN'b0;
-  // assign if_rdata_o = (if_rdata_valid_o)?_ram_rdata:`XLEN'b0;
-
-
-  // 同时读,则 mem 优先
-  // assign arb_read_addr_o = (mem_valid_i) ? mem_read_addr_i : (if_valid_i) ? if_read_addr_i : 32'b0;
-  // assign arb_rmask_o = (mem_valid_i) ? mem_rmask_i : (if_valid_i) ? if_rmask_i : 8'b0;
-  // assign arb_valid_o = if_valid_i | mem_valid_i;
-
-  // assign if_rdata_o = (if_valid_i & (!mem_valid_i)) ? arb_rdata_i : `XLEN'b0;
-
-  // assign mem_rdata_o = (mem_valid_i) ? arb_rdata_i : `XLEN'b0;
-
-  // assign if_rdata_valid_o = (if_valid_i & (!mem_valid_i)) ? arb_rdata_valid_i : `FALSE;
-  // assign mem_rdata_valid_o = (mem_valid_i) ? arb_rdata_valid_i : `FALSE;
 
 
 endmodule

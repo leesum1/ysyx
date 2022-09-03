@@ -141,7 +141,8 @@ void Difftest::difftest_step() {
 
     if (!skip_pc.empty() && mysim_p->commited_list.inst.front().inst_pc == skip_pc.front()) {
         // printf("is_skip_ref\n");
-        // printf("pc:%p\n", (void*)skip_pc.front());
+        // printf("skip_pc:%p\n", (void*)skip_pc.front());
+        // printf("next_pc:%p\n", (void*)dutregs.pc);
         diff_regcpy(&dutregs, DIFFTEST_TO_REF);
         skip_pc.pop_front();
         return;

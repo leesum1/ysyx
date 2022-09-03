@@ -151,25 +151,6 @@ module memory (
   assign ram_stall_valid_mem_o = _load_stall_req | _store_stall_req;
 
 
-  // /***************************内存读写**************************/
-  // import "DPI-C" function void pmem_read(
-  //   input longint pc,
-  //   input longint raddr,
-  //   output longint rdata,
-  //   input byte rmask
-  // );
-  // import "DPI-C" function void pmem_write(
-  //   input longint pc,
-  //   input longint waddr,
-  //   input longint wdata,
-  //   input byte wmask
-  // );
-  // always @(*) begin
-  //   if (_isstore) begin
-  //     pmem_write(pc_i, _waddr, _mem_write, _wmask);
-  //   end
-  // end
-
 
   /* trap_bus TODO:add more*/
   reg [`TRAP_BUS] _mem_trap_bus;
@@ -184,10 +165,21 @@ module memory (
 
 
   /************************××××××向仿真环境传递 PC *****************************/
-  import "DPI-C" function void set_nextpc(input longint nextpc);
 
+  // 用于 difftest，获取即将提交的下一条指令的 pc
+  import "DPI-C" function void set_nextpc(input longint nextpc);
   always @(posedge clk) begin
-    set_nextpc(pc_i);
+    // 避免重复提交 pc
+    if (_memop_none | (_isload & mem_rdata_valid_i) | (_isstore & mem_wdata_ready_i)) begin
+      set_nextpc(pc_i);
+    end
+  end
+  // 用于 difftest，获取访存指令的 pc
+  import "DPI-C" function void set_mem_pc(input longint mem_pc);
+  always @(*) begin
+    if (_isstore | _isload) begin
+      set_mem_pc(pc_i);
+    end
   end
 
 endmodule
