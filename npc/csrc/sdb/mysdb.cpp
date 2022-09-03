@@ -115,7 +115,8 @@ unsigned cmd_p(const std::vector<std::string>& input) {
     bool ret;
 
     char* c = const_cast<char*>(inputall.c_str());
-    mysim_p->u_expr.getResult(c, &ret);
+    uint64_t expr_ret = mysim_p->u_expr.getResult(c, &ret);
+    cout << "expr_ret:" << expr_ret << endl;
     return 0;
 }
 

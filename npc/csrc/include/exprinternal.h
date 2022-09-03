@@ -27,7 +27,7 @@ namespace expr_namespace {
         void ParseAll();
         uint64_t run1();
         uint64_t getResult();
-        bool getCompare(uint64_t leftVal, uint64_t rightVal, Token cmp);
+        bool getCompareResult(uint64_t leftVal, uint64_t rightVal, Token cmp);
     };
 } // namespace name
 

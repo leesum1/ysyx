@@ -8,8 +8,17 @@ module fetch (
     //指令地址
     input rst,
     input [`XLEN_BUS] inst_addr_i,  // from pc_reg
-    // //指令内容
-    // input [`INST_LEN-1:0] inst_data_i,
+    /* ram 接口 */
+    output [`NPC_ADDR_BUS] if_read_addr_o,  // 地址
+    output if_raddr_valid_o,  // 地址是否准备好
+    output [7:0] if_rmask_o,  // 数据掩码,读取多少位
+    input if_rdata_valid_i,  // 读数据是否准备好
+    input [`XLEN_BUS] if_rdata_i,
+
+
+    input if_ram_valid_i,
+    /* stall req */
+    output wire ram_stall_valid_if_o,  // if 阶段访存暂停
     /* to if/id */
     output [`XLEN_BUS] inst_addr_o,
     output [`INST_LEN-1:0] inst_data_o,
@@ -18,24 +27,27 @@ module fetch (
 
 
   assign inst_addr_o = inst_addr_i;
+  assign if_read_addr_o = inst_addr_i[31:0];
+  assign if_raddr_valid_o = (!rst) & (if_ram_valid_i);
 
-  reg [`XLEN-1:0] _mem_data;
-  import "DPI-C" function void pmem_inst_read(
-    input longint raddr,
-    output longint rdata,
-    input byte rmask
-  );
-  /*  仿真使用,传递当前 pc 给仿真环境,根据pc 取指令 */
-  wire [7:0] _rmask = 8'b1111_1111;
-  always @(*) begin
-    if (rst) begin
-      pmem_inst_read(`PC_RESET_ADDR, _mem_data, _rmask);
-    end else begin
-      pmem_inst_read(inst_addr_i, _mem_data, _rmask);
-    end
-  end
 
-  assign inst_data_o = _mem_data[31:0];
+
+  // 读取 4byte 一条指令的长度
+  wire [7:0] _rmask = 8'b0000_1111;
+  // 选择读取数据
+  wire [`NPC_ADDR_BUS] _inst_data = (if_rdata_valid_i) ? if_rdata_i[31:0] : `INST_NOP;
+  // 若 ram 数据没有准备好,发出 stall 请求,暂停流水线
+  wire _ram_stall = (!if_rdata_valid_i);  //& if_raddr_valid_o;  //TODO,STALL 信号设置不正确
+
+
+  assign ram_stall_valid_if_o = _ram_stall;
+  assign if_rmask_o = _rmask;
+  assign inst_data_o = _inst_data;
+
+
+
+
+
 
   /***********************TRAP**********************/
   wire _Instruction_address_misaligned = `FALSE;

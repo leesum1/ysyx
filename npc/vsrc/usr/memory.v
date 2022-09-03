@@ -4,23 +4,39 @@ module memory (
     input rst,
 
     /* from ex/mem */
-    input  [             `XLEN_BUS] pc_i,
-    input  [         `INST_LEN-1:0] inst_data_i,
-    input  [    `REG_ADDRWIDTH-1:0] rd_idx_i,
+    input [             `XLEN_BUS] pc_i,
+    input [         `INST_LEN-1:0] inst_data_i,
+    input [    `REG_ADDRWIDTH-1:0] rd_idx_i,
     // input  [         `XLEN_BUS] rs1_data_i,
-    input  [             `XLEN_BUS] rs2_data_i,
+    input [             `XLEN_BUS] rs2_data_i,
     // input  [      `IMM_LEN-1:0] imm_data_i,
-    input  [        `MEMOP_LEN-1:0] mem_op_i,         // 访存操作码
-    input  [             `XLEN_BUS] exc_alu_data_i,
-    input  [`CSR_REG_ADDRWIDTH-1:0] csr_addr_i,
-    input  [             `XLEN_BUS] exc_csr_data_i,
-    input                           exc_csr_valid_i,
+    input [        `MEMOP_LEN-1:0] mem_op_i,        // 访存操作码
+    input [             `XLEN_BUS] exc_alu_data_i,
+    input [`CSR_REG_ADDRWIDTH-1:0] csr_addr_i,
+    input [             `XLEN_BUS] exc_csr_data_i,
+    input                          exc_csr_valid_i,
+
+    /* ram 接口 */
+    // 读端口
+    output [         `NPC_ADDR_BUS] mem_raddr_o,            // 地址
+    output                          mem_raddr_valid_o,      // 地址是否准备好
+    output [                   7:0] mem_rmask_o,            // 数据掩码,读取多少位
+    input                           mem_rdata_valid_i,      // 读数据是否准备好
+    input  [             `XLEN_BUS] mem_rdata_i,            // 返回到读取的数据
+    // 写端口
+    output [         `NPC_ADDR_BUS] mem_waddr_o,            // 地址
+    output                          mem_waddr_valid_o,      // 地址是否准备好
+    output [                   7:0] mem_wmask_o,            // 数据掩码,写入多少位
+    input                           mem_wdata_ready_i,      // 数据是否已经写入
+    output [             `XLEN_BUS] mem_wdata_o,            // 写入的数据
+    /* stall req */
+    output                          ram_stall_valid_mem_o,  // mem 阶段访存暂停
     // TARP 总线
     input  [             `TRAP_BUS] trap_bus_i,
     /* to mem/wb */
     output [             `XLEN_BUS] pc_o,
     output [         `INST_LEN-1:0] inst_data_o,
-    output [             `XLEN_BUS] mem_data_o,       //同时送回 id 阶段（bypass）
+    output [             `XLEN_BUS] mem_data_o,             //同时送回 id 阶段（bypass）
     //output                          load_valid_o,          
     output [    `REG_ADDRWIDTH-1:0] rd_idx_o,
     output [`CSR_REG_ADDRWIDTH-1:0] csr_addr_o,
@@ -74,7 +90,7 @@ module memory (
   //assign load_valid_o = _load_valid;
 
   /* 从内存中读取的数据 */
-  reg [`XLEN_BUS] _mem_read;
+  wire [`XLEN_BUS] _mem_read;
 
   /* 符号扩展后的结果 TODO:改成并行编码*/
   wire [     `XLEN_BUS] _mem__signed_out = (_ls8byte)?{{`XLEN-8{_mem_read[7]}},_mem_read[7:0]}:
@@ -97,7 +113,7 @@ module memory (
   // assign wb_data_o = (load_valid_i) ? mem_data_i : exc_alu_data_i;
 
 
-  /* 写入数据 */
+  /* 写入数据 TODO：有问题 */
   wire [`XLEN_BUS] _mem_write = (_ls8byte) ? {56'b0, rs2_data_i[7:0]} :
                                 (_ls16byte) ? {48'b0, rs2_data_i[15:0]}:
                                 (_ls32byte) ? {32'b0, rs2_data_i[31:0]}:
@@ -117,27 +133,42 @@ module memory (
   wire [`XLEN_BUS] _raddr = _addr;
   wire [`XLEN_BUS] _waddr = _addr;
 
-  /***************************内存读写**************************/
-  import "DPI-C" function void pmem_read(
-    input longint pc,
-    input longint raddr,
-    output longint rdata,
-    input byte rmask
-  );
-  import "DPI-C" function void pmem_write(
-    input longint pc,
-    input longint waddr,
-    input longint wdata,
-    input byte wmask
-  );
-  always @(*) begin
-    _mem_read = `XLEN'b0;
-    if (_isload) begin
-      pmem_read(pc_i, _raddr, _mem_read, _rmask);
-    end else if (_isstore) begin
-      pmem_write(pc_i, _waddr, _mem_write, _wmask);
-    end
-  end
+  /** 内存读写 ram 接口 **/
+  assign mem_raddr_o = _raddr[31:0];
+  assign mem_rmask_o = _rmask;
+  assign _mem_read = (mem_rdata_valid_i) ? mem_rdata_i : `XLEN'b0;
+  assign mem_raddr_valid_o = _isload;  // 读地址有效
+
+  assign mem_waddr_o = _waddr[31:0];
+  assign mem_wmask_o = _wmask;
+  assign mem_wdata_o = _mem_write;
+  assign mem_waddr_valid_o = _isstore;  // 写地址有效
+
+
+  /* stall_req */
+  wire _load_stall_req = (mem_raddr_valid_o) & (!mem_rdata_valid_i); // 读地址有效，且还未读取到数据时，暂停流水线
+  wire _store_stall_req = (mem_waddr_valid_o) & (!mem_wdata_ready_i);// 写地址有效，且还未写入内存时，暂停流水线
+  assign ram_stall_valid_mem_o = _load_stall_req | _store_stall_req;
+
+
+  // /***************************内存读写**************************/
+  // import "DPI-C" function void pmem_read(
+  //   input longint pc,
+  //   input longint raddr,
+  //   output longint rdata,
+  //   input byte rmask
+  // );
+  // import "DPI-C" function void pmem_write(
+  //   input longint pc,
+  //   input longint waddr,
+  //   input longint wdata,
+  //   input byte wmask
+  // );
+  // always @(*) begin
+  //   if (_isstore) begin
+  //     pmem_write(pc_i, _waddr, _mem_write, _wmask);
+  //   end
+  // end
 
 
   /* trap_bus TODO:add more*/

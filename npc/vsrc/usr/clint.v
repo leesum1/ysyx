@@ -9,6 +9,8 @@ module clint (
     /* TARP 总线 */
     input wire [`TRAP_BUS] trap_bus_i,
     /* ----- stall request from other modules 各个阶段请求流水线暂停请求 --------*/
+    input wire ram_stall_valid_if_i, // if 阶段访存暂停
+    input wire ram_stall_valid_mem_i,// mem 访存暂停
     input wire load_use_valid_id_i,  //load-use data hazard from id
     input wire jump_valid_ex_i,  // branch hazard from ex
     // input wire mutiple_alu_inst_valid_ex_i,  // div and mul isnt from ex
@@ -49,24 +51,34 @@ module clint (
   localparam jump_stall = 6'b000000;
   localparam trap_flush = 6'b001110;
   localparam trap_stall = 6'b000000;
+  localparam ram_if_flush = 6'b000010;
+  localparam ram_if_stall = 6'b000001;
+  localparam ram_mem_flush = 6'b010000;
+  localparam ram_mem_stall = 6'b001111;
   // localparam mutiple_alu_inst_flush = 6'b000011;
   // localparam mutiple_alu_inst_stall = 6'b000000;
 
 
-
+/* 流水线越往后,优先级越高 */
   always @(*) begin
     if (rst) begin
       stall_o = 6'b000000;
-      flush_o = 6'b000000;
+      flush_o = 6'b011111;
     end else if (_trap_valid) begin
       stall_o = trap_stall;
       flush_o = trap_flush;
+    end else if (ram_stall_valid_mem_i) begin
+      stall_o = ram_mem_stall;
+      flush_o = ram_mem_flush;
     end else if (jump_valid_ex_i) begin
       stall_o = jump_stall;
       flush_o = jump_flush;
     end else if (load_use_valid_id_i) begin
       stall_o = load_use_stall;
       flush_o = load_use_flush;
+    end else if (ram_stall_valid_if_i) begin
+      stall_o = ram_if_stall;
+      flush_o = ram_if_flush;
     end else begin
       stall_o = 6'b000000;
       flush_o = 6'b000000;

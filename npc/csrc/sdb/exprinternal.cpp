@@ -48,7 +48,7 @@ uint64_t Exprinternal::getResult() {
             Exprinternal expr(vector_r);
             uint64_t leftval = expl.run1();
             uint64_t rightval = expr.run1();
-            bool ret = getCompare(leftval, rightval, iter.operator*());
+            bool ret = getCompareResult(leftval, rightval, iter.operator*());
             return ret;
         }
     }
@@ -73,7 +73,7 @@ Exprinternal::~Exprinternal() {
 
 void Exprinternal::printTokens() {
 
-    //cout << "Exprinternal start" << endl;
+    // cout << "Exprinternal start" << endl;
     // for (size_t i = 0; i < tokens.size(); i++) {
     //     cout << " str: " << tokens.at(i).str \
     //         << " type: " << tokens.at(i).type << endl;
@@ -92,7 +92,7 @@ uint64_t Exprinternal::run1() {
             continue;
         }
         ret = isOperator(tokens.at(i));
-        /* 数字直接入栈 */
+        /* 操作数直接入栈 */
         if (!ret) {
             /* 这里的字符串转换函数要匹配 */
             uint64_t data64;
@@ -100,7 +100,7 @@ uint64_t Exprinternal::run1() {
             stackNum.push(data64);
             continue;
         }
-        /* 优先级低，出栈计算 */
+        /* （操作符）优先级低，出栈计算 */
         while (!isPriority(tokens.at(i))) {
             stackNum.push(calculate());
         }
@@ -148,11 +148,18 @@ bool Exprinternal::isOperator(Token val) {
 
 }
 
-/* 比较运算符 */
+/**
+ * @brief 判断当前 token 是否为比较运算符
+ *
+ * @param val
+ * @return true
+ * @return false
+ */
 bool Exprinternal::isCompare(Token val) {
-    if (val.type == TK_AND
+    if (val.type == TK_BIG
         || val.type == TK_EQ
-        || val.type == TK_NEQ) {
+        || val.type == TK_NEQ
+        || val.type == TK_SMALL) {
         return true;
     }
     return false;
@@ -166,7 +173,8 @@ bool Exprinternal::isCompare(Token val) {
  * @return true
  * @return false
  */
-bool Exprinternal::getCompare(uint64_t leftVal, uint64_t rightVal, Token cmp) {
+
+bool Exprinternal::getCompareResult(uint64_t leftVal, uint64_t rightVal, Token cmp) {
     bool ret = false;
     switch (cmp.type) {
     case TK_EQ:
@@ -174,6 +182,12 @@ bool Exprinternal::getCompare(uint64_t leftVal, uint64_t rightVal, Token cmp) {
         break;
     case TK_NEQ:
         ret = (leftVal != rightVal) ? true : false;
+        break;
+    case TK_BIG:
+        ret = (leftVal > rightVal) ? true : false;
+        break;
+    case TK_SMALL:
+        ret = (leftVal < rightVal) ? true : false;
         break;
     default:
         break;

@@ -12,8 +12,11 @@ namespace expr_namespace {
         TK_NOTYPE = 256,
         TK_EQ,     // ==
         TK_NEQ,    // !=
-        TK_AND,    // && 与
+        TK_BIG,    // >
+        TK_SMALL,  // <
         TK_NUM,    // 数字
+        TK_AND,
+        TK_OR,
         TK_DEREF,  //指针解引用 *
         TK_HEX,    // 0x开头，十六进制
         TK_REG     // 以"$"开头 寄存器
@@ -46,21 +49,26 @@ namespace expr_namespace {
             {"-", '-'},                     // minus
             {"==", TK_EQ},                  // equal
             {"!=", TK_NEQ},                 // not equal
+            {">",TK_BIG},                   // big
+            {"<",TK_SMALL},                 // small
+            {"&&",TK_AND},                  // and
+            {"\\|\\|",TK_OR},               // or
             {"0[xX][0-9a-fA-F]+",TK_HEX},   // hex ,十六进制识别必须在十进制前面
             {"\\$[a-zA-z]+[0-9]*",TK_REG},  // reg
             {"[0-9]+", TK_NUM},             // num
-            {"&&",TK_AND},                  // and
         };
         /* 经过处理后的规则 */
         regex_t re[32];
         Token tokens[32];
 
-        int nr_token = 0;
+        int nr_token = 0; // tokens 的数量
 
 
     private:
         void init_regex();
         bool make_token(char* e);
+        bool isLogicOprator(Token t);
+        bool getLogicResult(uint64_t leftval, uint64_t rightval, Token t);
     public:
         Expr(/* args */);
         ~Expr();

@@ -50,15 +50,15 @@ namespace expr_namespace {
                     char* substr_start = e + position;
                     int substr_len = pmatch.rm_eo;
 
-                    //Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
-                    // i, rules[i].regex, position, substr_len, substr_len, substr_start);
+                    // printf("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+                    //     i, rules[i].regex, position, substr_len, substr_len, substr_start);
                     position += substr_len;
                     /* 记录匹配规则,空格除外 */
                     if (rules[i].token_type != TK_NOTYPE) {
                         sprintf(tokens[nr_token].str, "%.*s", substr_len, substr_start);
                         tokens[nr_token].type = rules[i].token_type;
-                        //DEBUG_M("tokens->str:%s,tpye:%d,index:%d\n", tokens[nr_token].str, \
-                          tokens[nr_token].type, nr_token);
+                        // printf("tokens->str:%s,tpye:%d,index:%d\n", tokens[nr_token].str, \
+                        //     tokens[nr_token].type, nr_token);
                         nr_token++;
                     }
                     break;
@@ -87,7 +87,46 @@ namespace expr_namespace {
         }
         Exprinternal expr_in(tokens, nr_token);
 
+        for (size_t i = 0; i < nr_token; i++) {
+            if (isLogicOprator(tokens[i])) {
+                Exprinternal expr_left(tokens, i);
+                Exprinternal expr_right(&tokens[i + 1], nr_token - (i + 1));
+                uint64_t left_ret = expr_left.getResult();
+                uint64_t right_ret = expr_right.getResult();
+                uint64_t final_ret = getLogicResult(left_ret, right_ret, tokens[i]);
+                return final_ret;
+            }
+        }
+
         uint64_t ret = expr_in.getResult();
+        return ret;
+    }
+
+
+    bool Expr::isLogicOprator(Token t) {
+        if (t.type == TK_AND
+            || t.type == TK_OR) {
+            return true;
+        }
+        return false;
+    }
+
+    bool Expr::getLogicResult(uint64_t leftval, uint64_t rightval, Token t) {
+        bool ret = false;
+        switch (t.type) {
+        case TK_AND:
+            if (leftval == 1 && rightval == 1) {
+                ret = true;
+            }
+            break;
+        case TK_OR:
+            if (leftval == 1 || rightval == 1) {
+                ret = true;
+            }
+            break;
+        default:
+            break;
+        }
         return ret;
     }
 

@@ -6,7 +6,8 @@
 `define REG_ADDRWIDTH 5     //寄存器地址宽度
 `define PC_RESET_ADDR `XLEN'h0000000080000000
 
-
+`define NPC_ADDR_LEN 32
+`define NPC_ADDR_BUS `NPC_ADDR_LEN-1:0
 
 `define INST_NOP 32'h00000013           //ADDI x0, x0, 0
 `define TRUE 1'b1

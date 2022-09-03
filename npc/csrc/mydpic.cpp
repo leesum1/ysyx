@@ -58,21 +58,22 @@ extern "C" void pmem_inst_read(long long raddr, long long* rdata, char rmask) {
 };
 
 
-extern "C" void pmem_read(long long pc, long long raddr, long long* rdata, char rmask) {
+extern "C" void pmem_read(long raddr, long long* rdata, char rmask) {
     // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
-    if (raddr < 20 || rmask == 0) {
+    if (rmask == 0) {
         return;
     }
-    mysim_p->mem_pc = pc; // 记录访存指令的 PC
+
+    // mysim_p->mem_pc = pc; // 记录访存指令的 PC
 #ifdef MTRACH
     printf("pmem_read:%llx,", raddr);
 #endif
-    * rdata = mysim_p->mem->paddr_read(raddr, 8);
+    * rdata = mysim_p->mem->paddr_read((paddr_t)raddr, 8);
 #ifdef MTRACH
     printf("data:%llx\n", *rdata);
 #endif
 };
-extern "C" void pmem_write(long long pc, long long waddr, long long wdata, char wmask) {
+extern "C" void pmem_write(long waddr, long long wdata, char wmask) {
     // 总是往地址为`waddr & ~0x7ull`的8字节按写掩码`wmask`写入`wdata`
     // `wmask`中每比特表示`wdata`中1个字节的掩码,
     // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
@@ -85,12 +86,12 @@ extern "C" void pmem_write(long long pc, long long waddr, long long wdata, char 
 #ifdef MTRACH
     printf("pmem_write:%llx,data:%llx\n", waddr, wdata);
 #endif
-    mysim_p->mem_pc = pc; // 记录访存指令的 PC
+    //mysim_p->mem_pc = pc; // 记录访存指令的 PC
     switch (temp) {
-    case 1:   mysim_p->mem->paddr_write(waddr, 1, wdata); break; // 0000_0001, 1byte.
-    case 3:   mysim_p->mem->paddr_write(waddr, 2, wdata); break; // 0000_0011, 2byte.
-    case 15:  mysim_p->mem->paddr_write(waddr, 4, wdata); break; // 0000_1111, 4byte.
-    case 255: mysim_p->mem->paddr_write(waddr, 8, wdata);  break; // 1111_1111, 8byte.
+    case 1:   mysim_p->mem->paddr_write((paddr_t)waddr, 1, wdata); break; // 0000_0001, 1byte.
+    case 3:   mysim_p->mem->paddr_write((paddr_t)waddr, 2, wdata); break; // 0000_0011, 2byte.
+    case 15:  mysim_p->mem->paddr_write((paddr_t)waddr, 4, wdata); break; // 0000_1111, 4byte.
+    case 255: mysim_p->mem->paddr_write((paddr_t)waddr, 8, wdata);  break; // 1111_1111, 8byte.
     default:  break;
     }
 }
