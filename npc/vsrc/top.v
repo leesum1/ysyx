@@ -8,7 +8,9 @@ module top (
 
   /*×××××××××××××××××××××××××× PC 模块 用于选择吓一跳指令地址 ×××××××××××××××××××××××*/
   wire [`XLEN_BUS] inst_addr;
-  wire if_ram_valid;
+  wire [`XLEN_BUS] pc_next;
+  wire addr_ok;
+  wire read_req;
   pc_reg u_pc_reg (
       .clk              (clk),
       .rst              (rst),
@@ -17,23 +19,27 @@ module top (
       .branch_pc_i      (branch_pc),
       .branch_pc_valid_i(branch_pc_valid),
       .clint_pc_i       (clint_pc),
-
-      .if_ram_valid_o  (if_ram_valid),
       //trap pc,来自mem
-      .clint_pc_valid_i(clint_pc_valid),
+      .clint_pc_valid_i (clint_pc_valid),
       //trap pc valide,来自mem
       //输出pc
-      .pc_o            (inst_addr)
+      .addr_ok_i        (addr_ok),
+      .read_req         (read_req),
+      .if_rdata_valid_i (if_rdata_valid),
+      .pc_next_o        (pc_next),
+      .pc_o             (inst_addr)
   );
   /*************************** 取指阶段 *************************************/
   wire [`XLEN_BUS] inst_addr_if;
   wire [`INST_LEN-1:0] inst_data_if;
   wire [`TRAP_BUS] trap_bus_if;
 
-  // if ram 接口
-  wire [`NPC_ADDR_BUS] if_read_addr;  // 地址
-  wire if_raddr_valid;  // 地址是否准备好
-  wire [7:0] if_rmask;  // 数据掩码,读取多少位
+  //   // if ram 接口
+  //   wire [`NPC_ADDR_BUS] if_read_addr;  // 地址
+  //   wire if_raddr_valid;  // 地址是否准备好
+  //   wire if_raddr_ready;
+  //   wire [7:0] if_rmask;  // 数据掩码,读取多少位
+
   wire if_rdata_valid;  // 读数据是否准备好
   wire [`XLEN_BUS] if_rdata;  // 返回到读取的数据
 
@@ -42,14 +48,10 @@ module top (
 
   fetch u_fetch (
       //指令地址
-      .rst             (rst),
-      .inst_addr_i     (inst_addr),
-      .if_ram_valid_i  (if_ram_valid),
+      .rst        (rst),
+      .inst_addr_i(inst_addr),
       // from pc_reg
-      /* ram 接口 */
-      .if_read_addr_o  (if_read_addr),    // 地址
-      .if_raddr_valid_o(if_raddr_valid),  // 地址是否准备好
-      .if_rmask_o      (if_rmask),        // 数据掩码,读取多少位
+
       .if_rdata_valid_i(if_rdata_valid),  // 读数据是否准备好
       .if_rdata_i      (if_rdata),        // 返回到读取的数据
 
@@ -672,11 +674,12 @@ module top (
       .clk(clk),
       .rst(rst),
       /* cpu<-->cache 端口 */
-      .if_raddr_i(if_read_addr),  // CPU 的访存信息 
-      .if_rmask_i(if_rmask),  // 访存掩码
-      .if_raddr_valid_i(if_raddr_valid),  // 地址是否有效，无效时，停止访问 cache
-      .icahce_data_o(if_rdata),  // icache 返回读数据
-      .icache_ready_o          (if_rdata_valid),// icache 读数据是否准备好(未准备好需要暂停流水线)
+      .preif_raddr_i(pc_next[31:0]),  // CPU 的访存信息 
+      .preif_rmask_i(8'b0000_1111),  // 访存掩码
+      .preif_raddr_valid_i(read_req),  // 地址是否有效，无效时，停止访问 cache
+      .preif_raddr_ready_o(addr_ok),
+      .if_rdata_o(if_rdata),  // icache 返回读数据
+      .if_rdata_valid_o          (if_rdata_valid),// icache 读数据是否准备好(未准备好需要暂停流水线)
       /* cache<-->mem 端口 */
       .ram_raddr_icache_o(ram_raddr_icache),
       .ram_raddr_valid_icache_o(ram_raddr_valid_icache),

@@ -15,7 +15,10 @@ module pc_reg (
     input              branch_pc_valid_i,
     input  [`XLEN_BUS] clint_pc_i,         //trap pc,来自mem
     input              clint_pc_valid_i,   //trap pc valide,来自mem
-    output             if_ram_valid_o,
+    input              addr_ok_i,
+    input              if_rdata_valid_i,
+    output             read_req,
+    output [`XLEN_BUS] pc_next_o,
     output [`XLEN_BUS] pc_o                //输出pc
 );
 
@@ -28,7 +31,15 @@ module pc_reg (
   assign pc_o = _pc_current;
 
 
-  wire _pc_reg_wen = ~stall_valid_i[`CTRLBUS_PC] & ~rst;
+
+
+
+  //   wire _read_req_stall = ((addr_ok_i) ? `FALSE : `TRUE);
+  reg _read_req = (~rst);
+
+
+
+  wire _pc_reg_wen = (~stall_valid_i[`CTRLBUS_PC]) & (~rst) & (addr_ok_i & _read_req);
   wire _flush_valid = flush_valid_i[`CTRLBUS_PC];
   wire [`XLEN_BUS] _pc_next_d = (_flush_valid) ? `PC_RESET_ADDR : _pc_next;
 
@@ -43,19 +54,8 @@ module pc_reg (
       .wen (_pc_reg_wen)
   );
 
-  wire _if_ram_valid_d = !(clint_pc_valid_i | branch_pc_valid_i);  // 是否允许 if 访存
-  reg _if_ram_valid_q;
 
-  regTemplate #(
-      .WIDTH    (1),
-      .RESET_VAL(1'b0)
-  ) u_if_ram_valid (
-      .clk (clk),
-      .rst (rst),
-      .din (_if_ram_valid_d),
-      .dout(_if_ram_valid_q),
-      .wen (1'b1)
-  );
-  assign if_ram_valid_o = _if_ram_valid_q;
 
+  assign read_req  = _read_req;
+  assign pc_next_o = _pc_next_d;
 endmodule
