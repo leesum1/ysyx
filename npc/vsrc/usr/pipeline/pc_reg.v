@@ -8,9 +8,8 @@
 module pc_reg (
     input clk,
     input rst,
-    input stall_valid_i,
-    input flush_valid_i,
-    input if_ram_valid_i,
+    input [5:0] stall_valid_i,
+    input [5:0] flush_valid_i,
 
     input  [`XLEN_BUS] branch_pc_i,        // branch pc,来自 exc
     input              branch_pc_valid_i,
@@ -29,8 +28,8 @@ module pc_reg (
   assign pc_o = _pc_current;
 
 
-  wire _pc_reg_wen = ~stall_valid_i & ~rst;
-  wire _flush_valid = flush_valid_i;
+  wire _pc_reg_wen = ~stall_valid_i[`CTRLBUS_PC] & ~rst;
+  wire _flush_valid = flush_valid_i[`CTRLBUS_PC];
   wire [`XLEN_BUS] _pc_next_d = (_flush_valid) ? `PC_RESET_ADDR : _pc_next;
 
   regTemplate #(

@@ -3,8 +3,8 @@
 module mem_wb (
     input clk,
     input rst,
-    input flush_valid_i,
-    input stall_valid_i,
+    input [5:0] flush_valid_i,
+    input [5:0] stall_valid_i,
 
 
     // input [    `XLEN_BUS] pc_mem_wb_i,
@@ -51,8 +51,8 @@ module mem_wb (
     output [             `XLEN-1:0] mem_data_mem_wb_o        //访存阶段的数据
 );
 
-  wire reg_wen = !stall_valid_i;
-  wire _flush_valid = flush_valid_i;
+  wire reg_wen = !stall_valid_i[`CTRLBUS_MEM_WB];
+  wire _flush_valid = flush_valid_i[`CTRLBUS_MEM_WB];
 
   //   /* pc 寄存器 */
   //   wire [`XLEN_BUS] _pc_mem_wb_d = (_flush_valid) ? `XLEN'b0 : pc_mem_wb_i;
