@@ -40,6 +40,7 @@ module pc_reg (
 
 
   wire _pc_reg_wen = (~stall_valid_i[`CTRLBUS_PC]) & (~rst) & (addr_ok_i & _read_req);
+
   wire _flush_valid = flush_valid_i[`CTRLBUS_PC];
   wire [`XLEN_BUS] _pc_next_d = (_flush_valid) ? `PC_RESET_ADDR : _pc_next;
 
