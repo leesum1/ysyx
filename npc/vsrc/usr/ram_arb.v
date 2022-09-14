@@ -71,6 +71,21 @@ module ram_arb (
             _ram_waddr <= mem_write_addr_i;
             _ram_wmask <= mem_wmask_i;
             _ram_wdata <= mem_wdata_i;
+            _ram_write_state <= MEM1;
+          end else begin
+            _ram_write_state <= IDLE;
+            _ram_waddr <= 32'b0;
+            _ram_wmask <= 8'b0;
+            _ram_wdata <= `XLEN'b0;
+          end
+        end
+        MEM1: begin
+          // 延时一个周期（可设置延时多个周期）
+          _ram_write_ready <= `FALSE;
+          if (mem_write_valid_i) begin
+            _ram_waddr <= mem_write_addr_i;
+            _ram_wmask <= mem_wmask_i;
+            _ram_wdata <= mem_wdata_i;
             _ram_write_state <= MEM2;
           end else begin
             _ram_write_state <= IDLE;
@@ -79,21 +94,6 @@ module ram_arb (
             _ram_wdata <= `XLEN'b0;
           end
         end
-        // MEM1: begin
-        //   // 延时一个周期（可设置延时多个周期）
-        //   _ram_write_ready <= `FALSE;
-        //   if (mem_write_valid_i) begin
-        //     _ram_waddr <= mem_write_addr_i;
-        //     _ram_wmask <= mem_wmask_i;
-        //     _ram_wdata <= mem_wdata_i;
-        //     _ram_write_state <= MEM2;
-        //   end else begin
-        //     _ram_write_state <= IDLE;
-        //     _ram_waddr <= 32'b0;
-        //     _ram_wmask <= 8'b0;
-        //     _ram_wdata <= `XLEN'b0;
-        //   end
-        // end
         MEM2: begin
           // 发出写信号
           _ram_write_state <= IDLE;
@@ -167,16 +167,16 @@ module ram_arb (
             _ram_read_state <= IDLE;
           end
         end
-        // MEM1: begin
-        //   // 延时一个周期（可设置延时多个周期）
-        //   if (mem_valid_i & _ram_mem) begin
-        //     _ram_read_state <= MEM2;
-        //   end else if (if_valid_i & _ram_if) begin
-        //     _ram_read_state <= MEM2;
-        //   end else begin
-        //     _ram_read_state <= IDLE;
-        //   end
-        // end
+        MEM1: begin
+          // 延时一个周期（可设置延时多个周期）
+          if (mem_valid_i & _ram_mem) begin
+            _ram_read_state <= MEM2;
+          end else if (if_valid_i & _ram_if) begin
+            _ram_read_state <= MEM2;
+          end else begin
+            _ram_read_state <= IDLE;
+          end
+        end
         MEM2: begin
           if (if_valid_i & _ram_if) begin
             _ram_raddr <= if_read_addr_i;
