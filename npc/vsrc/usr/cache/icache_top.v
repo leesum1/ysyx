@@ -18,7 +18,6 @@ module icache_top (
     input [`NPC_ADDR_BUS] preif_raddr_i,  // CPU 的访存信息 
     input [7:0] preif_rmask_i,  // 访存掩码
     input preif_raddr_valid_i,  // 地址是否有效，无效时，停止访问 cache
-    output preif_raddr_ready_o,  // 成功接收地址时为 1
     output [`XLEN_BUS] if_rdata_o,  // icache 返回读数据
 
     //input  if_rdata_ready_i,  // 是否准备好接收数据
@@ -63,7 +62,7 @@ module icache_top (
   reg [4:0] line_idx_reg;
   reg [22:0] line_tag_reg;
 
-  reg icache_addr_ok;
+
   reg icahce_rdata_ok;
   // cache<-->mem 端口 
   reg [`NPC_ADDR_BUS] _ram_raddr_icache_o;
@@ -72,44 +71,35 @@ module icache_top (
 
   reg [63:0] _cache_line_temp;
 
-  reg busy;
-
-
 
   always @(posedge clk) begin
     if (rst) begin
       icahce_state   <= CACHE_RST;
-      icache_addr_ok <= `FALSE;
       blk_addr_reg   <= 0;
       line_idx_reg   <= 0;
       line_tag_reg   <= 0;
-      busy <=0;
     end else begin
       case (icahce_state)
         CACHE_RST: begin
           icahce_state   <= CACHE_IDLE;
-          icache_addr_ok <= `FALSE;
         end
         CACHE_IDLE: begin
           blk_addr_reg <= cache_blk_addr;
           line_idx_reg <= cache_line_idx;
           line_tag_reg <= cache_line_tag;
-
-          if (preif_raddr_valid_i&(~busy)) begin
+          if (preif_raddr_valid_i) begin
             // hit
             if (cache_hit) begin
               // 下一个周期给数据
               icache_data <= {32'b0, cache_line_regs[cache_line_idx][cache_blk_addr*8+:32]};
               icahce_rdata_ok <= `TRUE;
               icahce_state <= CACHE_IDLE;
-              busy<=1'b0;
             end else begin  // miss 
               icahce_state <= CACHE_MISS;
               icahce_rdata_ok <= `FALSE;
               _ram_raddr_icache_o <= {cache_line_tag, cache_line_idx, 4'b0};  // 读地址
               _ram_raddr_valid_icache_o <= `TRUE;  // 地址有效
               _ram_rmask_icache_o <= 8'b1111_1111;  // 读掩码
-              busy<=1'b1;
             end
           end else begin
             icahce_rdata_ok <= `FALSE;
@@ -132,9 +122,8 @@ module icache_top (
 
             _ram_raddr_valid_icache_o <= `FALSE;
             icache_data[31:0] <= {ram_rdata_icache_i, _cache_line_temp[63:0]}[blk_addr_reg*8+:32];
-            icahce_rdata_ok <= `TRUE;
+            //icahce_rdata_ok <= `TRUE; // TODO,具体作用需要仔细分析
             icahce_state <= CACHE_IDLE;
-            busy<=1'b0;
           end
         end
         default: begin
@@ -143,7 +132,7 @@ module icache_top (
     end
   end
 
-  assign preif_raddr_ready_o = (icahce_state == CACHE_IDLE) && preif_raddr_valid_i;
+
   assign if_rdata_o = icache_data;
   assign if_rdata_valid_o = icahce_rdata_ok && (icahce_state == CACHE_IDLE);
   // output [`NPC_ADDR_BUS] ram_raddr_icache_o,

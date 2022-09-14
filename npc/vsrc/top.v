@@ -9,7 +9,6 @@ module top (
   /*×××××××××××××××××××××××××× PC 模块 用于选择吓一跳指令地址 ×××××××××××××××××××××××*/
   wire [`XLEN_BUS] inst_addr;
   wire [`XLEN_BUS] pc_next;
-  wire addr_ok;
   wire read_req;
   pc_reg u_pc_reg (
       .clk              (clk),
@@ -23,10 +22,9 @@ module top (
       .clint_pc_valid_i (clint_pc_valid),
       //trap pc valide,来自mem
       //输出pc
-      .addr_ok_i        (addr_ok),
-      .read_req         (read_req),
+      .read_req_o       (read_req),
       .if_rdata_valid_i (if_rdata_valid),
-      .pc_next_o        (pc_next),
+      .pc_next_o        (pc_next),          //输出 next_pc
       .pc_o             (inst_addr)
   );
   /*************************** 取指阶段 *************************************/
@@ -677,7 +675,6 @@ module top (
       .preif_raddr_i(pc_next[31:0]),  // CPU 的访存信息 
       .preif_rmask_i(8'b0000_1111),  // 访存掩码
       .preif_raddr_valid_i(read_req),  // 地址是否有效，无效时，停止访问 cache
-      .preif_raddr_ready_o(addr_ok),
       .if_rdata_o(if_rdata),  // icache 返回读数据
       .if_rdata_valid_o          (if_rdata_valid),// icache 读数据是否准备好(未准备好需要暂停流水线)
       /* cache<-->mem 端口 */

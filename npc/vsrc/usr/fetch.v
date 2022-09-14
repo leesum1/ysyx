@@ -15,7 +15,6 @@ module fetch (
     input if_rdata_valid_i,  // 读数据是否准备好
     input [`XLEN_BUS] if_rdata_i,
 
-
     /* stall req */
     output wire ram_stall_valid_if_o,  // if 阶段访存暂停
     /* to if/id */

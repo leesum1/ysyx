@@ -20,7 +20,7 @@ module if_id (
   // 保持时，写失效
 
   wire reg_wen = !stall_valid_i[`CTRLBUS_IF_ID];
-  wire _flush_valid = flush_valid_i[`CTRLBUS_IF_ID];
+  wire _flush_valid = flush_valid_i[`CTRLBUS_IF_ID] | (inst_addr_if_i == `PC_RESET_ADDR - 'd4);
 
   /* inst_addr_if_i 寄存器 */
   wire [`XLEN-1:0] _inst_addr_if_id_d = (_flush_valid) ? `XLEN'b0 : inst_addr_if_i;
