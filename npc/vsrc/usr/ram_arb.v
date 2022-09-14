@@ -147,24 +147,11 @@ module ram_arb (
         end
         IDLE: begin
           _ram_read_valid <= `FALSE;
-<<<<<<< HEAD
-          if (mem_valid_i) begin
-            _ram_raddr <= mem_read_addr_i;
-            _ram_rmask <= mem_rmask_i;
-            _ram_if <= `FALSE;
-            _ram_mem <= `TRUE;
-            _ram_read_state <= MEM2;
-          end else if (if_valid_i) begin
-=======
           if (if_valid_i) begin
->>>>>>> rv64-five-pipeline-bus-dev2
             _ram_raddr <= if_read_addr_i;
             _ram_rmask <= if_rmask_i;
             _ram_if <= `TRUE;
             _ram_mem <= `FALSE;
-<<<<<<< HEAD
-            _ram_read_state <= MEM2;
-=======
             _ram_read_state <= MEM1;
           end else if (mem_valid_i) begin
             _ram_raddr <= mem_read_addr_i;
@@ -172,7 +159,6 @@ module ram_arb (
             _ram_if <= `FALSE;
             _ram_mem <= `TRUE;
             _ram_read_state <= MEM1;
->>>>>>> rv64-five-pipeline-bus-dev2
           end else begin
             _ram_raddr <= 32'b0;
             _ram_rmask <= 8'b0;
