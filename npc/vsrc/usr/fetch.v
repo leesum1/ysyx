@@ -9,14 +9,12 @@ module fetch (
     input rst,
     input [`XLEN_BUS] inst_addr_i,  // from pc_reg
     /* ram 接口 */
-    output [`NPC_ADDR_BUS] if_read_addr_o,  // 地址
-    output if_raddr_valid_o,  // 地址是否准备好
-    output [7:0] if_rmask_o,  // 数据掩码,读取多少位
+    // output [`NPC_ADDR_BUS] if_read_addr_o,  // 地址
+    // output if_raddr_valid_o,  // 地址是否准备好
+    // output [7:0] if_rmask_o,  // 数据掩码,读取多少位
     input if_rdata_valid_i,  // 读数据是否准备好
     input [`XLEN_BUS] if_rdata_i,
 
-
-    input if_ram_valid_i,
     /* stall req */
     output wire ram_stall_valid_if_o,  // if 阶段访存暂停
     /* to if/id */
@@ -27,13 +25,13 @@ module fetch (
 
 
   assign inst_addr_o = inst_addr_i;
-  assign if_read_addr_o = inst_addr_i[31:0];
-  assign if_raddr_valid_o = (!rst) & (if_ram_valid_i);
+  // assign if_read_addr_o = inst_addr_i[31:0];
+  // assign if_raddr_valid_o = (!rst) & (if_ram_valid_i);
 
 
 
-  // 读取 4byte 一条指令的长度
-  wire [7:0] _rmask = 8'b0000_1111;
+  // // 读取 4byte 一条指令的长度
+  // wire [7:0] _rmask = 8'b0000_1111;
   // 选择读取数据
   wire [`NPC_ADDR_BUS] _inst_data = (if_rdata_valid_i) ? if_rdata_i[31:0] : `INST_NOP;
   // 若 ram 数据没有准备好,发出 stall 请求,暂停流水线
@@ -41,7 +39,7 @@ module fetch (
 
 
   assign ram_stall_valid_if_o = _ram_stall;
-  assign if_rmask_o = _rmask;
+  // assign if_rmask_o = _rmask;
   assign inst_data_o = _inst_data;
 
 

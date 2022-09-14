@@ -5,7 +5,7 @@
         "**/*.{sv,v,svh,vh}"
     ],
     "systemverilog.documentSymbolsPrecision": "full",
-    "systemverilog.launchConfigurationVerilator": "verilator  --lint-only --language 1800-2012 --Wall -y ./vsrc/usr/pipeline -y ./vsrc/lib -y ./vsrc -y ./vsrc/usr",
+    "systemverilog.launchConfigurationVerilator": "verilator  --lint-only --language 1800-2012 --Wall -y ./vsrc/usr/pipeline -y ./vsrc/lib -y ./vsrc -y ./vsrc/usr -y ./vsrc/usr/cache",
     "files.associations": {
         "Makefile": "makefile",
         "*.nxdc": "makefile",

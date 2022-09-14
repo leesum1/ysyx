@@ -3,8 +3,8 @@
 module ex_mem (
     input clk,
     input rst,
-    input flush_valid_i,
-    input stall_valid_i,
+    input [5:0] flush_valid_i,
+    input [5:0] stall_valid_i,
 
     input [             `XLEN_BUS] pc_ex_mem_i,
     input [         `INST_LEN-1:0] inst_data_ex_mem_i,
@@ -40,8 +40,8 @@ module ex_mem (
     output [`TRAP_BUS] trap_bus_ex_mem_o
 );
 
-  wire reg_wen = !stall_valid_i;
-  wire _flush_valid = flush_valid_i;
+  wire reg_wen = !stall_valid_i[`CTRLBUS_EX_MEM];
+  wire _flush_valid = flush_valid_i[`CTRLBUS_EX_MEM];
 
 
   /* pc 寄存器 */

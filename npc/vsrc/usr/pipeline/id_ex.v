@@ -3,8 +3,8 @@
 module id_ex (
     input                               clk,
     input                               rst,
-    input                               flush_valid_i,
-    input                               stall_valid_i,
+    input      [                   5:0] flush_valid_i,
+    input      [                   5:0] stall_valid_i,
     /* 输入 */
     input wire [             `XLEN-1:0] pc_id_ex_i,
     input wire [         `INST_LEN-1:0] inst_data_id_ex_i,
@@ -53,8 +53,8 @@ module id_ex (
 
   //   wire _load_hazed = (stall_i[2] == `TRUE && stall_i[3] == `FALSE);
 
-  wire reg_wen = !stall_valid_i;
-  wire _flush_valid = flush_valid_i;
+  wire reg_wen = !stall_valid_i[`CTRLBUS_ID_EX];
+  wire _flush_valid = flush_valid_i[`CTRLBUS_ID_EX];
 
   /* pc 寄存器 */
   wire [`XLEN-1:0] _pc_id_ex_d = (_flush_valid) ? `XLEN'b0 : pc_id_ex_i;

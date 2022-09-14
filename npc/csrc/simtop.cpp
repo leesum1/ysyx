@@ -24,7 +24,7 @@ Simtop::Simtop() {
 #endif
     top = new Vtop;
 #ifdef TOP_TRACE
-    top->trace(tfp, 0);
+    top->trace(tfp, 99);
     tfp->open("sim.vcd");
 #endif
     this->top_status = TOP_RUNNING;

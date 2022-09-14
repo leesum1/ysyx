@@ -51,10 +51,10 @@ module clint (
   localparam jump_stall = 6'b000000;
   localparam trap_flush = 6'b001110;
   localparam trap_stall = 6'b000000;
-  localparam ram_if_flush = 6'b000010;
-  localparam ram_if_stall = 6'b000001;
+  localparam ram_if_flush = 6'b010000;
+  localparam ram_if_stall = 6'b101111;
   localparam ram_mem_flush = 6'b010000;
-  localparam ram_mem_stall = 6'b001111;
+  localparam ram_mem_stall = 6'b101111;
   // localparam mutiple_alu_inst_flush = 6'b000011;
   // localparam mutiple_alu_inst_stall = 6'b000000;
 
@@ -64,21 +64,21 @@ module clint (
     if (rst) begin
       stall_o = 6'b000000;
       flush_o = 6'b011111;
-    end else if (_trap_valid) begin
-      stall_o = trap_stall;
-      flush_o = trap_flush;
     end else if (ram_stall_valid_mem_i) begin
       stall_o = ram_mem_stall;
       flush_o = ram_mem_flush;
+    end else if (ram_stall_valid_if_i) begin
+      stall_o = ram_if_stall;
+      flush_o = ram_if_flush;
+    end else if (_trap_valid) begin
+      stall_o = trap_stall;
+      flush_o = trap_flush;
     end else if (jump_valid_ex_i) begin
       stall_o = jump_stall;
       flush_o = jump_flush;
     end else if (load_use_valid_id_i) begin
       stall_o = load_use_stall;
       flush_o = load_use_flush;
-    end else if (ram_stall_valid_if_i) begin
-      stall_o = ram_if_stall;
-      flush_o = ram_if_flush;
     end else begin
       stall_o = 6'b000000;
       flush_o = 6'b000000;

@@ -1,6 +1,6 @@
 `include "sysconfig.v"
 
-// 仲裁模块,if mem 同时读时,mem 优先
+// 仲裁模块,if mem 同时读时,if 优先
 module ram_arb (
     input clk,
     input rst,
@@ -147,6 +147,7 @@ module ram_arb (
         end
         IDLE: begin
           _ram_read_valid <= `FALSE;
+<<<<<<< HEAD
           if (mem_valid_i) begin
             _ram_raddr <= mem_read_addr_i;
             _ram_rmask <= mem_rmask_i;
@@ -154,11 +155,24 @@ module ram_arb (
             _ram_mem <= `TRUE;
             _ram_read_state <= MEM2;
           end else if (if_valid_i) begin
+=======
+          if (if_valid_i) begin
+>>>>>>> rv64-five-pipeline-bus-dev2
             _ram_raddr <= if_read_addr_i;
             _ram_rmask <= if_rmask_i;
             _ram_if <= `TRUE;
             _ram_mem <= `FALSE;
+<<<<<<< HEAD
             _ram_read_state <= MEM2;
+=======
+            _ram_read_state <= MEM1;
+          end else if (mem_valid_i) begin
+            _ram_raddr <= mem_read_addr_i;
+            _ram_rmask <= mem_rmask_i;
+            _ram_if <= `FALSE;
+            _ram_mem <= `TRUE;
+            _ram_read_state <= MEM1;
+>>>>>>> rv64-five-pipeline-bus-dev2
           end else begin
             _ram_raddr <= 32'b0;
             _ram_rmask <= 8'b0;
@@ -178,14 +192,14 @@ module ram_arb (
         //   end
         // end
         MEM2: begin
-          if (mem_valid_i & _ram_mem) begin
-            _ram_raddr <= mem_read_addr_i;
-            _ram_rmask <= mem_rmask_i;
-            _ram_read_state <= IDLE;
-            _ram_read_valid <= `TRUE;
-          end else if (if_valid_i & _ram_if) begin
+          if (if_valid_i & _ram_if) begin
             _ram_raddr <= if_read_addr_i;
             _ram_rmask <= if_rmask_i;
+            _ram_read_state <= IDLE;
+            _ram_read_valid <= `TRUE;
+          end else if (mem_valid_i & _ram_mem) begin
+            _ram_raddr <= mem_read_addr_i;
+            _ram_rmask <= mem_rmask_i;
             _ram_read_state <= IDLE;
             _ram_read_valid <= `TRUE;
           end else begin
@@ -221,15 +235,15 @@ module ram_arb (
     _if_rdata_o = `XLEN'b0;
     _mem_rdata_valid_o = `FALSE;
     _if_rdata_valid_o = `FALSE;
-    // mem 读优先
-    if (mem_valid_i & _ram_mem) begin
+    // if 读优先
+    if (if_valid_i & _ram_if) begin
+      _if_rdata_o = _ram_rdata;
+      _if_rdata_valid_o = _ram_read_valid;
+    end else if (mem_valid_i & _ram_mem) begin
       _mem_rdata_o = _ram_rdata;
       _mem_rdata_valid_o = _ram_read_valid;
     end  // if 读 
-    else if (if_valid_i & _ram_if) begin
-      _if_rdata_o = _ram_rdata;
-      _if_rdata_valid_o = _ram_read_valid;
-    end
+
   end
 
   /* 输出指定 */
