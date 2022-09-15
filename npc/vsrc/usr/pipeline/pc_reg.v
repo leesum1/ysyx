@@ -22,33 +22,21 @@ module pc_reg (
     output [`XLEN_BUS] pc_o               //输出pc
 );
 
-  // trap 优先级高
+
   wire [`XLEN_BUS] _pc_next =  clint_pc_valid_i ? clint_pc_i : 
                             branch_pc_valid_i?branch_pc_i:_pc_current+4;
-
   reg [`XLEN_BUS] _pc_current;
 
-  assign pc_o = _pc_current;
-  assign pc_next_o = stall_valid_i[`CTRLBUS_PC] ? _pc_current : _pc_next_d;
-  //assign pc_next_o = _pc_next_d;
+  reg _read_req = (~rst);  // pre if 阶段访问 icache, if 阶段返回数据
 
+  wire _pc_reg_wen = (~stall_valid_i[`CTRLBUS_PC]) & (~rst);  // stall
+  wire _flush_valid = flush_valid_i[`CTRLBUS_PC];  // flush
 
-
-
-  //   wire _read_req_stall = ((addr_ok_i) ? `FALSE : `TRUE);
-  reg _read_req = (~rst);  //& (~if_rdata_valid_i);
-
-
-
-  wire _pc_reg_wen = (~stall_valid_i[`CTRLBUS_PC]) & (~rst);
-
-  wire _flush_valid = flush_valid_i[`CTRLBUS_PC];
   wire [`XLEN_BUS] _pc_next_d = (_flush_valid) ? `PC_RESET_ADDR : _pc_next;
-
   regTemplate #(
       .WIDTH    (`XLEN),
       .RESET_VAL(`PC_RESET_ADDR)
-  ) u_pc_dreg (
+  ) u_pc_reg (
       .clk (clk),
       .rst (rst),
       .din (_pc_next_d),
@@ -56,7 +44,9 @@ module pc_reg (
       .wen (_pc_reg_wen)
   );
 
-
-
+  // next pc,为 icache 的访存地址, stall 时,保持上一个 pc 的值
+  assign pc_next_o = stall_valid_i[`CTRLBUS_PC] ? _pc_current : _pc_next_d;
+  assign pc_o = _pc_current;
   assign read_req_o = _read_req;
+
 endmodule

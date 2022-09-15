@@ -38,13 +38,13 @@ module icache_top (
   // TAG 标记 
   wire [31:9] cache_line_tag = preif_raddr_i[31:9];
   // cache line 寄存器组 128bit * 32
-  reg [128-1:0] cache_line_regs[32-1:0];
-  // cache line 的 tag 数组，与 cache line 一一对应
-  reg [23-1:0] cache_tag_regs[32-1:0];
+  // reg [128-1:0] cache_line_regs[32-1:0];
+  // // cache line 的 tag 数组，与 cache line 一一对应
+  // reg [23-1:0] cache_tag_regs[32-1:0];
 
 
-  wire cache_hit = (cache_line_tag == cache_tag_regs[cache_line_idx]);
-
+  //wire cache_hit = (cache_line_tag == cache_tag_regs[cache_line_idx]);
+  wire icache_hit;
 
   /* cache 命中 */
   localparam CACHE_RST = 4'd0;
@@ -55,12 +55,11 @@ module icache_top (
 
   reg [3:0] icahce_state;
 
-  reg icache_ready;
-  reg [`XLEN_BUS] icache_data;
-  reg [`NPC_ADDR_BUS] icahce_raddr;  // 缓存地址
+
   reg [3:0] blk_addr_reg;
   reg [4:0] line_idx_reg;
   reg [22:0] line_tag_reg;
+  reg icache_tag_wen;
 
 
   reg icahce_rdata_ok;
@@ -69,29 +68,37 @@ module icache_top (
   reg _ram_raddr_valid_icache_o;
   reg [7:0] _ram_rmask_icache_o;
 
-  reg [63:0] _cache_line_temp;
+  reg [127:0] cache_line_temp;
+  reg icache_data_wen;
 
 
   always @(posedge clk) begin
     if (rst) begin
-      icahce_state   <= CACHE_RST;
-      blk_addr_reg   <= 0;
-      line_idx_reg   <= 0;
-      line_tag_reg   <= 0;
+      icahce_state <= CACHE_RST;
+      blk_addr_reg <= 0;
+      line_idx_reg <= 0;
+      line_tag_reg <= 0;
+      icache_tag_wen <= 0;
+      icache_data_wen <= 0;
+      cache_line_temp <= 0;
     end else begin
       case (icahce_state)
         CACHE_RST: begin
-          icahce_state   <= CACHE_IDLE;
+          icahce_state <= CACHE_IDLE;
         end
         CACHE_IDLE: begin
           blk_addr_reg <= cache_blk_addr;
           line_idx_reg <= cache_line_idx;
           line_tag_reg <= cache_line_tag;
-          if (preif_raddr_valid_i) begin
+          icache_tag_wen <= `FALSE;
+          icache_data_wen <= 0;
+          cache_line_temp <= 0;
+          // cache data 为单端口 ram,不能同时读写
+          if (preif_raddr_valid_i && ~icache_data_wen) begin
             // hit
-            if (cache_hit) begin
+            if (icache_hit) begin
               // 下一个周期给数据
-              icache_data <= {32'b0, cache_line_regs[cache_line_idx][cache_blk_addr*8+:32]};
+              //icache_data <= {32'b0, cache_line_regs[cache_line_idx][cache_blk_addr*8+:32]};
               icahce_rdata_ok <= `TRUE;
               icahce_state <= CACHE_IDLE;
             end else begin  // miss 
@@ -108,21 +115,21 @@ module icache_top (
         end
         CACHE_MISS: begin
           if (_ram_raddr_valid_icache_o & ram_rdata_ready_icache_i) begin
-            _cache_line_temp[63:0] <= ram_rdata_icache_i;  // 临时保存 cache line 部分数据
+            cache_line_temp[63:0] <= ram_rdata_icache_i;  // 临时保存 cache line 部分数据
             _ram_raddr_icache_o <= {line_tag_reg, line_idx_reg, 4'd8};  // 读地址
             icahce_state <= CACHE_MISS2;
           end
         end
         CACHE_MISS2: begin
           if (_ram_raddr_valid_icache_o & ram_rdata_ready_icache_i) begin
-            cache_tag_regs[cache_line_idx] <= cache_line_tag;  // 记录 cache tag
-            cache_line_regs[cache_line_idx] <= {
-              ram_rdata_icache_i, _cache_line_temp[63:0]
-            };  // 写入 cache line 中
+
+            // 从内存中读取的 cache line 缓存
+            cache_line_temp[127:64] <= ram_rdata_icache_i;
+            // tag data 写使能,在下一个周期将 cache line 的数据写入 cache 中
+            icache_data_wen <= `TRUE;
+            icache_tag_wen <= `TRUE;
 
             _ram_raddr_valid_icache_o <= `FALSE;
-            icache_data[31:0] <= {ram_rdata_icache_i, _cache_line_temp[63:0]}[blk_addr_reg*8+:32];
-            //icahce_rdata_ok <= `TRUE; // TODO,具体作用需要仔细分析
             icahce_state <= CACHE_IDLE;
           end
         end
@@ -133,12 +140,53 @@ module icache_top (
   end
 
 
-  assign if_rdata_o = icache_data;
+
+
+  icache_tag u_icache_tag (
+      .clk           (clk),
+      .rst           (rst),
+      .icache_tag_i  (cache_line_tag),
+      // tag
+      .icache_index_i(cache_line_idx),
+      // index
+      .write_valid_i (icache_tag_wen),
+      // 写使能
+      .icache_hit_o  (icache_hit)
+  );
+
+
+
+
+  wire [127:0] icache_line_rdata;
+  wire [127:0] icache_wmask = 128'hffff_ffff_ffff_ffff_ffff_ffff_ffff_ffff;  // 低电平有效
+  icache_data u_icache_data (
+      .clk                (clk),
+      .rst                (rst),
+      .icache_index_i     (cache_line_idx),
+      // index
+      .icache_blk_addr_i  (cache_blk_addr),
+      .icache_line_wdata_i(cache_line_temp),
+      .icache_wmask       (icache_wmask),
+      .icache_wen_i       (icache_data_wen),
+      .icache_line_rdata_o(icache_line_rdata)
+  );
+
+  //icache_data <= {32'b0, cache_line_regs[cache_line_idx][cache_blk_addr*8+:32]};
+  wire [`XLEN_BUS] _icache_data_o = {32'b0, icache_line_rdata[blk_addr_reg*8+:32]};
+
+
+
+
+
+  assign if_rdata_o = _icache_data_o & {64{if_rdata_valid_o}};
+
   assign if_rdata_valid_o = icahce_rdata_ok && (icahce_state == CACHE_IDLE);
-  // output [`NPC_ADDR_BUS] ram_raddr_icache_o,
-  // output ram_raddr_valid_icache_o,
-  // output [7:0] ram_rmask_icache_o,
   assign ram_raddr_icache_o = _ram_raddr_icache_o;
   assign ram_raddr_valid_icache_o = _ram_raddr_valid_icache_o;
   assign ram_rmask_icache_o = _ram_rmask_icache_o;
+
+
+
+
+
 endmodule

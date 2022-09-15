@@ -25,25 +25,17 @@ module fetch (
 
 
   assign inst_addr_o = inst_addr_i;
-  // assign if_read_addr_o = inst_addr_i[31:0];
-  // assign if_raddr_valid_o = (!rst) & (if_ram_valid_i);
 
 
-
-  // // 读取 4byte 一条指令的长度
-  // wire [7:0] _rmask = 8'b0000_1111;
   // 选择读取数据
   wire [`NPC_ADDR_BUS] _inst_data = (if_rdata_valid_i) ? if_rdata_i[31:0] : `INST_NOP;
-  // 若 ram 数据没有准备好,发出 stall 请求,暂停流水线
-  wire _ram_stall = (!if_rdata_valid_i);  //& if_raddr_valid_o;  //TODO,STALL 信号设置不正确
 
+
+  // 若 icache 数据没有准备好,发出 stall 请求,暂停流水线
+  wire _ram_stall = (!if_rdata_valid_i);
 
   assign ram_stall_valid_if_o = _ram_stall;
-  // assign if_rmask_o = _rmask;
   assign inst_data_o = _inst_data;
-
-
-
 
 
 
