@@ -152,13 +152,13 @@ module ram_arb (
             _ram_rmask <= if_rmask_i;
             _ram_if <= `TRUE;
             _ram_mem <= `FALSE;
-            _ram_read_state <= MEM1;
+            _ram_read_state <= MEM2;
           end else if (mem_valid_i) begin
             _ram_raddr <= mem_read_addr_i;
             _ram_rmask <= mem_rmask_i;
             _ram_if <= `FALSE;
             _ram_mem <= `TRUE;
-            _ram_read_state <= MEM1;
+            _ram_read_state <= MEM2;
           end else begin
             _ram_raddr <= 32'b0;
             _ram_rmask <= 8'b0;
@@ -167,16 +167,16 @@ module ram_arb (
             _ram_read_state <= IDLE;
           end
         end
-        MEM1: begin
-          // 延时一个周期（可设置延时多个周期）
-          if (mem_valid_i & _ram_mem) begin
-            _ram_read_state <= MEM2;
-          end else if (if_valid_i & _ram_if) begin
-            _ram_read_state <= MEM2;
-          end else begin
-            _ram_read_state <= IDLE;
-          end
-        end
+        // MEM1: begin
+        //   // 延时一个周期（可设置延时多个周期）
+        //   if (mem_valid_i & _ram_mem) begin
+        //     _ram_read_state <= MEM2;
+        //   end else if (if_valid_i & _ram_if) begin
+        //     _ram_read_state <= MEM2;
+        //   end else begin
+        //     _ram_read_state <= IDLE;
+        //   end
+        // end
         MEM2: begin
           if (if_valid_i & _ram_if) begin
             _ram_raddr <= if_read_addr_i;
