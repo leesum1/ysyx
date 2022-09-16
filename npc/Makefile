@@ -31,10 +31,12 @@ LLVM_FLAGS = $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config-13 --cxxfl
 
 LLVM_FLAGS += -Ofast  -fexceptions 
 #-lasan(内存检查)
+ 
 GCC_LIB = -lreadline \
 		  -ldl \
 		  -lnemu \
 		  -lSDL2 
+		  
 GCC_LIB += ${LLVM_LIB} -flto -fuse-ld=gold
 
 
