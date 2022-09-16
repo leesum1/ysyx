@@ -16,19 +16,15 @@ module memory (
     input [             `XLEN_BUS] exc_csr_data_i,
     input                          exc_csr_valid_i,
 
-    /* ram 接口 */
-    // 读端口
-    output [         `NPC_ADDR_BUS] mem_raddr_o,            // 地址
-    output                          mem_raddr_valid_o,      // 地址是否准备好
-    output [                   7:0] mem_rmask_o,            // 数据掩码,读取多少位
-    input                           mem_rdata_valid_i,      // 读数据是否准备好
-    input  [             `XLEN_BUS] mem_rdata_i,            // 返回到读取的数据
-    // 写端口
-    output [         `NPC_ADDR_BUS] mem_waddr_o,            // 地址
-    output                          mem_waddr_valid_o,      // 地址是否准备好
-    output [                   7:0] mem_wmask_o,            // 数据掩码,写入多少位
-    input                           mem_wdata_ready_i,      // 数据是否已经写入
-    output [             `XLEN_BUS] mem_wdata_o,            // 写入的数据
+    /* dcache 接口 */
+    output [`NPC_ADDR_BUS] mem_addr_o,         // 地址
+    output                 mem_addr_valid_o,   // 地址是否有效
+    output [          7:0] mem_mask_o,         // 数据掩码,读取多少位
+    output                 mem_write_valid_o,  // 1'b1,表示写;1'b0 表示读 
+    input                  mem_data_ready_i,   // 读/写 数据是否准备好
+    input  [    `XLEN_BUS] mem_rdata_i,        // 返回到读取的数据
+    output [    `XLEN_BUS] mem_wdata_o,        // 写入的数据
+
     /* stall req */
     output                          ram_stall_valid_mem_o,  // mem 阶段访存暂停
     // TARP 总线
@@ -125,30 +121,27 @@ module memory (
                      ({8{_ls32byte}}&8'b0000_1111) |
                      ({8{_ls64byte}}&8'b1111_1111);
 
-  wire [7:0] _wmask = (_isstore) ? _mask : 8'b0000_0000;
-  wire [7:0] _rmask = (_isload) ? _mask : 8'b0000_0000;
+  // wire [7:0] _wmask = (_isstore) ? _mask : 8'b0000_0000;
+  // wire [7:0] _rmask = (_isload) ? _mask : 8'b0000_0000;
 
   /* 地址 */
   wire [`XLEN_BUS] _addr = (_memop_none) ? `PC_RESET_ADDR : exc_alu_data_i;
-  wire [`XLEN_BUS] _raddr = _addr;
-  wire [`XLEN_BUS] _waddr = _addr;
+  // wire [`XLEN_BUS] _raddr = _addr;
+  // wire [`XLEN_BUS] _waddr = _addr;
 
-  /** 内存读写 ram 接口 **/
-  assign mem_raddr_o = _raddr[31:0];
-  assign mem_rmask_o = _rmask;
-  assign _mem_read = (mem_rdata_valid_i) ? mem_rdata_i : `XLEN'b0;
-  assign mem_raddr_valid_o = _isload;  // 读地址有效
+  /** dcache  接口 **/
 
-  assign mem_waddr_o = _waddr[31:0];
-  assign mem_wmask_o = _wmask;
+  assign mem_addr_o = _addr[31:0];
+  assign mem_mask_o = _mask;
+  assign _mem_read = (mem_data_ready_i) ? mem_rdata_i : `XLEN'b0;
+  assign mem_addr_valid_o = (_isload | _isstore) & (~mem_data_ready_i);
+  assign mem_write_valid_o = _isstore & (~mem_data_ready_i);
   assign mem_wdata_o = _mem_write;
-  assign mem_waddr_valid_o = _isstore;  // 写地址有效
 
 
   /* stall_req */
-  wire _load_stall_req = (mem_raddr_valid_o) & (!mem_rdata_valid_i); // 读地址有效，且还未读取到数据时，暂停流水线
-  wire _store_stall_req = (mem_waddr_valid_o) & (!mem_wdata_ready_i);// 写地址有效，且还未写入内存时，暂停流水线
-  assign ram_stall_valid_mem_o = _load_stall_req | _store_stall_req;
+
+  assign ram_stall_valid_mem_o = (_isload | _isstore) & (~mem_data_ready_i);
 
 
 
@@ -170,7 +163,7 @@ module memory (
   import "DPI-C" function void set_nextpc(input longint nextpc);
   always @(posedge clk) begin
     // 避免重复提交 pc
-    if (_memop_none | (_isload & mem_rdata_valid_i) | (_isstore & mem_wdata_ready_i)) begin
+    if (_memop_none | mem_data_ready_i) begin
       set_nextpc(pc_i);
     end
   end

@@ -390,19 +390,14 @@ module top (
   wire [             `XLEN_BUS]  exc_csr_data_mem;
   wire                           exc_csr_valid_mem;
 
-  /* 读内存端口信号 */
-  wire [         `NPC_ADDR_BUS]  mem_raddr;  // 地址
-  wire                           mem_raddr_valid;  // 地址是否准备好
-  wire [                   7:0 ] mem_rmask;  // 数据掩码,读取多少位
-  wire                           mem_rdata_valid;  // 读数据是否准备好
+  /* dcache 接口 */
+  wire [         `NPC_ADDR_BUS]  mem_addr;  // 地址
+  wire                           mem_addr_valid;  // 地址是否有效
+  wire [                   7:0 ] mem_mask;  // 数据掩码,读取多少位
+  wire                           mem_write_valid;  // 1'b1,表示写;1'b0 表示读 
+  wire                           mem_data_ready;  // 读/写 数据是否准备好
   wire [             `XLEN_BUS]  mem_rdata;  // 返回到读取的数据
-
-  /* 写内存端口信号 */
-  wire [         `NPC_ADDR_BUS]  mem_waddr;  // 地址
-  wire                           mem_waddr_valid;  // 地址是否准备好
-  wire [                   7:0 ] mem_wmask;  // 数据掩码,读取多少位
-  wire                           mem_wdata_ready;  // 读数据是否准备好
-  wire [             `XLEN_BUS]  mem_wdata;  // 返回到读取的数据
+  wire [             `XLEN_BUS]  mem_wdata;  // 写入的数据
 
 
   /* TARP 总线 */
@@ -425,17 +420,13 @@ module top (
       .csr_addr_i(csr_addr_ex_mem),
       .exc_csr_data_i(csr_writedata_ex_mem),
       .exc_csr_valid_i(csr_writevalid_ex_mem),
-      /* 读内存端口 */
-      .mem_raddr_o(mem_raddr),
-      .mem_raddr_valid_o(mem_raddr_valid),
-      .mem_rmask_o(mem_rmask),
-      .mem_rdata_valid_i(mem_rdata_valid),
+      /* dcache 接口 */
+      .mem_addr_o(mem_addr),
+      .mem_addr_valid_o(mem_addr_valid),
+      .mem_mask_o(mem_mask),
+      .mem_write_valid_o(mem_write_valid),
+      .mem_data_ready_i(mem_data_ready),
       .mem_rdata_i(mem_rdata),
-      /* 写内存接口 */
-      .mem_waddr_o(mem_waddr),
-      .mem_waddr_valid_o(mem_waddr_valid),
-      .mem_wmask_o(mem_wmask),
-      .mem_wdata_ready_i(mem_wdata_ready),
       .mem_wdata_o(mem_wdata),
 
       // TARP 总线
@@ -685,6 +676,49 @@ module top (
       .ram_rdata_icache_i(ram_rdata_icache)
   );
 
+
+  /* dcache<-->mem 端口 */
+  // 读端口
+  wire [`NPC_ADDR_BUS]  ram_raddr_dcache;
+  wire                  ram_raddr_valid_dcache;
+  wire [          7:0 ] ram_rmask_dcache;
+  wire                  ram_rdata_ready_dcache;
+  wire [    `XLEN_BUS]  ram_rdata_dcache;
+  // 写端口
+  wire [`NPC_ADDR_BUS]  ram_waddr_dcache;  // 地址
+  wire                  ram_waddr_valid_dcache;  // 地址是否准备好
+  wire [          7:0 ] ram_wmask_dcache;  // 数据掩码,写入多少位
+  wire                  ram_wdata_ready_dcache;  // 数据是否已经写入
+  wire [    `XLEN_BUS]  ram_wdata_dcache;  // 写入的数据
+
+  dcache_top u_dcache_top (
+      .clk              (clk),
+      .rst              (rst),
+      /* cpu<-->cache 端口 */
+      .mem_addr_i       (mem_addr),         // CPU 的访存信息 
+      .mem_mask_i       (mem_mask),         // 访存掩码
+      .mem_addr_valid_i (mem_addr_valid),   // 地址是否有效，无效时，停止访问 cache
+      .mem_write_valid_i(mem_write_valid),  // 1'b1,表示写;1'b0 表示读 
+      .mem_wdata_i      (mem_wdata),        // 写数据
+      .mem_rdata_o      (mem_rdata),        // dcache 返回读数据
+      .mem_data_ready_o (mem_data_ready),
+      // dcache 读数据是否准备好(未准备好需要暂停流水线)
+
+      /* cache<-->mem 端口 */
+      // 读端口
+      .ram_raddr_dcache_o(ram_raddr_dcache),
+      .ram_raddr_valid_dcache_o(ram_raddr_valid_dcache),
+      .ram_rmask_dcache_o(ram_rmask_dcache),
+      .ram_rdata_ready_dcache_i(ram_rdata_ready_dcache),
+      .ram_rdata_dcache_i(ram_rdata_dcache),
+      // 写端口
+      .ram_waddr_dcache_o(ram_waddr_dcache),  // 地址
+      .ram_waddr_valid_dcache_o(ram_waddr_valid_dcache),  // 地址是否准备好
+      .ram_wmask_dcache_o(ram_wmask_dcache),  // 数据掩码,写入多少位
+      .ram_wdata_ready_dcache_i(ram_wdata_ready_dcache),// 数据是否已经写入// 写入的数据
+      .ram_wdata_dcache_o(ram_wdata_dcache)
+  );
+
   /****************************测试中的访存模块***********************************/
   ram_arb u_ram_arb (
       .clk              (clk),
@@ -696,18 +730,18 @@ module top (
       .if_rdata_o       (ram_rdata_icache),        // 读数据返回mem
       .if_rdata_valid_o (ram_rdata_ready_icache),  // 读数据是否有效
       /* mem 读接口 */
-      .mem_read_addr_i  (mem_raddr),               // mem 阶段的 read
-      .mem_rmask_i      (mem_rmask),
-      .mem_valid_i      (mem_raddr_valid),
-      .mem_rdata_o      (mem_rdata),
-      .mem_rdata_valid_o(mem_rdata_valid),
+      .mem_read_addr_i  (ram_raddr_dcache),        // mem 阶段的 read
+      .mem_rmask_i      (ram_rmask_dcache),
+      .mem_valid_i      (ram_raddr_valid_dcache),
+      .mem_rdata_o      (ram_rdata_dcache),
+      .mem_rdata_valid_o(ram_rdata_ready_dcache),
 
       // mem 访存请求端口（写）,独占
-      .mem_write_addr_i(mem_waddr),  // mem 阶段的 write
-      .mem_write_valid_i(mem_waddr_valid),
-      .mem_wmask_i(mem_wmask),
-      .mem_wdata_i(mem_wdata),
-      .mem_wdata_ready_o(mem_wdata_ready)  // 数据是否已经写入
+      .mem_write_addr_i(ram_waddr_dcache),  // mem 阶段的 write
+      .mem_write_valid_i(ram_waddr_valid_dcache),
+      .mem_wmask_i(ram_wmask_dcache),
+      .mem_wdata_i(ram_wdata_dcache),
+      .mem_wdata_ready_o(ram_wdata_ready_dcache)  // 数据是否已经写入
   );
 
 endmodule
