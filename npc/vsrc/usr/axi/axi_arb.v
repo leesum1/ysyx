@@ -56,61 +56,90 @@ module axi_arb (
   reg [7:0] _arb_rmask_o;  // 数据掩码
 
 
-  always @(posedge clk) begin
-    if (rst) begin
-      arb_state <= RST;
-      if_read_state <= `FALSE;
-      mem_read_state <= `FALSE;
+
+  always @(*) begin
+    if (if_raddr_valid_i) begin : if_read
+      if_read_state = `TRUE;
+      mem_read_state = `FALSE;
+
+      _arb_read_addr_o = if_read_addr_i;
+      _arb_raddr_valid_o = if_raddr_valid_i;
+      _arb_rmask_o = if_rmask_i;
+    end else if (mem_raddr_valid_i) begin : mem_read
+      if_read_state = `FALSE;
+      mem_read_state = `TRUE;
+
+      _arb_read_addr_o = mem_read_addr_i;
+      _arb_raddr_valid_o = mem_raddr_valid_i;
+      _arb_rmask_o = mem_rmask_i;
     end else begin
-      case (arb_state)
-        RST: begin
-          arb_state <= IDLE;
-        end
-        IDLE: begin
+      if_read_state = `FALSE;
+      mem_read_state = `FALSE;
 
-          if (if_raddr_valid_i) begin : if_read
-            arb_state <= IF_READ;
-            if_read_state <= `TRUE;
-            mem_read_state <= `FALSE;
-
-            _arb_read_addr_o <= if_read_addr_i;
-            _arb_raddr_valid_o <= if_raddr_valid_i;
-            _arb_rmask_o <= if_rmask_i;
-
-          end else if (mem_raddr_valid_i) begin : mem_read
-            arb_state <= MEM_READ;
-            if_read_state <= `FALSE;
-            mem_read_state <= `TRUE;
-
-            _arb_read_addr_o <= mem_read_addr_i;
-            _arb_raddr_valid_o <= mem_raddr_valid_i;
-            _arb_rmask_o <= mem_rmask_i;
-
-          end else begin : no_read
-            arb_state <= IDLE;
-            if_read_state <= `FALSE;
-            mem_read_state <= `FALSE;
-            _arb_read_addr_o <= 0;
-            _arb_raddr_valid_o <= 0;
-            _arb_rmask_o <= 0;
-          end
-        end
-        IF_READ, MEM_READ: begin
-          if (arb_rdata_ready_i) begin
-            if_read_state <= `FALSE;
-            mem_read_state <= `FALSE;
-            // // 缓存 axi 返回数据
-            // _arb_rdata_ready_i <= arb_rdata_ready_i;
-            // _arb_rdata_i <= arb_rdata_i;
-            arb_state <= IDLE;
-          end
-        end
-        default: begin
-          arb_state <= IDLE;
-        end
-      endcase
+      _arb_read_addr_o = 0;
+      _arb_raddr_valid_o = 0;
+      _arb_rmask_o = 0;
     end
   end
+
+
+  // always @(posedge clk) begin
+  //   if (rst) begin
+  //     arb_state <= RST;
+  //     if_read_state <= `FALSE;
+  //     mem_read_state <= `FALSE;
+  //   end else begin
+  //     case (arb_state)
+  //       RST: begin
+  //         arb_state <= IDLE;
+  //       end
+  //       IDLE: begin
+
+  //         if (if_raddr_valid_i) begin : if_read
+  //           arb_state <= IF_READ;
+  //           if_read_state <= `TRUE;
+  //           mem_read_state <= `FALSE;
+
+  //           _arb_read_addr_o <= if_read_addr_i;
+  //           _arb_raddr_valid_o <= if_raddr_valid_i;
+  //           _arb_rmask_o <= if_rmask_i;
+
+  //         end else if (mem_raddr_valid_i) begin : mem_read
+  //           arb_state <= MEM_READ;
+  //           if_read_state <= `FALSE;
+  //           mem_read_state <= `TRUE;
+
+  //           _arb_read_addr_o <= mem_read_addr_i;
+  //           _arb_raddr_valid_o <= mem_raddr_valid_i;
+  //           _arb_rmask_o <= mem_rmask_i;
+
+  //         end else begin : no_read
+  //           arb_state <= IDLE;
+  //           if_read_state <= `FALSE;
+  //           mem_read_state <= `FALSE;
+  //           _arb_read_addr_o <= 0;
+  //           _arb_raddr_valid_o <= 0;
+  //           _arb_rmask_o <= 0;
+  //         end
+  //       end
+  //       IF_READ, MEM_READ: begin
+  //         if (arb_rdata_ready_i) begin
+  //           if_read_state <= `FALSE;
+  //           mem_read_state <= `FALSE;
+  //           // // 缓存 axi 返回数据
+  //           // _arb_rdata_ready_i <= arb_rdata_ready_i;
+  //           // _arb_rdata_i <= arb_rdata_i;
+  //           arb_state <= IDLE;
+  //         end
+  //       end
+  //       default: begin
+  //         arb_state <= IDLE;
+  //       end
+  //     endcase
+  //   end
+  // end
+
+
 
   // 读
   assign if_rdata_o = (if_read_state) ? arb_rdata_i : 0;

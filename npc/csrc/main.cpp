@@ -35,6 +35,11 @@ int main(int argc, char* argv[]) {
   mysim_p->mem->loadImage();
   mysim_p->reset();
 
+  size_t file_size = mysim_p->u_axi4->dram->load_binary(0, img_path);
+
+  cout << "file_size " << file_size << endl;
+
+
   /* 注册命令 */
   cr::Console c(">:");
   c.registerCommand("info", cmd_info);
@@ -49,7 +54,7 @@ int main(int argc, char* argv[]) {
   int retCode;
 
 #ifdef TOP_TRACE
-  mysim_p->u_difftest.init(nemu_so_path, mysim_p->mem->getImgSize(), 0);
+  mysim_p->u_difftest.init(nemu_so_path, file_size, 0);
   c.executeCommand("sdb on difftest");
 #endif
 

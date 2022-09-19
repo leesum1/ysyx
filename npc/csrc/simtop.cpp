@@ -14,7 +14,6 @@ static const char* regs[] = {
 
 Simtop::Simtop() {
     cout << "SimtopStart!" << endl;
-    mem = new SimMem;
 
     /* 波形数据 */
 #ifdef TOP_TRACE
@@ -22,12 +21,16 @@ Simtop::Simtop() {
     tfp = new VerilatedVcdC;
     contextp->traceEverOn(true);
 #endif
+
     top = new Vtop;
+    mem = new SimMem;
+    u_axi4 = new SimAxi4(top);
 #ifdef TOP_TRACE
     top->trace(tfp, 0);
     tfp->open("sim.vcd");
 #endif
     this->top_status = TOP_RUNNING;
+    cout << "test111" << endl;
 }
 
 Simtop::~Simtop() {
@@ -56,6 +59,19 @@ void Simtop::changeCLK() {
 }
 
 
+void Simtop::posedgeCLK() {
+    top->clk = 1;
+    u_axi4->update_input(); // 上升沿采集到的是之前的值
+    top->eval();
+    u_axi4->beat();
+    u_axi4->update_output();
+}
+void Simtop::negedgeCLK() {
+    top->clk = 0;
+    top->eval();
+}
+
+
 void Simtop::dampWave() {
 #ifdef TOP_TRACE
     contextp->timeInc(1);
@@ -72,14 +88,15 @@ void Simtop::stepCycle(bool val) {
     if (top_status != TOP_RUNNING) {
         return;
     }
-    changeCLK(); // 上升沿
+    // changeCLK(); // 上升沿
+    posedgeCLK();
     /* 上升沿和下降沿都要保存波形数据 */
 #ifdef TOP_TRACE
     if (isSdbOk("wave")) {
         this->dampWave();
     }
 #endif
-    changeCLK();// 下降沿
+    negedgeCLK();
 #ifdef TOP_TRACE
     if (isSdbOk("wave")) {
         this->dampWave();

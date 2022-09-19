@@ -114,7 +114,7 @@ module dcache_top (
           dcache_tag_wen <= `FALSE;
           dcache_data_wen <= 0;
           cache_line_temp <= 0;
-          dcache_wmask <= 0;
+          //dcache_wmask <= 0;
           // cache data 为单端口 ram,不能同时读写, uncache 直接访问内存
           if (mem_addr_valid_i && ~dcache_data_wen && ~uncache) begin
             case ({
@@ -189,7 +189,7 @@ module dcache_top (
             // tag data 写使能,在下一个周期将 cache line 的数据写入 cache 中
             dcache_data_wen <= `TRUE;
             dcache_tag_wen <= `TRUE;
-            dcache_wmask <= dcache_wmask_temp;
+            dcache_wmask <= ~(128'b0);  // 128 bit 写使能
             _ram_raddr_valid_dcache_o <= `FALSE;
             dcahce_state <= CACHE_IDLE;
           end
@@ -207,12 +207,12 @@ module dcache_top (
           // 首先写内存,等待写内存结束
           if (_ram_waddr_valid_dcache_o & ram_wdata_ready_dcache_i) begin
             _ram_waddr_valid_dcache_o <= `FALSE;
-            // 移动到对应位置上去
-            cache_line_temp <= (mem_addr_i[3]) ? {{mem_wdata_i<<{addr_last3,3'b0}}, 64'b0} : {64'b0, {mem_wdata_i<<{addr_last3,3'b0}}};
+            // 移动到对应位置上去 TODO:放到 mem 阶段去
+            cache_line_temp <= (mem_addr_i[3]) ? {mem_wdata_i, 64'b0} : {64'b0, mem_wdata_i};
             // 再写 cache
             dcache_data_wen <= `TRUE;
             dcahce_rdata_ok <= `TRUE;  // 完成信号
-            dcache_wmask <= dcache_wmask_temp;
+            dcache_wmask <= (mem_addr_i[3]) ? {wmask_bit, 64'b0} : {64'b0, wmask_bit};
             dcahce_state <= CACHE_IDLE;
           end
         end
@@ -237,70 +237,23 @@ module dcache_top (
     end
   end
 
-  reg [127:0] dcache_wmask_temp;
+
   reg [127:0] dcache_wmask;
 
-  always @(*) begin
-    if (mem_write_valid_i) begin
-      dcache_wmask_temp = (mem_addr_i[3]) ? {wmask_bit, 64'b0} : {64'b0, wmask_bit};
-    end else begin
-      dcache_wmask_temp = 128'hffff_ffff_ffff_ffff_ffff_ffff_ffff_ffff;
-    end
-  end
 
-  reg [63:0] wmask_bit;
+  wire [63:0] wmask_bit = {
+    {8{mem_mask_i[7]}},
+    {8{mem_mask_i[6]}},
+    {8{mem_mask_i[5]}},
+    {8{mem_mask_i[4]}},
+    {8{mem_mask_i[3]}},
+    {8{mem_mask_i[2]}},
+    {8{mem_mask_i[1]}},
+    {8{mem_mask_i[0]}}
+  };
+
   wire [2:0] addr_last3 = mem_addr_i[2:0];
 
-  // wire w_1byte = (mem_mask_i == 8'b0000_0001);
-  // wire w_2byte = (mem_mask_i == 8'b0000_0011);
-  // wire w_4byte = (mem_mask_i == 8'b0000_1111);
-  // wire w_8byte = (mem_mask_i == 8'b1111_1111);
-  always @(*) begin
-    case (mem_mask_i)
-      8'b0000_0001: begin
-        case (addr_last3)
-          3'd0: wmask_bit = 64'h0000_0000_0000_00ff;
-          3'd1: wmask_bit = 64'h0000_0000_0000_ff00;
-          3'd2: wmask_bit = 64'h0000_0000_00ff_0000;
-          3'd3: wmask_bit = 64'h0000_0000_ff00_0000;
-          3'd4: wmask_bit = 64'h0000_00ff_0000_0000;
-          3'd5: wmask_bit = 64'h0000_ff00_0000_0000;
-          3'd6: wmask_bit = 64'h00ff_0000_0000_0000;
-          3'd7: wmask_bit = 64'hff00_0000_0000_0000;
-        endcase
-      end
-      8'b0000_0011: begin
-        case (addr_last3)
-          3'd0: wmask_bit = 64'h0000_0000_0000_ffff;
-          3'd2: wmask_bit = 64'h0000_0000_ffff_0000;
-          3'd4: wmask_bit = 64'h0000_ffff_0000_0000;
-          3'd6: wmask_bit = 64'hffff_0000_0000_0000;
-          default: wmask_bit = 64'h0000_0000_0000_0000;
-        endcase
-      end
-      8'b0000_1111: begin
-        // case (addr_last3)
-        //   3'd0: wmask_bit = 64'h0000_0000_ffff_ffff;
-        //   3'd4: wmask_bit = 64'hffff_ffff_0000_0000;
-        //   default: wmask_bit = 64'h0000_0000_0000_0000;
-        // endcase
-        wmask_bit = (mem_addr_i % 8 == 0) ? 64'h0000_0000_ffff_ffff : 64'hffff_ffff_0000_0000;
-      end
-      8'b1111_1111: begin
-        case (addr_last3)
-          3'd0: wmask_bit = 64'hffff_ffff_ffff_ffff;
-          default: wmask_bit = 64'h0000_0000_0000_0000;
-        endcase
-      end
-      default: begin
-        wmask_bit = 64'h0000_0000_0000_0000;
-      end
-    endcase
-  end
-
-
-  //dcache_data <= {32'b0, cache_line_regs[cache_line_idx][cache_blk_addr*8+:32]};
-  // wire [`XLEN_BUS] _dcache_data_o = {32'b0, dcache_line_rdata[blk_addr_reg*8+:32]};
 
   reg [`XLEN_BUS] _dcache_data_o;
   always @(*) begin
@@ -322,9 +275,6 @@ module dcache_top (
       end
     endcase
   end
-
-
-
 
 
 
@@ -362,8 +312,6 @@ module dcache_top (
 
 
 
-
-  // assign mem_rdata_o = _dcache_data_o & {64{mem_data_ready_o}};
   assign mem_rdata_o = (uncache) ? uncache_rdata : _dcache_data_o;
 
   assign mem_data_ready_o = dcahce_rdata_ok && (dcahce_state == CACHE_IDLE);
@@ -377,13 +325,6 @@ module dcache_top (
   assign ram_waddr_valid_dcache_o = _ram_waddr_valid_dcache_o;
   assign ram_wmask_dcache_o = _ram_wmask_dcache_o;
   assign ram_wdata_dcache_o = _ram_wdata_dcache_o;
-
-  // output [`NPC_ADDR_BUS] ram_waddr_dcache_o,        // 地址
-  // output                 ram_waddr_valid_dcache_o,  // 地址是否准备好
-  // output [          7:0] ram_wmask_dcache_o,        // 数据掩码,写入多少位
-  // input                  ram_wdata_ready_dcache_i,  // 数据是否已经写入
-  // output [    `XLEN_BUS] ram_wdata_dcache_o         // 写入的数据
-
 
 endmodule
 

@@ -6,16 +6,16 @@ module ram_arb (
     input rst,
     // if 访存请求端口（读）
     input [`NPC_ADDR_BUS] if_read_addr_i,  // if 阶段的 read
-    input if_valid_i,  // 是否发起读请求
+    input if_read_valid_i,  // 是否发起读请求
     input [7:0] if_rmask_i,  // 数据掩码
     output [`XLEN_BUS] if_rdata_o,  // 读数据返回mem
-    output if_rdata_valid_o,  // 读数据是否有效
+    output if_rdata_ready_o,  // 读数据是否有效
     // mem 访存请求端口（读）
     input [`NPC_ADDR_BUS] mem_read_addr_i,  // mem 阶段的 read
-    input mem_valid_i,
+    input mem_read_valid_i,
     input [7:0] mem_rmask_i,
     output [`XLEN_BUS] mem_rdata_o,
-    output mem_rdata_valid_o,
+    output mem_rdata_ready_o,
     // mem 访存请求端口（写）,独占
     input [`NPC_ADDR_BUS] mem_write_addr_i,  // mem 阶段的 write
     input mem_write_valid_i,
@@ -147,13 +147,13 @@ module ram_arb (
         end
         IDLE: begin
           _ram_read_valid <= `FALSE;
-          if (if_valid_i) begin
+          if (if_read_valid_i) begin
             _ram_raddr <= if_read_addr_i;
             _ram_rmask <= if_rmask_i;
             _ram_if <= `TRUE;
             _ram_mem <= `FALSE;
             _ram_read_state <= MEM2;
-          end else if (mem_valid_i) begin
+          end else if (mem_read_valid_i) begin
             _ram_raddr <= mem_read_addr_i;
             _ram_rmask <= mem_rmask_i;
             _ram_if <= `FALSE;
@@ -169,21 +169,21 @@ module ram_arb (
         end
         // MEM1: begin
         //   // 延时一个周期（可设置延时多个周期）
-        //   if (mem_valid_i & _ram_mem) begin
+        //   if (mem_read_valid_i & _ram_mem) begin
         //     _ram_read_state <= MEM2;
-        //   end else if (if_valid_i & _ram_if) begin
+        //   end else if (if_read_valid_i & _ram_if) begin
         //     _ram_read_state <= MEM2;
         //   end else begin
         //     _ram_read_state <= IDLE;
         //   end
         // end
         MEM2: begin
-          if (if_valid_i & _ram_if) begin
+          if (if_read_valid_i & _ram_if) begin
             _ram_raddr <= if_read_addr_i;
             _ram_rmask <= if_rmask_i;
             _ram_read_state <= IDLE;
             _ram_read_valid <= `TRUE;
-          end else if (mem_valid_i & _ram_mem) begin
+          end else if (mem_read_valid_i & _ram_mem) begin
             _ram_raddr <= mem_read_addr_i;
             _ram_rmask <= mem_rmask_i;
             _ram_read_state <= IDLE;
@@ -213,21 +213,21 @@ module ram_arb (
   /* 根据优先级选择最后数据 */
   reg [`XLEN_BUS] _if_rdata_o;  // 读数据返回mem
   reg [`XLEN_BUS] _mem_rdata_o;
-  reg _if_rdata_valid_o;  // 读数据是否有效
-  reg _mem_rdata_valid_o;
+  reg _if_rdata_ready_o;  // 读数据是否有效
+  reg _mem_rdata_ready_o;
   always @(*) begin
     // 默认值
     _mem_rdata_o = `XLEN'b0;
     _if_rdata_o = `XLEN'b0;
-    _mem_rdata_valid_o = `FALSE;
-    _if_rdata_valid_o = `FALSE;
+    _mem_rdata_ready_o = `FALSE;
+    _if_rdata_ready_o = `FALSE;
     // if 读优先
-    if (if_valid_i & _ram_if) begin
+    if (if_read_valid_i & _ram_if) begin
       _if_rdata_o = _ram_rdata;
-      _if_rdata_valid_o = _ram_read_valid;
-    end else if (mem_valid_i & _ram_mem) begin
+      _if_rdata_ready_o = _ram_read_valid;
+    end else if (mem_read_valid_i & _ram_mem) begin
       _mem_rdata_o = _ram_rdata;
-      _mem_rdata_valid_o = _ram_read_valid;
+      _mem_rdata_ready_o = _ram_read_valid;
     end  // if 读 
 
   end
@@ -235,8 +235,8 @@ module ram_arb (
   /* 输出指定 */
   assign mem_rdata_o = _mem_rdata_o;
   assign if_rdata_o = _if_rdata_o;
-  assign mem_rdata_valid_o = _mem_rdata_valid_o;
-  assign if_rdata_valid_o = _if_rdata_valid_o;
+  assign mem_rdata_ready_o = _mem_rdata_ready_o;
+  assign if_rdata_ready_o = _if_rdata_ready_o;
 
 
 endmodule

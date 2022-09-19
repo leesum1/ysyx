@@ -2,8 +2,81 @@
 
 /* 需要设为为input熟悉才能才仿真中改变值 */
 module top (
-    input clk,
-    input rst
+    input clk,  //todo clock reset
+    input rst,
+    input io_interrupt,  // 外部中断
+
+    /* AXI4 master */
+    // 写地址通道
+    input io_master_awready,
+    output io_master_awvalid,
+    output [31:0] io_master_awaddr,
+    output [3:0] io_master_awid,
+    output [7:0] io_master_awlen,
+    output [2:0] io_master_awsize,
+    output [1:0] io_master_awburst,
+    // 写数据通道
+    input io_master_wready,
+    output io_master_wvalid,
+    output [63:0] io_master_wdata,
+    output [7:0] io_master_wstrb,
+    output io_master_wlast,
+    // 写响应通道
+    output io_master_bready,
+    input io_master_bvalid,
+    input [1:0] io_master_bresp,
+    input [3:0] io_master_bid,
+    // 读地址通道
+    input io_master_arready,
+    output io_master_arvalid,
+    output [31:0] io_master_araddr,
+    output [3:0] io_master_arid,
+    output [7:0] io_master_arlen,
+    output [2:0] io_master_arsize,
+    output [1:0] io_master_arburst,
+    // 读数据通道
+    output io_master_rready,
+    input io_master_rvalid,
+    input [1:0] io_master_rresp,
+    input [63:0] io_master_rdata,
+    input io_master_rlast,
+    input [3:0] io_master_rid,
+
+    /* AXI4 slave */
+    // 写地址通道
+    input io_slave_awready,
+    output io_slave_awvalid,
+    output [31:0] io_slave_awaddr,
+    output [3:0] io_slave_awid,
+    output [7:0] io_slave_awlen,
+    output [2:0] io_slave_awsize,
+    output [1:0] io_slave_awburst,
+    // 写数据通道
+    input io_slave_wready,
+    output io_slave_wvalid,
+    output [63:0] io_slave_wdata,
+    output [7:0] io_slave_wstrb,
+    output io_slave_wlast,
+    // 写响应通道
+    output io_slave_bready,
+    input io_slave_bvalid,
+    input [1:0] io_slave_bresp,
+    input [3:0] io_slave_bid,
+    // 读地址通道
+    input io_slave_arready,
+    output io_slave_arvalid,
+    output [31:0] io_slave_araddr,
+    output [3:0] io_slave_arid,
+    output [7:0] io_slave_arlen,
+    output [2:0] io_slave_arsize,
+    output [1:0] io_slave_arburst,
+    // 读数据通道
+    output io_slave_rready,
+    input io_slave_rvalid,
+    input [1:0] io_slave_rresp,
+    input [63:0] io_slave_rdata,
+    input io_slave_rlast,
+    input [3:0] io_slave_rid
 );
 
   /*×××××××××××××××××××××××××× PC 模块 用于选择吓一跳指令地址 ×××××××××××××××××××××××*/
@@ -720,29 +793,177 @@ module top (
   );
 
   /****************************测试中的访存模块***********************************/
-  ram_arb u_ram_arb (
-      .clk              (clk),
-      .rst              (rst),
-      /* icache 读接口 */
-      .if_read_addr_i   (ram_raddr_icache),        // if 阶段的 read
-      .if_rmask_i       (ram_rmask_icache),        // 数据掩码
-      .if_valid_i       (ram_raddr_valid_icache),  // 是否发起读请求
-      .if_rdata_o       (ram_rdata_icache),        // 读数据返回mem
-      .if_rdata_valid_o (ram_rdata_ready_icache),  // 读数据是否有效
-      /* mem 读接口 */
-      .mem_read_addr_i  (ram_raddr_dcache),        // mem 阶段的 read
-      .mem_rmask_i      (ram_rmask_dcache),
-      .mem_valid_i      (ram_raddr_valid_dcache),
-      .mem_rdata_o      (ram_rdata_dcache),
-      .mem_rdata_valid_o(ram_rdata_ready_dcache),
+  //   ram_arb u_ram_arb (
+  //       .clk              (clk),
+  //       .rst              (rst),
+  //       /* icache 读接口 */
+  //       .if_read_addr_i   (ram_raddr_icache),        // if 阶段的 read
+  //       .if_rmask_i       (ram_rmask_icache),        // 数据掩码
+  //       .if_valid_i       (ram_raddr_valid_icache),  // 是否发起读请求
+  //       .if_rdata_o       (ram_rdata_icache),        // 读数据返回mem
+  //       .if_rdata_valid_o (ram_rdata_ready_icache),  // 读数据是否有效
+  //       /* mem 读接口 */
+  //       .mem_read_addr_i  (ram_raddr_dcache),        // mem 阶段的 read
+  //       .mem_rmask_i      (ram_rmask_dcache),
+  //       .mem_valid_i      (ram_raddr_valid_dcache),
+  //       .mem_rdata_o      (ram_rdata_dcache),
+  //       .mem_rdata_valid_o(ram_rdata_ready_dcache),
 
-      // mem 访存请求端口（写）,独占
+  //       // mem 访存请求端口（写）,独占
+  //       .mem_write_addr_i(ram_waddr_dcache),  // mem 阶段的 write
+  //       .mem_write_valid_i(ram_waddr_valid_dcache),
+  //       .mem_wmask_i(ram_wmask_dcache),
+  //       .mem_wdata_i(ram_wdata_dcache),
+  //       .mem_wdata_ready_o(ram_wdata_ready_dcache)  // 数据是否已经写入
+  //   );
+
+  /***********************************测试中的 AXI4 总线接口***************************************/
+  /* arb<-->axi */
+  // 读通道
+  wire [`NPC_ADDR_BUS] arb_read_addr;
+  wire arb_raddr_valid;  // 是否发起读请求
+  wire [7:0] arb_rmask;  // 数据掩码
+  wire [`XLEN_BUS] arb_rdata;  // 读数据返回mem
+  wire arb_rdata_ready;  // 读数据是否有效
+  //写通道
+  wire [`NPC_ADDR_BUS] arb_write_addr;  // mem 阶段的 write
+  wire arb_write_valid;
+  wire [7:0] arb_wmask;
+  wire [`XLEN_BUS] arb_wdata;
+  wire arb_wdata_ready;  // 数据是否已经写入
+
+  axi_arb u_axi_arb (
+      .clk(clk),
+      .rst(rst),
+      /* if 访存请求端口（读）*/
+      .if_read_addr_i(ram_raddr_icache),  // if 阶段的 read
+      .if_raddr_valid_i(ram_raddr_valid_icache),  // 是否发起读请求
+      .if_rmask_i(ram_rmask_icache),  // 数据掩码
+      .if_rdata_o(ram_rdata_icache),  // 读数据返回mem
+      .if_rdata_ready_o (ram_rdata_ready_icache),// 读数据是否有效// mem 访存请求端口（读）
+      /* mem 访存请求端口（读）*/
+      .mem_read_addr_i(ram_raddr_dcache),
+      .mem_raddr_valid_i(ram_raddr_valid_dcache),
+      .mem_rmask_i(ram_rmask_dcache),
+      .mem_rdata_o(ram_rdata_dcache),
+      .mem_rdata_ready_o(ram_rdata_ready_dcache),
+      /* mem 访存接口（写）*/
       .mem_write_addr_i(ram_waddr_dcache),  // mem 阶段的 write
       .mem_write_valid_i(ram_waddr_valid_dcache),
       .mem_wmask_i(ram_wmask_dcache),
       .mem_wdata_i(ram_wdata_dcache),
-      .mem_wdata_ready_o(ram_wdata_ready_dcache)  // 数据是否已经写入
+      .mem_wdata_ready_o(ram_wdata_ready_dcache),  // 数据是否已经写入
+
+      /* arb<-->axi */
+      // 读通道
+      .arb_read_addr_o  (arb_read_addr),
+      .arb_raddr_valid_o(arb_raddr_valid),  // 是否发起读请求
+      .arb_rmask_o      (arb_rmask),        // 数据掩码
+      .arb_rdata_i      (arb_rdata),        // 读数据返回mem
+      .arb_rdata_ready_i(arb_rdata_ready),  // 读数据是否有效
+      //写通道
+      .arb_write_addr_o (arb_write_addr),   // mem 阶段的 write
+      .arb_write_valid_o(arb_write_valid),
+      .arb_wmask_o      (arb_wmask),
+      .arb_wdata_o      (arb_wdata),        // 数据是否已经写入
+      .arb_wdata_ready_i(arb_wdata_ready)
   );
+
+
+  /* 未使用到的信号 */
+  wire [2:0] io_master_awprot;
+  wire io_master_awuser;
+  wire io_master_awlock;
+  wire [3:0] io_master_awcache;
+  wire [3:0] io_master_awqos;
+  wire [3:0] io_master_awregion;
+  wire io_master_wuser;
+  wire io_master_buser;
+  wire [2:0] io_master_arprot;
+  wire io_master_aruser;
+  wire io_master_arlock;
+  wire [3:0] io_master_arcache;
+  wire [3:0] io_master_arqos;
+  wire [3:0] io_master_arregion;
+  wire io_master_ruser;
+
+  axi_rw #(
+      .RW_DATA_WIDTH (64),
+      .RW_ADDR_WIDTH (32),
+      .AXI_DATA_WIDTH(64),
+      .AXI_ADDR_WIDTH(32),
+      .AXI_ID_WIDTH  (4),
+      .AXI_STRB_WIDTH(8),
+      .AXI_USER_WIDTH(1)
+  ) u_axi_rw (
+      .clock            (clk),
+      .reset            (rst),
+      /* arb<-->axi */
+      // 读通道
+      .arb_read_addr_i  (arb_read_addr),
+      .arb_raddr_valid_i(arb_raddr_valid),  // 是否发起读请求
+      .arb_rmask_i      (arb_rmask),        // 数据掩码
+      .arb_rdata_o      (arb_rdata),        // 读数据返回mem
+      .arb_rdata_ready_o(arb_rdata_ready),  // 读数据是否有效//写通道
+      .arb_write_addr_i (arb_write_addr),   // mem 阶段的 write
+      .arb_write_valid_i(arb_write_valid),
+      .arb_wmask_i      (arb_wmask),
+      .arb_wdata_i      (arb_wdata),
+      .arb_wdata_ready_o(arb_wdata_ready),  // 数据是否已经写入
+
+      /* axi master */
+      // Advanced eXtensible Interface
+      // 写地址
+      .axi_aw_ready_i (io_master_awready),
+      .axi_aw_valid_o (io_master_awvalid),
+      .axi_aw_addr_o  (io_master_awaddr),
+      .axi_aw_prot_o  (io_master_awprot),
+      .axi_aw_id_o    (io_master_awid),
+      .axi_aw_user_o  (io_master_awuser),
+      .axi_aw_len_o   (io_master_awlen),
+      .axi_aw_size_o  (io_master_awsize),
+      .axi_aw_burst_o (io_master_awburst),
+      .axi_aw_lock_o  (io_master_awlock),
+      .axi_aw_cache_o (io_master_awcache),
+      .axi_aw_qos_o   (io_master_awqos),
+      .axi_aw_region_o(io_master_awregion),
+      //写数据
+      .axi_w_ready_i  (io_master_wready),
+      .axi_w_valid_o  (io_master_wvalid),
+      .axi_w_data_o   (io_master_wdata),
+      .axi_w_strb_o   (io_master_wstrb),
+      .axi_w_last_o   (io_master_wlast),
+      .axi_w_user_o   (io_master_wuser),
+      //写响应
+      .axi_b_ready_o  (io_master_bready),
+      .axi_b_valid_i  (io_master_bvalid),
+      .axi_b_resp_i   (io_master_bresp),
+      .axi_b_id_i     (io_master_bid),
+      .axi_b_user_i   (io_master_buser),
+      //读地址
+      .axi_ar_ready_i (io_master_arready),
+      .axi_ar_valid_o (io_master_arvalid),
+      .axi_ar_addr_o  (io_master_araddr),
+      .axi_ar_prot_o  (io_master_arprot),
+      .axi_ar_id_o    (io_master_arid),
+      .axi_ar_user_o  (io_master_aruser),
+      .axi_ar_len_o   (io_master_arlen),
+      .axi_ar_size_o  (io_master_arsize),
+      .axi_ar_burst_o (io_master_arburst),
+      .axi_ar_lock_o  (io_master_arlock),
+      .axi_ar_cache_o (io_master_arcache),
+      .axi_ar_qos_o   (io_master_arqos),
+      .axi_ar_region_o(io_master_arregion),
+      //读数据
+      .axi_r_ready_o  (io_master_rready),
+      .axi_r_valid_i  (io_master_rvalid),
+      .axi_r_resp_i   (io_master_rresp),
+      .axi_r_data_i   (io_master_rdata),
+      .axi_r_last_i   (io_master_rlast),
+      .axi_r_id_i     (io_master_rid),
+      .axi_r_user_i   (io_master_ruser)
+  );
+
 
 endmodule
 

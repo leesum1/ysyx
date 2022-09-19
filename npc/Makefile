@@ -23,6 +23,7 @@ GCC_INC_PATH = -I$(NPC_HOME)/csrc/include  \
 			   -I$(NPC_HOME)/csrc  \
 			   -I$(NPC_HOME)/csrc/devices/include \
 			   -I$(NPC_HOME)/csrc/ringbuff \
+			   -I$(NPC_HOME)/csrc/soc-simulator \
 			   -I/usr/include/SDL2 \
 
 # llvm

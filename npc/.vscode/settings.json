@@ -5,7 +5,7 @@
         "**/*.{sv,v,svh,vh}"
     ],
     "systemverilog.documentSymbolsPrecision": "full",
-    "systemverilog.launchConfigurationVerilator": "verilator  --lint-only --language 1800-2012 --Wall -y ./vsrc/usr/pipeline -y ./vsrc/lib -y ./vsrc -y ./vsrc/usr -y ./vsrc/usr/cache",
+    "systemverilog.launchConfigurationVerilator": "verilator  --lint-only --language 1800-2012 --Wall -y ./vsrc/usr/pipeline -y ./vsrc/lib -y ./vsrc -y ./vsrc/usr -y ./vsrc/usr/cache -y ./vsrc/usr/alu -y ./vsrc/usr/axi",
     "files.associations": {
         "Makefile": "makefile",
         "*.nxdc": "makefile",
@@ -60,6 +60,8 @@
         "thread": "cpp",
         "tuple": "cpp",
         "utility": "cpp",
-        "random": "cpp"
-    }
+        "random": "cpp",
+        "bitset": "cpp"
+    },
+    "systemverilog.antlrVerification": false
 }

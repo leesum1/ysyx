@@ -9,6 +9,7 @@ using namespace std;
 namespace Topdevice {
 
     /* 各个设备地址 */
+#define MEM_BASE 0x80000000
 #define DEVICE_BASE 0xa0000000
 #define MMIO_BASE 0xa0000000
 #define SERIAL_PORT     (DEVICE_BASE + 0x00003f8)

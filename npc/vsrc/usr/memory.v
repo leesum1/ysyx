@@ -130,13 +130,19 @@ module memory (
   // wire [`XLEN_BUS] _waddr = _addr;
 
   /** dcache  接口 **/
+  // cache_line_temp <= (mem_addr_i[3]) ? {{mem_wdata_i<<{addr_last3,3'b0}}, 64'b0} : {64'b0, {mem_wdata_i<<{addr_last3,3'b0}}};
+  // 1. mem store 指令,需要将 waddr,wdata,wmask 对齐
+  // 2. mem load 指令,需要调整 rmask,不能与 wmask 相同
+  // 3. dcache 的 mask 和 data 需要调整
+  // 4. axi write strobes 和 wdata 需要调整
+  wire [2:0] addr_last3 = _addr[2:0];
 
   assign mem_addr_o = _addr[31:0];
-  assign mem_mask_o = _mask;
+  assign mem_mask_o = mem_write_valid_o ? (_mask << addr_last3) : _mask;
   assign _mem_read = (mem_data_ready_i) ? mem_rdata_i : `XLEN'b0;
   assign mem_addr_valid_o = (_isload | _isstore) & (~mem_data_ready_i);
   assign mem_write_valid_o = _isstore & (~mem_data_ready_i);
-  assign mem_wdata_o = _mem_write;
+  assign mem_wdata_o = _mem_write << {addr_last3, 3'b0};  // 对齐位置调整
 
 
   /* stall_req */

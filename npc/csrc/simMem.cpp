@@ -26,7 +26,7 @@ SimMem::SimMem(/* args */) {
         << COLOR_END << endl;
 
     // 创建设备管理器，用于 IOE
-    Device = new Topdevice::DeviceManager;
+    //Device = new Topdevice::DeviceManager;
 }
 
 SimMem::~SimMem() {

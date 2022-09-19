@@ -9,6 +9,7 @@
 #include <iomanip>
 #include "verilated_dpi.h"
 #include "simMem.h"
+#include "simAXI4/simaxi4.h"
 #include "watchpoint.h"
 #include "expr.h"
 #include "difftest.h"
@@ -51,6 +52,8 @@ private:
     void stepCycle(bool val);
     const char* getRegName(int idx);
     void changeCLK();
+    void posedgeCLK();
+    void negedgeCLK();
     void dampWave();
 public:
     uint64_t mem_pc; // 记录当前访存指令的 PC,用于 difftest device 的 skip 处理 
@@ -60,6 +63,7 @@ public:
         TOP_RUNNING
     };
     SimMem* mem;
+    SimAxi4* u_axi4;
     Watchpoint u_wp;
     expr_namespace::Expr u_expr;
     Difftest u_difftest;
