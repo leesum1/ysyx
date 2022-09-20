@@ -38,7 +38,9 @@ public:
 
         if (start_addr + size <= mem_size) {
             memcpy(buffer, &mem[start_addr], size);
+#ifdef  MTRACH
             printf("do_read:%p,size:%ld,rdata:%p\n", (void*)(start_addr + 0x80000000), size, (void*)(*(uint64_t*)buffer));
+#endif
             return true;
         }
         else if (allow_warp) {
@@ -52,8 +54,9 @@ public:
         else return false;
     }
     bool do_write(uint64_t start_addr, uint64_t size, const uint8_t* buffer) {
+#ifdef  MTRACH
         printf("do_write:%p,size:%ld,wdata:%p\n", (void*)(start_addr + 0x80000000), size, (void*)(*(uint64_t*)buffer));
-
+#endif
         if (start_addr + size <= mem_size) {
             memcpy(&mem[start_addr], buffer, size);
             if (diff_mem_write) {

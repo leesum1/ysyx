@@ -1,6 +1,7 @@
 #include "simaxi4.h"
 #include "simtop.h"
 #include "uart8250.hpp"
+
 #include <thread>
 #include <termios.h>
 
@@ -32,6 +33,8 @@ SimAxi4::SimAxi4(Vtop* top) {
 }
 
 SimAxi4::~SimAxi4() {
+    delete dram;
+    delete mydevices;
 
 }
 
@@ -90,6 +93,9 @@ void SimAxi4::mmio_device_init() {
     // 内存
     dram = new mmio_mem(0x8000000);
     assert(mmio.add_dev(MEM_BASE, 0x8000000, dram));
+    // 外设
+    mydevices = new Device2axi4();
+    assert(mmio.add_dev(MMIO_BASE, 0x2000000, mydevices));
 }
 
 void SimAxi4::update_input() {

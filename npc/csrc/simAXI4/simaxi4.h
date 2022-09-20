@@ -8,6 +8,7 @@
 #include "axi4_mem.hpp"
 #include "axi4_xbar.hpp"
 #include "mmio_mem.hpp"
+#include "mmio_device2axi4.hpp"
 
 
 using namespace std;
@@ -33,6 +34,7 @@ private:
     axi4     <32, 64, 4> mmio_sigs;
 public:
     mmio_mem* dram;
+    Device2axi4* mydevices;
 public:
     SimAxi4(Vtop* top);
     ~SimAxi4();
