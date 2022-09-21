@@ -6,6 +6,10 @@ module mem_wb (
     input [5:0] flush_valid_i,
     input [5:0] stall_valid_i,
 
+    // rdata_buff
+    input mem_data_ready_i,
+    output rdata_buff_valid_o,
+    output [`XLEN_BUS] rdata_buff_o,
 
     // input [    `XLEN_BUS] pc_mem_wb_i,
     // input [`INST_LEN-1:0] inst_data_mem_wb_i,
@@ -53,6 +57,17 @@ module mem_wb (
 
   wire reg_wen = !stall_valid_i[`CTRLBUS_MEM_WB];
   wire _flush_valid = flush_valid_i[`CTRLBUS_MEM_WB];
+
+
+
+  // 用于 difftest，获取即将提交的下一条指令的 pc
+  import "DPI-C" function void set_nextpc(input longint nextpc);
+  always @(posedge clk) begin
+    // 避免重复提交 pc
+    if (reg_wen & (~_flush_valid)) begin
+      set_nextpc(pc_mem_wb_i);
+    end
+  end
 
   //   /* pc 寄存器 */
   //   wire [`XLEN_BUS] _pc_mem_wb_d = (_flush_valid) ? `XLEN'b0 : pc_mem_wb_i;
@@ -289,20 +304,7 @@ module mem_wb (
   //   );
   //   assign exc_alu_data_mem_wb_o = _exc_alu_data_mem_wb_q;
 
-  /* mem_data寄存器 */
-  wire [`XLEN-1:0] _mem_data_mem_wb_d = (_flush_valid) ? `XLEN'b0 : mem_data_mem_wb_i;
-  reg [`XLEN-1:0] _mem_data_mem_wb_q;
-  regTemplate #(
-      .WIDTH    (`XLEN),
-      .RESET_VAL(`XLEN'b0)  //TODO:默认值未设置
-  ) u_mem_data_mem_wb (
-      .clk (clk),
-      .rst (rst),
-      .din (_mem_data_mem_wb_d),
-      .dout(_mem_data_mem_wb_q),
-      .wen (reg_wen)
-  );
-  assign mem_data_mem_wb_o = _mem_data_mem_wb_q;
+
 
 
   //   /* load_valid寄存器 */
@@ -369,7 +371,8 @@ module mem_wb (
 
 
   /* rd_addr 寄存器 */
-  wire [`REG_ADDRWIDTH-1:0] _rd_addr_mem_wb_d = (_flush_valid) ? `REG_ADDRWIDTH'b0 : rd_addr_mem_wb_i;
+  wire [`REG_ADDRWIDTH-1:0] _rd_addr_mem_wb_d = (_flush_valid) ? `REG_ADDRWIDTH'b0:
+                                                (~stall_valid_i[`CTRLBUS_EX_MEM])&rdata_buff_valid?rd_idx_buff: rd_addr_mem_wb_i;
   reg [`REG_ADDRWIDTH-1:0] _rd_addr_mem_wb_q;
   regTemplate #(
       .WIDTH    (`REG_ADDRWIDTH),
@@ -381,7 +384,54 @@ module mem_wb (
       .dout(_rd_addr_mem_wb_q),
       .wen (reg_wen)
   );
-  assign rd_addr_mem_wb_o = _rd_addr_mem_wb_q;
+  //assign rd_addr_mem_wb_o = _rd_addr_mem_wb_q; //TODO:测试中
+
+
+  /* mem_data寄存器 */
+  wire [`XLEN-1:0] _mem_data_mem_wb_d = (_flush_valid) ? `XLEN'b0 : 
+                                        (~stall_valid_i[`CTRLBUS_EX_MEM])&rdata_buff_valid ? rdata_buff:
+                                        mem_data_mem_wb_i;
+  reg [`XLEN-1:0] _mem_data_mem_wb_q;
+  regTemplate #(
+      .WIDTH    (`XLEN),
+      .RESET_VAL(`XLEN'b0)  //TODO:默认值未设置
+  ) u_mem_data_mem_wb (
+      .clk (clk),
+      .rst (rst),
+      .din (_mem_data_mem_wb_d),
+      .dout(_mem_data_mem_wb_q),
+      .wen (reg_wen)
+  );
+
+  assign mem_data_mem_wb_o = _mem_data_mem_wb_q;
+  assign rd_addr_mem_wb_o  = _rd_addr_mem_wb_q;  //TODO:测试中
+  //   // TODO: 测试中
+  //   assign mem_data_mem_wb_o = (~stall_valid_i[`CTRLBUS_EX_MEM])&rdata_buff_valid ? rdata_buff : _mem_data_mem_wb_q;
+  //   assign  rd_addr_mem_wb_o = (~stall_valid_i[`CTRLBUS_EX_MEM])&rdata_buff_valid?rd_idx_buff:_rd_addr_mem_wb_q;
+
+  reg [`XLEN_BUS] rdata_buff;
+  reg [`REG_ADDRWIDTH-1:0] rd_idx_buff;
+  reg rdata_buff_valid;
+
+  always @(posedge clk) begin
+    if (rst) begin
+      rdata_buff_valid <= `FALSE;
+      rdata_buff <= 'b0;
+      rd_idx_buff <= 'b0;
+    end else if (mem_data_ready_i&stall_valid_i[`CTRLBUS_EX_MEM]) begin  // 接收到数据时，缓存起来
+      rdata_buff_valid <= `TRUE;  // 缓存数据有效
+      rdata_buff       <= mem_data_mem_wb_i;  // 记录读取的数据
+      rd_idx_buff      <= rd_addr_mem_wb_i;
+    end else if ((~stall_valid_i[`CTRLBUS_EX_MEM])&rdata_buff_valid) begin  // mem 阶段 stall 时，保持缓存不变
+      rdata_buff_valid <= `FALSE;  // 流水线不阻塞，缓存清空
+      rdata_buff <= 'b0;
+      rd_idx_buff <= 'b0;
+    end
+    // else 保持不变
+  end
+
+  assign rdata_buff_valid_o = rdata_buff_valid;
+  assign rdata_buff_o = rdata_buff;
 
 endmodule
 

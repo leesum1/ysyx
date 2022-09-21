@@ -207,7 +207,7 @@ module dcache_top (
           // 首先写内存,等待写内存结束
           if (_ram_waddr_valid_dcache_o & ram_wdata_ready_dcache_i) begin
             _ram_waddr_valid_dcache_o <= `FALSE;
-            // 移动到对应位置上去 TODO:放到 mem 阶段去
+
             cache_line_temp <= (mem_addr_i[3]) ? {mem_wdata_i, 64'b0} : {64'b0, mem_wdata_i};
             // 再写 cache
             dcache_data_wen <= `TRUE;
@@ -256,15 +256,23 @@ module dcache_top (
 
 
   reg [`XLEN_BUS] _dcache_data_o;
+
   always @(*) begin
     case (mem_mask_i)
-      8'b0000_0001: begin
+      8'b0000_0001, 
+      8'b0000_0010, 
+      8'b0000_0100,
+      8'b0000_1000,
+      8'b0001_0000,
+      8'b0010_0000,
+      8'b0100_0000,
+      8'b1000_0000: begin
         _dcache_data_o = {56'b0, dcache_line_rdata[blk_addr_reg*8+:8]};
       end
-      8'b0000_0011: begin
+      8'b0000_0011, 8'b0000_1100, 8'b0011_0000, 8'b1100_0000: begin
         _dcache_data_o = {48'b0, dcache_line_rdata[blk_addr_reg*8+:16]};
       end
-      8'b0000_1111: begin
+      8'b0000_1111, 8'b1111_0000: begin
         _dcache_data_o = {32'b0, dcache_line_rdata[blk_addr_reg*8+:32]};
       end
       8'b1111_1111: begin

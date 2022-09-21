@@ -98,14 +98,14 @@ bool Difftest::checkregs() {
         }
     }
     // TODO,流水线中没有找到好的比较 PC 的方法
-    // if (dutregs.pc != refregs.pc) {
-    //     cout << "pc:err" << endl;
-    //     cout << "----------------------------------dutregs----------------------------------" << endl;
-    //     printregs(dutregs);
-    //     cout << "----------------------------------refregs----------------------------------" << endl;
-    //     printregs(refregs);
-    //     return false;
-    // }
+    if (dutregs.pc != refregs.pc) {
+        cout << "pc:err" << endl;
+        cout << "----------------------------------dutregs----------------------------------" << endl;
+        printregs(dutregs);
+        cout << "----------------------------------refregs----------------------------------" << endl;
+        printregs(refregs);
+        return false;
+    }
     return true;
 }
 
@@ -139,6 +139,9 @@ void Difftest::difftest_step() {
     /* 跳过当前指令的 difftest ,以 dut 为准 */
     CPU_state dutregs = getDutregs();
 
+
+    // printf("inst_pc:%p,size:%d\n", mysim_p->commited_list.inst.front().inst_pc, mysim_p->commited_list.inst.size());
+    // printf("skip_pc:%p,size:%d\n", skip_pc.front(), skip_pc.size());
     if (!skip_pc.empty() && mysim_p->commited_list.inst.front().inst_pc == skip_pc.front()) {
         // printf("is_skip_ref\n");
         // printf("skip_pc:%p\n", (void*)skip_pc.front());

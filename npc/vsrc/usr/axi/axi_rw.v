@@ -144,9 +144,9 @@ module axi_rw #(
   localparam AXI_WSTATE_LEN = 3;
   localparam AXI_WRST = 3'd0;
   localparam AXI_WIDLE = 3'd1;
-  localparam AXI_WADDR_WDATA = 3'd2;  // axi4 lite 写地址写数据同时发送
+  localparam AXI_WADDR_WDATA = 3'd2;  // axi4  写地址写数据同时发送
 
-  reg [2:0] mask_to_aw_size;  // 突发大小 = 2^AxSIZE 
+  reg [2:0] mask_to_aw_size;  // 记录 arb_wmask_i 中的 1 的个数 ,即 aw_size
   always @(*) begin
     case (arb_wmask_i)
       8'b0000_0001, 
@@ -156,16 +156,16 @@ module axi_rw #(
       8'b0001_0000,
       8'b0010_0000,
       8'b0100_0000,
-      8'b1000_0000: begin
+      8'b1000_0000: begin : aw_size_byte1
         mask_to_aw_size = `AXI_SIZE_BYTES_1;
       end
-      8'b0000_0011, 8'b0000_1100, 8'b0011_0000, 8'b1100_0000: begin
+      8'b0000_0011, 8'b0000_1100, 8'b0011_0000, 8'b1100_0000: begin : aw_size_byte2
         mask_to_aw_size = `AXI_SIZE_BYTES_2;
       end
-      8'b0000_1111, 8'b1111_0000: begin
+      8'b0000_1111, 8'b1111_0000: begin : aw_size_byte4
         mask_to_aw_size = `AXI_SIZE_BYTES_4;
       end
-      8'b1111_1111: begin
+      8'b1111_1111: begin : aw_size_byte8
         mask_to_aw_size = `AXI_SIZE_BYTES_8;
       end
       default: begin
@@ -191,10 +191,10 @@ module axi_rw #(
   // 写响应缓存
   reg                       b_ready;
 
-  // 握手缓存
-  reg                       axi_aw_handshake_buff;
-  reg                       axi_w_handshake_buff;
-  reg                       axi_b_handshake_buff;
+  // // 握手缓存
+  // reg                       axi_aw_handshake_buff;
+  // reg                       axi_w_handshake_buff;
+  // reg                       axi_b_handshake_buff;
 
   always @(posedge clock) begin
     if (reset) begin
@@ -213,16 +213,20 @@ module axi_rw #(
           _arb_wdata_ready_o <= `FALSE;
           if (arb_write_valid_i & ~_arb_wdata_ready_o) begin : arb_write
             // 同时写数据和地址
+            /* aw 通道 */
             axi_wstate <= AXI_WADDR_WDATA;
             aw_valid <= `TRUE;
             aw_addr <= arb_write_addr_i;
-            w_valid <= `TRUE;
-            w_last <= `TRUE;  // 表示最后一个数据，目前不实现突发传输
             aw_len <= 0;  // 不突发
             aw_size <= mask_to_aw_size;
+            /* w 通道 */
+            w_valid <= `TRUE;
+            w_last <= `TRUE;  // 表示最后一个数据，目前不实现突发传输
+            //对于Narrow Burst，无论是读写请求，数据都出现在[RW]DATA对应访问地址%总线宽度的位置
+            // wstrb wdata 与 data bus 的对齐处理在 mem 阶段处理
             w_strb <= arb_wmask_i;
             w_data <= arb_wdata_i;
-
+            /* b 通道 */
             b_ready <= `TRUE;  // 默认为高
           end else begin
             axi_wstate <= AXI_WIDLE;
@@ -232,28 +236,20 @@ module axi_rw #(
           end
         end
         AXI_WADDR_WDATA: begin
+          // TODO 不支持突发传送
           if (axi_aw_handshake) begin
-            axi_aw_handshake_buff <= `TRUE;
             aw_valid <= `FALSE;  // 握手成功后拉低 valid
           end
           if (axi_w_handshake) begin
-            axi_w_handshake_buff <= `TRUE;
             w_valid <= `FALSE;  // 握手成功后拉低 valid
-            w_last <= `FALSE;  // wlast 与 wvalid 一同拉低
+            w_last  <= `FALSE;  // wlast 与 wvalid 一同拉低
           end
           if (axi_b_handshake) begin
-            axi_b_handshake_buff <= `TRUE;
+            axi_wstate <= AXI_WIDLE;  // 一次写事务结束
             b_ready <= `FALSE;  // todo:为低表示一次写事务完毕,测试使用
+            _arb_wdata_ready_o <= `TRUE;  // 通知 arb 写完成
           end
 
-          // 三个均握手成功后,才进入 idle,TODO: 暂时为了保险起见,以后改
-          if (axi_b_handshake_buff & axi_w_handshake_buff & axi_aw_handshake_buff) begin
-            axi_wstate <= AXI_WIDLE;
-            _arb_wdata_ready_o <= `TRUE;
-            axi_b_handshake_buff <= `FALSE;
-            axi_w_handshake_buff <= `FALSE;
-            axi_aw_handshake_buff <= `FALSE;
-          end
         end
         default: begin
           axi_wstate <= AXI_WIDLE;
@@ -268,20 +264,29 @@ module axi_rw #(
   localparam AXI_RIDLE = 3'd1;
   localparam AXI_RADDR = 3'd2;
   localparam AXI_RDATA = 3'd3;
+  // 记录 arb_rmask_i 中 1的个数,作为 ar_size
+  // TODO: 由于 dcache 直会在 read miss 时访存,且 size = 8,地址对齐,暂时不需要考虑 Narrow Burst read
+  reg [2:0] mask_to_ar_size;
 
-  reg [2:0] mask_to_ar_size;  // 突发大小 = 2^AxSIZE 
   always @(*) begin
     case (arb_rmask_i)
-      8'b0000_0001: begin
+      8'b0000_0001, 
+      8'b0000_0010, 
+      8'b0000_0100,
+      8'b0000_1000,
+      8'b0001_0000,
+      8'b0010_0000,
+      8'b0100_0000,
+      8'b1000_0000: begin : ar_size_byte1
         mask_to_ar_size = `AXI_SIZE_BYTES_1;
       end
-      8'b0000_0011: begin
+      8'b0000_0011, 8'b0000_1100, 8'b0011_0000, 8'b1100_0000: begin : ar_size_byte2
         mask_to_ar_size = `AXI_SIZE_BYTES_2;
       end
-      8'b0000_1111: begin
+      8'b0000_1111, 8'b1111_0000: begin : ar_size_byte4
         mask_to_ar_size = `AXI_SIZE_BYTES_4;
       end
-      8'b1111_1111: begin
+      8'b1111_1111: begin : ar_size_byte8
         mask_to_ar_size = `AXI_SIZE_BYTES_8;
       end
       default: begin
@@ -317,8 +322,13 @@ module axi_rw #(
         end
         AXI_RIDLE: begin
           _arb_rdata_ready_o <= `FALSE;
+          // arb_raddr_valid_i & ~_arb_rdata_ready_o 为 arb 发出了读请求，且当前周期不为读数据返回周期
+          // 当 _arb_rdata_ready_o = `TRUE 时，读数据返回，且 下一个读地址在下一个周期才会来到
+          // 避免重复度读请求，_arb_rdata_ready_o = `TRUE 时，不能发生读请求
           if (arb_raddr_valid_i & ~_arb_rdata_ready_o) begin
             axi_rstate <= AXI_RADDR;
+            /* ar 通道 */
+            // cache miss 时,或者访问外设时,地址一定时对齐的
             ar_addr <= arb_read_addr_i;
             ar_valid <= `TRUE;
             ar_size <= mask_to_ar_size;
@@ -338,10 +348,10 @@ module axi_rw #(
         AXI_RDATA: begin
           if (axi_r_handshake) begin : wait_for_r_handshake
             axi_rstate <= AXI_RIDLE;
-            //if (axi_r_resp_i == 2'b00) begin : R_RESP_OKAY
-            _arb_rdata_o <= axi_r_data_i;
-            _arb_rdata_ready_o <= `TRUE;
-            //end
+            if (axi_r_resp_i == 2'b00) begin : R_RESP_OKAY
+              _arb_rdata_o <= axi_r_data_i;
+              _arb_rdata_ready_o <= `TRUE;
+            end
             r_ready <= `FALSE;  // 数据握手成功后拉低
           end
         end
@@ -363,8 +373,7 @@ module axi_rw #(
   parameter AXI_SIZE = $clog2(AXI_DATA_WIDTH / 8);
   wire [  AXI_ID_WIDTH-1:0] axi_id = {AXI_ID_WIDTH{1'b0}};
   wire [AXI_USER_WIDTH-1:0] axi_user = {AXI_USER_WIDTH{1'b0}};
-  wire [               7:0] axi_len = 8'b0;
-  wire [               2:0] axi_size = AXI_SIZE[2:0];
+
   // 写地址通道  ��下没有备注初始化信号的都可能是你需要产生和用到的
   assign axi_aw_valid_o = aw_valid;
   assign axi_aw_addr_o = aw_addr;

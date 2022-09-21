@@ -21,11 +21,15 @@ extern "C" void set_nextpc(long long nextpc) {
      * 4. nextpc 为第一条指令时，没有对于的 commited pc
      *
      */
-    else if (isfirst_inst) {
+#ifdef MTRACH
+    printf("set_nextpc:%p\n", (void*)nextpc);
+#endif
+    if (isfirst_inst) {
         printf("isfirst_inst\n");
         isfirst_inst = false;
         return;
     }
+
     mysim_p->commited_list.nextpc.push_back(nextpc);
 }
 

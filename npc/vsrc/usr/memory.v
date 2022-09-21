@@ -1,8 +1,10 @@
 `include "sysconfig.v"
 module memory (
-    input clk,
-    input rst,
-
+    input                          clk,
+    input                          rst,
+    /* from mem/wb */
+    input                          rdata_buff_valid_i,
+    input [             `XLEN_BUS] rdata_buff_i,
     /* from ex/mem */
     input [             `XLEN_BUS] pc_i,
     input [         `INST_LEN-1:0] inst_data_i,
@@ -10,7 +12,7 @@ module memory (
     // input  [         `XLEN_BUS] rs1_data_i,
     input [             `XLEN_BUS] rs2_data_i,
     // input  [      `IMM_LEN-1:0] imm_data_i,
-    input [        `MEMOP_LEN-1:0] mem_op_i,        // 访存操作码
+    input [        `MEMOP_LEN-1:0] mem_op_i,            // 访存操作码
     input [             `XLEN_BUS] exc_alu_data_i,
     input [`CSR_REG_ADDRWIDTH-1:0] csr_addr_i,
     input [             `XLEN_BUS] exc_csr_data_i,
@@ -105,7 +107,10 @@ module memory (
 
   // assign mem_data_o = _mem_out;
   // 选择最终写回的数据，算数运算指令或者 load 指令
-  assign mem_data_o = (_load_valid) ? _mem_out : exc_alu_data_i;
+  assign mem_data_o = (~rdata_buff_valid_i&_load_valid) ? _mem_out :
+                      (rdata_buff_valid_i& _load_valid)?rdata_buff_i
+                      : exc_alu_data_i;  // TODO: bypass 有问题
+
   // assign wb_data_o = (load_valid_i) ? mem_data_i : exc_alu_data_i;
 
 
@@ -139,15 +144,17 @@ module memory (
 
   assign mem_addr_o = _addr[31:0];
   assign mem_mask_o = mem_write_valid_o ? (_mask << addr_last3) : _mask;
-  assign _mem_read = (mem_data_ready_i) ? mem_rdata_i : `XLEN'b0;
-  assign mem_addr_valid_o = (_isload | _isstore) & (~mem_data_ready_i);
-  assign mem_write_valid_o = _isstore & (~mem_data_ready_i);
+  //assign mem_mask_o = (_mask << addr_last3);
+  assign _mem_read = (mem_data_ready_i) ? (mem_rdata_i) : `XLEN'b0;
+  assign mem_addr_valid_o = (_isload | _isstore) & (~mem_data_ready_i) & (~rdata_buff_valid_i);
+  assign mem_write_valid_o = _isstore & (~mem_data_ready_i) & mem_addr_valid_o;
   assign mem_wdata_o = _mem_write << {addr_last3, 3'b0};  // 对齐位置调整
 
 
   /* stall_req */
+  assign ram_stall_valid_mem_o = mem_addr_valid_o;
 
-  assign ram_stall_valid_mem_o = (_isload | _isstore) & (~mem_data_ready_i);
+
 
 
 
@@ -165,14 +172,14 @@ module memory (
 
   /************************××××××向仿真环境传递 PC *****************************/
 
-  // 用于 difftest，获取即将提交的下一条指令的 pc
-  import "DPI-C" function void set_nextpc(input longint nextpc);
-  always @(posedge clk) begin
-    // 避免重复提交 pc
-    if (_memop_none | mem_data_ready_i) begin
-      set_nextpc(pc_i);
-    end
-  end
+  // // 用于 difftest，获取即将提交的下一条指令的 pc
+  // import "DPI-C" function void set_nextpc(input longint nextpc);
+  // always @(posedge clk) begin
+  //   // 避免重复提交 pc
+  //   if (_memop_none | mem_data_ready_i) begin
+  //     set_nextpc(pc_i);
+  //   end
+  // end
   // 用于 difftest，获取访存指令的 pc
   import "DPI-C" function void set_mem_pc(input longint mem_pc);
   always @(*) begin
@@ -180,5 +187,7 @@ module memory (
       set_mem_pc(pc_i);
     end
   end
+
+
 
 endmodule

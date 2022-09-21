@@ -4,6 +4,9 @@
 #define FONT_BOLD "\e[1m"
 #define FONT_END "\e[1m"
 
+// #define COLOR(code) "\033["
+
+
 // 颜色加粗
 #define COLOR_GREEN FONT_BOLD "\033[32m" 
 #define COLOR_RED   FONT_BOLD "\033[31m"
@@ -17,7 +20,7 @@
 
 #define DEVICE_VGA
 //#define AUTO_RUN
-//#define TOP_TRACE
+#define TOP_TRACE
 //#define MTRACH
 
 

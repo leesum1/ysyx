@@ -481,26 +481,30 @@ module top (
   memory u_memory (
       .clk(clk),
       .rst(rst),
+
+      //TODO:TEST
+      .rdata_buff_valid_i(rdata_buff_valid),
+      .rdata_buff_i      (rdata_buff),
       /* from ex/mem */
-      .pc_i(pc_ex_mem),
-      .inst_data_i(inst_data_ex_mem),
-      .rd_idx_i(rd_idx_ex_mem),
+      .pc_i              (pc_ex_mem),
+      .inst_data_i       (inst_data_ex_mem),
+      .rd_idx_i          (rd_idx_ex_mem),
       // input  [         `XLEN_BUS] rs1_data_i,
-      .rs2_data_i(rs2_data_ex_mem),
+      .rs2_data_i        (rs2_data_ex_mem),
       // input  [      `IMM_LEN-1:0] imm_data_i,
-      .mem_op_i(mem_op_ex_mem),  // 访存操作码
-      .exc_alu_data_i(alu_data_ex_mem),
-      .csr_addr_i(csr_addr_ex_mem),
-      .exc_csr_data_i(csr_writedata_ex_mem),
-      .exc_csr_valid_i(csr_writevalid_ex_mem),
+      .mem_op_i          (mem_op_ex_mem),          // 访存操作码
+      .exc_alu_data_i    (alu_data_ex_mem),
+      .csr_addr_i        (csr_addr_ex_mem),
+      .exc_csr_data_i    (csr_writedata_ex_mem),
+      .exc_csr_valid_i   (csr_writevalid_ex_mem),
       /* dcache 接口 */
-      .mem_addr_o(mem_addr),
-      .mem_addr_valid_o(mem_addr_valid),
-      .mem_mask_o(mem_mask),
-      .mem_write_valid_o(mem_write_valid),
-      .mem_data_ready_i(mem_data_ready),
-      .mem_rdata_i(mem_rdata),
-      .mem_wdata_o(mem_wdata),
+      .mem_addr_o        (mem_addr),
+      .mem_addr_valid_o  (mem_addr_valid),
+      .mem_mask_o        (mem_mask),
+      .mem_write_valid_o (mem_write_valid),
+      .mem_data_ready_i  (mem_data_ready),
+      .mem_rdata_i       (mem_rdata),
+      .mem_wdata_o       (mem_wdata),
 
       // TARP 总线
       .trap_bus_i(trap_bus_ex_mem),
@@ -599,12 +603,17 @@ module top (
   // input                          exc_csr_valid_mem_wb_i,  // csr 写回使能
   // input [    `REG_ADDRWIDTH-1:0] rd_addr_mem_wb_i,        // gpr 写回使能
   // input [             `XLEN-1:0] mem_data_mem_wb_i,       //访存阶段的数据
-
+  wire                           rdata_buff_valid;
+  wire [             `XLEN_BUS]  rdata_buff;
   mem_wb u_mem_wb (
       .clk                             (clk),
       .rst                             (rst),
       .flush_valid_i                   (flush_clint),
       .stall_valid_i                   (stall_clint),
+      // TODO:TSET
+      .mem_data_ready_i                (mem_data_ready),
+      .rdata_buff_valid_o              (rdata_buff_valid),
+      .rdata_buff_o                    (rdata_buff),
       /* trap 所需寄存器，来自于 csr (写)*/
       .csr_mstatus_writedata_mem_wb_i  (csr_mstatus_writedata),
       .csr_mepc_writedata_mem_wb_i     (csr_mepc_writedata),
@@ -678,7 +687,7 @@ module top (
       .rs2_idx_i         (rs2_idx_id),
       .rs1_data_o        (rs1_data_gpr),
       .rs2_data_o        (rs2_data_gpr),     //TODO 添加 valid 信号
-      /* 写��数据 */
+      /* 写数据 */
       .write_idx_i       (rd_addr_mem_wb),
       .write_data_i      (mem_data_mem_wb),
       .write_data_valid_i(1'b1)
