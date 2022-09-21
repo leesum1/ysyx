@@ -172,14 +172,6 @@ module memory (
 
   /************************××××××向仿真环境传递 PC *****************************/
 
-  // // 用于 difftest，获取即将提交的下一条指令的 pc
-  // import "DPI-C" function void set_nextpc(input longint nextpc);
-  // always @(posedge clk) begin
-  //   // 避免重复提交 pc
-  //   if (_memop_none | mem_data_ready_i) begin
-  //     set_nextpc(pc_i);
-  //   end
-  // end
   // 用于 difftest，获取访存指令的 pc
   import "DPI-C" function void set_mem_pc(input longint mem_pc);
   always @(*) begin

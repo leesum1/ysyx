@@ -139,9 +139,9 @@ void Difftest::difftest_step() {
     /* 跳过当前指令的 difftest ,以 dut 为准 */
     CPU_state dutregs = getDutregs();
 
-
     // printf("inst_pc:%p,size:%d\n", mysim_p->commited_list.inst.front().inst_pc, mysim_p->commited_list.inst.size());
     // printf("skip_pc:%p,size:%d\n", skip_pc.front(), skip_pc.size());
+    // 如果提交的指令是需要跳过的指令，以 dut 为准
     if (!skip_pc.empty() && mysim_p->commited_list.inst.front().inst_pc == skip_pc.front()) {
         // printf("is_skip_ref\n");
         // printf("skip_pc:%p\n", (void*)skip_pc.front());
@@ -158,6 +158,10 @@ void Difftest::difftest_step() {
     }
 }
 
+/**
+ * @brief 设置需要跳过的 PC，访问外设时使用
+ *
+ */
 void Difftest::difftest_skip_ref() {
     skip_pc.push_back(mysim_p->mem_pc);
 }
