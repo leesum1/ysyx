@@ -27,6 +27,7 @@ module icache_top (
     output [`NPC_ADDR_BUS] ram_raddr_icache_o,
     output ram_raddr_valid_icache_o,
     output [7:0] ram_rmask_icache_o,
+    output [3:0] ram_rsize_icache_o,
     input ram_rdata_ready_icache_i,
     input [`XLEN_BUS] ram_rdata_icache_i
 );
@@ -67,6 +68,7 @@ module icache_top (
   reg [`NPC_ADDR_BUS] _ram_raddr_icache_o;
   reg _ram_raddr_valid_icache_o;
   reg [7:0] _ram_rmask_icache_o;
+  reg [3:0] _ram_rsize_icache_o;
 
   reg [127:0] cache_line_temp;
   reg icache_data_wen;
@@ -74,13 +76,14 @@ module icache_top (
 
   always @(posedge clk) begin
     if (rst) begin
-      icahce_state <= CACHE_RST;
-      blk_addr_reg <= 0;
-      line_idx_reg <= 0;
-      line_tag_reg <= 0;
-      icache_tag_wen <= 0;
-      icache_data_wen <= 0;
-      cache_line_temp <= 0;
+      icahce_state        <= CACHE_RST;
+      blk_addr_reg        <= 0;
+      line_idx_reg        <= 0;
+      line_tag_reg        <= 0;
+      icache_tag_wen      <= 0;
+      icache_data_wen     <= 0;
+      cache_line_temp     <= 0;
+      _ram_rsize_icache_o <= 0;
     end else begin
       case (icahce_state)
         CACHE_RST: begin
@@ -107,6 +110,7 @@ module icache_top (
               _ram_raddr_icache_o <= {cache_line_tag, cache_line_idx, 4'b0};  // 读地址
               _ram_raddr_valid_icache_o <= `TRUE;  // 地址有效
               _ram_rmask_icache_o <= 8'b1111_1111;  // 读掩码
+              _ram_rsize_icache_o <= 4'b1000;
             end
           end else begin
             icahce_rdata_ok <= `FALSE;
@@ -184,6 +188,7 @@ module icache_top (
   assign ram_raddr_icache_o = _ram_raddr_icache_o;
   assign ram_raddr_valid_icache_o = _ram_raddr_valid_icache_o;
   assign ram_rmask_icache_o = _ram_rmask_icache_o;
+  assign ram_rsize_icache_o = _ram_rsize_icache_o;
 
 
 

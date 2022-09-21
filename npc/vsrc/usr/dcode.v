@@ -114,29 +114,29 @@ module dcode (
   wire _func7_0000000 = (_func7 == 7'b0000000);
   wire _func7_0100000 = (_func7 == 7'b0100000);
   wire _func7_0000001 = (_func7 == 7'b0000001);
-  wire _func7_0000101 = (_func7 == 7'b0000101);
-  wire _func7_0001001 = (_func7 == 7'b0001001);
-  wire _func7_0001101 = (_func7 == 7'b0001101);
-  wire _func7_0010101 = (_func7 == 7'b0010101);
-  wire _func7_0100001 = (_func7 == 7'b0100001);
-  wire _func7_0010001 = (_func7 == 7'b0010001);
-  wire _func7_0101101 = (_func7 == 7'b0101101);
-  wire _func7_1111111 = (_func7 == 7'b1111111);
-  wire _func7_0000100 = (_func7 == 7'b0000100);
-  wire _func7_0001000 = (_func7 == 7'b0001000);
-  wire _func7_0001100 = (_func7 == 7'b0001100);
-  wire _func7_0101100 = (_func7 == 7'b0101100);
-  wire _func7_0010000 = (_func7 == 7'b0010000);
-  wire _func7_0010100 = (_func7 == 7'b0010100);
-  wire _func7_1100000 = (_func7 == 7'b1100000);
-  wire _func7_1110000 = (_func7 == 7'b1110000);
-  wire _func7_1010000 = (_func7 == 7'b1010000);
-  wire _func7_1101000 = (_func7 == 7'b1101000);
-  wire _func7_1111000 = (_func7 == 7'b1111000);
-  wire _func7_1010001 = (_func7 == 7'b1010001);
-  wire _func7_1110001 = (_func7 == 7'b1110001);
-  wire _func7_1100001 = (_func7 == 7'b1100001);
-  wire _func7_1101001 = (_func7 == 7'b1101001);
+  // wire _func7_0000101 = (_func7 == 7'b0000101);
+  // wire _func7_0001001 = (_func7 == 7'b0001001);
+  // wire _func7_0001101 = (_func7 == 7'b0001101);
+  // wire _func7_0010101 = (_func7 == 7'b0010101);
+  // wire _func7_0100001 = (_func7 == 7'b0100001);
+  // wire _func7_0010001 = (_func7 == 7'b0010001);
+  // wire _func7_0101101 = (_func7 == 7'b0101101);
+  // wire _func7_1111111 = (_func7 == 7'b1111111);
+  // wire _func7_0000100 = (_func7 == 7'b0000100);
+  // wire _func7_0001000 = (_func7 == 7'b0001000);
+  // wire _func7_0001100 = (_func7 == 7'b0001100);
+  // wire _func7_0101100 = (_func7 == 7'b0101100);
+  // wire _func7_0010000 = (_func7 == 7'b0010000);
+  // wire _func7_0010100 = (_func7 == 7'b0010100);
+  // wire _func7_1100000 = (_func7 == 7'b1100000);
+  // wire _func7_1110000 = (_func7 == 7'b1110000);
+  // wire _func7_1010000 = (_func7 == 7'b1010000);
+  // wire _func7_1101000 = (_func7 == 7'b1101000);
+  // wire _func7_1111000 = (_func7 == 7'b1111000);
+  // wire _func7_1010001 = (_func7 == 7'b1010001);
+  // wire _func7_1110001 = (_func7 == 7'b1110001);
+  // wire _func7_1100001 = (_func7 == 7'b1100001);
+  // wire _func7_1101001 = (_func7 == 7'b1101001);
 
   /* 指令类型,具体参考手册 */
   /* 000 */
@@ -379,7 +379,7 @@ module dcode (
 
 
   /***************CSR 寄存器冲突处理*****************/
-  // TODO ,添加数据旁路
+  // TODO 添加 csr 数据旁路
   assign csr_readdata_o = csr_data_i;
 
   /******************************************×××××××***************************************************/
@@ -492,6 +492,7 @@ module dcode (
                                   ({`EXCOP_LEN{_type_op_32}}&`EXCOP_OP32) |
                                   ({`EXCOP_LEN{_isNeed_csr}}&`EXCOP_CSR) |
                                   ({`EXCOP_LEN{_inst_ebreak}}&`EXCOP_EBREAK) | //TODO:暂时对 ebreak 特殊处理
+
   ({`EXCOP_LEN{_NONE_type}} & `EXCOP_NONE);
 
   assign exc_op_o = _exc_op;
@@ -511,13 +512,8 @@ module dcode (
                                    ({`MEMOP_LEN{_inst_sd}}&`MEMOP_SD);
   assign mem_op_o = _mem_op;
 
-  /* PC_OP  */  //TODO:这里是优先选择器,怎么改还没想好
-  //TODO:mret and ecall处理  放到 clint 中
-  // wire [`PCOP_LEN-1:0] _pc_op = (_B_type)?`PCOP_BRANCH:
-  //                               (_inst_jal)?`PCOP_JAL:
-  //                               (_inst_jalr)?`PCOP_JALR:
-  //                               (_inst_mret|_inst_ecall)?`PCOP_TRAP:`PCOP_INC4;
 
+  // 已废弃
   assign pc_op_o  = `PCOP_LEN'b0;
 
 
@@ -547,7 +543,4 @@ module dcode (
   end
   assign trap_bus_o = _decode_trap_bus;
 
-  // assign _decode_trap_bus[`TRAP_ECALL] = _inst_ecall;
-  // assign _decode_trap_bus[`TRAP_EBREAK] = _inst_ebreak;
-  // assign _decode_trap_bus[`TRAP_MRET] = _inst_mret;
 endmodule

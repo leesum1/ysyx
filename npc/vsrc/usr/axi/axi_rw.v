@@ -66,12 +66,14 @@ module axi_rw #(
     input [`NPC_ADDR_BUS] arb_read_addr_i,
     input arb_raddr_valid_i,  // 是否发起读请求
     input [7:0] arb_rmask_i,  // 数据掩码
+    input [3:0] arb_rsize_i,
     output [`XLEN_BUS] arb_rdata_o,  // 读数据返回mem
     output arb_rdata_ready_o,  // 读数据是否有效
     //写通道
     input [`NPC_ADDR_BUS] arb_write_addr_i,  // mem 阶段的 write
     input arb_write_valid_i,
     input [7:0] arb_wmask_i,
+    input [3:0] arb_wsize_i,
     input [`XLEN_BUS] arb_wdata_i,
     output arb_wdata_ready_o,  // 数据是否已经写入
 
@@ -146,50 +148,29 @@ module axi_rw #(
   localparam AXI_WIDLE = 3'd1;
   localparam AXI_WADDR_WDATA = 3'd2;  // axi4  写地址写数据同时发送
 
-  reg [2:0] mask_to_aw_size;  // 记录 arb_wmask_i 中的 1 的个数 ,即 aw_size
-  always @(*) begin
-    case (arb_wmask_i)
-      8'b0000_0001, 
-      8'b0000_0010, 
-      8'b0000_0100,
-      8'b0000_1000,
-      8'b0001_0000,
-      8'b0010_0000,
-      8'b0100_0000,
-      8'b1000_0000: begin : aw_size_byte1
-        mask_to_aw_size = `AXI_SIZE_BYTES_1;
-      end
-      8'b0000_0011, 8'b0000_1100, 8'b0011_0000, 8'b1100_0000: begin : aw_size_byte2
-        mask_to_aw_size = `AXI_SIZE_BYTES_2;
-      end
-      8'b0000_1111, 8'b1111_0000: begin : aw_size_byte4
-        mask_to_aw_size = `AXI_SIZE_BYTES_4;
-      end
-      8'b1111_1111: begin : aw_size_byte8
-        mask_to_aw_size = `AXI_SIZE_BYTES_8;
-      end
-      default: begin
-        mask_to_aw_size = 3'd0;
-      end
-    endcase
-  end
 
-  reg [AXI_WSTATE_LEN-1:0 ] axi_wstate;
-  reg                       _arb_wdata_ready_o;
+  wire [2:0 ]to_aw_size = ({3{arb_wsize_i[0]}}&`AXI_SIZE_BYTES_1)
+                             | ({3{arb_wsize_i[1]}}&`AXI_SIZE_BYTES_2)
+                             | ({3{arb_wsize_i[2]}}&`AXI_SIZE_BYTES_4)
+                             | ({3{arb_wsize_i[3]}}&`AXI_SIZE_BYTES_8);
+
+
+  reg [AXI_WSTATE_LEN-1:0] axi_wstate;
+  reg _arb_wdata_ready_o;
 
   // 写地址缓存
-  reg [     `NPC_ADDR_BUS]  aw_addr;
-  reg                       aw_valid;
-  reg [               7:0 ] aw_len;  // 突发长度 AxLEN[7:0] + 1,0 表示不突发
-  reg [               2:0 ] aw_size;  // 突发大小 = 2^AxSIZE 
+  reg [`NPC_ADDR_BUS] aw_addr;
+  reg aw_valid;
+  reg [7:0] aw_len;  // 突发长度 AxLEN[7:0] + 1,0 表示不突发
+  reg [2:0] aw_size;  // 突发大小 = 2^AxSIZE 
   // 写数据缓存
-  reg [         `XLEN_BUS]  w_data;
-  reg [               7:0 ] w_strb;
-  reg                       w_valid;
-  reg                       w_last;
+  reg [`XLEN_BUS] w_data;
+  reg [7:0] w_strb;
+  reg w_valid;
+  reg w_last;
 
   // 写响应缓存
-  reg                       b_ready;
+  reg b_ready;
 
   // // 握手缓存
   // reg                       axi_aw_handshake_buff;
@@ -218,7 +199,7 @@ module axi_rw #(
             aw_valid <= `TRUE;
             aw_addr <= arb_write_addr_i;
             aw_len <= 0;  // 不突发
-            aw_size <= mask_to_aw_size;
+            aw_size <= to_aw_size;
             /* w 通道 */
             w_valid <= `TRUE;
             w_last <= `TRUE;  // 表示最后一个数据，目前不实现突发传输
@@ -264,47 +245,23 @@ module axi_rw #(
   localparam AXI_RIDLE = 3'd1;
   localparam AXI_RADDR = 3'd2;
   localparam AXI_RDATA = 3'd3;
-  // 记录 arb_rmask_i 中 1的个数,作为 ar_size
-  // TODO: 由于 dcache 直会在 read miss 时访存,且 size = 8,地址对齐,暂时不需要考虑 Narrow Burst read
-  reg [2:0] mask_to_ar_size;
-
-  always @(*) begin
-    case (arb_rmask_i)
-      8'b0000_0001, 
-      8'b0000_0010, 
-      8'b0000_0100,
-      8'b0000_1000,
-      8'b0001_0000,
-      8'b0010_0000,
-      8'b0100_0000,
-      8'b1000_0000: begin : ar_size_byte1
-        mask_to_ar_size = `AXI_SIZE_BYTES_1;
-      end
-      8'b0000_0011, 8'b0000_1100, 8'b0011_0000, 8'b1100_0000: begin : ar_size_byte2
-        mask_to_ar_size = `AXI_SIZE_BYTES_2;
-      end
-      8'b0000_1111, 8'b1111_0000: begin : ar_size_byte4
-        mask_to_ar_size = `AXI_SIZE_BYTES_4;
-      end
-      8'b1111_1111: begin : ar_size_byte8
-        mask_to_ar_size = `AXI_SIZE_BYTES_8;
-      end
-      default: begin
-        mask_to_ar_size = 3'd0;
-      end
-    endcase
-  end
 
 
-  reg [AXI_RSTATE_LEN-1:0 ] axi_rstate;
-  reg                       _arb_rdata_ready_o;
-  reg [         `XLEN_BUS]  _arb_rdata_o;
+  wire [2:0 ]to_ar_size = ({3{arb_rsize_i[0]}}&`AXI_SIZE_BYTES_1)
+                             | ({3{arb_rsize_i[1]}}&`AXI_SIZE_BYTES_2)
+                             | ({3{arb_rsize_i[2]}}&`AXI_SIZE_BYTES_4)
+                             | ({3{arb_rsize_i[3]}}&`AXI_SIZE_BYTES_8);
 
-  reg                       ar_valid;
-  reg [AXI_ADDR_WIDTH-1:0 ] ar_addr;
-  reg [               7:0 ] ar_len;  // 突发长度 AxLEN[7:0] + 1,0 表示不突发
-  reg [               2:0 ] ar_size;  // 突发大小 = 2^AxSIZE 
-  reg                       r_ready;
+
+  reg [AXI_RSTATE_LEN-1:0] axi_rstate;
+  reg _arb_rdata_ready_o;
+  reg [`XLEN_BUS] _arb_rdata_o;
+
+  reg ar_valid;
+  reg [AXI_ADDR_WIDTH-1:0] ar_addr;
+  reg [7:0] ar_len;  // 突发长度 AxLEN[7:0] + 1,0 表示不突发
+  reg [2:0] ar_size;  // 突发大小 = 2^AxSIZE 
+  reg r_ready;
 
   always @(posedge clock) begin
     if (reset) begin
@@ -331,7 +288,7 @@ module axi_rw #(
             // cache miss 时,或者访问外设时,地址一定时对齐的
             ar_addr <= arb_read_addr_i;
             ar_valid <= `TRUE;
-            ar_size <= mask_to_ar_size;
+            ar_size <= to_ar_size;
             ar_len <= 0;  // 不突发
           end else begin
             axi_rstate <= AXI_RIDLE;
@@ -370,7 +327,7 @@ module axi_rw #(
 
 
   // ------------------Write Transaction------------------
-  parameter AXI_SIZE = $clog2(AXI_DATA_WIDTH / 8);
+
   wire [  AXI_ID_WIDTH-1:0] axi_id = {AXI_ID_WIDTH{1'b0}};
   wire [AXI_USER_WIDTH-1:0] axi_user = {AXI_USER_WIDTH{1'b0}};
 
@@ -378,12 +335,12 @@ module axi_rw #(
   assign axi_aw_valid_o = aw_valid;
   assign axi_aw_addr_o = aw_addr;
   assign axi_aw_prot_o    = `AXI_PROT_UNPRIVILEGED_ACCESS | `AXI_PROT_SECURE_ACCESS | `AXI_PROT_DATA_ACCESS;  //初始化信号即可
-  assign axi_aw_id_o = axi_id;  //初始化信号���可
+  assign axi_aw_id_o = axi_id;  //初始化信号即可
   assign axi_aw_user_o = axi_user;  //初始化信号即可
   assign axi_aw_len_o = aw_len;
   assign axi_aw_size_o = aw_size;
   assign axi_aw_burst_o = `AXI_BURST_TYPE_INCR;
-  assign axi_aw_lock_o = 1'b0;  //初始化信号���可
+  assign axi_aw_lock_o = 1'b0;  //初始化信号即可
   assign axi_aw_cache_o = `AXI_AWCACHE_WRITE_BACK_READ_AND_WRITE_ALLOCATE;  //初始化信号即可
   assign axi_aw_qos_o = 4'h0;  //初始化信号即可
   assign axi_aw_region_o = 4'h0;  //初始化信号即可
