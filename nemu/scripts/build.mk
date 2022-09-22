@@ -17,7 +17,7 @@ BINARY   = $(BUILD_DIR)/$(NAME)$(SO)
 
 # Compilation flags
 ifeq ($(CC),clang)
-CXX := clang++-13
+CXX := clang++
 else
 CXX := g++
 endif
@@ -26,8 +26,7 @@ INCLUDES = $(addprefix -I, $(INC_PATH))
 CFLAGS  := -O2 -MMD -Wall  -fPIC $(INCLUDES) $(CFLAGS) #-Werror 不需要
 LDFLAGS := -O2 $(LDFLAGS)
 
-CXXSRC += $(WORK_DIR)/src/monitor/sdb/exprresult.cc
-CXXSRC += $(WORK_DIR)/src/monitor/sdb/watchpoint.cc
+
 
 OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o) $(CXXSRC:%.cc=$(OBJ_DIR)/%.o)
 

@@ -540,7 +540,7 @@ module top (
   wire [5:0] flush_clint;
 
   clint u_clint (
-      // input wire clk,
+      .clk(clk),
       .rst(rst),
       .pc_i(pc_ex_mem),
       .inst_data_i(inst_data_ex_mem),

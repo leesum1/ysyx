@@ -1,7 +1,7 @@
 `include "./../sysconfig.v"
 /* 与 mem 位于同一阶段 */
 module clint (
-    // input wire clk,
+    input wire clk,
     input wire rst,
 
     input [`XLEN-1:0] pc_i,

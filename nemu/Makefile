@@ -39,6 +39,10 @@ SRCS-BLACKLIST-y += $(SRCS-BLACKLIST) $(shell find $(DIRS-BLACKLIST-y) -name "*.
 SRCS-y += $(shell find $(DIRS-y) -name "*.c")
 SRCS = $(filter-out $(SRCS-BLACKLIST-y),$(SRCS-y))
 
+# add by leesum
+CXXSRC += $(NEMU_HOME)/src/monitor/sdb/exprresult.cc
+CXXSRC += $(NEMU_HOME)/src/monitor/sdb/watchpoint.cc
+
 # Extract compiler and options from menuconfig
 CC = $(call remove_quote,$(CONFIG_CC))
 CFLAGS_BUILD += $(call remove_quote,$(CONFIG_CC_OPT))

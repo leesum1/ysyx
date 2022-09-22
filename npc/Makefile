@@ -12,8 +12,8 @@ VERILATOR_INC_PATH := -I./vsrc \
 
 # verilator flags: 
 VERILATOR_FLAGS +=  --trace --trace-max-array 256
-VERILATOR_FLAGS +=  -O3 -noassert --x-assign fast --x-initial fast --compiler clang 
-VERILATOR_FLAGS +=  -cc --exe  --build  --clk clk  --timescale-override 1ns
+VERILATOR_FLAGS +=  -O3 -noassert --x-assign fast --x-initial fast 
+VERILATOR_FLAGS +=  -cc --exe  --build  --clk clk  
 VERILATOR_FLAGS += ${VERILATOR_INC_PATH}
 VERILATOR_FLAGS += --top ${TOP_MODULE}
 
@@ -27,10 +27,10 @@ GCC_INC_PATH = -I$(NPC_HOME)/csrc/include  \
 			   -I/usr/include/SDL2 \
 
 # llvm
-LLVM_LIB = $(shell llvm-config-13 --libs)
-LLVM_FLAGS = $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config-13 --cxxflags))
+LLVM_LIB = $(shell llvm-config --libs)
+LLVM_FLAGS = $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config --cxxflags))
 
-LLVM_FLAGS += -Ofast  -fexceptions 
+LLVM_FLAGS += -Ofast  -fexceptions  
 #-lasan(内存检查)
  
 GCC_LIB = -lreadline \
@@ -38,7 +38,7 @@ GCC_LIB = -lreadline \
 		  -lnemu \
 		  -lSDL2 
 		  
-GCC_LIB += ${LLVM_LIB} -flto -fuse-ld=gold
+GCC_LIB += ${LLVM_LIB} -flto 
 
 
 GCC_LDFLAGS := $(addprefix -LDFLAGS ,${GCC_LIB})
