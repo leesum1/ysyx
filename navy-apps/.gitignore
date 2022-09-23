@@ -11,6 +11,9 @@ build/
 
 !repo/
 !libs/libc/
+!/apps/pal/repo/data/*.*
+!/apps/pal/repo/data/save/*.*
+!/apps/bird/repo/res/*.*
 !/fsimg/share/files/num
 !/fsimg/share/fonts/Courier-*.bdf
 !/fsimg/share/music/little-star.ogg
@@ -23,3 +26,4 @@ build/
 !/fsimg/share/music/rhythm/Si.ogg
 !/fsimg/share/music/rhythm/empty.ogg
 !/fsimg/share/pictures/projectn.bmp
+!/fsimg/share/slides/*.bmp
