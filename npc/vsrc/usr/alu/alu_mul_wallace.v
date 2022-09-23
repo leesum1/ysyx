@@ -56,25 +56,44 @@ module alu_mul_wallace (
 
 
 
-  wire [129-1:0] step1_A0_cout0  /* verilator split_var */;
-  wire [129-1:0] step1_A0_cout1  /* verilator split_var */;
-  assign step1_A0_cout0[0] = 1'b0;
-  assign step1_A0_cout1[0] = 1'b0;
+  // wire [129-1:0] step1_A0_cout0  /* verilator split_var */;
+  // wire [129-1:0] step1_A0_cout1  /* verilator split_var */;
+  // assign step1_A0_cout0[0] = 1'b0;
+  // assign step1_A0_cout1[0] = 1'b0;
+  // wire [128-1:0] step1_A0_sum, step1_A0_carry;
+  // genvar step1_A0;
+  // generate
+  //   for (step1_A0 = 0; step1_A0 < 128; step1_A0 = step1_A0 + 1) begin
+  //     alu_mul_compressor52 u_alu_mul_compressor52 (
+  //         .x0   (p_product[0][step1_A0]),
+  //         .x1   (p_product[1][step1_A0]),
+  //         .x2   (p_product[2][step1_A0]),
+  //         .x3   (p_product[3][step1_A0]),
+  //         .x4   (p_product[4][step1_A0]),
+  //         .cin0 (step1_A0_cout0[step1_A0]),
+  //         .cin1 (step1_A0_cout1[step1_A0]),
+  //         .cout0(step1_A0_cout0[step1_A0+1]),
+  //         .cout1(step1_A0_cout1[step1_A0+1]),
+  //         .sum  (step1_A0_sum[step1_A0]),
+  //         .carry(step1_A0_carry[step1_A0])
+  //     );
+  //   end
+  // endgenerate
+
+  wire [129-1:0] step1_A0_cout/* verilator split_var */;  // 最低位进位位 0 ，最高位进位不使用
+  assign step1_A0_cout[0] = 1'b0;
   wire [128-1:0] step1_A0_sum, step1_A0_carry;
   genvar step1_A0;
   generate
     for (step1_A0 = 0; step1_A0 < 128; step1_A0 = step1_A0 + 1) begin
-      alu_mul_compressor52 u_alu_mul_compressor52 (
-          .x0   (p_product[0][step1_A0]),
-          .x1   (p_product[1][step1_A0]),
-          .x2   (p_product[2][step1_A0]),
-          .x3   (p_product[3][step1_A0]),
-          .x4   (p_product[4][step1_A0]),
-          .cin0 (step1_A0_cout0[step1_A0]),
-          .cin1 (step1_A0_cout1[step1_A0]),
-          .cout0(step1_A0_cout0[step1_A0+1]),
-          .cout1(step1_A0_cout1[step1_A0+1]),
+      alu_mul_compressor42 u_alu_mul_compressor42_step1_A0 (
+          .x0   (p_product[1][step1_A0]),
+          .x1   (p_product[2][step1_A0]),
+          .x2   (p_product[3][step1_A0]),
+          .x3   (p_product[4][step1_A0]),
+          .ci   (step1_A0_cout[step1_A0]),
           .sum  (step1_A0_sum[step1_A0]),
+          .co   (step1_A0_cout[step1_A0+1]),
           .carry(step1_A0_carry[step1_A0])
       );
     end
@@ -401,6 +420,27 @@ module alu_mul_wallace (
     end
   endgenerate
 
-  assign mul_out_o = step4_A0_sum + {step4_A0_carry[126:0], 1'b0};
+
+  wire [127:0] step5_pp[3-1:0];
+  assign step5_pp[0] = step4_A0_sum;
+  assign step5_pp[1] = {step4_A0_carry[126:0], 1'b0};
+  assign step5_pp[2] = p_product[0];
+
+
+  genvar step5_A0;
+  wire [128-1:0] step5_A0_sum, step5_A0_carry;
+  generate
+    for (step5_A0 = 0; step5_A0 < 128; step5_A0 = step5_A0 + 1) begin
+      full_adder u_full_adder (
+          .a (step5_pp[0][step5_A0]),
+          .b (step5_pp[1][step5_A0]),
+          .ci(step5_pp[2][step5_A0]),
+          .s (step5_A0_sum[step5_A0]),
+          .co(step5_A0_carry[step5_A0])
+      );
+    end
+  endgenerate
+
+  assign mul_out_o = step5_A0_sum + {step5_A0_carry[126:0], 1'b0};
 
 endmodule

@@ -46,9 +46,9 @@ module alu_mul_booth_r4 (
   wire [66-1:0]rs2_66 = rs2_signed_valid_i?{{2{rs2_data_i[63]}},rs2_data_i}:{2'b00,rs2_data_i};
   // booth 编码
   wire [66-1:0] x = rs1_66;
-  wire [66-1:0] x_double = {x[66-1:1], 1'b0};
+  wire [66-1:0] x_double = {x[66-2:0], 1'b0};
   wire [66-1:0] x_neg = ~x + 1;
-  wire [66-1:0] x_neg_double = {x_neg[66-1:1], 1'b0};
+  wire [66-1:0] x_neg_double = {x_neg[66-2:0], 1'b0};
   // booth 编码 扫描数
   wire [67-1:0] scan_num = {rs2_66, 1'b0};
 
