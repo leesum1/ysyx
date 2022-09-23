@@ -11,7 +11,8 @@ VERILATOR_INC_PATH := -I./vsrc \
 
 
 # verilator flags: 
-VERILATOR_FLAGS +=  --trace --trace-max-array 256
+VERILATOR_FLAGS +=  --trace 
+#VERILATOR_FLAGS +=  --trace-max-array 256
 VERILATOR_FLAGS +=  -O3 -noassert --x-assign fast --x-initial fast 
 VERILATOR_FLAGS +=  -cc --exe  --build  --clk clk  
 VERILATOR_FLAGS += ${VERILATOR_INC_PATH}
