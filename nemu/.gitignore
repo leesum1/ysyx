@@ -9,6 +9,7 @@
 !README.md
 !Kconfig
 !.vscode/*
+!/tools/spike-diff/repo/**
 build
 include/config
 include/generated
