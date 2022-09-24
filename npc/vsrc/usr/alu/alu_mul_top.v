@@ -1,11 +1,13 @@
 `include "./../sysconfig.v"
 module alu_mul_top (
-    // input clk,  //为流水线准备
-    // input rst,
-    input rs1_signed_valid_i,
-    input rs2_signed_valid_i,
-    input [`XLEN-1:0] rs1_data_i,
-    input [`XLEN-1:0] rs2_data_i,
+    input                clk,
+    input                rst,
+    input                rs1_signed_valid_i,
+    input                rs2_signed_valid_i,
+    input  [  `XLEN_BUS] rs1_data_i,
+    input  [  `XLEN_BUS] rs2_data_i,
+    input                mul_valid_i,
+    output               mul_ready_o,
     output [`XLEN*2-1:0] mul_out_o
 );
   // /* 双符号位扩展 */
@@ -18,13 +20,16 @@ module alu_mul_top (
   // wire [`XLEN*2-1:0] _mul_result = _rs1_65 * _rs2_65;
   // assign mul_out_o = _mul_result;
 
+
   alu_mul_wallace u_alu_mul_wallace (
-      // .clk               (clk),
-      // .rst               (rst),
+      .clk               (clk),
+      .rst               (rst),
       .rs1_signed_valid_i(rs1_signed_valid_i),
       .rs2_signed_valid_i(rs2_signed_valid_i),
       .rs1_data_i        (rs1_data_i),
       .rs2_data_i        (rs2_data_i),
+      .mul_valid_i       (mul_valid_i),
+      .mul_ready_o       (mul_ready_o),
       .mul_out_o         (mul_out_o)
   );
 endmodule

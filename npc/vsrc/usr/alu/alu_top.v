@@ -1,10 +1,13 @@
 `include "sysconfig.v"
 module alu_top (
+    input clk,
+    input rst,
     /* ALU 端口 */
     input [`XLEN-1:0] alu_a_i,
     input [`XLEN-1:0] alu_b_i,
     input [`ALUOP_LEN-1:0] alu_op_i,
     output [`XLEN-1:0] alu_out_o,
+    output alu_stall_req_o,
     //比较指令输出
     output compare_out_o
 
@@ -148,16 +151,23 @@ module alu_top (
   wire [`XLEN-1:0] _xor_res = alu_a_i ^ alu_b_i;
 
   /***************************************乘法运算*******************************************/
-
+  wire _mul_valid = _aluop_mul | _aluop_mulh | _aluop_mulhsu | _aluop_mulhu | _aluop_mulw;
   wire _is_mul_sr1_signed = _aluop_mul | _aluop_mulh | _aluop_mulhsu | _aluop_mulw;
   wire _is_mul_sr2_signed = _aluop_mul | _aluop_mulh | _aluop_mulw;
+  wire _mul_ready;
   wire [`XLEN*2-1:0] _mul_result;
 
+
+  wire mul_stall_req = _mul_valid & (~_mul_ready);
   alu_mul_top u_alu_mul_top (
+      .clk               (clk),
+      .rst               (rst),
       .rs1_signed_valid_i(_is_mul_sr1_signed),
       .rs2_signed_valid_i(_is_mul_sr2_signed),
       .rs1_data_i        (alu_a_i),
       .rs2_data_i        (alu_b_i),
+      .mul_valid_i       (_mul_valid),
+      .mul_ready_o       (_mul_ready),
       .mul_out_o         (_mul_result)
   );
 

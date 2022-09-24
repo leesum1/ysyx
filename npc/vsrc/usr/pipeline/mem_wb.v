@@ -372,7 +372,8 @@ module mem_wb (
 
   /* rd_addr 寄存器 */
   wire [`REG_ADDRWIDTH-1:0] _rd_addr_mem_wb_d = (_flush_valid) ? `REG_ADDRWIDTH'b0:
-                                                (~stall_valid_i[`CTRLBUS_EX_MEM])&rdata_buff_valid?rd_idx_buff: rd_addr_mem_wb_i;
+                                                (~stall_valid_i[`CTRLBUS_EX_MEM])&rdata_buff_valid?rd_idx_buff:
+                                                rd_addr_mem_wb_i;
   reg [`REG_ADDRWIDTH-1:0] _rd_addr_mem_wb_q;
   regTemplate #(
       .WIDTH    (`REG_ADDRWIDTH),
