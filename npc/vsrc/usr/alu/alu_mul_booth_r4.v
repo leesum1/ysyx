@@ -47,7 +47,7 @@ module alu_mul_booth_r4 (
   // booth 编码
   wire [66-1:0] x = rs1_66;
   wire [66-1:0] x_double = {x[66-2:0], 1'b0};
-  wire [66-1:0] x_neg = ~x + 1;
+  wire [66-1:0] x_neg = ~x + 1;  // TODO 加法器可以省吗？，可以但要改结构
   wire [66-1:0] x_neg_double = {x_neg[66-2:0], 1'b0};
   // booth 编码 扫描数
   wire [67-1:0] scan_num = {rs2_66, 1'b0};
