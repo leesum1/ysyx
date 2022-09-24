@@ -13,6 +13,7 @@ module clint (
     input wire ram_stall_valid_mem_i,// mem 访存暂停
     input wire load_use_valid_id_i,  //load-use data hazard from id
     input wire jump_valid_ex_i,  // branch hazard from ex
+    input wire alu_mul_div_valid_ex_i, // mul div stall from ex
     // input wire mutiple_alu_inst_valid_ex_i,  // div and mul isnt from ex
 
     /* trap 所需寄存器，来自于 csr (读)*/
@@ -49,6 +50,8 @@ module clint (
   localparam load_use_stall = 6'b000011;
   localparam jump_flush = 6'b000110;
   localparam jump_stall = 6'b000000;
+  localparam mul_div_flush = 6'b001000;
+  localparam mul_div_stall = 6'b000111;
   localparam trap_flush = 6'b001110;
   localparam trap_stall = 6'b000000;
   localparam ram_if_flush = 6'b010000;
@@ -80,6 +83,10 @@ module clint (
     end else if (jump_valid_ex_i) begin
       stall_o = jump_stall;
       flush_o = jump_flush;
+    // 乘法和除法
+    end else if (alu_mul_div_valid_ex_i) begin
+      stall_o = mul_div_stall;
+      flush_o = mul_div_flush;
     // load use data 冲突,(发生在 id 阶段)
     end else if (load_use_valid_id_i) begin
       stall_o = load_use_stall;

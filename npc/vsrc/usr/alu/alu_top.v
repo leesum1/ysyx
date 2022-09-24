@@ -6,7 +6,13 @@ module alu_top (
     input [`XLEN-1:0] alu_a_i,
     input [`XLEN-1:0] alu_b_i,
     input [`ALUOP_LEN-1:0] alu_op_i,
+    // ALU 结果缓存
+    input alu_data_buff_valid_i,
+    input [`XLEN_BUS] alu_data_buff_i,
+    output alu_data_ready_o,
+
     output [`XLEN-1:0] alu_out_o,
+    // stall 
     output alu_stall_req_o,
     //比较指令输出
     output compare_out_o
@@ -151,14 +157,18 @@ module alu_top (
   wire [`XLEN-1:0] _xor_res = alu_a_i ^ alu_b_i;
 
   /***************************************乘法运算*******************************************/
-  wire _mul_valid = _aluop_mul | _aluop_mulh | _aluop_mulhsu | _aluop_mulhu | _aluop_mulw;
+  wire _mulop_valid = _aluop_mul | _aluop_mulh | _aluop_mulhsu | _aluop_mulhu | _aluop_mulw;
   wire _is_mul_sr1_signed = _aluop_mul | _aluop_mulh | _aluop_mulhsu | _aluop_mulw;
   wire _is_mul_sr2_signed = _aluop_mul | _aluop_mulh | _aluop_mulw;
   wire _mul_ready;
-  wire [`XLEN*2-1:0] _mul_result;
+  wire [`XLEN*2-1:0] mul_data_direct;
+
+  // 乘法器需要暂停流水线
+  wire mul_stall_req = _mulop_valid & (~_mul_ready) & (~alu_data_buff_valid_i);
+  wire mul_req_valid = mul_stall_req; //
 
 
-  wire mul_stall_req = _mul_valid & (~_mul_ready);
+  assign alu_stall_req_o = mul_stall_req;  // TODO 暂时只有乘法
   alu_mul_top u_alu_mul_top (
       .clk               (clk),
       .rst               (rst),
@@ -166,12 +176,13 @@ module alu_top (
       .rs2_signed_valid_i(_is_mul_sr2_signed),
       .rs1_data_i        (alu_a_i),
       .rs2_data_i        (alu_b_i),
-      .mul_valid_i       (_mul_valid),
+      .mul_valid_i       (mul_req_valid),
       .mul_ready_o       (_mul_ready),
-      .mul_out_o         (_mul_result)
+      .mul_out_o         (mul_data_direct)
   );
 
-
+  // 乘法结果选择，缓存中的结果，还是直接的结果
+  wire [`XLEN*2-1:0] _mul_result = mul_data_direct;
 
   /* 不同乘法指令的结果 */
   wire [`XLEN-1:0] _inst_mul_result = _mul_result[`XLEN-1:0];
@@ -218,7 +229,11 @@ module alu_top (
                                 ({`XLEN{_aluop_rem|_aluop_remu|_aluop_remw|_aluop_remuw}}&_inst_rem_remu_remw_remuw_ret);
 
   /* 选择最后输出 */
-  assign alu_out_o = (_isCMP) ? {63'b0, _compare_out} : _alu_out;
+  assign alu_out_o = (_isCMP) ? {63'b0, _compare_out} : 
+                     alu_data_buff_valid_i ? alu_data_buff_i // 优先选择缓存数据
+                     :_alu_out;
+
+  assign alu_data_ready_o = _mul_ready; // TODO 暂时只有 触发器 ready 信号
   assign compare_out_o = _compare_out;
 
 endmodule

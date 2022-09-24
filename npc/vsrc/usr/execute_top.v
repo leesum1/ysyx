@@ -1,43 +1,45 @@
 `include "sysconfig.v"
 module execute_top (
+    input                           clk,
+    input                           rst,
     /******************************* from id/ex *************************/
     // pc
-    input       [             `XLEN_BUS] pc_i,
-    input       [         `INST_LEN-1:0] inst_data_i,
+    input  [             `XLEN_BUS] pc_i,
+    input  [         `INST_LEN-1:0] inst_data_i,
     // gpr 译码结果
-    input       [    `REG_ADDRWIDTH-1:0] rd_idx_i,
-    input       [             `XLEN_BUS] rs1_data_i,
-    input       [             `XLEN_BUS] rs2_data_i,
-    input       [          `IMM_LEN-1:0] imm_data_i,
+    input  [    `REG_ADDRWIDTH-1:0] rd_idx_i,
+    input  [             `XLEN_BUS] rs1_data_i,
+    input  [             `XLEN_BUS] rs2_data_i,
+    input  [          `IMM_LEN-1:0] imm_data_i,
     // CSR 译码结果 
-    input       [`CSR_REG_ADDRWIDTH-1:0] csr_readaddr_i,
-    input       [             `XLEN_BUS] csr_data_i,
-    input       [          `IMM_LEN-1:0] csr_imm_i,
-    input                                csr_imm_valid_i,
+    input  [`CSR_REG_ADDRWIDTH-1:0] csr_readaddr_i,
+    input  [             `XLEN_BUS] csr_data_i,
+    input  [          `IMM_LEN-1:0] csr_imm_i,
+    input                           csr_imm_valid_i,
     // 指令微码
-    input       [        `ALUOP_LEN-1:0] alu_op_i,         // alu 操作码
-    input       [        `MEMOP_LEN-1:0] mem_op_i,         // 访存操作码
-    input       [        `EXCOP_LEN-1:0] exc_op_i,         // exc 操作码
-    input       [        `CSROP_LEN-1:0] csr_op_i,         // exc_csr 操作码
-    input       [         `PCOP_LEN-1:0] pc_op_i,
+    input  [        `ALUOP_LEN-1:0] alu_op_i,         // alu 操作码
+    input  [        `MEMOP_LEN-1:0] mem_op_i,         // 访存操作码
+    input  [        `EXCOP_LEN-1:0] exc_op_i,         // exc 操作码
+    input  [        `CSROP_LEN-1:0] csr_op_i,         // exc_csr 操作码
+    input  [         `PCOP_LEN-1:0] pc_op_i,
     /* TARP 总线 */
-    input  wire [             `TRAP_BUS] trap_bus_i,
+    input  [             `TRAP_BUS] trap_bus_i,
     /********************** to ex/mem **************************/
     // pc
-    output      [             `XLEN_BUS] pc_o,
-    output      [         `INST_LEN-1:0] inst_data_o,
+    output [             `XLEN_BUS] pc_o,
+    output [         `INST_LEN-1:0] inst_data_o,
     // gpr 译码结果
-    output      [    `REG_ADDRWIDTH-1:0] rd_idx_o,
-    output      [             `XLEN_BUS] rs1_data_o,
-    output      [             `XLEN_BUS] rs2_data_o,
-    output      [          `IMM_LEN-1:0] imm_data_o,
+    output [    `REG_ADDRWIDTH-1:0] rd_idx_o,
+    output [             `XLEN_BUS] rs1_data_o,
+    output [             `XLEN_BUS] rs2_data_o,
+    output [          `IMM_LEN-1:0] imm_data_o,
     // CSR 译码结果 
-    output      [             `XLEN_BUS] csr_data_o,
-    output      [          `IMM_LEN-1:0] csr_imm_o,
-    output                               csr_imm_valid_o,
-    output      [`CSR_REG_ADDRWIDTH-1:0] exc_csr_addr_o,
-    output      [        `MEMOP_LEN-1:0] mem_op_o,         // 访存操作码
-    output      [         `PCOP_LEN-1:0] pc_op_o,
+    output [             `XLEN_BUS] csr_data_o,
+    output [          `IMM_LEN-1:0] csr_imm_o,
+    output                          csr_imm_valid_o,
+    output [`CSR_REG_ADDRWIDTH-1:0] exc_csr_addr_o,
+    output [        `MEMOP_LEN-1:0] mem_op_o,         // 访存操作码
+    output [         `PCOP_LEN-1:0] pc_op_o,
 
     output [     `XLEN_BUS] exc_alu_data_o,   // 同时送给 ID 和 EX/MEM
     output [     `XLEN_BUS] exc_csr_data_o,
@@ -49,11 +51,18 @@ module execute_top (
     output [`XLEN_BUS] branch_pc_o,
     output branch_pc_valid_o,
 
+    /********************* from data_buff *******************/
+    // ALU结果缓存
+    input alu_data_buff_valid_i,
+    input [`XLEN_BUS] alu_data_buff_i,
+    output alu_data_ready_o,
+
     // 请求暂停流水线
     output jump_hazard_valid_o,
+    output alu_mul_div_valid_o,
 
     /* TARP 总线 */
-    output wire [`TRAP_BUS] trap_bus_o
+    output [`TRAP_BUS] trap_bus_o
 );
   assign pc_o = pc_i;
   assign inst_data_o = inst_data_i;
@@ -133,20 +142,28 @@ module execute_top (
 
   wire [`XLEN_BUS] _alu_out;
   wire _compare_out;
+  wire alu_stall_req;
   alu_top u_alu (
+      .clk(clk),
+      .rst(rst),
       /* ALU 端口 */
       .alu_a_i(_alu_in1),
       .alu_b_i(_alu_in2),
       .alu_out_o(_alu_out),
       .alu_op_i(alu_op_i),
-      .compare_out_o(_compare_out)
+      .compare_out_o(_compare_out),
+      /* 乘法、除法结果缓存 */
+      .alu_data_buff_valid_i(alu_data_buff_valid_i),
+      .alu_data_buff_i(alu_data_buff_i),
+      .alu_data_ready_o(alu_data_ready_o),
+      .alu_stall_req_o(alu_stall_req)
   );
   /* alu计算结果需要符号扩展 */
   wire _alu_sext = _excop_opimm32 | _excop_op32;
   wire [`XLEN_BUS] _alu_sext_out = {{32{_alu_out[31]}}, _alu_out[31:0]};
   assign exc_alu_data_o = (_alu_sext) ? _alu_sext_out : _alu_out;
-
-  //assign exc_out = _alu_out;
+  // 乘除法需要暂停处理器
+  assign alu_mul_div_valid_o = alu_stall_req;
 
   /***************************** CSR 执行操作 **************************/
 

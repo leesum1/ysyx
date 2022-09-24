@@ -332,6 +332,7 @@ module top (
   wire [        `EXCOP_LEN-1:0 ] exc_op_ex;  // exc 操作码
   // 请求暂停流水线
   wire                           jump_hazard_valid;
+  wire                           alu_mul_div_valid;
   /* TARP 总线 */
   wire [             `TRAP_BUS]  trap_bus_ex;
 
@@ -340,6 +341,8 @@ module top (
   wire                           branch_pc_valid;
 
   execute_top u_execute_top (
+      .clk            (clk),
+      .rst            (rst),
       /******************************* from id/ex *************************/
       // pc
       .pc_i           (inst_addr_id_ex),
@@ -391,8 +394,15 @@ module top (
       .exc_op_o       (exc_op_ex),
       // exc 操作码
 
+      /********************* from data_buff *******************/
+      // ALU结果缓存
+      .alu_data_buff_valid_i(alu_data_buff_valid),
+      .alu_data_buff_i(alu_data_buff),
+      .alu_data_ready_o(alu_data_ready),
+
       // 请求暂停流水线
       .jump_hazard_valid_o(jump_hazard_valid),
+      .alu_mul_div_valid_o(alu_mul_div_valid),
       .branch_pc_o        (branch_pc),
       .branch_pc_valid_o  (branch_pc_valid),
       /* TARP 总线 */
@@ -546,6 +556,7 @@ module top (
       .inst_data_i(inst_data_ex_mem),
       .load_use_valid_id_i(load_use_valid),  //load-use data hazard from id
       .jump_valid_ex_i(jump_hazard_valid),  // branch hazard from ex
+      .alu_mul_div_valid_ex_i(alu_mul_div_valid),
       .ram_stall_valid_if_i(ram_stall_valid_if),
       .ram_stall_valid_mem_i(ram_stall_valid_mem),
       /* TARP 总线 */
@@ -991,6 +1002,23 @@ module top (
       .axi_r_user_i   (io_master_ruser)
   );
 
+  /********************** 各种数据缓存  ***********************/
+  /* 乘法器数据缓存 */
+  wire [`XLEN_BUS] alu_data = exc_alu_data_ex;
+  wire alu_data_ready;
+  wire alu_data_buff_valid;
+  wire [`XLEN_BUS] alu_data_buff;
+  data_buff u_data_buff (
+      .clk                  (clk),
+      .rst                  (rst),
+      .flush_i              (flush_clint),
+      .stall_i              (stall_clint),
+      /* 乘法器数据缓存 */
+      .alu_data_i           (alu_data),
+      .alu_data_ready_i     (alu_data_ready),
+      .alu_data_buff_valid_o(alu_data_buff_valid),
+      .alu_data_buff_o      (alu_data_buff)
+  );
 
 endmodule
 
