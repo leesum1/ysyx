@@ -165,10 +165,8 @@ module alu_top (
 
   // 乘法器需要暂停流水线
   wire mul_stall_req = _mulop_valid & (~_mul_ready) & (~alu_data_buff_valid_i);
-  wire mul_req_valid = mul_stall_req; //
+  wire mul_req_valid = mul_stall_req;  //
 
-
-  assign alu_stall_req_o = mul_stall_req;  // TODO 暂时只有乘法
   alu_mul_top u_alu_mul_top (
       .clk               (clk),
       .rst               (rst),
@@ -197,16 +195,30 @@ module alu_top (
   // 是否是 32 位除法
   wire _is_div32 = _aluop_divw | _aluop_divuw | _aluop_remw | _aluop_remuw;
 
+
+  wire divop_valid = _aluop_div|_aluop_divu|
+                   _aluop_rem|_aluop_remu|
+                   _aluop_divw|_aluop_divuw|
+                   _aluop_remw|_aluop_remuw;
+
+  wire _div_ready;
+
+  // 除法器需要暂停流水线
+  wire div_stall_req = divop_valid & (~_div_ready) & (~alu_data_buff_valid_i);
+  wire div_req_valid = div_stall_req;  //
+
   /* 暂存结果 */
   wire [`XLEN-1:0] _div_result, _rem_result;
 
   alu_div_top u_alu_div_top (
-      // input clk,  //为流水线准备
-      // input rst,
+      .clk           (clk),
+      .rst           (rst),
       .signed_valid_i(_is_div_signed),
       .div32_valid_i (_is_div32),
       .sr1_data_i    (alu_a_i),
       .sr2_data_i    (alu_b_i),
+      .div_vliad_i   (div_req_valid),
+      .div_ready_o   (_div_ready),
       .div_out_o     (_div_result),
       .rem_out_o     (_rem_result)
   );
@@ -233,7 +245,8 @@ module alu_top (
                      alu_data_buff_valid_i ? alu_data_buff_i // 优先选择缓存数据
                      :_alu_out;
 
-  assign alu_data_ready_o = _mul_ready; // TODO 暂时只有 触发器 ready 信号
+  assign alu_data_ready_o = _mul_ready|_div_ready;  // TODO 暂时只有 乘法器 ready 信号
+    assign alu_stall_req_o = mul_stall_req |div_stall_req;  // TODO 暂时只有乘法
   assign compare_out_o = _compare_out;
 
 endmodule
