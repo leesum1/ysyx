@@ -1,6 +1,6 @@
 `include "sysconfig.v"
 
-`define DIV_SIM
+// `define DIV_SIM
 
 module alu_div_top (
     input clk,  //为流水线准备

@@ -2,6 +2,7 @@
 
 /* 
   除法器主要参考书目：COMPUTER ARITHMETIC Algorithms and Hardware Designs
+  https://archive.org/details/introductiontoar0000wase/page/188/mode/1up
   章节：13.4 NONRESTORING AND SIGNED DIVISION
   The following notation is used in our discussion of division algorithms:
   z   Dividend    z2k−1 z2k−2 · · · z1 z0
@@ -86,20 +87,23 @@ module alu_div_slow (
 
   wire add_d_64 = s_sign_64 ^ d_sign_64;  // 符号异：加有效，符号同：减有效
   wire add_d_32 = s_sign_32 ^ d_sign_32;  // 符号异：加有效，符号同：减有效
+
   wire [64:0] d_switch_64 = add_d_64 ? d_reg : d_neg_reg;
   wire [64:0] d_switch_32 = add_d_32 ? d_reg : d_neg_reg;
   wire q_temp_64 = add_d_64 ? 1'b0 : 1'b1;  // 每一次计算的商
   wire q_temp_32 = add_d_32 ? 1'b0 : 1'b1;  // 每一次计算的商
 
 
-  
+
 
   wire [129:0] s_reg_next64 = {{s_reg[128:64] + d_switch_64}, s_reg[63:0], q_temp_64};
   wire [129:0] s_reg_next32 = {64'b0, s_reg[64:32] + d_switch_32[32:0], s_reg[31:0], q_temp_32};
 
-  wire need_correct_64 = s_sign_64 ^ z_sign_64;  // 结果需要修正
-  wire need_coreect_32 = s_sign_32 ^ z_sign_32;  // 结果需要修正
+  wire s_is_zero64 = (s_reg[129:65]==0);
+  wire s_is_zero32 = (s_reg[65:33]==0);
 
+  wire need_correct_64 = (s_sign_64 ^ z_sign_64)&~s_is_zero64;  // 结果需要修正 DGX
+  wire need_coreect_32 = (s_sign_32 ^ z_sign_32)&~s_is_zero32;  // 结果需要修正
 
   wire [65:0] q_correct_plus_64 = {66{need_correct_64}}&(add_d_64 ? (~66'b0) : 66'b1);  // 1 或 -1
   wire [33:0] q_correct_plus_32 = {34{need_coreect_32}}&(add_d_32 ? (~34'b0) : 34'b1);  // 1 或 -1

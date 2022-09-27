@@ -43,9 +43,20 @@ void Difftest::init(const char* ref_so_file, long img_size, int port) {
 
     diff_init(port);
 
-    uint64_t membase = mysim_p->mem->getMEMBASE();
+    
     /* 将程序镜像文件拷贝过去 */
-    diff_memcpy(membase, mysim_p->mem->guest_to_host(membase), img_size, DIFFTEST_TO_REF);
+    // DPIC 总线模型
+    //uint64_t membase = mysim_p->mem->getMEMBASE();
+    // diff_memcpy(membase, mysim_p->mem->guest_to_host(membase), img_size, DIFFTEST_TO_REF);
+
+    // soc-simulator 总线模型
+    uint8_t* bin_temp = new uint8_t[img_size];
+    // 从内存中读取 img 数据
+    mysim_p->u_axi4->dram->do_read(0,img_size,bin_temp);
+    // img 数据拷贝到 ref 中
+    diff_memcpy(MEM_BASE, bin_temp, img_size, DIFFTEST_TO_REF);
+    delete bin_temp;
+
     CPU_state regs = getDutregs();
     /* 让 dut 和 ref 寄存器初始值一样 */
     regs.pc = 0x80000000;//TODO:先凑合，后面再改

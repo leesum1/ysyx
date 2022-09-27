@@ -194,10 +194,20 @@ bool Simtop::npcHitGood() {
  */
 void Simtop::scanMem(paddr_t addr, uint32_t len) {
 
-    /* 每次读取 4byte */
+    // /* 每次读取 4byte DPIC 总线模型 */
+    // for (size_t i = 0; i < len; i++) {
+    //     printf("addr:0x%08lx\tData: %08lx\n", addr,
+    //         mem->paddr_read(addr, 4));
+    //     addr += 4;
+    // }
+
+    
+    /* 每次读取 4byte soc-simulator 总线模型  */
+    static uint8_t rbuff[4];
     for (size_t i = 0; i < len; i++) {
-        printf("addr:0x%08lx\tData: %08lx\n", addr,
-            mem->paddr_read(addr, 4));
+        u_axi4->dram->do_read(addr-MEM_BASE,4,rbuff);
+        printf("addr:0x%08x\tData: %08lx\n", addr,
+            *(uint32_t*)rbuff);
         addr += 4;
     }
 }

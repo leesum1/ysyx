@@ -69,7 +69,10 @@ extern "C" void pmem_inst_read(long long raddr, long long* rdata, char rmask) {
 #endif
 };
 
-
+/**
+ * @brief 采用 soc-simulator 后 已弃用
+ * 
+ */
 extern "C" void pmem_read(long raddr, long long* rdata, char rmask) {
     // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
     if (rmask == 0) {
@@ -83,6 +86,11 @@ extern "C" void pmem_read(long raddr, long long* rdata, char rmask) {
     printf("data:%llx\n", *rdata);
 #endif
 };
+
+/**
+ * @brief 采用 soc-simulator 后 已弃用 
+ * 
+ */
 extern "C" void pmem_write(long waddr, long long wdata, char wmask) {
     // 总是往地址为`waddr & ~0x7ull`的8字节按写掩码`wmask`写入`wdata`
     // `wmask`中每比特表示`wdata`中1个字节的掩码,

@@ -299,6 +299,7 @@ void Exprinternal::negNum() {
     }
 }
 /* 处理指针 */
+// TODO： 改为 soc-simulator 模型
 void Exprinternal::ref() {
 
     //https://blog.csdn.net/hechao3225/article/details/55101344
@@ -324,7 +325,7 @@ void Exprinternal::ref() {
             if (tokens.at(i + 1).type == TK_NUM) {
                 /* 得到地址 */
                 sscanf(tokens.at(i + 1).str, "%lu", &addr);
-                data = mysim_p->mem->paddr_read(addr, 8);//读取地址数据
+                data = mysim_p->mem->paddr_read(addr, 8);//读取地址数据 
                 cout << "data:" << data << endl;
                 sprintf(tokens[i + 1].str, "%lu", data);//重新写入数据
             }

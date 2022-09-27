@@ -25,7 +25,7 @@ module writeback (
   // assign exc_csr_data_o = exc_csr_data_i;
   // assign exc_csr_valid_o = exc_csr_valid_i;
 
-  wire _commit_valid = (pc_wb_i != `XLEN'b0) && (inst_data_wb_i != `INST_NOP);
+  wire _commit_valid = (pc_wb_i != `XLEN'b0);
 
   import "DPI-C" function void inst_commit(
     input longint pc,
