@@ -1,4 +1,5 @@
 `include "./../sysconfig.v"
+`define MUL_SIM
 module alu_mul_top (
     input                clk,
     input                rst,
@@ -20,7 +21,19 @@ module alu_mul_top (
   // wire [`XLEN*2-1:0] _mul_result = _rs1_65 * _rs2_65;
   // assign mul_out_o = _mul_result;
 
-
+`ifdef MUL_SIM
+alu_mul_sim u_alu_mul_sim (
+    .clk                   (clk),
+    .rst                   (rst),
+    .rs1_signed_valid_i    (rs1_signed_valid_i),
+    .rs2_signed_valid_i    (rs2_signed_valid_i),
+    .rs1_data_i            (rs1_data_i),
+    .rs2_data_i            (rs2_data_i),
+    .mul_valid_i           (mul_valid_i),
+    .mul_ready_o           (mul_ready_o),
+    .mul_out_o             (mul_out_o)
+);
+`else
   alu_mul_wallace u_alu_mul_wallace (
       .clk               (clk),
       .rst               (rst),
@@ -32,4 +45,6 @@ module alu_mul_top (
       .mul_ready_o       (mul_ready_o),
       .mul_out_o         (mul_out_o)
   );
+
+`endif
 endmodule

@@ -217,7 +217,7 @@ module alu_top (
       .div32_valid_i (_is_div32),
       .sr1_data_i    (alu_a_i),
       .sr2_data_i    (alu_b_i),
-      .div_vliad_i   (div_req_valid),
+      .div_valid_i   (div_req_valid),
       .div_ready_o   (_div_ready),
       .div_out_o     (_div_result),
       .rem_out_o     (_rem_result)

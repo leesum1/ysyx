@@ -92,6 +92,7 @@ void SimAxi4::mmio_device_init() {
 
     // 内存
     dram = new mmio_mem(0x8000000);
+
     assert(mmio.add_dev(MEM_BASE, 0x8000000, dram));
     // 外设
     mydevices = new Device2axi4();
@@ -111,7 +112,6 @@ void SimAxi4::beat() {
     axi4_ref <32, 64, 4> mmio_sigs_ref(mmio_sigs); // 用于 soc-simulator 的内部信号处理
     axi4_ref <32, 64, 4> mmio_ref(mmio_ptr); // 指向 npc 与 soc-simulator 的交互信号
     mmio.beat(mmio_sigs_ref);   // soc-simulator 根据信号做出反映
-
 }
 void SimAxi4::update_output() {
     axi4_ref <32, 64, 4> mmio_sigs_ref(mmio_sigs); // 用于 soc-simulator 的内部信号处理
