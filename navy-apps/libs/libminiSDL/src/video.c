@@ -275,7 +275,7 @@ void SDL_SoftStretch(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst, SDL_
     rect.h = h;
     SDL_BlitSurface(src, &rect, dst, dstrect);
   }
-  /* 需要进行图像放缩 最邻近算法 https://my.oschina.net/u/4303561/blog/3827800*/
+  /* 需要进行图像放缩 最邻近算法 https://my.oschina.net/u/4303561/blog/3827800 */
   else {
     // /printf("src_w:%d,src_h:%d,dst_w:%d,dst_h:%d\n", w, h, dstrect->w, dstrect->h);
     // 缩放比例
