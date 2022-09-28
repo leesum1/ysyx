@@ -9,18 +9,23 @@ module rv64_csr_regfile (
     input wire [`XLEN-1:0] csr_mcause_writedata_i,
     input wire [`XLEN-1:0] csr_mtval_writedata_i,
     input wire [`XLEN-1:0] csr_mtvec_writedata_i,
+    input wire [`XLEN-1:0] csr_mip_writedata_i,
+    input wire [`XLEN-1:0] csr_mie_writedata_i,
     input wire csr_mstatus_write_valid_i,
     input wire csr_mepc_write_valid_i,
     input wire csr_mcause_write_valid_i,
     input wire csr_mtval_write_valid_i,
     input wire csr_mtvec_write_valid_i,
+    input wire csr_mip_write_valid_i,
+    input wire csr_mie_write_valid_i,
     /* 单独引出寄存器(读) */
     output wire [`XLEN-1:0] csr_mstatus_readdata_o,
     output wire [`XLEN-1:0] csr_mepc_readdata_o,
     output wire [`XLEN-1:0] csr_mcause_readdata_o,
     output wire [`XLEN-1:0] csr_mtval_readdata_o,
     output wire [`XLEN-1:0] csr_mtvec_readdata_o,
-
+    output wire [`XLEN-1:0] csr_mip_readdata_o,
+    output wire [`XLEN-1:0] csr_mie_readdata_o,
     /* 读取数据端口 */
     input wire [`CSR_REG_ADDRWIDTH-1:0] csr_readaddr_i,
     output wire [`XLEN-1:0] csr_readdata_o,
@@ -55,7 +60,15 @@ module rv64_csr_regfile (
   reg [`XLEN-1:0] _mtvec_q;
   reg _mtvec_en;
 
+  // mip
+  wire [`XLEN-1:0] _mip_d = (csr_mip_write_valid_i) ? csr_mip_writedata_i : csr_writedata_i;
+  reg [`XLEN-1:0] _mip_q;
+  reg _mip_en;
 
+  // mie
+  wire [`XLEN-1:0] _mie_d = (csr_mie_write_valid_i) ? csr_mie_writedata_i : csr_writedata_i;
+  reg [`XLEN-1:0] _mie_q;
+  reg _mie_en;
 
 
   /* 写使能 */
@@ -66,12 +79,16 @@ module rv64_csr_regfile (
     _mcause_en = csr_mcause_write_valid_i;
     _mtval_en = csr_mtval_write_valid_i;
     _mtvec_en = csr_mtvec_write_valid_i;
+    _mip_en = csr_mip_write_valid_i;
+    _mie_en = csr_mie_write_valid_i;
     case (csr_writeaddr_i)
       `CSR_MSTATUS: _mstatus_en = csr_write_valid_i;
       `CSR_MEPC: _mepc_en = csr_write_valid_i;
       `CSR_MCAUSE: _mcause_en = csr_write_valid_i;
       `CSR_MTVAL: _mtval_en = csr_write_valid_i;
       `CSR_MTVEC: _mtvec_en = csr_write_valid_i;
+      `CSR_MIE: _mie_en = csr_write_valid_i;
+      `CSR_MIP: _mip_en = csr_write_valid_i;
       default: ;
     endcase
   end
@@ -85,6 +102,8 @@ module rv64_csr_regfile (
       `CSR_MCAUSE: _csr_readdata = _mcause_q;
       `CSR_MTVAL: _csr_readdata = _mtval_q;
       `CSR_MTVEC: _csr_readdata = _mtvec_q;
+      `CSR_MIE: _csr_readdata = _mie_q;
+      `CSR_MIP: _csr_readdata = _mip_q;
       default: _csr_readdata = `XLEN'b0;
     endcase
   end
@@ -96,6 +115,8 @@ module rv64_csr_regfile (
   assign csr_mtval_readdata_o = _mtval_q;
   assign csr_mtvec_readdata_o = _mtvec_q;
   assign csr_mstatus_readdata_o = _mstatus_q;
+  assign csr_mie_readdata_o = _mie_q;
+  assign csr_mip_readdata_o = _mip_q;
 
 
   /* CSR 寄存器组 */
@@ -148,6 +169,28 @@ module rv64_csr_regfile (
       .din (_mtvec_d),
       .dout(_mtvec_q),
       .wen (_mtvec_en)
+  );
+
+  regTemplate #(
+      .WIDTH    (`XLEN),
+      .RESET_VAL(`XLEN'b0)
+  ) u_csr_mip (
+      .clk (clk),
+      .rst (rst),
+      .din (_mip_d),
+      .dout(_mip_q),
+      .wen (_mip_en)
+  );
+
+  regTemplate #(
+      .WIDTH    (`XLEN),
+      .RESET_VAL(`XLEN'b0)
+  ) u_csr_mie (
+      .clk (clk),
+      .rst (rst),
+      .din (_mie_d),
+      .dout(_mie_q),
+      .wen (_mie_en)
   );
 
 endmodule

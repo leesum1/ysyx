@@ -1,4 +1,9 @@
 
+// 仅仅用于仿真加快速度，替换多周期乘除法
+//`define MUL_SIM
+// `define DIV_SIM
+
+
 `define XLEN 64             //cpu 位数
 `define INST_LEN 32         //指令长度
 `define IMM_LEN 64          //立即数长度

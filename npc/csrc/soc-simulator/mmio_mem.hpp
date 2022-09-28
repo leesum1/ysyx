@@ -3,7 +3,7 @@
 
 #include "axi4.hpp"
 #include "mmio_dev.hpp"
-
+#include "simconf.h"
 #include <fstream>
 #include <iostream>
 

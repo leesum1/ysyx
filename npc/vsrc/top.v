@@ -531,17 +531,21 @@ module top (
 
 
 
-  // （组合逻辑电路）在访存阶段执行
+  /* 控制模块 加 中断模块 */
   wire [`XLEN-1:0] csr_mstatus_writedata;
   wire [`XLEN-1:0] csr_mepc_writedata;
   wire [`XLEN-1:0] csr_mcause_writedata;
   wire [`XLEN-1:0] csr_mtval_writedata;
   wire [`XLEN-1:0] csr_mtvec_writedata;
+  wire [`XLEN-1:0] csr_mip_writedata;
+  wire [`XLEN-1:0] csr_mie_writedata;
   wire csr_mstatus_write_valid;
   wire csr_mepc_write_valid;
   wire csr_mcause_write_valid;
   wire csr_mtval_write_valid;
   wire csr_mtvec_write_valid;
+  wire csr_mip_write_valid;
+  wire csr_mie_write_valid;
   /* 输出至取指阶段 */
   wire [`XLEN-1:0] clint_pc;
   wire clint_pc_valid;
@@ -567,17 +571,24 @@ module top (
       .csr_mcause_readdata_i(csr_mcause_readdata_csr),
       .csr_mtval_readdata_i(csr_mtval_readdata_csr),
       .csr_mtvec_readdata_i(csr_mtvec_readdata_csr),
+      .csr_mie_readdata_i(csr_mie_readdata_csr),
+      .csr_mip_readdata_i(csr_mip_readdata_csr),
       /* trap 所需寄存器，来自于 csr (写)*/
       .csr_mstatus_writedata_o(csr_mstatus_writedata),
       .csr_mepc_writedata_o(csr_mepc_writedata),
       .csr_mcause_writedata_o(csr_mcause_writedata),
       .csr_mtval_writedata_o(csr_mtval_writedata),
       .csr_mtvec_writedata_o(csr_mtvec_writedata),
+      .csr_mie_writedata_o(csr_mie_writedata),
+      .csr_mip_writedata_o(csr_mip_writedata),
+
       .csr_mstatus_write_valid_o(csr_mstatus_write_valid),
       .csr_mepc_write_valid_o(csr_mepc_write_valid),
       .csr_mcause_write_valid_o(csr_mcause_write_valid),
       .csr_mtval_write_valid_o(csr_mtval_write_valid),
       .csr_mtvec_write_valid_o(csr_mtvec_write_valid),
+      .csr_mie_write_valid_o(csr_mie_write_valid),
+      .csr_mip_write_valid_o(csr_mip_write_valid),
       /* 输出至取指阶段 */
       .clint_pc_o(clint_pc),  // trap pc
       .clint_pc_valid_o(clint_pc_valid),  // trap pc valid
@@ -593,11 +604,16 @@ module top (
   wire [             `XLEN-1:0 ] csr_mcause_writedata_mem_wb;
   wire [             `XLEN-1:0 ] csr_mtval_writedata_mem_wb;
   wire [             `XLEN-1:0 ] csr_mtvec_writedata_mem_wb;
+  wire [             `XLEN-1:0 ] csr_mie_writedata_mem_wb;
+  wire [             `XLEN-1:0 ] csr_mip_writedata_mem_wb;
+
   wire                           csr_mstatus_write_valid_mem_wb;
   wire                           csr_mepc_write_valid_mem_wb;
   wire                           csr_mcause_write_valid_mem_wb;
   wire                           csr_mtval_write_valid_mem_wb;
   wire                           csr_mtvec_write_valid_mem_wb;
+  wire                           csr_mie_write_valid_mem_wb;
+  wire                           csr_mip_write_valid_mem_wb;
   wire [             `XLEN-1:0 ] pc_mem_wb;  //指令地址
   wire [         `INST_LEN-1:0 ] inst_data_mem_wb;  //指令内容
 
@@ -618,32 +634,38 @@ module top (
   wire                           rdata_buff_valid;
   wire [             `XLEN_BUS]  rdata_buff;
   mem_wb u_mem_wb (
-      .clk                             (clk),
-      .rst                             (rst),
-      .flush_valid_i                   (flush_clint),
-      .stall_valid_i                   (stall_clint),
+      .clk                           (clk),
+      .rst                           (rst),
+      .flush_valid_i                 (flush_clint),
+      .stall_valid_i                 (stall_clint),
       // TODO:TSET
-      .mem_data_ready_i                (mem_data_ready),
-      .rdata_buff_valid_o              (rdata_buff_valid),
-      .rdata_buff_o                    (rdata_buff),
+      .mem_data_ready_i              (mem_data_ready),
+      .rdata_buff_valid_o            (rdata_buff_valid),
+      .rdata_buff_o                  (rdata_buff),
       /* trap 所需寄存器，来自于 csr (写)*/
-      .csr_mstatus_writedata_mem_wb_i  (csr_mstatus_writedata),
-      .csr_mepc_writedata_mem_wb_i     (csr_mepc_writedata),
-      .csr_mcause_writedata_mem_wb_i   (csr_mcause_writedata),
-      .csr_mtval_writedata_mem_wb_i    (csr_mtval_writedata),
-      .csr_mtvec_writedata_mem_wb_i    (csr_mtvec_writedata),
+      .csr_mstatus_writedata_mem_wb_i(csr_mstatus_writedata),
+      .csr_mepc_writedata_mem_wb_i   (csr_mepc_writedata),
+      .csr_mcause_writedata_mem_wb_i (csr_mcause_writedata),
+      .csr_mtval_writedata_mem_wb_i  (csr_mtval_writedata),
+      .csr_mtvec_writedata_mem_wb_i  (csr_mtvec_writedata),
+      .csr_mie_writedata_mem_wb_i    (csr_mie_writedata),
+      .csr_mip_writedata_mem_wb_i    (csr_mip_writedata),
+
       .csr_mstatus_write_valid_mem_wb_i(csr_mstatus_write_valid),
       .csr_mepc_write_valid_mem_wb_i   (csr_mepc_write_valid),
       .csr_mcause_write_valid_mem_wb_i (csr_mcause_write_valid),
       .csr_mtval_write_valid_mem_wb_i  (csr_mtval_write_valid),
       .csr_mtvec_write_valid_mem_wb_i  (csr_mtvec_write_valid),
-      .pc_mem_wb_i                     (pc_mem),
-      .inst_data_mem_wb_i              (inst_data_mem),
-      .csr_addr_mem_wb_i               (csr_addr_mem),
-      .exc_csr_data_mem_wb_i           (exc_csr_data_mem),
-      .exc_csr_valid_mem_wb_i          (exc_csr_valid_mem),
-      .rd_addr_mem_wb_i                (rd_idx_mem),
-      .mem_data_mem_wb_i               (mem_data_mem),
+      .csr_mie_write_valid_mem_wb_i  (csr_mie_write_valid),
+      .csr_mip_write_valid_mem_wb_i  (csr_mip_write_valid),
+
+      .pc_mem_wb_i           (pc_mem),
+      .inst_data_mem_wb_i    (inst_data_mem),
+      .csr_addr_mem_wb_i     (csr_addr_mem),
+      .exc_csr_data_mem_wb_i (exc_csr_data_mem),
+      .exc_csr_valid_mem_wb_i(exc_csr_valid_mem),
+      .rd_addr_mem_wb_i      (rd_idx_mem),
+      .mem_data_mem_wb_i     (mem_data_mem),
 
       /* trap 所需寄存器，来自于 csr (写)*/
       .csr_mstatus_writedata_mem_wb_o(csr_mstatus_writedata_mem_wb),
@@ -651,11 +673,17 @@ module top (
       .csr_mcause_writedata_mem_wb_o(csr_mcause_writedata_mem_wb),
       .csr_mtval_writedata_mem_wb_o(csr_mtval_writedata_mem_wb),
       .csr_mtvec_writedata_mem_wb_o(csr_mtvec_writedata_mem_wb),
+      .csr_mie_writedata_mem_wb_o(csr_mie_writedata_mem_wb),
+      .csr_mip_writedata_mem_wb_o(csr_mip_writedata_mem_wb),
+
       .csr_mstatus_write_valid_mem_wb_o(csr_mstatus_write_valid_mem_wb),
       .csr_mepc_write_valid_mem_wb_o(csr_mepc_write_valid_mem_wb),
       .csr_mcause_write_valid_mem_wb_o(csr_mcause_write_valid_mem_wb),
       .csr_mtval_write_valid_mem_wb_o(csr_mtval_write_valid_mem_wb),
       .csr_mtvec_write_valid_mem_wb_o(csr_mtvec_write_valid_mem_wb),
+      .csr_mie_write_valid_mem_wb_o(csr_mie_write_valid_mem_wb),
+      .csr_mip_write_valid_mem_wb_o(csr_mip_write_valid_mem_wb),
+
       .pc_mem_wb_o(pc_mem_wb),
       .inst_data_mem_wb_o(inst_data_mem_wb),
       .csr_addr_mem_wb_o(csr_addr_mem_wb),
@@ -713,28 +741,37 @@ module top (
   wire [`XLEN-1:0] csr_mcause_readdata_csr;
   wire [`XLEN-1:0] csr_mtval_readdata_csr;
   wire [`XLEN-1:0] csr_mtvec_readdata_csr;
+  wire [`XLEN-1:0] csr_mie_readdata_csr;
+  wire [`XLEN-1:0] csr_mip_readdata_csr;
 
   wire [`XLEN-1:0] csr_data_csr;
   rv64_csr_regfile u_rv64_csr_regfile (
-      .clk                      (clk),
-      .rst                      (rst),
+      .clk                    (clk),
+      .rst                    (rst),
       /* 单独引出寄存器(写) */
-      .csr_mstatus_writedata_i  (csr_mstatus_writedata_mem_wb),
-      .csr_mepc_writedata_i     (csr_mepc_writedata_mem_wb),
-      .csr_mcause_writedata_i   (csr_mcause_writedata_mem_wb),
-      .csr_mtval_writedata_i    (csr_mtval_writedata_mem_wb),
-      .csr_mtvec_writedata_i    (csr_mtvec_writedata_mem_wb),
+      .csr_mstatus_writedata_i(csr_mstatus_writedata_mem_wb),
+      .csr_mepc_writedata_i   (csr_mepc_writedata_mem_wb),
+      .csr_mcause_writedata_i (csr_mcause_writedata_mem_wb),
+      .csr_mtval_writedata_i  (csr_mtval_writedata_mem_wb),
+      .csr_mtvec_writedata_i  (csr_mtvec_writedata_mem_wb),
+      .csr_mie_writedata_i    (csr_mie_writedata_mem_wb),
+      .csr_mip_writedata_i    (csr_mip_writedata_mem_wb),
+
       .csr_mstatus_write_valid_i(csr_mstatus_write_valid_mem_wb),
       .csr_mepc_write_valid_i   (csr_mepc_write_valid_mem_wb),
       .csr_mcause_write_valid_i (csr_mcause_write_valid_mem_wb),
       .csr_mtval_write_valid_i  (csr_mtval_write_valid_mem_wb),
       .csr_mtvec_write_valid_i  (csr_mtvec_write_valid_mem_wb),
+      .csr_mie_write_valid_i    (csr_mie_write_valid_mem_wb),
+      .csr_mip_write_valid_i    (csr_mip_write_valid_mem_wb),
       /* 单独引出寄存器(读) */
       .csr_mstatus_readdata_o   (csr_mstatus_readdata_csr),
       .csr_mepc_readdata_o      (csr_mepc_readdata_csr),
       .csr_mcause_readdata_o    (csr_mcause_readdata_csr),
       .csr_mtval_readdata_o     (csr_mtval_readdata_csr),
       .csr_mtvec_readdata_o     (csr_mtvec_readdata_csr),
+      .csr_mie_readdata_o       (csr_mie_readdata_csr),
+      .csr_mip_readdata_o       (csr_mip_readdata_csr),
       /* 读取数据端口 */
       .csr_readaddr_i           (csr_idx_id),
       .csr_readdata_o           (csr_data_csr),                    //TODO 添加 valid

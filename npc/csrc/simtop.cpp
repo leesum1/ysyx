@@ -36,8 +36,8 @@ Simtop::Simtop() {
 Simtop::~Simtop() {
 #ifdef TOP_TRACE
     tfp->close();
-    delete tfp;
-    delete contextp;
+    //delete tfp;
+    //delete contextp;
 #endif
     //delete mem;
     delete top;

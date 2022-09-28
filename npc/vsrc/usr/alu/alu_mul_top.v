@@ -1,5 +1,7 @@
 `include "sysconfig.v"
-`define MUL_SIM
+
+
+
 module alu_mul_top (
     input                clk,
     input                rst,

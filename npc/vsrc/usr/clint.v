@@ -22,17 +22,24 @@ module clint (
     input wire [`XLEN-1:0] csr_mcause_readdata_i,
     input wire [`XLEN-1:0] csr_mtval_readdata_i,
     input wire [`XLEN-1:0] csr_mtvec_readdata_i,
+    input wire [`XLEN-1:0] csr_mip_readdata_i,
+    input wire [`XLEN-1:0] csr_mie_readdata_i,
     /* trap 所需寄存器，来自于 csr (写)*/
     output wire [`XLEN-1:0] csr_mstatus_writedata_o,
     output wire [`XLEN-1:0] csr_mepc_writedata_o,
     output wire [`XLEN-1:0] csr_mcause_writedata_o,
     output wire [`XLEN-1:0] csr_mtval_writedata_o,
     output wire [`XLEN-1:0] csr_mtvec_writedata_o,
+    output wire [`XLEN-1:0] csr_mip_writedata_o,
+    output wire [`XLEN-1:0] csr_mie_writedata_o,
+
     output wire csr_mstatus_write_valid_o,
     output wire csr_mepc_write_valid_o,
     output wire csr_mcause_write_valid_o,
     output wire csr_mtval_write_valid_o,
     output wire csr_mtvec_write_valid_o,
+    output wire csr_mip_write_valid_o,
+    output wire csr_mie_write_valid_o,
     /* 输出至取指阶段 */
     output wire [`XLEN-1:0] clint_pc_o,
     output wire clint_pc_valid_o,
@@ -100,7 +107,7 @@ module clint (
 
 
 
-
+/******************************handle the trap request**************************************/
   /* type of trap */
   wire _trap_ecall = trap_bus_i[`TRAP_ECALL];
   wire _trap_ebreak = trap_bus_i[`TRAP_EBREAK];
@@ -131,6 +138,11 @@ module clint (
   assign clint_pc_o = ({`XLEN{_mret_pc_valid_o}}&_mret_pc_o)|
                         ({`XLEN{_trap_pc_valid_o}}&_trap_pc_o);
   assign clint_pc_valid_o = _trap_valid;
+
+
+
+
+  /*********************************client******************************************/
 
 
 

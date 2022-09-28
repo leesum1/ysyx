@@ -14,16 +14,21 @@ module mem_wb (
     // input [    `XLEN_BUS] pc_mem_wb_i,
     // input [`INST_LEN-1:0] inst_data_mem_wb_i,
     /* trap 所需寄存器，来自于 csr (写)*/
-    input [    `XLEN-1:0] csr_mstatus_writedata_mem_wb_i,
-    input [    `XLEN-1:0] csr_mepc_writedata_mem_wb_i,
-    input [    `XLEN-1:0] csr_mcause_writedata_mem_wb_i,
-    input [    `XLEN-1:0] csr_mtval_writedata_mem_wb_i,
-    input [    `XLEN-1:0] csr_mtvec_writedata_mem_wb_i,
+    input [`XLEN-1:0] csr_mstatus_writedata_mem_wb_i,
+    input [`XLEN-1:0] csr_mepc_writedata_mem_wb_i,
+    input [`XLEN-1:0] csr_mcause_writedata_mem_wb_i,
+    input [`XLEN-1:0] csr_mtval_writedata_mem_wb_i,
+    input [`XLEN-1:0] csr_mtvec_writedata_mem_wb_i,
+    input [`XLEN-1:0] csr_mie_writedata_mem_wb_i,
+    input [`XLEN-1:0] csr_mip_writedata_mem_wb_i,
+
     input                 csr_mstatus_write_valid_mem_wb_i,
     input                 csr_mepc_write_valid_mem_wb_i,
     input                 csr_mcause_write_valid_mem_wb_i,
     input                 csr_mtval_write_valid_mem_wb_i,
     input                 csr_mtvec_write_valid_mem_wb_i,
+    input                 csr_mie_write_valid_mem_wb_i,
+    input                 csr_mip_write_valid_mem_wb_i,
     input [    `XLEN-1:0] pc_mem_wb_i,                       //指令地址
     input [`INST_LEN-1:0] inst_data_mem_wb_i,                //指令内容
 
@@ -40,11 +45,17 @@ module mem_wb (
     output [`XLEN-1:0] csr_mcause_writedata_mem_wb_o,
     output [`XLEN-1:0] csr_mtval_writedata_mem_wb_o,
     output [`XLEN-1:0] csr_mtvec_writedata_mem_wb_o,
+    output [`XLEN-1:0] csr_mie_writedata_mem_wb_o,
+    output [`XLEN-1:0] csr_mip_writedata_mem_wb_o,
+
     output csr_mstatus_write_valid_mem_wb_o,
     output csr_mepc_write_valid_mem_wb_o,
     output csr_mcause_write_valid_mem_wb_o,
     output csr_mtval_write_valid_mem_wb_o,
     output csr_mtvec_write_valid_mem_wb_o,
+    output csr_mie_write_valid_mem_wb_o,
+    output csr_mip_write_valid_mem_wb_o,
+
     output [`XLEN-1:0] pc_mem_wb_o,  //指令地址
     output [`INST_LEN-1:0] inst_data_mem_wb_o,  //指令内容
 
