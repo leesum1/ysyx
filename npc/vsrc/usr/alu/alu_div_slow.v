@@ -41,18 +41,18 @@ module alu_div_slow (
 
   /* 符号扩展,得到符号位 */
   wire div64_rs1_sign = div_signed_valid_i ? dividented_i[63] : 1'b0;  // dividented
-  wire div64_rs2_sign = div_signed_valid_i ? divisor_i[63] : 1'b0;     // divisor
+  wire div64_rs2_sign = div_signed_valid_i ? divisor_i[63] : 1'b0;  // divisor
   wire div32_rs1_sign = div_signed_valid_i ? dividented_i[31] : 1'b0;
   wire div32_rs2_sign = div_signed_valid_i ? divisor_i[31] : 1'b0;
 
 
   wire [64:0] div64_dividented = {div64_rs1_sign, dividented_i};
   wire [64:0] div64_divisor = {div64_rs2_sign, divisor_i};
-  wire [64:0] div64_divisor_neg = ~div64_divisor + 1; // TODO 求补操作可以统一
+  wire [64:0] div64_divisor_neg = ~div64_divisor + 1;  // TODO 求补操作可以统一
 
   wire [32:0] div32_dividented = {div32_rs1_sign, dividented_i[31:0]};
   wire [32:0] div32_divisor = {div32_rs2_sign, divisor_i[31:0]};
-  wire [32:0] div32_divisor_neg = ~div32_divisor + 1; // TODO 求补操作可以统一
+  wire [32:0] div32_divisor_neg = ~div32_divisor + 1;  // TODO 求补操作可以统一
 
 
   wire [129:0] div64_z = {{65{div64_rs1_sign}}, div64_dividented};  // 被除数
@@ -74,7 +74,6 @@ module alu_div_slow (
   reg [64:0] d_neg_reg;
   reg [31:0] div_count;
   reg div_reday;
-
 
   wire s_sign_64 = s_reg[129];
   wire s_sign_32 = s_reg[65];
@@ -99,11 +98,15 @@ module alu_div_slow (
   wire [129:0] s_reg_next64 = {{s_reg[128:64] + d_switch_64}, s_reg[63:0], q_temp_64};
   wire [129:0] s_reg_next32 = {64'b0, s_reg[64:32] + d_switch_32[32:0], s_reg[31:0], q_temp_32};
 
-  wire s_is_zero64 = (s_reg[129:65]==0);
-  wire s_is_zero32 = (s_reg[65:33]==0);
+  wire s_is_zero64 = (s_reg[129:65] == 0);
+  wire s_is_zero32 = (s_reg[65:33] == 0);
+  wire s_is_div64 = (s_reg[129:65] == div64_d);
+  wire s_is_neg_div64 = (s_reg[129:65] == div64_d_neg);
+  wire s_is_div32 = (s_reg[65:33] == div32_d);
+  wire s_is_neg_div32 = (s_reg[65:33] == div32_d_neg);
 
-  wire need_correct_64 = (s_sign_64 ^ z_sign_64)&~s_is_zero64;  // 结果需要修正 DGX
-  wire need_coreect_32 = (s_sign_32 ^ z_sign_32)&~s_is_zero32;  // 结果需要修正
+  wire need_correct_64 = ((s_sign_64 ^ z_sign_64)) & (~s_is_zero64)|s_is_div64|s_is_neg_div64;  // 结果需要修正 DGX
+  wire need_coreect_32 = ((s_sign_32 ^ z_sign_32)) & (~s_is_zero32)|s_is_div32|s_is_neg_div32;  // 结果需要修正
 
   wire [65:0] q_correct_plus_64 = {66{need_correct_64}}&(add_d_64 ? (~66'b0) : 66'b1);  // 1 或 -1
   wire [33:0] q_correct_plus_32 = {34{need_coreect_32}}&(add_d_32 ? (~34'b0) : 34'b1);  // 1 或 -1
@@ -111,11 +114,11 @@ module alu_div_slow (
   wire [65:0] q_correct_64 = {~s_reg[64], s_reg[63:0], 1'b1} + q_correct_plus_64;
   wire [33:0] q_correct_32 = {~s_reg[32], s_reg[31:0], 1'b1} + q_correct_plus_32;
 
-  wire [64:0] s_correct_plus_64 = {65{need_correct_64}}&(add_d_64? d_reg:d_neg_reg);
+  wire [64:0] s_correct_plus_64 = {65{need_correct_64}} & (add_d_64 ? d_reg : d_neg_reg);
   wire [32:0] s_correct_plus_32 = {33{need_coreect_32}}&(add_d_32?d_reg[32:0]:d_neg_reg[32:0]);
 
-  wire [64:0] s_correct_64 = s_reg[129:65]+s_correct_plus_64;
-  wire [32:0]s_correct_32 = s_reg[65:33]+s_correct_plus_32;
+  wire [64:0] s_correct_64 = s_reg[129:65] + s_correct_plus_64;
+  wire [32:0] s_correct_32 = s_reg[65:33] + s_correct_plus_32;
 
 
   always @(posedge clk) begin
@@ -170,16 +173,18 @@ module alu_div_slow (
           end
         end
         DIV_CORECT32: begin
-          div_data<={32'b0,q_correct_32[31:0]};
-          rem_data<={32'b0,s_correct_32[31:0]};
-          div_reday<=`TRUE;
+          div_data  <= {32'b0, q_correct_32[31:0]};
+          rem_data  <= {32'b0, s_correct_32[31:0]};
+          div_reday <= `TRUE;
           div_state <= DIV_IDLE;
+
         end
         DIV_CORECT64: begin
-          div_data<=q_correct_64[63:0];
-          rem_data<=s_correct_64[63:0];
-          div_reday<=`TRUE;
+          div_data  <= q_correct_64[63:0];
+          rem_data  <= s_correct_64[63:0];
+          div_reday <= `TRUE;
           div_state <= DIV_IDLE;
+
         end
         default: begin
           div_state <= DIV_IDLE;
@@ -188,9 +193,9 @@ module alu_div_slow (
     end
   end
 
-assign div_data_o = div_data;
-assign rem_data_o = rem_data;
-assign div_ready_o = div_reday;
+  assign div_data_o  = div_data;
+  assign rem_data_o  = rem_data;
+  assign div_ready_o = div_reday;
 
 
 endmodule

@@ -19,7 +19,7 @@
 #define MEMBASE 0x80000000 
 
 //#define DEVICE_VGA
-//#define AUTO_RUN
+#define AUTO_RUN
 #define TOP_TRACE
 //#define MTRACH
 
