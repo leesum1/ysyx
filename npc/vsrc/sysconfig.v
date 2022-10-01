@@ -1,6 +1,6 @@
 
 // 仅仅用于仿真加快速度，替换多周期乘除法
-//`define MUL_SIM
+`define MUL_SIM
 // `define DIV_SIM
 
 
@@ -164,6 +164,10 @@
 
 `define CSR_MSTATUS_DEFAULT `XLEN'ha00001800
 
+
+`define MTIMECMP_ADDR 32'h2004000
+`define MTIME_ADDR    32'h200BFF8
+
 /**********tarp**********/
 
 
@@ -185,6 +189,8 @@
 `define TRAP_LOAD_PAGE_FAULT 13
 `define TRAP_RESERVED1 14
 `define TRAP_STORE_PAGE_FAULT 15
+
+
 `define TRAP_MRET 16 // 把 MRET 当成 trap
 `define TRAP_EBREAK 17 // 把 EBREAK 当成 trap
 `define TRAP_ECALL 18 // 把 ECALL 当成 trap

@@ -14,6 +14,12 @@ module memory (
     input  [`CSR_REG_ADDRWIDTH-1:0] csr_addr_i,
     input  [             `XLEN_BUS] exc_csr_data_i,
     input                           exc_csr_valid_i,
+    /* clint 接口 */
+    output [         `NPC_ADDR_BUS] clint_addr_o,
+    output                          clint_valid_o,
+    output                          clint_write_valid_o,
+    output [             `XLEN_BUS] clint_wdata_o,
+    input  [             `XLEN_BUS] clint_rdata_i,
     /* dcache 接口 */
     output [         `NPC_ADDR_BUS] mem_addr_o,             // 地址
     output                          mem_addr_valid_o,       // 地址是否有效
@@ -79,28 +85,20 @@ module memory (
   /* 为 load 指令 */
   wire _load_valid = _unsigned | _signed;
 
-  /* 从内存中读取的数据 */
-  wire [`XLEN_BUS] _mem_read;
+  /* 读取的数据 */
+  wire [`XLEN_BUS] rdata_switch = (clint_valid) ? clint_rdata : mem_rdata;
 
   /* 符号扩展后的结果 TODO:改成并行编码*/
-  // wire [     `XLEN_BUS] _mem_signed_out = (_ls8byte)?{{`XLEN-8{_mem_read[7]}},_mem_read[7:0]}:
-  //                                  (_ls16byte)?{{`XLEN-16{_mem_read[15]}},_mem_read[15:0]}:
-  //                                  (_ls32byte)?{{`XLEN-32{_mem_read[31]}},_mem_read[31:0]}:
-  //                                  _mem_read;
-  wire [     `XLEN_BUS] _mem_signed_out = ({64{_ls8byte}}&{{`XLEN-8{_mem_read[7]}},_mem_read[7:0]})
-                                        | ({64{_ls16byte}}&{{`XLEN-16{_mem_read[15]}},_mem_read[15:0]})
-                                        | ({64{_ls32byte}}&{{`XLEN-32{_mem_read[31]}},_mem_read[31:0]})
-                                        | ({64{_ls64byte}}&_mem_read);
+  wire [     `XLEN_BUS] _mem_signed_out = ({64{_ls8byte}}&{{`XLEN-8{rdata_switch[7]}},rdata_switch[7:0]})
+                                        | ({64{_ls16byte}}&{{`XLEN-16{rdata_switch[15]}},rdata_switch[15:0]})
+                                        | ({64{_ls32byte}}&{{`XLEN-32{rdata_switch[31]}},rdata_switch[31:0]})
+                                        | ({64{_ls64byte}}&rdata_switch);
 
   /* 不进行符号扩展的结果 TODO:改成并行编码 */
-  // wire [     `XLEN_BUS] _mem_unsigned_out = (_ls8byte)?{{`XLEN-8{1'b0}},_mem_read[7:0]}:
-  //                                  (_ls16byte)?{{`XLEN-16{1'b0}},_mem_read[15:0]}:
-  //                                  (_ls32byte)?{{`XLEN-32{1'b0}},_mem_read[31:0]}:
-  //                                  _mem_read;
-  wire [     `XLEN_BUS] _mem_unsigned_out = ({64{_ls8byte}}&{{`XLEN-8{1'b0}},_mem_read[7:0]})
-                                          | ({64{_ls16byte}}&{{`XLEN-16{1'b0}},_mem_read[15:0]})
-                                          | ({64{_ls32byte}}&{{`XLEN-32{1'b0}},_mem_read[31:0]})
-                                          | ({64{_ls64byte}}&_mem_read);
+  wire [     `XLEN_BUS] _mem_unsigned_out = ({64{_ls8byte}}&{{`XLEN-8{1'b0}},rdata_switch[7:0]})
+                                          | ({64{_ls16byte}}&{{`XLEN-16{1'b0}},rdata_switch[15:0]})
+                                          | ({64{_ls32byte}}&{{`XLEN-32{1'b0}},rdata_switch[31:0]})
+                                          | ({64{_ls64byte}}&rdata_switch);
 
   /* 选择最终读取的数据 */
   wire [`XLEN_BUS] _mem_final_out = ({64{_signed}}&_mem_signed_out)
@@ -132,8 +130,20 @@ module memory (
   wire [`XLEN_BUS] _addr = (_memop_none) ? `PC_RESET_ADDR : exc_alu_data_i;
   // wire [`XLEN_BUS] _raddr = _addr;
   // wire [`XLEN_BUS] _waddr = _addr;
+  /***************************** clint 接口 ************************************************/
+  wire [`NPC_ADDR_BUS] clint_addr = _addr[31:0];
+  wire clint_valid = (_addr[31:0] == `MTIME_ADDR) | (_addr[31:0] == `MTIMECMP_ADDR);
+  wire clint_write_valid = _isstore;
+  wire [`XLEN_BUS] clint_wdata = _mem_write;
+  wire [`XLEN_BUS] clint_rdata = clint_rdata_i;
 
-  /** dcache  接口 **/
+  assign clint_addr_o = clint_addr;
+  assign clint_valid_o = clint_valid;
+  assign clint_write_valid_o = clint_write_valid;
+  assign clint_wdata_o = clint_wdata;
+
+
+  /***************************** dcache 接口 ************************************************/
   // cache_line_temp <= (mem_addr_i[3]) ? {{mem_wdata_i<<{addr_last3,3'b0}}, 64'b0} : {64'b0, {mem_wdata_i<<{addr_last3,3'b0}}};
   // 1. mem store 指令,需要将 waddr,wdata,wmask 对齐
   // 2. mem load 指令,需要调整 rmask,不能与 wmask 相同
@@ -143,20 +153,20 @@ module memory (
 
   assign mem_addr_o = _addr[31:0];
   assign mem_mask_o = mem_write_valid_o ? wmask : rmask;
-  //assign mem_mask_o = (_mask << addr_last3);
-  assign _mem_read = (mem_data_ready_i) ? (mem_rdata_i) : `XLEN'b0;
+  //assign _mem_read = (mem_data_ready_i) ? (mem_rdata_i) : `XLEN'b0;
+  wire [`XLEN_BUS] mem_rdata = (mem_data_ready_i) ? (mem_rdata_i) : `XLEN'b0;
   // 访存有效条件
   // 1. 为访存指令
   // 2. 当前周期不是读数据返回周期、写数据成功周期(避免多次访存)
   // 3. 读数据缓存无效(避免多次访存，读数据缓存有效时，直接使用读数据缓存)
-  assign mem_addr_valid_o = (_isload | _isstore) & (~mem_data_ready_i) & (~rdata_buff_valid_i);
+  // 4. 不是读写 clint mtime 指令
+  assign mem_addr_valid_o = (_isload | _isstore) & (~mem_data_ready_i) & (~rdata_buff_valid_i) & (~clint_valid);
   assign mem_write_valid_o = _isstore & (~mem_data_ready_i) & mem_addr_valid_o;
   assign mem_wdata_o = _mem_write << {addr_last3, 3'b0};  // 对齐位置调整
   assign mem_size_o = _mem_size;
   assign mem_data_o = ({64{~rdata_buff_valid_i & _load_valid}}&_mem_final_out) |  // 使用直接返回的读数据
       ({64{rdata_buff_valid_i & _load_valid}} & rdata_buff_i) |  // 使用读数据缓存
       ({64{_memop_none}} & exc_alu_data_i);  // 不是访存指令，直接传递 alu 结果
-
 
 
   /* stall_req */

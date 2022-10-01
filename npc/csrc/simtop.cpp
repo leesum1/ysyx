@@ -16,7 +16,7 @@ Simtop::Simtop() {
     cout << "SimtopStart!" << endl;
 
     /* 波形数据 */
-#ifdef TOP_TRACE
+#ifdef TOP_WAVE
     contextp = new VerilatedContext;
     tfp = new VerilatedVcdC;
     contextp->traceEverOn(true);
@@ -25,7 +25,7 @@ Simtop::Simtop() {
     top = new Vtop;
     mem = new SimMem;
     u_axi4 = new SimAxi4(top);
-#ifdef TOP_TRACE
+#ifdef TOP_WAVE
     top->trace(tfp, 0);
     tfp->open("sim.vcd");
 #endif
@@ -34,7 +34,7 @@ Simtop::Simtop() {
 }
 
 Simtop::~Simtop() {
-#ifdef TOP_TRACE
+#ifdef TOP_WAVE
     tfp->close();
     //delete tfp;
     //delete contextp;
@@ -73,7 +73,7 @@ void Simtop::negedgeCLK() {
 
 
 void Simtop::dampWave() {
-#ifdef TOP_TRACE
+#ifdef TOP_WAVE
     contextp->timeInc(1);
     tfp->dump(contextp->time());
 #endif

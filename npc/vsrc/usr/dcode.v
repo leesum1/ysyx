@@ -532,7 +532,7 @@ module dcode (
         _decode_trap_bus[i] = _inst_mret;
       end else if (i == `TRAP_EBREAK) begin
         _decode_trap_bus[i] = _inst_ebreak;
-      end else if (i == `TRAP_ECALL) begin
+      end else if (i == `TRAP_ECALL_M) begin // TODO 权限设置
         _decode_trap_bus[i] = _inst_ecall;
       end else if (i == `TRAP_ILLEGAL_INST) begin
         _decode_trap_bus[i] = _Illegal_instruction;

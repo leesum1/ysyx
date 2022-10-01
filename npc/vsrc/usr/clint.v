@@ -6,6 +6,14 @@ module clint (
 
     input [`XLEN-1:0] pc_i,
     input [`INST_LEN-1:0] inst_data_i,
+
+    /* clint 接口 */
+    input [         `NPC_ADDR_BUS] clint_addr_i,
+    input                          clint_valid_i,
+    input                          clint_write_valid_i,
+    input [             `XLEN_BUS] clint_wdata_i,
+    output  [             `XLEN_BUS] clint_rdata_o,
+
     /* TARP 总线 */
     input wire [`TRAP_BUS] trap_bus_i,
     /* ----- stall request from other modules 各个阶段请求流水线暂停请求 --------*/
@@ -14,7 +22,6 @@ module clint (
     input wire load_use_valid_id_i,  //load-use data hazard from id
     input wire jump_valid_ex_i,  // branch hazard from ex
     input wire alu_mul_div_valid_ex_i, // mul div stall from ex
-    // input wire mutiple_alu_inst_valid_ex_i,  // div and mul isnt from ex
 
     /* trap 所需寄存器，来自于 csr (读)*/
     input wire [`XLEN-1:0] csr_mstatus_readdata_i,
@@ -40,6 +47,7 @@ module clint (
     output wire csr_mtvec_write_valid_o,
     output wire csr_mip_write_valid_o,
     output wire csr_mie_write_valid_o,
+
     /* 输出至取指阶段 */
     output wire [`XLEN-1:0] clint_pc_o,
     output wire clint_pc_valid_o,
@@ -50,7 +58,7 @@ module clint (
 );
 
   /* --------------------- handle the stall request -------------------*/
-  // assign flush_o = _trap_valid;
+  // assign flush_o = trap_valid;
 
   //stall request to PC,IF_ID, ID_EX, EX_MEM, MEM_WB
   localparam load_use_flush = 6'b000100;
@@ -83,7 +91,7 @@ module clint (
       stall_o = ram_if_stall;
       flush_o = ram_if_flush;
     // 中断|异常,(发生在 mem 阶段)
-    end else if (_trap_valid) begin
+    end else if (trap_valid | trap_mret) begin
       stall_o = trap_stall;
       flush_o = trap_flush;
     // 跳转指令,(发生在 ex 阶段)
@@ -109,44 +117,217 @@ module clint (
 
 /******************************handle the trap request**************************************/
   /* type of trap */
-  wire _trap_ecall = trap_bus_i[`TRAP_ECALL];
+  // wire _trap_ecall = trap_bus_i[`TRAP_ECALL]; // 11
+  // wire _trap_ebreak = trap_bus_i[`TRAP_EBREAK];
+  // wire trap_breakpoint = trap_bus_i[`TRAP_BREAKPOINT]; // 3
+  // wire trap_inst_page_fault = trap_bus_i[`TRAP_INST_PAGE_FAULT]; // 12
+  // wire trap_inst_access_fault = trap_bus_i[`TRAP_INST_ACCESS_FAULT]; // 1
+  // wire trap_illegal_inst = trap_bus_i[`TRAP_INST_ACCESS_FAULT]; // 1
+
+  wire trap_mret = trap_bus_i[`TRAP_MRET];
   wire _trap_ebreak = trap_bus_i[`TRAP_EBREAK];
-  wire _trap_mret = trap_bus_i[`TRAP_MRET];
-  wire _trap_ebreak = trap_bus_i[`TRAP_EBREAK];
-  wire _trap_valid = (_trap_ecall | _trap_ebreak | _trap_mret);
+
+  wire trap_valid = (|trap_bus_i[15:0])| Machine_timer_interrupt; // 0 - 15 表示 trap 发生
+
+  reg [`XLEN_BUS]mcause_switch;
+  always @(*) begin
+    if (Machine_timer_interrupt) begin
+      mcause_switch={1'b1,63'd7};
+      end
+    else if (trap_bus_i[`TRAP_BREAKPOINT]) begin
+      mcause_switch={1'b0,63'd3};
+    end
+    else if (trap_bus_i[`TRAP_INST_PAGE_FAULT]) begin
+      mcause_switch={1'b0,63'd12};
+    end
+    else if (trap_bus_i[`TRAP_INST_ACCESS_FAULT]) begin
+      mcause_switch={1'b0,63'd1};
+    end
+    else if (trap_bus_i[`TRAP_ILLEGAL_INST]) begin
+      mcause_switch={1'b0,63'd2};
+    end
+    else if (trap_bus_i[`TRAP_INST_ADDR_MISALIGNED]) begin
+      mcause_switch={1'b0,63'd0};
+    end
+    else if (trap_bus_i[`TRAP_ECALL_M]) begin
+      mcause_switch={1'b0,63'd11};
+    end
+    else if (trap_bus_i[`TRAP_ECALL_U]) begin
+      mcause_switch={1'b0,63'd8};
+    end
+    else if (trap_bus_i[`TRAP_ECALL_S]) begin
+      mcause_switch={1'b0,63'd9};
+    end
+    else if (trap_bus_i[`TRAP_EBREAK]) begin
+      mcause_switch={1'b0,63'd3};
+    end
+    else if (trap_bus_i[`TRAP_LOAD_ADDR_MISALIGNED]) begin
+      mcause_switch={1'b0,63'd4};
+    end
+    else if (trap_bus_i[`TRAP_STORE_ADDR_MISALIGNED]) begin
+      mcause_switch={1'b0,63'd6};
+    end
+    else if (trap_bus_i[`TRAP_LOAD_PAGE_FAULT]) begin
+      mcause_switch={1'b0,63'd13};
+    end
+        else if (trap_bus_i[`TRAP_STORE_PAGE_FAULT]) begin
+      mcause_switch={1'b0,63'd15};
+    end
+    else if (trap_bus_i[`TRAP_LOAD_ACCESS_FAULT]) begin
+      mcause_switch={1'b0,63'd5};
+    end
+    else if (trap_bus_i[`TRAP_STORE_ACCESS_FAULT]) begin
+      mcause_switch={1'b0,63'd7};
+    end
+    else begin
+      mcause_switch=0;
+    end
+  end
+
+
 
   /* set the csr register and new pc if traps happened */
-
   // step 1: save current pc 
   assign csr_mepc_writedata_o   = pc_i;
-  assign csr_mepc_write_valid_o = _trap_ecall;
+  assign csr_mepc_write_valid_o = trap_valid;
   // step 2: set the trap pc
   wire [`XLEN-1:0]_trap_pc_o = csr_mtvec_readdata_i;  // TODO:now only suppot direct mode,need to add vector mode
-  wire _trap_pc_valid_o = _trap_ecall;
+  wire _trap_pc_valid_o = trap_valid;
   // step 3: save trap cuase to mcause
-  assign csr_mcause_writedata_o = 11; //TODO:now,only support ecall from mathine mode(11),need to add more
-  assign csr_mcause_write_valid_o = _trap_ecall;
+  assign csr_mcause_writedata_o = mcause_switch; //TODO:now,only support ecall from mathine mode(11),need to add more
+  assign csr_mcause_write_valid_o = trap_valid;
   // step 4: save inst_data to mtval
   assign csr_mtval_writedata_o = {32'b0, inst_data_i};
-  assign csr_mtval_write_valid_o = _trap_ecall;
+  assign csr_mtval_write_valid_o = trap_valid;
+  // step 5 ： mstatus
+  wire  [`XLEN_BUS] trap_mstatus_wdata = {csr_mstatus_readdata_i[63:13],
+                                   1'b0,1'b0,csr_mstatus_readdata_i[10:8],
+                                   csr_mstatus_readdata_i[3],csr_mstatus_readdata_i[6:4],
+                                   1'b0,csr_mstatus_readdata_i[2:0]};
+  wire trap_mstatus_valid = trap_valid;
+
 
   /* restore pc and csr register if mret happened*/
-  wire [`XLEN-1:0] _mret_pc_o = csr_mepc_readdata_i;
-  wire _mret_pc_valid_o = _trap_mret;
+  wire [`XLEN-1:0] _mret_pc_o = csr_mepc_readdata_i; // TODO mstatus
+  wire _mret_pc_valid_o = trap_mret;
+
+  wire  [`XLEN_BUS] mret_mstatus_wdata = {csr_mstatus_readdata_i[63:13],1'b1,1'b1,
+                                          csr_mstatus_readdata_i[10:8],1'b1,
+                                          csr_mstatus_readdata_i[6:4],
+                                          csr_mstatus_readdata_i[7],
+                                          csr_mstatus_readdata_i[2:0]};
+
+  wire mret_mstatus_valid = trap_mret;
+
+
+  /* mstatus mux */
+  
+  //assign csr_mstatus_write_valid_o = mret_mstatus_valid|trap_mstatus_valid;
+  assign csr_mstatus_write_valid_o = `FALSE; // TODO: 需要学习 mstatus，再编写代码
+  assign csr_mstatus_writedata_o = ({`XLEN{mret_mstatus_valid}}&mret_mstatus_wdata)|
+                                   ({`XLEN{trap_mstatus_valid}}&trap_mstatus_wdata);
 
   /* pc mux */
   assign clint_pc_o = ({`XLEN{_mret_pc_valid_o}}&_mret_pc_o)|
-                        ({`XLEN{_trap_pc_valid_o}}&_trap_pc_o);
-  assign clint_pc_valid_o = _trap_valid;
+                      ({`XLEN{_trap_pc_valid_o}}&_trap_pc_o);
+  // mret 指令和 中断异常需要跳转 pc
+  assign clint_pc_valid_o = trap_valid | trap_mret;
 
 
 
+  //   /* type of trap */
+  // wire _trap_ecall = trap_bus_i[`TRAP_ECALL_M];
+  // wire _trap_ebreak = trap_bus_i[`TRAP_EBREAK];
+  // wire _trap_mret = trap_bus_i[`TRAP_MRET];
+  // wire _trap_ebreak = trap_bus_i[`TRAP_EBREAK];
+  // wire _trap_valid = (_trap_ecall | _trap_ebreak | _trap_mret);
 
-  /*********************************client******************************************/
+  // /* set the csr register and new pc if traps happened */
+
+  // // step 1: save current pc 
+  // assign csr_mepc_writedata_o   = pc_i;
+  // assign csr_mepc_write_valid_o = _trap_ecall;
+  // // step 2: set the trap pc
+  // wire [`XLEN-1:0]_trap_pc_o = csr_mtvec_readdata_i;  // TODO:now only suppot direct mode,need to add vector mode
+  // wire _trap_pc_valid_o = _trap_ecall;
+  // // step 3: save trap cuase to mcause
+  // assign csr_mcause_writedata_o = 11; //TODO:now,only support ecall from mathine mode(11),need to add more
+  // assign csr_mcause_write_valid_o = _trap_ecall;
+  // // step 4: save inst_data to mtval
+  // assign csr_mtval_writedata_o = {32'b0, inst_data_i};
+  // assign csr_mtval_write_valid_o = _trap_ecall;
+
+  // /* restore pc and csr register if mret happened*/
+  // wire [`XLEN-1:0] _mret_pc_o = csr_mepc_readdata_i;
+  // wire _mret_pc_valid_o = _trap_mret;
+
+  // /* pc mux */
+  // assign clint_pc_o = ({`XLEN{_mret_pc_valid_o}}&_mret_pc_o)|
+  //                       ({`XLEN{_trap_pc_valid_o}}&_trap_pc_o);
+  // assign clint_pc_valid_o = _trap_valid;
 
 
 
-    /*************ebreak仿真使用**************************/
+  /*********************************clint******************************************/
+  wire csr_mstatus_mie_valid = csr_mstatus_readdata_i[3]; // 全局中断
+  wire csr_mie_mtie_valid = csr_mie_readdata_i[7];        // 定时器中断
+
+  reg [`XLEN_BUS] mtime,mtimecmp;
+  wire mtime_ge_mtime = (mtime >= mtimecmp); // mtime >= mtimecmp
+
+  wire Machine_timer_interrupt = mtime_ge_mtime&csr_mstatus_mie_valid&csr_mie_mtie_valid;
+
+
+
+  wire [`NPC_ADDR_BUS] clint_waddr = clint_addr_i;
+  wire [`NPC_ADDR_BUS] clint_raddr = clint_addr_i;
+  wire clint_waddr_valid = clint_write_valid_i & clint_valid_i; // 写有效
+  wire [`XLEN_BUS]clint_wdata = clint_wdata_i;  // 写数据
+  assign clint_rdata_o = clint_rdata; // 读数据
+  reg [`XLEN_BUS]clint_rdata;
+
+  wire [`XLEN_BUS] mtime_plus1 = mtime+64'b1;
+
+   // 写 mtime
+  always @(posedge clk) begin
+    if (rst) begin
+      mtime <=0;
+    end
+    else if (clint_waddr_valid & (clint_waddr==`MTIME_ADDR)) begin
+      mtime <=clint_wdata;
+    end
+    else begin
+      mtime<=mtime_plus1;
+    end
+  end
+  // 写 mtimecmp
+  always @(posedge clk) begin
+    if (rst) begin
+      mtimecmp <=0;
+    end
+    else if (clint_waddr_valid & (clint_waddr==`MTIMECMP_ADDR)) begin
+      mtimecmp <=clint_wdata;
+    end
+    else begin :keep
+      mtimecmp<=mtimecmp;
+    end
+  end
+ // 读 mtime mtimecmp
+  always @(*) begin
+    case (clint_raddr)
+      `MTIMECMP_ADDR: begin 
+        clint_rdata=mtimecmp;
+      end
+      `MTIME_ADDR: begin 
+        clint_rdata=mtime;
+      end
+      default: begin 
+        clint_rdata=0;
+      end
+    endcase
+  end 
+
+  /*************ebreak仿真使用**************************/
   always @(*) begin
     if (_trap_ebreak) begin
       $finish;
