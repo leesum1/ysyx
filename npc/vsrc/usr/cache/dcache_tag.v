@@ -1,9 +1,9 @@
 `include "sysconfig.v"
 
 module dcache_tag #(
-    TAG_LEN = 23,  // tag 长度
-    IDX_LEN = 5,   // 组号 长度
-    TAG_NUM = 32   // tag 个数
+    TAG_LEN = 20,  // tag 长度
+    IDX_LEN = 6,   // 组号 长度
+    TAG_NUM = 64   // tag 个数
 ) (
     input clk,
     input rst,
@@ -18,7 +18,6 @@ module dcache_tag #(
 
 
   assign dcache_hit_o = _dcache_hit;
-
 
   /* 写入逻辑，一个周期写入 */
   integer i;

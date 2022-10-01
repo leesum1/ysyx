@@ -261,8 +261,9 @@ module axi_rw #(
 
   reg ar_valid;
   reg [AXI_ADDR_WIDTH-1:0] ar_addr;
-  reg [7:0] ar_len;  // 突发长度 AxLEN[7:0] + 1,0 表示不突发
   reg [2:0] ar_size;  // 突发大小 = 2^AxSIZE 
+  reg [7:0] ar_len;  // 突发长度 AxLEN[7:0] + 1,0 表示不突发
+
   reg r_ready;
 
   always @(posedge clock) begin
