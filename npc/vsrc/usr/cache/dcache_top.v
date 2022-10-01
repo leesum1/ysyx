@@ -302,6 +302,8 @@ module dcache_top (
   wire [`XLEN_BUS] _dcache_rdata16 = {48'b0, dcache_line_rdata[blk_addr_reg*8+:16]};
   wire [`XLEN_BUS] _dcache_rdata32 = {32'b0, dcache_line_rdata[blk_addr_reg*8+:32]};
   wire [`XLEN_BUS] _dcache_rdata64 = dcache_line_rdata[blk_addr_reg*8+:64];
+
+  
   wire [`XLEN_BUS] _dcache_rdata_o = ({64{mem_size_i[0]}}&_dcache_rdata8)
                                    | ({64{mem_size_i[1]}}&_dcache_rdata16)
                                    | ({64{mem_size_i[2]}}&_dcache_rdata32)
@@ -314,7 +316,6 @@ module dcache_top (
 
   wire state_readmiss = dcahce_state == CACHE_READ_MISS;
   wire state_writehit = dcahce_state == CACHE_WRITE_HIT1;
-
 
   wire [127:0] dcache_wmask = ({128{state_readmiss}}&dcache_wmask_readmiss)
                             | ({128{state_writehit}}&dcache_wmask_writehit);

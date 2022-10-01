@@ -1,13 +1,15 @@
 `include "sysconfig.v"
 
+// 写入一个周期
+// 读取立即返回
 module icache_tag #(
-    TAG_LEN = 23,  // tag 长度
-    IDX_LEN = 5,   // 组号 长度
-    TAG_NUM = 32   // tag 个数
+    TAG_LEN = 20,  // tag 长度
+    IDX_LEN = 6,   // 组号 长度
+    TAG_NUM = 64   // tag 个数
 ) (
     input clk,
     input rst,
-    input [TAG_LEN-1:0] icache_tag_i,  // tag
+    input [TAG_LEN-1:0] icache_tag_i,    // tag
     input [IDX_LEN-1:0] icache_index_i,  // index
     input write_valid_i,  // 写使能
     output icache_hit_o
