@@ -659,10 +659,10 @@ module top (
       .rst                           (rst),
       .flush_valid_i                 (flush_clint),
       .stall_valid_i                 (stall_clint),
-    //   // TODO:TSET
-    //   .mem_data_ready_i              (mem_data_ready),
-    //   .rdata_buff_valid_o            (rdata_buff_valid),
-    //   .rdata_buff_o                  (rdata_buff),
+      //   // TODO:TSET
+      //   .mem_data_ready_i              (mem_data_ready),
+      //   .rdata_buff_valid_o            (rdata_buff_valid),
+      //   .rdata_buff_o                  (rdata_buff),
       /* trap 所需寄存器，来自于 csr (写)*/
       .csr_mstatus_writedata_mem_wb_i(csr_mstatus_writedata),
       .csr_mepc_writedata_mem_wb_i   (csr_mepc_writedata),
@@ -810,8 +810,10 @@ module top (
   wire                  ram_raddr_valid_icache;
   wire [          7:0 ] ram_rmask_icache;
   wire [          3:0 ] ram_rsize_icache;
+  wire [          7:0 ] ram_rlen_icache;
   wire                  ram_rdata_ready_icache;
   wire [    `XLEN_BUS]  ram_rdata_icache;
+
 
   icache_top u_icache_top (
       .clk(clk),
@@ -827,6 +829,7 @@ module top (
       .ram_raddr_valid_icache_o(ram_raddr_valid_icache),
       .ram_rmask_icache_o(ram_rmask_icache),
       .ram_rsize_icache_o(ram_rsize_icache),
+      .ram_rlen_icache_o(ram_rlen_icache),
       .ram_rdata_ready_icache_i(ram_rdata_ready_icache),
       .ram_rdata_icache_i(ram_rdata_icache)
   );
@@ -838,6 +841,7 @@ module top (
   wire                  ram_raddr_valid_dcache;
   wire [          7:0 ] ram_rmask_dcache;
   wire [          3:0 ] ram_rsize_dcache;
+  wire [          7:0 ] ram_rlen_dcache;
   wire                  ram_rdata_ready_dcache;
   wire [    `XLEN_BUS]  ram_rdata_dcache;
   // 写端口
@@ -847,6 +851,7 @@ module top (
   wire                  ram_wdata_ready_dcache;  // 数据是否已经写入
   wire [    `XLEN_BUS]  ram_wdata_dcache;  // 写入的数据
   wire [          3:0 ] ram_wsize_dcache;
+  wire [          7:0 ] ram_wlen_dcache;
 
   dcache_top u_dcache_top (
       .clk              (clk),
@@ -870,11 +875,13 @@ module top (
       .ram_rdata_ready_dcache_i(ram_rdata_ready_dcache),
       .ram_rdata_dcache_i(ram_rdata_dcache),
       .ram_rsize_dcache_o(ram_rsize_dcache),
+      .ram_rlen_dcache_o(ram_rlen_dcache),
       // 写端口
       .ram_waddr_dcache_o(ram_waddr_dcache),  // 地址
       .ram_waddr_valid_dcache_o(ram_waddr_valid_dcache),  // 地址是否准备好
       .ram_wmask_dcache_o(ram_wmask_dcache),  // 数据掩码,写入多少位
       .ram_wsize_dcache_o(ram_wsize_dcache),
+      .ram_wlen_dcache_o(ram_wlen_dcache),
       .ram_wdata_ready_dcache_i(ram_wdata_ready_dcache),// 数据是否已经写入// 写入的数据
       .ram_wdata_dcache_o(ram_wdata_dcache)
   );
@@ -911,6 +918,7 @@ module top (
   wire arb_raddr_valid;  // 是否发起读请求
   wire [7:0] arb_rmask;  // 数据掩码
   wire [3:0] arb_rsize;
+  wire [7:0] arb_rlen;
   wire [`XLEN_BUS] arb_rdata;  // 读数据返回mem
   wire arb_rdata_ready;  // 读数据是否有效
   //写通道
@@ -919,6 +927,7 @@ module top (
   wire [7:0] arb_wmask;
   wire [`XLEN_BUS] arb_wdata;
   wire [3:0] arb_wsize;
+  wire [7:0] arb_wlen;
   wire arb_wdata_ready;  // 数据是否已经写入
 
   axi_arb u_axi_arb (
@@ -928,6 +937,7 @@ module top (
       .if_raddr_valid_i(ram_raddr_valid_icache),  // 是否发起读请求
       .if_rmask_i(ram_rmask_icache),  // 数据掩码
       .if_rsize_i(ram_rsize_icache),
+      .if_rlen_i(ram_rlen_icache),
       .if_rdata_o(ram_rdata_icache),  // 读数据返回mem
       .if_rdata_ready_o (ram_rdata_ready_icache),// 读数据是否有效// mem 访存请求端口（读）
       /* mem 访存请求端口（读）*/
@@ -935,6 +945,7 @@ module top (
       .mem_raddr_valid_i(ram_raddr_valid_dcache),
       .mem_rmask_i(ram_rmask_dcache),
       .mem_rsize_i(ram_rsize_dcache),
+      .mem_rlen_i(ram_rlen_dcache),
       .mem_rdata_o(ram_rdata_dcache),
       .mem_rdata_ready_o(ram_rdata_ready_dcache),
       /* mem 访存接口（写）*/
@@ -943,6 +954,7 @@ module top (
       .mem_wmask_i(ram_wmask_dcache),
       .mem_wdata_i(ram_wdata_dcache),
       .mem_wsize_i(ram_wsize_dcache),
+      .mem_wlen_i(ram_wlen_dcache),
       .mem_wdata_ready_o(ram_wdata_ready_dcache),  // 数据是否已经写入
 
       /* arb<-->axi */
@@ -951,6 +963,7 @@ module top (
       .arb_raddr_valid_o(arb_raddr_valid),  // 是否发起读请求
       .arb_rmask_o      (arb_rmask),        // 数据掩码
       .arb_rsize_o      (arb_rsize),
+      .arb_rlen_o       (arb_rlen),
       .arb_rdata_i      (arb_rdata),        // 读数据返回mem
       .arb_rdata_ready_i(arb_rdata_ready),  // 读数据是否有效
       //写通道
@@ -959,6 +972,7 @@ module top (
       .arb_wmask_o      (arb_wmask),
       .arb_wdata_o      (arb_wdata),        // 数据是否已经写入
       .arb_wsize_o      (arb_wsize),
+      .arb_wlen_o       (arb_wlen),
       .arb_wdata_ready_i(arb_wdata_ready)
   );
 
@@ -997,6 +1011,7 @@ module top (
       .arb_raddr_valid_i(arb_raddr_valid),  // 是否发起读请求
       .arb_rmask_i      (arb_rmask),        // 数据掩码
       .arb_rsize_i      (arb_rsize),
+      .arb_rlen_i(arb_rlen),
       .arb_rdata_o      (arb_rdata),        // 读数据返回mem
       .arb_rdata_ready_o(arb_rdata_ready),  // 读数据是否有效//写通道
       // 写通道
@@ -1005,6 +1020,7 @@ module top (
       .arb_wmask_i      (arb_wmask),
       .arb_wdata_i      (arb_wdata),
       .arb_wsize_i      (arb_wsize),
+      .arb_wlen_i(arb_wlen),
       .arb_wdata_ready_o(arb_wdata_ready),  // 数据是否已经写���
 
       /* axi master */
@@ -1063,13 +1079,13 @@ module top (
   /********************** 各种数据缓存  ***********************/
   /* 乘法器数据缓存 */
   wire [`XLEN_BUS] alu_data = exc_alu_data_ex;
-  wire alu_data_ready;
-  wire alu_data_buff_valid;
-  wire [`XLEN_BUS] alu_data_buff;
+  wire                                         alu_data_ready;
+  wire                                         alu_data_buff_valid;
+  wire [`XLEN_BUS]                             alu_data_buff;
 
-  
-  wire                           rdata_buff_valid;
-  wire [             `XLEN_BUS]  rdata_buff;
+
+  wire                                         rdata_buff_valid;
+  wire [`XLEN_BUS]                             rdata_buff;
   data_buff u_data_buff (
       .clk                  (clk),
       .rst                  (rst),
@@ -1081,10 +1097,10 @@ module top (
       .alu_data_buff_valid_o(alu_data_buff_valid),
       .alu_data_buff_o      (alu_data_buff),
       /* mem load 数据缓存 */
-      .mem_data_mem_i(mem_data_mem),
-      .mem_data_ready_i              (mem_data_ready),
-      .rdata_buff_valid_o            (rdata_buff_valid),
-      .rdata_buff_o                  (rdata_buff)
+      .mem_data_mem_i       (mem_data_mem),
+      .mem_data_ready_i     (mem_data_ready),
+      .rdata_buff_valid_o   (rdata_buff_valid),
+      .rdata_buff_o         (rdata_buff)
   );
 
 endmodule

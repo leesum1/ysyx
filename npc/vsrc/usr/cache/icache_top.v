@@ -28,6 +28,7 @@ module icache_top (
     output ram_raddr_valid_icache_o,
     output [7:0] ram_rmask_icache_o,
     output [3:0] ram_rsize_icache_o,
+    output [7:0] ram_rlen_icache_o,
     input ram_rdata_ready_icache_i,
     input [`XLEN_BUS] ram_rdata_icache_i
 );
@@ -69,10 +70,15 @@ module icache_top (
   reg _ram_raddr_valid_icache_o;
   reg [7:0] _ram_rmask_icache_o;
   reg [3:0] _ram_rsize_icache_o;
+  reg [7:0] _ram_rlen_icache_o;
+  reg [7:0] burst_count;
 
   reg [127:0] cache_line_temp;
   reg icache_data_wen;
 
+
+  wire ram_r_handshake = _ram_raddr_valid_icache_o & ram_rdata_ready_icache_i;
+  wire [7:0] burst_count_plus1 = burst_count + 1;
 
   always @(posedge clk) begin
     if (rst) begin
@@ -84,6 +90,8 @@ module icache_top (
       icache_data_wen     <= 0;
       cache_line_temp     <= 0;
       _ram_rsize_icache_o <= 0;
+      _ram_rlen_icache_o  <= 0;
+      burst_count         <= 0;
     end else begin
       case (icahce_state)
         CACHE_RST: begin
@@ -97,7 +105,7 @@ module icache_top (
           icache_data_wen <= 0;
           cache_line_temp <= 0;
           // cache data 为单端口 ram,不能同时读写
-          if (preif_raddr_valid_i && ~icache_data_wen) begin
+          if (preif_raddr_valid_i && ~icache_tag_wen) begin
             // hit
             if (icache_hit) begin
               // 下一个周期给数据
@@ -110,33 +118,45 @@ module icache_top (
               _ram_raddr_icache_o <= {cache_line_tag, cache_line_idx, 4'b0};  // 读地址
               _ram_raddr_valid_icache_o <= `TRUE;  // 地址有效
               _ram_rmask_icache_o <= 8'b1111_1111;  // 读掩码
-              _ram_rsize_icache_o <= 4'b1000;
+              _ram_rsize_icache_o <= 4'b1000;  // 64bit
+              _ram_rlen_icache_o <= 8'd1;  // 突发两次
+              burst_count <= 0;  // 清空计数器
             end
           end else begin
             icahce_rdata_ok <= `FALSE;
-            _ram_raddr_valid_icache_o <= `FALSE;
           end
         end
         CACHE_MISS: begin
-          if (_ram_raddr_valid_icache_o & ram_rdata_ready_icache_i) begin
-            cache_line_temp[63:0] <= ram_rdata_icache_i;  // 临时保存 cache line 部分数据
-            _ram_raddr_icache_o <= {line_tag_reg, line_idx_reg, 4'd8};  // 读地址
-            icahce_state <= CACHE_MISS2;
+          if (ram_r_handshake) begin // 在 handshake 时，向 ram 写入数据
+            if (burst_count == _ram_rlen_icache_o) begin  // 突发传输最后一个数据
+              icahce_state <= CACHE_IDLE;
+              icache_tag_wen <= `TRUE; // 写 tag 
+              _ram_raddr_valid_icache_o <= `FALSE; // 传输结束
+            end else begin
+              burst_count <= burst_count_plus1;
+            end
           end
         end
-        CACHE_MISS2: begin
-          if (_ram_raddr_valid_icache_o & ram_rdata_ready_icache_i) begin
+        // CACHE_MISS: begin
+        //   if (_ram_raddr_valid_icache_o & ram_rdata_ready_icache_i) begin
+        //     cache_line_temp[63:0] <= ram_rdata_icache_i;  // 临时保存 cache line 部分数据
+        //     _ram_raddr_icache_o <= {line_tag_reg, line_idx_reg, 4'd8};  // 读地址
+        //     icahce_state <= CACHE_MISS2;
+        //   end
+        // end
+        // CACHE_MISS2: begin
+        //   if (_ram_raddr_valid_icache_o & ram_rdata_ready_icache_i) begin
 
-            // 从内存中读取的 cache line 缓存
-            cache_line_temp[127:64] <= ram_rdata_icache_i;
-            // tag data 写使能,在下一个周期将 cache line 的数据写入 cache 中
-            icache_data_wen <= `TRUE;
-            icache_tag_wen <= `TRUE;
+        //     // 从内存中读取的 cache line 缓存
+        //     cache_line_temp[127:64] <= ram_rdata_icache_i;
+        //     // tag data 写使能,在下一个周期将 cache line 的数据写入 cache 中
+        //     icache_data_wen <= `TRUE;
+        //     icache_tag_wen <= `TRUE;
 
-            _ram_raddr_valid_icache_o <= `FALSE;
-            icahce_state <= CACHE_IDLE;
-          end
-        end
+        //     _ram_raddr_valid_icache_o <= `FALSE;
+        //     icahce_state <= CACHE_IDLE;
+        //   end
+        // end
         default: begin
         end
       endcase
@@ -162,16 +182,19 @@ module icache_top (
 
 
   wire [127:0] icache_line_rdata;
-  wire [127:0] icache_wmask = 128'hffff_ffff_ffff_ffff_ffff_ffff_ffff_ffff;  // 低电平有效
+  // wire [127:0] icache_wmask = 128'hffff_ffff_ffff_ffff_ffff_ffff_ffff_ffff;  // 高点平有效
+
+  wire [127:0] icache_wmask = ~burst_count[0]?{64'b0,64'hffff_ffff_ffff_ffff}:{64'hffff_ffff_ffff_ffff,64'b0};
+  wire [127:0] icache_wdate = ~burst_count[0]?{64'b0,ram_rdata_icache_i}:{ram_rdata_icache_i,64'b0};
   icache_data u_icache_data (
       .clk                (clk),
       .rst                (rst),
       .icache_index_i     (cache_line_idx),
       // index
       .icache_blk_addr_i  (cache_blk_addr),
-      .icache_line_wdata_i(cache_line_temp),
+      .icache_line_wdata_i(icache_wdate),
       .icache_wmask       (icache_wmask),
-      .icache_wen_i       (icache_data_wen),
+      .icache_wen_i       (ram_r_handshake),   // 写入有效
       .icache_line_rdata_o(icache_line_rdata)
   );
 
@@ -189,6 +212,7 @@ module icache_top (
   assign ram_raddr_valid_icache_o = _ram_raddr_valid_icache_o;
   assign ram_rmask_icache_o = _ram_rmask_icache_o;
   assign ram_rsize_icache_o = _ram_rsize_icache_o;
+  assign ram_rlen_icache_o = _ram_rlen_icache_o;
 
 
 

@@ -67,6 +67,7 @@ module axi_rw #(
     input arb_raddr_valid_i,  // 是否发起读请求
     input [7:0] arb_rmask_i,  // 数据掩码
     input [3:0] arb_rsize_i,
+    input [7:0] arb_rlen_i,  // 突发传输大小
     output [`XLEN_BUS] arb_rdata_o,  // 读数据返回mem
     output arb_rdata_ready_o,  // 读数据是否有效
     //写通道
@@ -74,6 +75,7 @@ module axi_rw #(
     input arb_write_valid_i,
     input [7:0] arb_wmask_i,
     input [3:0] arb_wsize_i,
+    input [7:0] arb_wlen_i,  // 突发传输大小
     input [`XLEN_BUS] arb_wdata_i,
     output arb_wdata_ready_o,  // 数据是否已经写入
 
@@ -289,7 +291,7 @@ module axi_rw #(
             ar_addr <= arb_read_addr_i;
             ar_valid <= `TRUE;
             ar_size <= to_ar_size;
-            ar_len <= 0;  // 不突发
+            ar_len <= arb_rlen_i;  // TODO :测试突发传输
           end else begin
             axi_rstate <= AXI_RIDLE;
           end
@@ -304,14 +306,26 @@ module axi_rw #(
         end
         AXI_RDATA: begin
           if (axi_r_handshake) begin : wait_for_r_handshake
-            axi_rstate <= AXI_RIDLE;
-            if (axi_r_resp_i == 2'b00) begin : R_RESP_OKAY
-              _arb_rdata_o <= axi_r_data_i;
-              _arb_rdata_ready_o <= `TRUE;
+            if (axi_r_last_i) begin  // 最后一个数据传输完成
+              axi_rstate <= AXI_RIDLE;
+              r_ready <= `FALSE;  // 数据握手成功后拉低
             end
-            r_ready <= `FALSE;  // 数据握手成功后拉低
+            _arb_rdata_o <= axi_r_data_i;
+            _arb_rdata_ready_o <= `TRUE;
+          end else begin
+            _arb_rdata_ready_o <= `FALSE;
           end
         end
+        // AXI_RDATA: begin
+        //   if (axi_r_handshake) begin : wait_for_r_handshake
+        //     axi_rstate <= AXI_RIDLE;
+        //     if (axi_r_resp_i == 2'b00) begin : R_RESP_OKAY
+        //       _arb_rdata_o <= axi_r_data_i;
+        //       _arb_rdata_ready_o <= `TRUE;
+        //     end
+        //     r_ready <= `FALSE;  // 数据握手成功后拉低
+        //   end
+        // end
         default: begin
           axi_rstate <= AXI_RIDLE;
         end
