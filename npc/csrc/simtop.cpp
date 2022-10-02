@@ -116,6 +116,7 @@ void Simtop::stepCycle(bool val) {
         commited_list.inst.pop_front();
         commited_list.nextpc.pop_front();
     }
+
 #endif
 }
 

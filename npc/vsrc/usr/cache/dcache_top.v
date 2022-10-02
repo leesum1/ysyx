@@ -50,13 +50,6 @@ module dcache_top (
 
   wire uncache = (mem_addr_i & `MMIO_BASE) == `MMIO_BASE;
 
-  // // 块内地址
-  // wire [3:0] cache_blk_addr = mem_addr_i[3:0];
-  // // 组号
-  // wire [8:4] cache_line_idx = mem_addr_i[8:4];
-  // // TAG 标记 
-  // wire [31:9] cache_line_tag = mem_addr_i[31:9];
-
   wire [5:0] cache_blk_addr;
   wire [5:0] cache_line_idx;
   wire [19:0] cache_line_tag;
@@ -153,7 +146,7 @@ module dcache_top (
                 dcache_state <= CACHE_IDLE;
                 dcache_data_ready <= `FALSE;
 
-                // 再写 cache
+                //写 cache
                 dcache_data_wen <= `TRUE;
                 dcache_data_ready <= `TRUE;  // 完成信号
                 dcache_tag_wen <= `TRUE;
@@ -166,18 +159,18 @@ module dcache_top (
                 dcache_data_ready <= `TRUE;
                 dcache_state <= CACHE_IDLE;
               end
-              2'b01: begin : write_miss  // write through and write not allocate,直接写入内存，不分配 cache
-                dcache_data_ready         <= `FALSE;
-                dcache_state              <= CACHE_WRITE_MISS;
+              //2'b01: begin : write_miss  // write through and write not allocate,直接写入内存，不分配 cache
+                // dcache_data_ready         <= `FALSE;
+                // dcache_state              <= CACHE_WRITE_MISS;
 
-                _ram_waddr_dcache_o       <= mem_addr_i;  // 写地址
-                _ram_waddr_valid_dcache_o <= `TRUE;  // 地址有效
-                _ram_wmask_dcache_o       <= mem_mask_i;  // 写掩码
-                _ram_wdata_dcache_o       <= mem_wdata_i;  // 写数据
-                _ram_wsize_dcache_o       <= mem_size_i;  //写大小
-                _ram_wlen_dcache_o        <= 8'd0;  // 不突发
-              end
-              2'b00: begin : read_miss  // TODO 分配 cache，需要考虑脏位
+                // _ram_waddr_dcache_o       <= mem_addr_i;  // 写地址
+                // _ram_waddr_valid_dcache_o <= `TRUE;  // 地址有效
+                // _ram_wmask_dcache_o       <= mem_mask_i;  // 写掩码
+                // _ram_wdata_dcache_o       <= mem_wdata_i;  // 写数据
+                // _ram_wsize_dcache_o       <= mem_size_i;  //写大小
+                // _ram_wlen_dcache_o        <= 8'd0;  // 不突发
+              //end
+              2'b00,2'b01: begin : read_miss  // TODO 分配 cache，需要考虑脏位
                 if (dirty_bit_read) begin  // 需要写回
                   dcache_state <= CACHE_WRITE_BACK;
                   dcache_data_ready <= `FALSE;

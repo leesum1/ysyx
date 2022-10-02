@@ -280,14 +280,14 @@ module axi_rw #(
             _arb_wdata_ready_o <= `TRUE;  // 通知 arb 写完成
             burst_count <= burst_count_plus1;
             if (w_last) begin
-              axi_wstate <= AXI_WADDR_FINISH_BURST;
+              axi_wstate <= AXI_WDATA_FINISH_BURST;
               burst_count <=0;
             end else begin
               axi_wstate <= AXI_WDATA_VALID_BURST;
             end
           end
         end
-        AXI_WADDR_FINISH_BURST: begin
+        AXI_WDATA_FINISH_BURST: begin
           _arb_wdata_ready_o <= `FALSE;
           if (axi_b_handshake) begin
             b_ready <= `FALSE;
@@ -411,9 +411,8 @@ module axi_rw #(
   assign axi_aw_region_o = 4'h0;  //初始化信号即可
 
   // 写数据通道
-  wire state_w_burst = axi_wstate == AXI_WADDR_WDATA_BURST;
   assign axi_w_valid_o = w_valid;
-  assign axi_w_data_o = arb_wdata_i;
+  assign axi_w_data_o = arb_wdata_i; // 直接使用原始数据，不经过寄存器
   assign axi_w_strb_o = w_strb;
   assign axi_w_last_o = w_last;
   assign axi_w_user_o = axi_user;  //初始化信号即可

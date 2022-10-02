@@ -1,7 +1,7 @@
 
 // 仅仅用于仿真加快速度，替换多周期乘除法
-//`define MUL_SIM
-// `define DIV_SIM
+`define MUL_SIM
+`define DIV_SIM
 
 
 `define XLEN 64             //cpu 位数
@@ -166,7 +166,7 @@
 
 
 `define MTIMECMP_ADDR 32'h2004000
-`define MTIME_ADDR    32'h200BFF8
+`define MTIME_ADDR 32'h200BFF8
 
 /**********tarp**********/
 
