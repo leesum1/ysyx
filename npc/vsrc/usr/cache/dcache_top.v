@@ -2,17 +2,7 @@
 // 地址位宽 32,dcache<->cpu (数据64位) mem<-->dcache(数据128位)
 // 连接方式 ram<-->cache<-->cpu
 // cache<-->cpu : 地址线宽度:32 数据线宽度:64
-// ram<-->cache: 地址线宽度:6  数据线宽度:128 (2^6 * 128bit == 8Kbit,地址线最高位为0,只用 4Kbit)
-// 1. cache 总容量: 4Kb (512Byte)
-// 2. cache 块大小: 16Byte
-// 3. cache 块个数: 32个 (32*16Byte==512Byte)
-// 4. 映射方式 直接映射
-// 5. 块内地址: 4bit(2^4==16)
-// 6. 组号: 5bit（2^5==32）
-// 6. tag: 32-4-5 == 23 bit 
-
 /* 改造后的 dcache */
-
 // 1. cache 总容量: 4KB (4096Byte)
 // 2. cache 块大小: 64Byte
 // 3. cache 块个数: 64个 (64*64Byte==4096Byte)
@@ -209,6 +199,7 @@ module dcache_top (
               _ram_rmask_dcache_o <= mem_mask_i;  // 读掩码
               _ram_rsize_dcache_o <= mem_size_i;  //读大小
               _ram_rsize_dcache_o <= mem_size_i;  //写大小
+              _ram_rlen_dcache_o        <= 8'd0;  // 不突发
             end
 
           end else begin

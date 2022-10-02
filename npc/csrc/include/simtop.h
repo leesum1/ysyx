@@ -24,6 +24,8 @@ private:
     VerilatedVcdC* tfp;
     uint64_t* registerfile;
     uint64_t pc;
+    uint64_t clk_count = 0;
+    uint64_t commit_count = 0;
 
     struct inst_t {
         uint64_t inst_pc;
@@ -89,6 +91,7 @@ public:
     void sdbStatus();
     void sdbRun(void);
     bool isSdbOk(const char* sdbname);
+    void showSimPerformance();
 };
 
 #endif

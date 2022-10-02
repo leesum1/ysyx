@@ -305,7 +305,7 @@ module axi_rw #(
             r_ready <= `TRUE;  // 准备接收读数据
           end
         end
-        AXI_RDATA: begin
+        AXI_RDATA: begin // 支持突发传输
           if (axi_r_handshake) begin : wait_for_r_handshake
             if (axi_r_last_i) begin  // 最后一个数据传输完成
               axi_rstate <= AXI_RIDLE;

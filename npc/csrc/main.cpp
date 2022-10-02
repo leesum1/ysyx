@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
       c.setGreeting("!>");
   } while (retCode != ret::Quit);
 #endif
-
+  mysim_p->showSimPerformance();
   mysim_p->excute(1);
   bool hitgood = mysim_p->npcHitGood();
   delete mysim_p;

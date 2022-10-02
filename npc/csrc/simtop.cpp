@@ -65,6 +65,8 @@ void Simtop::posedgeCLK() {
     top->eval();
     u_axi4->beat();
     u_axi4->update_output();
+
+    clk_count++; // 记录时钟数
 }
 void Simtop::negedgeCLK() {
     top->clk = 0;
@@ -359,4 +361,15 @@ void Simtop::addCommitedInst(uint64_t inst_pc, uint32_t inst_data) {
     temp_inst.inst_data = inst_data;
     temp_inst.inst_pc = inst_pc;
     this->commited_list.inst.push_back(temp_inst);
+
+    commit_count++;
+}
+
+
+void Simtop::showSimPerformance(){
+
+    cout<< COLOR_GREEN<< "clk_num:"<<clk_count<<endl;
+    cout<< COLOR_GREEN<< "commit_num:"<<commit_count<<endl;
+    cout<<COLOR_GREEN<<"IPC:"<<(float)((float)clk_count/(float)commit_count)<<COLOR_END<<endl;
+
 }
