@@ -18,7 +18,7 @@ Simtop::Simtop() {
     /* 波形数据 */
 #ifdef TOP_WAVE
     contextp = new VerilatedContext;
-    tfp = new VerilatedVcdC;
+    tfp = new VerilatedFstC;
     contextp->traceEverOn(true);
 #endif
 
@@ -27,7 +27,7 @@ Simtop::Simtop() {
     u_axi4 = new SimAxi4(top);
 #ifdef TOP_WAVE
     top->trace(tfp, 0);
-    tfp->open("sim.vcd");
+    tfp->open("sim.fst");
 #endif
     this->top_status = TOP_RUNNING;
     cout << "test111" << endl;

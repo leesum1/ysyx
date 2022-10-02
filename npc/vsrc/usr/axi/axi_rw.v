@@ -149,6 +149,10 @@ module axi_rw #(
   localparam AXI_WRST = 3'd0;
   localparam AXI_WIDLE = 3'd1;
   localparam AXI_WADDR_WDATA = 3'd2;  // axi4  写地址写数据同时发送
+  localparam AXI_WADDR_FINISH_BURST = 3'd3;  // 写地址握手
+  localparam AXI_WDATA_VALID_BURST = 3'd4;  // 写数据有效
+  localparam AXI_WDATA_HANDSHAKE_BURST = 3'd5;  // 突写数据握手
+  localparam AXI_WDATA_FINISH_BURST = 3'd6;  // 突发传输结束
 
 
   wire [2:0 ]to_aw_size = ({3{arb_wsize_i[0]}}&`AXI_SIZE_BYTES_1)
@@ -174,6 +178,10 @@ module axi_rw #(
   // 写响应缓存
   reg b_ready;
 
+
+  reg [2:0] burst_count;
+  wire [2:0] burst_count_plus1 = burst_count + 1;
+
   // // 握手缓存
   // reg                       axi_aw_handshake_buff;
   // reg                       axi_w_handshake_buff;
@@ -186,6 +194,7 @@ module axi_rw #(
       w_valid <= `FALSE;
       w_last <= `FALSE;
       b_ready <= `FALSE;
+      burst_count <= 0;
       _arb_wdata_ready_o <= `FALSE;
     end else begin
       case (axi_wstate)
@@ -195,22 +204,35 @@ module axi_rw #(
         AXI_WIDLE: begin
           _arb_wdata_ready_o <= `FALSE;
           if (arb_write_valid_i & ~_arb_wdata_ready_o) begin : arb_write
-            // 同时写数据和地址
-            /* aw 通道 */
-            axi_wstate <= AXI_WADDR_WDATA;
-            aw_valid <= `TRUE;
-            aw_addr <= arb_write_addr_i;
-            aw_len <= 0;  // 不突发
-            aw_size <= to_aw_size;
-            /* w 通道 */
-            w_valid <= `TRUE;
-            w_last <= `TRUE;  // 表示最后一个数据，目前不实现突发传输
-            //对于Narrow Burst，无论是读写请求，数据都出现在[RW]DATA对应访问地址%总线宽度的位置
-            // wstrb wdata 与 data bus 的对齐处理在 mem 阶段处理
-            w_strb <= arb_wmask_i;
-            w_data <= arb_wdata_i;
-            /* b 通道 */
-            b_ready <= `TRUE;  // 默认为高
+            if (arb_wlen_i == 8'b0) begin  // 不是突发传输，地址和数据一起到
+              // 同时写数据和地址
+              /* aw 通道 */
+              axi_wstate <= AXI_WADDR_WDATA;
+              aw_valid <= `TRUE;
+              aw_addr <= arb_write_addr_i;
+              aw_len <= arb_wlen_i;  // 无突发
+              aw_size <= to_aw_size;
+              /* w 通道 */
+              w_valid <= `TRUE;
+              w_last <= `TRUE;  // 只有一个数据
+              //对于Narrow Burst，无论是读写请求，数据都出现在[RW]DATA对应访问地址%总线宽度的位置
+              // wstrb wdata 与 data bus 的对齐处理在 mem 阶段处理
+              w_strb <= arb_wmask_i;
+              w_data <= arb_wdata_i;
+              /* b 通道 */
+              b_ready <= `TRUE;  // 默认为高
+            end else begin  // 突发传输，先写地址，再写数据
+              /* aw 通道 */
+              axi_wstate <= AXI_WADDR_FINISH_BURST;
+              aw_valid <= `TRUE;
+              aw_addr <= arb_write_addr_i;
+              aw_len <= arb_wlen_i;  // 突发传输
+              aw_size <= to_aw_size;
+              /* b 通道 */
+              b_ready <= `TRUE;  // 默认为高
+
+              burst_count <= 0;
+            end
           end else begin
             axi_wstate <= AXI_WIDLE;
             aw_valid <= `FALSE;
@@ -219,7 +241,6 @@ module axi_rw #(
           end
         end
         AXI_WADDR_WDATA: begin
-          // TODO 不支持突发传送
           if (axi_aw_handshake) begin
             aw_valid <= `FALSE;  // 握手成功后拉低 valid
           end
@@ -233,6 +254,45 @@ module axi_rw #(
             _arb_wdata_ready_o <= `TRUE;  // 通知 arb 写完成
           end
 
+        end
+        AXI_WADDR_FINISH_BURST: begin
+          if (axi_aw_handshake) begin
+            aw_valid   <= `FALSE;  // 握手成功后拉低 valid
+            axi_wstate <= AXI_WDATA_VALID_BURST;  
+          end
+        end
+        AXI_WDATA_VALID_BURST: begin
+          /* w 通道 */
+          w_valid <= `TRUE;
+          w_strb <= arb_wmask_i;  // 第一个数据
+          w_data <= arb_wdata_i;
+          _arb_wdata_ready_o <= `FALSE;
+          if (burst_count == 3'd7) begin // 最后一个数据，last 有效
+            w_last <= `TRUE;
+          end
+
+          axi_wstate <= AXI_WDATA_HANDSHAKE_BURST;
+        end
+        AXI_WDATA_HANDSHAKE_BURST: begin
+          if (axi_w_handshake) begin
+            w_valid <= `FALSE;  // 握手成功后拉低 valid
+            w_last <= `FALSE;
+            _arb_wdata_ready_o <= `TRUE;  // 通知 arb 写完成
+            burst_count <= burst_count_plus1;
+            if (w_last) begin
+              axi_wstate <= AXI_WADDR_FINISH_BURST;
+              burst_count <=0;
+            end else begin
+              axi_wstate <= AXI_WDATA_VALID_BURST;
+            end
+          end
+        end
+        AXI_WADDR_FINISH_BURST: begin
+          _arb_wdata_ready_o <= `FALSE;
+          if (axi_b_handshake) begin
+            b_ready <= `FALSE;
+            axi_wstate <= AXI_WIDLE;
+          end
         end
         default: begin
           axi_wstate <= AXI_WIDLE;
@@ -292,7 +352,7 @@ module axi_rw #(
             ar_addr <= arb_read_addr_i;
             ar_valid <= `TRUE;
             ar_size <= to_ar_size;
-            ar_len <= arb_rlen_i;  // TODO :测试突发传输
+            ar_len <= arb_rlen_i;  // 支持突发传输
           end else begin
             axi_rstate <= AXI_RIDLE;
           end
@@ -305,7 +365,7 @@ module axi_rw #(
             r_ready <= `TRUE;  // 准备接收读数据
           end
         end
-        AXI_RDATA: begin // 支持突发传输
+        AXI_RDATA: begin  // 支持突发传输
           if (axi_r_handshake) begin : wait_for_r_handshake
             if (axi_r_last_i) begin  // 最后一个数据传输完成
               axi_rstate <= AXI_RIDLE;
@@ -317,16 +377,6 @@ module axi_rw #(
             _arb_rdata_ready_o <= `FALSE;
           end
         end
-        // AXI_RDATA: begin
-        //   if (axi_r_handshake) begin : wait_for_r_handshake
-        //     axi_rstate <= AXI_RIDLE;
-        //     if (axi_r_resp_i == 2'b00) begin : R_RESP_OKAY
-        //       _arb_rdata_o <= axi_r_data_i;
-        //       _arb_rdata_ready_o <= `TRUE;
-        //     end
-        //     r_ready <= `FALSE;  // 数据握手成功后拉低
-        //   end
-        // end
         default: begin
           axi_rstate <= AXI_RIDLE;
         end
@@ -361,8 +411,9 @@ module axi_rw #(
   assign axi_aw_region_o = 4'h0;  //初始化信号即可
 
   // 写数据通道
+  wire state_w_burst = axi_wstate == AXI_WADDR_WDATA_BURST;
   assign axi_w_valid_o = w_valid;
-  assign axi_w_data_o = w_data;
+  assign axi_w_data_o = arb_wdata_i;
   assign axi_w_strb_o = w_strb;
   assign axi_w_last_o = w_last;
   assign axi_w_user_o = axi_user;  //初始化信号即可

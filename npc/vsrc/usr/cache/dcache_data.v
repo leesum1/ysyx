@@ -14,29 +14,48 @@ module dcache_data #(
     input  [128-1:0] dcache_wmask,
     input [2:0] burst_count_i,
     input dcache_allocate_valid_i,
+    input dcache_writeback_valid_i,
     input dcache_wen_i,
+    output [`XLEN_BUS] dcache_writeback_data_o,
     output [`XLEN_BUS]    dcache_rdata_o
 
 );
 
+  reg [`XLEN_BUS] dcache_wb_data;
+  assign dcache_writeback_data_o = dcache_wb_data;
+  always @(*) begin
+    case (burst_count_i)
+      3'd0: dcache_wb_data = Q00[63:0];
+      3'd1: dcache_wb_data = Q00[127:64];
+      3'd2: dcache_wb_data = Q01[63:0];
+      3'd3: dcache_wb_data = Q01[127:64];
+      3'd4: dcache_wb_data = Q10[63:0];
+      3'd5: dcache_wb_data = Q10[127:64];
+      3'd6: dcache_wb_data = Q11[63:0];
+      3'd7: dcache_wb_data = Q11[127:64];
+    endcase
+  end
+
 
   // allocate 分配 cache line 时候片选 高点平有效
-  wire allocate_CEN00 = (burst_count_i[2:1] == 2'b00 && dcache_allocate_valid_i);  
+  wire allocate_CEN00 = (burst_count_i[2:1] == 2'b00 && dcache_allocate_valid_i);
   wire allocate_CEN01 = (burst_count_i[2:1] == 2'b01 && dcache_allocate_valid_i);
   wire allocate_CEN10 = (burst_count_i[2:1] == 2'b10 && dcache_allocate_valid_i);
   wire allocate_CEN11 = (burst_count_i[2:1] == 2'b11 && dcache_allocate_valid_i);
 
-  // hit 时候 的片选 高点平有效
-  wire readwrite_CEN00 = (dcache_blk_addr_i[5:4] == 2'b00 && ~dcache_allocate_valid_i);
-  wire readwrite_CEN01 = (dcache_blk_addr_i[5:4] == 2'b01 && ~dcache_allocate_valid_i);
-  wire readwrite_CEN10 = (dcache_blk_addr_i[5:4] == 2'b10 && ~dcache_allocate_valid_i);
-  wire readwrite_CEN11 = (dcache_blk_addr_i[5:4] == 2'b11 && ~dcache_allocate_valid_i);
 
-  // 低电平有效
-  wire WEN00 = ~((allocate_CEN00 | readwrite_CEN00)&dcache_wen_i) ;
-  wire WEN01 = ~((allocate_CEN01 | readwrite_CEN01)&dcache_wen_i );
-  wire WEN10 = ~((allocate_CEN10 | readwrite_CEN10)&dcache_wen_i );
-  wire WEN11 = ~((allocate_CEN11 | readwrite_CEN11)&dcache_wen_i) ;
+  // hit 时候 的片选 高点平有效
+  wire hit_CEN00 = (dcache_blk_addr_i[5:4] == 2'b00 && ~dcache_allocate_valid_i && ~dcache_writeback_valid_i);
+  wire hit_CEN01 = (dcache_blk_addr_i[5:4] == 2'b01 && ~dcache_allocate_valid_i&& ~dcache_writeback_valid_i);
+  wire hit_CEN10 = (dcache_blk_addr_i[5:4] == 2'b10 && ~dcache_allocate_valid_i&& ~dcache_writeback_valid_i);
+  wire hit_CEN11 = (dcache_blk_addr_i[5:4] == 2'b11 && ~dcache_allocate_valid_i&& ~dcache_writeback_valid_i);
+
+
+  // 写信号 低电平有效
+  wire WEN00 = ~((allocate_CEN00 | hit_CEN00) & dcache_wen_i);
+  wire WEN01 = ~((allocate_CEN01 | hit_CEN01) & dcache_wen_i);
+  wire WEN10 = ~((allocate_CEN10 | hit_CEN10) & dcache_wen_i);
+  wire WEN11 = ~((allocate_CEN11 | hit_CEN11) & dcache_wen_i);
 
 
 
@@ -48,10 +67,12 @@ module dcache_data #(
   wire [127:0] D = dcache_line_wdata_i;  // 写数据
 
 
-  wire [127:0] dcache_ram_data = ({128{readwrite_CEN00}}&Q00)
-                                 | ({128{readwrite_CEN01}}&Q01)
-                                 | ({128{readwrite_CEN10}}&Q10)
-                                 | ({128{readwrite_CEN11}}&Q11);
+
+
+  wire [127:0] dcache_ram_data = ({128{hit_CEN00}}&Q00)
+                                 | ({128{hit_CEN01}}&Q01)
+                                 | ({128{hit_CEN10}}&Q10)
+                                 | ({128{hit_CEN11}}&Q11);
 
   wire [`XLEN_BUS] _dcache_rdata_o = {dcache_ram_data[dcache_blk_addr_i[3:0]*8+:64]};
   assign dcache_rdata_o = _dcache_rdata_o;

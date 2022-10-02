@@ -5,6 +5,7 @@
 #include <list>
 #include <verilated_vcd_c.h>
 #include <verilated.h>
+#include "verilated_fst_c.h"
 #include <Vtop.h>
 #include <iomanip>
 #include "verilated_dpi.h"
@@ -21,7 +22,7 @@ class Simtop {
 private:
     Vtop* top;
     VerilatedContext* contextp;
-    VerilatedVcdC* tfp;
+    VerilatedFstC* tfp;
     uint64_t* registerfile;
     uint64_t pc;
     uint64_t clk_count = 0;
