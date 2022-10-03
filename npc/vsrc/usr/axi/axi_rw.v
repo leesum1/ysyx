@@ -361,7 +361,6 @@ module axi_rw #(
           if (axi_ar_handshake) begin : wait_for_ar_handshake
             axi_rstate <= AXI_RDATA;
             ar_valid <= `FALSE;  // 地址握手成功后拉低
-            ar_addr <= 0;
             r_ready <= `TRUE;  // 准备接收读数据
           end
         end
@@ -373,7 +372,7 @@ module axi_rw #(
             end
             _arb_rdata_o <= axi_r_data_i;
             _arb_rdata_ready_o <= `TRUE;
-          end else begin
+          end else begin // 没有接收到数据
             _arb_rdata_ready_o <= `FALSE;
           end
         end

@@ -12,6 +12,7 @@ module dcache_tag #(
     input  [TAG_LEN-1:0] dcache_tag_i,       // tag
     input  [IDX_LEN-1:0] dcache_index_i,     // index
     input                dirty_bit_write_i,  //
+    input                dirty_flush_i,      //
     output               dirty_bit_read_o,   //
     output [TAG_LEN-1:0] dcache_tag_o,       // 当前的 tag
     input                write_valid_i,      // 写使能
@@ -37,11 +38,24 @@ module dcache_tag #(
   always @(posedge clk) begin
     if (rst) begin
       for (i = 0; i < TAG_NUM; i = i + 1) begin
-        dcache_tag_regs[i] <= 'b0;
+        dcache_tag_regs[i][19:0] <= 'b0;
       end
     end else if (write_valid_i) begin
-      dcache_tag_regs[dcache_index_i] <= {dirty_bit_write_i, dcache_tag_i};
+      dcache_tag_regs[dcache_index_i][19:0] <= dcache_tag_i;
     end
   end
+
+  integer j;
+  always @(posedge clk) begin
+    if (rst| dirty_flush_i) begin
+      for (j = 0; j < TAG_NUM; j = j + 1) begin
+        dcache_tag_regs[j][20] <= 'b0;
+      end
+    end else if (write_valid_i) begin
+      dcache_tag_regs[dcache_index_i][20] <= dirty_bit_write_i;
+    end
+  end
+
+
   //else 保持不变
 endmodule

@@ -29,6 +29,8 @@ module memory (
     input                           mem_data_ready_i,       // 读/写 数据是否准备好
     input  [             `XLEN_BUS] mem_rdata_i,            // 返回到读取的数据
     output [             `XLEN_BUS] mem_wdata_o,            // 写入的数据
+    output                          mem_fencei_valid_o,
+    input                           mem_fencei_ready_i,
     /* to mem/wb */
     output [             `XLEN_BUS] pc_o,
     output [         `INST_LEN-1:0] inst_data_o,
@@ -66,6 +68,10 @@ module memory (
   wire _memop_sw = (mem_op_i == `MEMOP_SW);
   wire _memop_ld = (mem_op_i == `MEMOP_LD);
   wire _memop_sd = (mem_op_i == `MEMOP_SD);
+  wire _memop_fencei = (mem_op_i == `MEMOP_FENCEI);
+
+  assign mem_fencei_valid_o = _memop_fencei && (~mem_fencei_ready_i);
+
 
   /* 写入还是读取 */
   wire _isload = (_memop_lb |_memop_lbu |_memop_ld|_memop_lh|_memop_lhu|_memop_lw|_memop_lwu);
@@ -170,7 +176,7 @@ module memory (
 
 
   /* stall_req */
-  assign ram_stall_valid_mem_o = mem_addr_valid_o;
+  assign ram_stall_valid_mem_o = mem_addr_valid_o | mem_fencei_valid_o;
 
 
 

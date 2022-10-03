@@ -306,8 +306,8 @@ module dcode (
   wire _B_type = _type_branch;
   wire _U_type = _type_auipc | _type_lui;
   wire _J_type = _type_jal;
-  // 无效指令
-  wire _NONE_type = ~(_R_type | _I_type | _S_type | _U_type | _J_type | _B_type);
+  // 无效指令_type_miscmem
+  wire _NONE_type = ~(_R_type | _I_type | _S_type | _U_type | _J_type | _B_type|_type_miscmem);
 
   /*获取操作数  */  //TODO:一些特殊指令没有归类ecall,ebreak
   wire _isNeed_imm = (_I_type | _S_type | _B_type | _U_type | _J_type);
@@ -509,7 +509,8 @@ module dcode (
                                    ({`MEMOP_LEN{_inst_sw}}&`MEMOP_SW)|
                                    ({`MEMOP_LEN{_inst_lwu}}&`MEMOP_LWU)|
                                    ({`MEMOP_LEN{_inst_ld}}&`MEMOP_LD)|
-                                   ({`MEMOP_LEN{_inst_sd}}&`MEMOP_SD);
+                                   ({`MEMOP_LEN{_inst_sd}}&`MEMOP_SD)|
+                                   ({`MEMOP_LEN{_inst_fence_i}}&`MEMOP_FENCEI);
   assign mem_op_o = _mem_op;
 
 

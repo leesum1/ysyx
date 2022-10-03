@@ -1,7 +1,7 @@
 
 // 仅仅用于仿真加快速度，替换多周期乘除法
 `define MUL_SIM
-`define DIV_SIM
+//`define DIV_SIM
 
 
 `define XLEN 64             //cpu 位数
@@ -110,6 +110,8 @@
 `define MEMOP_SH `MEMOP_LEN'd9
 `define MEMOP_SW `MEMOP_LEN'd10
 `define MEMOP_SD `MEMOP_LEN'd11
+
+`define MEMOP_FENCEI `MEMOP_LEN'd12
 
 
 /* writeback 操作码 */

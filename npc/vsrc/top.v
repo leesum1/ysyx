@@ -489,6 +489,8 @@ module top (
   wire [                   3:0 ] mem_size;  // 数据大小
   wire                           mem_write_valid;  // 1'b1,表示写;1'b0 表示读 
   wire                           mem_data_ready;  // 读/写 数据是否准备好
+  wire                           mem_fencei_valid;
+  wire                           mem_fencei_ready;
 
 
   /* TARP 总线 */
@@ -498,36 +500,37 @@ module top (
 
   memory u_memory (
       //TODO:TEST
-      .rdata_buff_valid_i (rdata_buff_valid),
-      .rdata_buff_i       (rdata_buff),
+      .rdata_buff_valid_i(rdata_buff_valid),
+      .rdata_buff_i(rdata_buff),
       /* from ex/mem */
-      .pc_i               (pc_ex_mem),
-      .inst_data_i        (inst_data_ex_mem),
-      .rd_idx_i           (rd_idx_ex_mem),
+      .pc_i(pc_ex_mem),
+      .inst_data_i(inst_data_ex_mem),
+      .rd_idx_i(rd_idx_ex_mem),
       // input  [         `XLEN_BUS] rs1_data_i,
-      .rs2_data_i         (rs2_data_ex_mem),
+      .rs2_data_i(rs2_data_ex_mem),
       // input  [      `IMM_LEN-1:0] imm_data_i,
-      .mem_op_i           (mem_op_ex_mem),          // 访存操作码
-      .exc_alu_data_i     (alu_data_ex_mem),
-      .csr_addr_i         (csr_addr_ex_mem),
-      .exc_csr_data_i     (csr_writedata_ex_mem),
-      .exc_csr_valid_i    (csr_writevalid_ex_mem),
+      .mem_op_i(mem_op_ex_mem),  // 访存操作码
+      .exc_alu_data_i(alu_data_ex_mem),
+      .csr_addr_i(csr_addr_ex_mem),
+      .exc_csr_data_i(csr_writedata_ex_mem),
+      .exc_csr_valid_i(csr_writevalid_ex_mem),
       /* clint 接口 */
-      .clint_addr_o       (clint_addr),
-      .clint_valid_o      (clint_valid),
+      .clint_addr_o(clint_addr),
+      .clint_valid_o(clint_valid),
       .clint_write_valid_o(clint_write_valid),
-      .clint_wdata_o      (clint_wdata),
-      .clint_rdata_i      (clint_rdata),
+      .clint_wdata_o(clint_wdata),
+      .clint_rdata_i(clint_rdata),
       /* dcache 接口 */
-      .mem_addr_o         (mem_addr),
-      .mem_addr_valid_o   (mem_addr_valid),
-      .mem_mask_o         (mem_mask),
-      .mem_write_valid_o  (mem_write_valid),
-      .mem_data_ready_i   (mem_data_ready),
-      .mem_rdata_i        (mem_rdata),
-      .mem_wdata_o        (mem_wdata),
-      .mem_size_o         (mem_size),               // 数据宽度 8、4、2、1 byte
-
+      .mem_addr_o(mem_addr),
+      .mem_addr_valid_o(mem_addr_valid),
+      .mem_mask_o(mem_mask),
+      .mem_write_valid_o(mem_write_valid),
+      .mem_data_ready_i(mem_data_ready),
+      .mem_rdata_i(mem_rdata),
+      .mem_wdata_o(mem_wdata),
+      .mem_size_o(mem_size),  // 数据宽度 8、4、2、1 byte
+      .mem_fencei_valid_o(mem_fencei_valid),
+      .mem_fencei_ready_i(mem_fencei_ready),
       // TARP 总线
       .trap_bus_i(trap_bus_ex_mem),
       .ram_stall_valid_mem_o(ram_stall_valid_mem),
@@ -854,17 +857,19 @@ module top (
   wire [          7:0 ] ram_wlen_dcache;
 
   dcache_top u_dcache_top (
-      .clk              (clk),
-      .rst              (rst),
+      .clk               (clk),
+      .rst               (rst),
+      .mem_fencei_valid_i(mem_fencei_valid),
+      .mem_fencei_ready_o(mem_fencei_ready),
       /* cpu<-->cache 端口 */
-      .mem_addr_i       (mem_addr),         // CPU 的访存信息 
-      .mem_mask_i       (mem_mask),         // 访存掩码
-      .mem_addr_valid_i (mem_addr_valid),   // 地址是否有效，无效时，停止访问 cache
-      .mem_write_valid_i(mem_write_valid),  // 1'b1,表示写;1'b0 表示读 
-      .mem_wdata_i      (mem_wdata),        // 写数据
-      .mem_rdata_o      (mem_rdata),        // dcache 返回读数据
-      .mem_data_ready_o (mem_data_ready),
-      .mem_size_i       (mem_size),
+      .mem_addr_i        (mem_addr),          // CPU 的访存信息 
+      .mem_mask_i        (mem_mask),          // 访存掩码
+      .mem_addr_valid_i  (mem_addr_valid),    // 地址是否有效，无效时，停止访问 cache
+      .mem_write_valid_i (mem_write_valid),   // 1'b1,表示写;1'b0 表示读 
+      .mem_wdata_i       (mem_wdata),         // 写数据
+      .mem_rdata_o       (mem_rdata),         // dcache 返回读数据
+      .mem_data_ready_o  (mem_data_ready),
+      .mem_size_i        (mem_size),
       // dcache 读数据是否准备好(未准备好需要暂停流水线)
 
       /* cache<-->mem 端口 */
@@ -1011,7 +1016,7 @@ module top (
       .arb_raddr_valid_i(arb_raddr_valid),  // 是否发起读请求
       .arb_rmask_i      (arb_rmask),        // 数据掩码
       .arb_rsize_i      (arb_rsize),
-      .arb_rlen_i(arb_rlen),
+      .arb_rlen_i       (arb_rlen),
       .arb_rdata_o      (arb_rdata),        // 读数据返回mem
       .arb_rdata_ready_o(arb_rdata_ready),  // 读数据是否有效//写通道
       // 写通道
@@ -1020,7 +1025,7 @@ module top (
       .arb_wmask_i      (arb_wmask),
       .arb_wdata_i      (arb_wdata),
       .arb_wsize_i      (arb_wsize),
-      .arb_wlen_i(arb_wlen),
+      .arb_wlen_i       (arb_wlen),
       .arb_wdata_ready_o(arb_wdata_ready),  // 数据是否已经写���
 
       /* axi master */
