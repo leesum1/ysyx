@@ -5,7 +5,7 @@ volatile unsigned char buf[16];
 
 int main() {
 
-	for(int i = 0; i < 4; i++) {
+	for (int i = 0; i < 4; i++) {
 		*((volatile unsigned*)(buf + 3)) = 0xaabbccdd;
 
 		x = *((volatile unsigned*)(buf + 3));

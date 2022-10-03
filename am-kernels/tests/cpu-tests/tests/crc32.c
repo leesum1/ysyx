@@ -269,6 +269,7 @@ int main() {
         for (c = i << 24, j = 8; j > 0; --j)
             c = c & 0x80000000 ? (c << 1) ^ 0x04c11db7 : (c << 1);
         table[i] = c;
+        asm volatile("fence.i");
         check(table[i] == crc32_table[i]);
     }
     check(i == N);
