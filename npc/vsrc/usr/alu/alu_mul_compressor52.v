@@ -1,4 +1,4 @@
-module alu_mul_compressor52 (
+module ysyx_041514_alu_mul_compressor52 (
     input  x0,
     input  x1,
     input  x2,

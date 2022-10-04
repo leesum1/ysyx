@@ -15,17 +15,17 @@
   2. 同时支持 64 位除法 和 32 位除法
   3. 64 位除法 67 个时钟周期，32 位除法 35 个时钟周期（待确认）
 */
-module alu_div_slow (
+module ysyx_041514_alu_div_slow (
 
     input clk,
     input rst,
     input div_signed_valid_i,// 有符号树除法
     input div32_valid_i,     // 32 位除法
-    input [`XLEN-1:0] dividented_i, // 被除数 rs1
-    input [`XLEN-1:0] divisor_i,// 除数 rs2
+    input [`ysyx_041514_XLEN-1:0] dividented_i, // 被除数 rs1
+    input [`ysyx_041514_XLEN-1:0] divisor_i,// 除数 rs2
     input div_valid_i,
-    output [`XLEN-1:0] div_data_o,
-    output [`XLEN-1:0] rem_data_o,
+    output [`ysyx_041514_XLEN-1:0] div_data_o,
+    output [`ysyx_041514_XLEN-1:0] rem_data_o,
     output div_ready_o
 
 );
@@ -116,8 +116,8 @@ module alu_div_slow (
 
 
   reg [STATE_LEN-1:0] div_state;
-  reg [`XLEN_BUS] div_data;  // 最终 商
-  reg [`XLEN_BUS] rem_data;  // 最终 余数
+  reg [`ysyx_041514_XLEN_BUS] div_data;  // 最终 商
+  reg [`ysyx_041514_XLEN_BUS] rem_data;  // 最终 余数
   reg [129:0] s_reg;  // 记录每一步的 部分余数
   reg [64:0] d_reg;  // 记录除数
   reg [64:0] d_neg_reg;  // 记录 除数的负数
@@ -129,7 +129,7 @@ module alu_div_slow (
       div_state <= DIV_RST;
       div_data <= 0;
       rem_data <= 0;
-      div_reday <= `FALSE;
+      div_reday <= `ysyx_041514_FALSE;
       div_count <= 0;
       s_reg <= 0;
       d_reg <= 0;
@@ -140,7 +140,7 @@ module alu_div_slow (
           div_state <= DIV_IDLE;
         end
         DIV_IDLE: begin
-          div_reday <= `FALSE;
+          div_reday <= `ysyx_041514_FALSE;
           case ({
             div_valid_i, div32_valid_i
           })
@@ -184,14 +184,14 @@ module alu_div_slow (
         DIV_CORECT32: begin  //TODO DIV_CORECT64 DIV_CORECT32 阶段合并
           div_data  <= {32'b0, q_correct_32[31:0]};
           rem_data  <= {32'b0, s_correct_32[31:0]};
-          div_reday <= `TRUE;
+          div_reday <= `ysyx_041514_TRUE;
           div_state <= DIV_IDLE;
 
         end
         DIV_CORECT64: begin
           div_data  <= q_correct_64[63:0];
           rem_data  <= s_correct_64[63:0];
-          div_reday <= `TRUE;
+          div_reday <= `ysyx_041514_TRUE;
           div_state <= DIV_IDLE;
 
         end

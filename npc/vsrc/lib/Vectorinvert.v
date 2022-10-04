@@ -1,4 +1,4 @@
-module Vectorinvert #(
+module ysyx_041514_Vectorinvert #(
     DATA_LEN = 1
 ) (
     input [DATA_LEN-1:0] in,

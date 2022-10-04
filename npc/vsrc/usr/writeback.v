@@ -1,21 +1,21 @@
 `include "sysconfig.v"
-module writeback (
+module ysyx_041514_writeback (
 
     input                 clk,
     input                 rst,
     /* from MEM/WB */
-    input [    `XLEN_BUS] pc_wb_i,
-    input [`INST_LEN-1:0] inst_data_wb_i
-    // input  [             `XLEN_BUS] mem_data_i,
-    // input  [    `REG_ADDRWIDTH-1:0] rd_idx_i,
-    // input  [`CSR_REG_ADDRWIDTH-1:0] csr_addr_i,
-    // input  [             `XLEN_BUS] exc_csr_data_i,
+    input [    `ysyx_041514_XLEN_BUS] pc_wb_i,
+    input [`ysyx_041514_INST_LEN-1:0] inst_data_wb_i
+    // input  [             `ysyx_041514_XLEN_BUS] mem_data_i,
+    // input  [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_i,
+    // input  [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] csr_addr_i,
+    // input  [             `ysyx_041514_XLEN_BUS] exc_csr_data_i,
     // input                           exc_csr_valid_i,
     // /* TO GPR,CSR REGFILE */
-    // output [             `XLEN_BUS] mem_data_o,
-    // output [    `REG_ADDRWIDTH-1:0] rd_idx_o,
-    // output [`CSR_REG_ADDRWIDTH-1:0] csr_addr_o,
-    // output [             `XLEN_BUS] exc_csr_data_o,
+    // output [             `ysyx_041514_XLEN_BUS] mem_data_o,
+    // output [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_o,
+    // output [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] csr_addr_o,
+    // output [             `ysyx_041514_XLEN_BUS] exc_csr_data_o,
     // output                          exc_csr_valid_o
 
 );
@@ -25,7 +25,7 @@ module writeback (
   // assign exc_csr_data_o = exc_csr_data_i;
   // assign exc_csr_valid_o = exc_csr_valid_i;
 
-  wire _commit_valid = (pc_wb_i != `XLEN'b0);
+  wire _commit_valid = (pc_wb_i != `ysyx_041514_XLEN'b0);
 
   import "DPI-C" function void inst_commit(
     input longint pc,

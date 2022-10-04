@@ -2,7 +2,7 @@
 
 // 写入一个周期
 // 读取立即返回
-module dcache_tag #(
+module ysyx_041514_dcache_tag #(
     TAG_LEN = 20,  // tag 长度
     IDX_LEN = 6,   // 组号 长度
     TAG_NUM = 64   // tag 个数

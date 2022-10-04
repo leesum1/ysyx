@@ -1,60 +1,60 @@
 `include "sysconfig.v"
-module execute_top (
+module ysyx_041514_execute_top (
     input                           clk,
     input                           rst,
     /******************************* from id/ex *************************/
     // pc
-    input  [             `XLEN_BUS] pc_i,
-    input  [         `INST_LEN-1:0] inst_data_i,
+    input  [             `ysyx_041514_XLEN_BUS] pc_i,
+    input  [         `ysyx_041514_INST_LEN-1:0] inst_data_i,
     // gpr 译码结果
-    input  [    `REG_ADDRWIDTH-1:0] rd_idx_i,
-    input  [             `XLEN_BUS] rs1_data_i,
-    input  [             `XLEN_BUS] rs2_data_i,
-    input  [          `IMM_LEN-1:0] imm_data_i,
+    input  [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_i,
+    input  [             `ysyx_041514_XLEN_BUS] rs1_data_i,
+    input  [             `ysyx_041514_XLEN_BUS] rs2_data_i,
+    input  [          `ysyx_041514_IMM_LEN-1:0] imm_data_i,
     // CSR 译码结果 
-    input  [`CSR_REG_ADDRWIDTH-1:0] csr_readaddr_i,
-    input  [             `XLEN_BUS] csr_data_i,
-    input  [          `IMM_LEN-1:0] csr_imm_i,
+    input  [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] csr_readaddr_i,
+    input  [             `ysyx_041514_XLEN_BUS] csr_data_i,
+    input  [          `ysyx_041514_IMM_LEN-1:0] csr_imm_i,
     input                           csr_imm_valid_i,
     // 指令微码
-    input  [        `ALUOP_LEN-1:0] alu_op_i,         // alu 操作码
-    input  [        `MEMOP_LEN-1:0] mem_op_i,         // 访存操作码
-    input  [        `EXCOP_LEN-1:0] exc_op_i,         // exc 操作码
-    input  [        `CSROP_LEN-1:0] csr_op_i,         // exc_csr 操作码
-    input  [         `PCOP_LEN-1:0] pc_op_i,
+    input  [        `ysyx_041514_ALUOP_LEN-1:0] alu_op_i,         // alu 操作码
+    input  [        `ysyx_041514_MEMOP_LEN-1:0] mem_op_i,         // 访存操作码
+    input  [        `ysyx_041514_EXCOP_LEN-1:0] exc_op_i,         // exc 操作码
+    input  [        `ysyx_041514_CSROP_LEN-1:0] csr_op_i,         // exc_csr 操作码
+    input  [         `ysyx_041514_PCOP_LEN-1:0] pc_op_i,
     /* TARP 总线 */
-    input  [             `TRAP_BUS] trap_bus_i,
+    input  [             `ysyx_041514_TRAP_BUS] trap_bus_i,
     /********************** to ex/mem **************************/
     // pc
-    output [             `XLEN_BUS] pc_o,
-    output [         `INST_LEN-1:0] inst_data_o,
+    output [             `ysyx_041514_XLEN_BUS] pc_o,
+    output [         `ysyx_041514_INST_LEN-1:0] inst_data_o,
     // gpr 译码结果
-    output [    `REG_ADDRWIDTH-1:0] rd_idx_o,
-    output [             `XLEN_BUS] rs1_data_o,
-    output [             `XLEN_BUS] rs2_data_o,
-    output [          `IMM_LEN-1:0] imm_data_o,
+    output [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_o,
+    output [             `ysyx_041514_XLEN_BUS] rs1_data_o,
+    output [             `ysyx_041514_XLEN_BUS] rs2_data_o,
+    output [          `ysyx_041514_IMM_LEN-1:0] imm_data_o,
     // CSR 译码结果 
-    output [             `XLEN_BUS] csr_data_o,
-    output [          `IMM_LEN-1:0] csr_imm_o,
+    output [             `ysyx_041514_XLEN_BUS] csr_data_o,
+    output [          `ysyx_041514_IMM_LEN-1:0] csr_imm_o,
     output                          csr_imm_valid_o,
-    output [`CSR_REG_ADDRWIDTH-1:0] exc_csr_addr_o,
-    output [        `MEMOP_LEN-1:0] mem_op_o,         // 访存操作码
-    output [         `PCOP_LEN-1:0] pc_op_o,
+    output [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] exc_csr_addr_o,
+    output [        `ysyx_041514_MEMOP_LEN-1:0] mem_op_o,         // 访存操作码
+    output [         `ysyx_041514_PCOP_LEN-1:0] pc_op_o,
 
-    output [     `XLEN_BUS] exc_alu_data_o,   // 同时送给 ID 和 EX/MEM
-    output [     `XLEN_BUS] exc_csr_data_o,
+    output [     `ysyx_041514_XLEN_BUS] exc_alu_data_o,   // 同时送给 ID 和 EX/MEM
+    output [     `ysyx_041514_XLEN_BUS] exc_csr_data_o,
     output                  exc_csr_valid_o,
     /************************to id *************************************/
-    output [`EXCOP_LEN-1:0] exc_op_o,         // exc 操作码
+    output [`ysyx_041514_EXCOP_LEN-1:0] exc_op_o,         // exc 操作码
 
     /************************to pc_reg ******************************************/
-    output [`XLEN_BUS] branch_pc_o,
+    output [`ysyx_041514_XLEN_BUS] branch_pc_o,
     output branch_pc_valid_o,
 
     /********************* from data_buff *******************/
     // ALU结果缓存
     input alu_data_buff_valid_i,
-    input [`XLEN_BUS] alu_data_buff_i,
+    input [`ysyx_041514_XLEN_BUS] alu_data_buff_i,
     output alu_data_ready_o,
 
     // 请求暂停流水线
@@ -62,7 +62,7 @@ module execute_top (
     output alu_mul_div_valid_o,
 
     /* TARP 总线 */
-    output [`TRAP_BUS] trap_bus_o
+    output [`ysyx_041514_TRAP_BUS] trap_bus_o
 );
   assign pc_o = pc_i;
   assign inst_data_o = inst_data_i;
@@ -81,30 +81,30 @@ module execute_top (
 
 
 
-  wire _excop_auipc = (exc_op_i == `EXCOP_AUIPC);
-  wire _excop_lui = (exc_op_i == `EXCOP_LUI);
-  wire _excop_jal = (exc_op_i == `EXCOP_JAL);
-  wire _excop_jalr = (exc_op_i == `EXCOP_JALR);
-  wire _excop_load = (exc_op_i == `EXCOP_LOAD);
-  wire _excop_store = (exc_op_i == `EXCOP_STORE);
-  wire _excop_branch = (exc_op_i == `EXCOP_BRANCH);
-  wire _excop_opimm = (exc_op_i == `EXCOP_OPIMM);
-  wire _excop_opimm32 = (exc_op_i == `EXCOP_OPIMM32);
-  wire _excop_op = (exc_op_i == `EXCOP_OP);
-  wire _excop_op32 = (exc_op_i == `EXCOP_OP32);
-  wire _excop_csr = (exc_op_i == `EXCOP_CSR);
-  wire _excop_ebreak = (exc_op_i == `EXCOP_EBREAK);
-  wire _excop_none = (exc_op_i == `EXCOP_NONE);
+  wire _excop_auipc = (exc_op_i == `ysyx_041514_EXCOP_AUIPC);
+  wire _excop_lui = (exc_op_i == `ysyx_041514_EXCOP_LUI);
+  wire _excop_jal = (exc_op_i == `ysyx_041514_EXCOP_JAL);
+  wire _excop_jalr = (exc_op_i == `ysyx_041514_EXCOP_JALR);
+  wire _excop_load = (exc_op_i == `ysyx_041514_EXCOP_LOAD);
+  wire _excop_store = (exc_op_i == `ysyx_041514_EXCOP_STORE);
+  wire _excop_branch = (exc_op_i == `ysyx_041514_EXCOP_BRANCH);
+  wire _excop_opimm = (exc_op_i == `ysyx_041514_EXCOP_OPIMM);
+  wire _excop_opimm32 = (exc_op_i == `ysyx_041514_EXCOP_OPIMM32);
+  wire _excop_op = (exc_op_i == `ysyx_041514_EXCOP_OP);
+  wire _excop_op32 = (exc_op_i == `ysyx_041514_EXCOP_OP32);
+  wire _excop_csr = (exc_op_i == `ysyx_041514_EXCOP_CSR);
+  wire _excop_ebreak = (exc_op_i == `ysyx_041514_EXCOP_EBREAK);
+  wire _excop_none = (exc_op_i == `ysyx_041514_EXCOP_NONE);
 
   /*****************************branch 操作********************************/
-  wire [`XLEN_BUS] _pc_add_imm;
+  wire [`ysyx_041514_XLEN_BUS] _pc_add_imm;
   assign _pc_add_imm = pc_i + imm_data_i;
 
-  wire [`XLEN_BUS] _rs1_add_imm;
+  wire [`ysyx_041514_XLEN_BUS] _rs1_add_imm;
   assign _rs1_add_imm = rs1_data_i + imm_data_i;
 
-  wire [`XLEN_BUS] _branch_pc = ({`XLEN{_excop_jal|_excop_branch}}&_pc_add_imm)|
-                                ({`XLEN{_excop_jalr}}&_rs1_add_imm);
+  wire [`ysyx_041514_XLEN_BUS] _branch_pc = ({`ysyx_041514_XLEN{_excop_jal|_excop_branch}}&_pc_add_imm)|
+                                ({`ysyx_041514_XLEN{_excop_jalr}}&_rs1_add_imm);
 
   // TODO 还需要完善
   wire _branch_pc_valid = (_compare_out & _excop_branch) | _excop_jal | _excop_jalr;
@@ -127,23 +127,23 @@ module execute_top (
 
   /* jal jalr lui auipc ecall ebreak 需要单独处理 */
   /* 拼接代替左移 */
-  // wire [`IMM_LEN-1:0] _imm_aui_auipc = imm_data << 12;
-  wire [`IMM_LEN-1:0] _imm_aui_auipc = {imm_data_i[`IMM_LEN-1:12], 12'b0};
+  // wire [`ysyx_041514_IMM_LEN-1:0] _imm_aui_auipc = imm_data << 12;
+  wire [`ysyx_041514_IMM_LEN-1:0] _imm_aui_auipc = {imm_data_i[`ysyx_041514_IMM_LEN-1:12], 12'b0};
   // ALU 第一个操作数
-  wire [         `XLEN_BUS] _alu_in1 = ({`XLEN{_rs1_rs2 | _rs1_imm}}&rs1_data_i) |
-                                       ({`XLEN{_pc_4 | _pc_imm12}}&pc_i) |
-                                       ({`XLEN{_none_imm12|_none_csr}}&`XLEN'b0);
+  wire [         `ysyx_041514_XLEN_BUS] _alu_in1 = ({`ysyx_041514_XLEN{_rs1_rs2 | _rs1_imm}}&rs1_data_i) |
+                                       ({`ysyx_041514_XLEN{_pc_4 | _pc_imm12}}&pc_i) |
+                                       ({`ysyx_041514_XLEN{_none_imm12|_none_csr}}&`ysyx_041514_XLEN'b0);
   // ALU 第二个操作数
-  wire [         `XLEN_BUS] _alu_in2 = ({`XLEN{_rs1_rs2}}&rs2_data_i) |
-                                       ({`XLEN{_rs1_imm}}&imm_data_i) |
-                                       ({`XLEN{_none_csr}}&csr_data_i) |
-                                       ({`XLEN{_pc_4}}&`XLEN'd4)   |
-                                       ({`XLEN{_pc_imm12|_none_imm12}}&_imm_aui_auipc);
+  wire [         `ysyx_041514_XLEN_BUS] _alu_in2 = ({`ysyx_041514_XLEN{_rs1_rs2}}&rs2_data_i) |
+                                       ({`ysyx_041514_XLEN{_rs1_imm}}&imm_data_i) |
+                                       ({`ysyx_041514_XLEN{_none_csr}}&csr_data_i) |
+                                       ({`ysyx_041514_XLEN{_pc_4}}&`ysyx_041514_XLEN'd4)   |
+                                       ({`ysyx_041514_XLEN{_pc_imm12|_none_imm12}}&_imm_aui_auipc);
 
-  wire [`XLEN_BUS] _alu_out;
+  wire [`ysyx_041514_XLEN_BUS] _alu_out;
   wire _compare_out;
   wire alu_stall_req;
-  alu_top u_alu (
+  ysyx_041514_alu_top u_alu (
       .clk(clk),
       .rst(rst),
       /* ALU 端口 */
@@ -160,16 +160,16 @@ module execute_top (
   );
   /* alu计算结果需要符号扩展 */
   wire _alu_sext = _excop_opimm32 | _excop_op32;
-  wire [`XLEN_BUS] _alu_sext_out = {{32{_alu_out[31]}}, _alu_out[31:0]};
+  wire [`ysyx_041514_XLEN_BUS] _alu_sext_out = {{32{_alu_out[31]}}, _alu_out[31:0]};
   assign exc_alu_data_o = (_alu_sext) ? _alu_sext_out : _alu_out;
   // 乘除法需要暂停处理器
   assign alu_mul_div_valid_o = alu_stall_req;
 
   /***************************** CSR 执行操作 **************************/
 
-  wire [`XLEN_BUS] _csr_exe_data;
+  wire [`ysyx_041514_XLEN_BUS] _csr_exe_data;
   wire _csr_exe_data_valid;
-  execute_csr u_execute_csr (
+  ysyx_041514_execute_csr u_execute_csr (
       .csr_imm_i           (csr_imm_i),
       .csr_imm_valid_i     (csr_imm_valid_i),     // 是否是立即数指令
       .rs1_data_i          (rs1_data_i),          // rs1 data
@@ -184,10 +184,10 @@ module execute_top (
 
 
   /* trap_bus TODO:add more*/
-  reg [`TRAP_BUS] _exc_trap_bus;
+  reg [`ysyx_041514_TRAP_BUS] _exc_trap_bus;
   integer i;
   always @(*) begin
-    for (i = 0; i < `TRAP_LEN; i = i + 1) begin
+    for (i = 0; i < `ysyx_041514_TRAP_LEN; i = i + 1) begin
       _exc_trap_bus[i] = trap_bus_i[i];
     end
   end

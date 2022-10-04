@@ -1,4 +1,4 @@
-module alu_mul_compressor42 (
+module ysyx_041514_alu_mul_compressor42 (
     input  wire x0,
     input  wire x1,
     input  wire x2,

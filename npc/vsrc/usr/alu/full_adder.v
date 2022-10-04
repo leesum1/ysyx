@@ -1,4 +1,4 @@
-module full_adder (
+module ysyx_041514_full_adder (
     input  wire a,
     input  wire b,
     input  wire ci,

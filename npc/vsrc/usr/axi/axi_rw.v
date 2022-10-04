@@ -1,55 +1,8 @@
 
 `include "sysconfig.v"
 
-// Burst types
-`define AXI_BURST_TYPE_FIXED 2'b00               //突发类型  FIFO
-`define AXI_BURST_TYPE_INCR 2'b01               //ram  
-`define AXI_BURST_TYPE_WRAP 2'b10
-// Access permissions
-`define AXI_PROT_UNPRIVILEGED_ACCESS 3'b000
-`define AXI_PROT_PRIVILEGED_ACCESS 3'b001
-`define AXI_PROT_SECURE_ACCESS 3'b000
-`define AXI_PROT_NON_SECURE_ACCESS 3'b010
-`define AXI_PROT_DATA_ACCESS 3'b000
-`define AXI_PROT_INSTRUCTION_ACCESS 3'b100
-// Memory types (AR)
-`define AXI_ARCACHE_DEVICE_NON_BUFFERABLE 4'b0000
-`define AXI_ARCACHE_DEVICE_BUFFERABLE 4'b0001
-`define AXI_ARCACHE_NORMAL_NON_CACHEABLE_NON_BUFFERABLE 4'b0010
-`define AXI_ARCACHE_NORMAL_NON_CACHEABLE_BUFFERABLE 4'b0011
-`define AXI_ARCACHE_WRITE_THROUGH_NO_ALLOCATE 4'b1010
-`define AXI_ARCACHE_WRITE_THROUGH_READ_ALLOCATE 4'b1110
-`define AXI_ARCACHE_WRITE_THROUGH_WRITE_ALLOCATE 4'b1010
-`define AXI_ARCACHE_WRITE_THROUGH_READ_AND_WRITE_ALLOCATE 4'b1110
-`define AXI_ARCACHE_WRITE_BACK_NO_ALLOCATE 4'b1011
-`define AXI_ARCACHE_WRITE_BACK_READ_ALLOCATE 4'b1111
-`define AXI_ARCACHE_WRITE_BACK_WRITE_ALLOCATE 4'b1011
-`define AXI_ARCACHE_WRITE_BACK_READ_AND_WRITE_ALLOCATE 4'b1111
-// Memory types (AW)
-`define AXI_AWCACHE_DEVICE_NON_BUFFERABLE 4'b0000
-`define AXI_AWCACHE_DEVICE_BUFFERABLE 4'b0001
-`define AXI_AWCACHE_NORMAL_NON_CACHEABLE_NON_BUFFERABLE 4'b0010
-`define AXI_AWCACHE_NORMAL_NON_CACHEABLE_BUFFERABLE 4'b0011
-`define AXI_AWCACHE_WRITE_THROUGH_NO_ALLOCATE 4'b0110
-`define AXI_AWCACHE_WRITE_THROUGH_READ_ALLOCATE 4'b0110
-`define AXI_AWCACHE_WRITE_THROUGH_WRITE_ALLOCATE 4'b1110
-`define AXI_AWCACHE_WRITE_THROUGH_READ_AND_WRITE_ALLOCATE 4'b1110
-`define AXI_AWCACHE_WRITE_BACK_NO_ALLOCATE 4'b0111
-`define AXI_AWCACHE_WRITE_BACK_READ_ALLOCATE 4'b0111
-`define AXI_AWCACHE_WRITE_BACK_WRITE_ALLOCATE 4'b1111
-`define AXI_AWCACHE_WRITE_BACK_READ_AND_WRITE_ALLOCATE 4'b1111
 
-`define AXI_SIZE_BYTES_1 3'b000                //突发宽度一个数据的宽度
-`define AXI_SIZE_BYTES_2 3'b001
-`define AXI_SIZE_BYTES_4 3'b010
-`define AXI_SIZE_BYTES_8 3'b011
-`define AXI_SIZE_BYTES_16 3'b100
-`define AXI_SIZE_BYTES_32 3'b101
-`define AXI_SIZE_BYTES_64 3'b110
-`define AXI_SIZE_BYTES_128 3'b111
-
-
-module axi_rw #(
+module ysyx_041514_axi_rw #(
     parameter RW_DATA_WIDTH  = 64,
     parameter RW_ADDR_WIDTH  = 32,
     parameter AXI_DATA_WIDTH = 64,
@@ -63,20 +16,20 @@ module axi_rw #(
 
     /* arb<-->axi */
     // 读通道
-    input [`NPC_ADDR_BUS] arb_read_addr_i,
+    input [`ysyx_041514_NPC_ADDR_BUS] arb_read_addr_i,
     input arb_raddr_valid_i,  // 是否发起读请求
     input [7:0] arb_rmask_i,  // 数据掩码
     input [3:0] arb_rsize_i,
     input [7:0] arb_rlen_i,  // 突发传输大小
-    output [`XLEN_BUS] arb_rdata_o,  // 读数据返回mem
+    output [`ysyx_041514_XLEN_BUS] arb_rdata_o,  // 读数据返回mem
     output arb_rdata_ready_o,  // 读数据是否有效
     //写通道
-    input [`NPC_ADDR_BUS] arb_write_addr_i,  // mem 阶段的 write
+    input [`ysyx_041514_NPC_ADDR_BUS] arb_write_addr_i,  // mem 阶段的 write
     input arb_write_valid_i,
     input [7:0] arb_wmask_i,
     input [3:0] arb_wsize_i,
     input [7:0] arb_wlen_i,  // 突发传输大小
-    input [`XLEN_BUS] arb_wdata_i,
+    input [`ysyx_041514_XLEN_BUS] arb_wdata_i,
     output arb_wdata_ready_o,  // 数据是否已经写入
 
     /* axi master */
@@ -155,22 +108,22 @@ module axi_rw #(
   localparam AXI_WDATA_FINISH_BURST = 3'd6;  // 突发传输结束
 
 
-  wire [2:0 ]to_aw_size = ({3{arb_wsize_i[0]}}&`AXI_SIZE_BYTES_1)
-                             | ({3{arb_wsize_i[1]}}&`AXI_SIZE_BYTES_2)
-                             | ({3{arb_wsize_i[2]}}&`AXI_SIZE_BYTES_4)
-                             | ({3{arb_wsize_i[3]}}&`AXI_SIZE_BYTES_8);
+  wire [2:0 ]to_aw_size = ({3{arb_wsize_i[0]}}&`ysyx_041514_AXI_SIZE_BYTES_1)
+                             | ({3{arb_wsize_i[1]}}&`ysyx_041514_AXI_SIZE_BYTES_2)
+                             | ({3{arb_wsize_i[2]}}&`ysyx_041514_AXI_SIZE_BYTES_4)
+                             | ({3{arb_wsize_i[3]}}&`ysyx_041514_AXI_SIZE_BYTES_8);
 
 
   reg [AXI_WSTATE_LEN-1:0] axi_wstate;
   reg _arb_wdata_ready_o;
 
   // 写地址缓存
-  reg [`NPC_ADDR_BUS] aw_addr;
+  reg [`ysyx_041514_NPC_ADDR_BUS] aw_addr;
   reg aw_valid;
-  reg [7:0] aw_len;  // 突发长度 AxLEN[7:0] + 1,0 表示不突发
+  reg [7:0] aw_len;  // 突发长度 Aysyx_041514_XLEN[7:0] + 1,0 表示不突发
   reg [2:0] aw_size;  // 突发大小 = 2^AxSIZE 
   // 写数据缓存
-  reg [`XLEN_BUS] w_data;
+  reg [`ysyx_041514_XLEN_BUS] w_data;
   reg [7:0] w_strb;
   reg w_valid;
   reg w_last;
@@ -190,94 +143,94 @@ module axi_rw #(
   always @(posedge clock) begin
     if (reset) begin
       axi_wstate <= AXI_WRST;
-      aw_valid <= `FALSE;
-      w_valid <= `FALSE;
-      w_last <= `FALSE;
-      b_ready <= `FALSE;
+      aw_valid <= `ysyx_041514_FALSE;
+      w_valid <= `ysyx_041514_FALSE;
+      w_last <= `ysyx_041514_FALSE;
+      b_ready <= `ysyx_041514_FALSE;
       burst_count <= 0;
-      _arb_wdata_ready_o <= `FALSE;
+      _arb_wdata_ready_o <= `ysyx_041514_FALSE;
     end else begin
       case (axi_wstate)
         AXI_WRST: begin
           axi_wstate <= AXI_WIDLE;
         end
         AXI_WIDLE: begin
-          _arb_wdata_ready_o <= `FALSE;
+          _arb_wdata_ready_o <= `ysyx_041514_FALSE;
           if (arb_write_valid_i & ~_arb_wdata_ready_o) begin : arb_write
             if (arb_wlen_i == 8'b0) begin  // 不是突发传输，地址和数据一起到
               // 同时写数据和地址
               /* aw 通道 */
               axi_wstate <= AXI_WADDR_WDATA;
-              aw_valid <= `TRUE;
+              aw_valid <= `ysyx_041514_TRUE;
               aw_addr <= arb_write_addr_i;
               aw_len <= arb_wlen_i;  // 无突发
               aw_size <= to_aw_size;
               /* w 通道 */
-              w_valid <= `TRUE;
-              w_last <= `TRUE;  // 只有一个数据
+              w_valid <= `ysyx_041514_TRUE;
+              w_last <= `ysyx_041514_TRUE;  // 只有一个数据
               //对于Narrow Burst，无论是读写请求，数据都出现在[RW]DATA对应访问地址%总线宽度的位置
               // wstrb wdata 与 data bus 的对齐处理在 mem 阶段处理
               w_strb <= arb_wmask_i;
               w_data <= arb_wdata_i;
               /* b 通道 */
-              b_ready <= `TRUE;  // 默认为高
+              b_ready <= `ysyx_041514_TRUE;  // 默认为高
             end else begin  // 突发传输，先写地址，再写数据
               /* aw 通道 */
               axi_wstate <= AXI_WADDR_FINISH_BURST;
-              aw_valid <= `TRUE;
+              aw_valid <= `ysyx_041514_TRUE;
               aw_addr <= arb_write_addr_i;
               aw_len <= arb_wlen_i;  // 突发传输
               aw_size <= to_aw_size;
               /* b 通道 */
-              b_ready <= `TRUE;  // 默认为高
+              b_ready <= `ysyx_041514_TRUE;  // 默认为高
 
               burst_count <= 0;
             end
           end else begin
             axi_wstate <= AXI_WIDLE;
-            aw_valid <= `FALSE;
-            w_valid <= `FALSE;
-            w_last <= `FALSE;
+            aw_valid <= `ysyx_041514_FALSE;
+            w_valid <= `ysyx_041514_FALSE;
+            w_last <= `ysyx_041514_FALSE;
           end
         end
         AXI_WADDR_WDATA: begin
           if (axi_aw_handshake) begin
-            aw_valid <= `FALSE;  // 握手成功后拉低 valid
+            aw_valid <= `ysyx_041514_FALSE;  // 握手成功后拉低 valid
           end
           if (axi_w_handshake) begin
-            w_valid <= `FALSE;  // 握手成功后拉低 valid
-            w_last  <= `FALSE;  // wlast 与 wvalid 一同拉低
+            w_valid <= `ysyx_041514_FALSE;  // 握手成功后拉低 valid
+            w_last  <= `ysyx_041514_FALSE;  // wlast 与 wvalid 一同拉低
           end
           if (axi_b_handshake) begin
             axi_wstate <= AXI_WIDLE;  // 一次写事务结束
-            b_ready <= `FALSE;  // todo:为低表示一次写事务完毕,测试使用
-            _arb_wdata_ready_o <= `TRUE;  // 通知 arb 写完成
+            b_ready <= `ysyx_041514_FALSE;  // todo:为低表示一次写事务完毕,测试使用
+            _arb_wdata_ready_o <= `ysyx_041514_TRUE;  // 通知 arb 写完成
           end
 
         end
         AXI_WADDR_FINISH_BURST: begin
           if (axi_aw_handshake) begin
-            aw_valid   <= `FALSE;  // 握手成功后拉低 valid
+            aw_valid   <= `ysyx_041514_FALSE;  // 握手成功后拉低 valid
             axi_wstate <= AXI_WDATA_VALID_BURST;  
           end
         end
         AXI_WDATA_VALID_BURST: begin
           /* w 通道 */
-          w_valid <= `TRUE;
+          w_valid <= `ysyx_041514_TRUE;
           w_strb <= arb_wmask_i;  // 第一个数据
           w_data <= arb_wdata_i;
-          _arb_wdata_ready_o <= `FALSE;
+          _arb_wdata_ready_o <= `ysyx_041514_FALSE;
           if (burst_count == 3'd7) begin // 最后一个数据，last 有效
-            w_last <= `TRUE;
+            w_last <= `ysyx_041514_TRUE;
           end
 
           axi_wstate <= AXI_WDATA_HANDSHAKE_BURST;
         end
         AXI_WDATA_HANDSHAKE_BURST: begin
           if (axi_w_handshake) begin
-            w_valid <= `FALSE;  // 握手成功后拉低 valid
-            w_last <= `FALSE;
-            _arb_wdata_ready_o <= `TRUE;  // 通知 arb 写完成
+            w_valid <= `ysyx_041514_FALSE;  // 握手成功后拉低 valid
+            w_last <= `ysyx_041514_FALSE;
+            _arb_wdata_ready_o <= `ysyx_041514_TRUE;  // 通知 arb 写完成
             burst_count <= burst_count_plus1;
             if (w_last) begin
               axi_wstate <= AXI_WDATA_FINISH_BURST;
@@ -288,9 +241,9 @@ module axi_rw #(
           end
         end
         AXI_WDATA_FINISH_BURST: begin
-          _arb_wdata_ready_o <= `FALSE;
+          _arb_wdata_ready_o <= `ysyx_041514_FALSE;
           if (axi_b_handshake) begin
-            b_ready <= `FALSE;
+            b_ready <= `ysyx_041514_FALSE;
             axi_wstate <= AXI_WIDLE;
           end
         end
@@ -309,48 +262,48 @@ module axi_rw #(
   localparam AXI_RDATA = 3'd3;
 
 
-  wire [2:0 ]to_ar_size = ({3{arb_rsize_i[0]}}&`AXI_SIZE_BYTES_1)
-                             | ({3{arb_rsize_i[1]}}&`AXI_SIZE_BYTES_2)
-                             | ({3{arb_rsize_i[2]}}&`AXI_SIZE_BYTES_4)
-                             | ({3{arb_rsize_i[3]}}&`AXI_SIZE_BYTES_8);
+  wire [2:0 ]to_ar_size = ({3{arb_rsize_i[0]}}&`ysyx_041514_AXI_SIZE_BYTES_1)
+                             | ({3{arb_rsize_i[1]}}&`ysyx_041514_AXI_SIZE_BYTES_2)
+                             | ({3{arb_rsize_i[2]}}&`ysyx_041514_AXI_SIZE_BYTES_4)
+                             | ({3{arb_rsize_i[3]}}&`ysyx_041514_AXI_SIZE_BYTES_8);
 
 
   reg [AXI_RSTATE_LEN-1:0] axi_rstate;
   reg _arb_rdata_ready_o;
-  reg [`XLEN_BUS] _arb_rdata_o;
+  reg [`ysyx_041514_XLEN_BUS] _arb_rdata_o;
 
   reg ar_valid;
   reg [AXI_ADDR_WIDTH-1:0] ar_addr;
   reg [2:0] ar_size;  // 突发大小 = 2^AxSIZE 
-  reg [7:0] ar_len;  // 突发长度 AxLEN[7:0] + 1,0 表示不突发
+  reg [7:0] ar_len;  // 突发长度 Aysyx_041514_XLEN[7:0] + 1,0 表示不突发
 
   reg r_ready;
 
   always @(posedge clock) begin
     if (reset) begin
       axi_rstate <= AXI_RRST;
-      ar_valid <= `FALSE;
+      ar_valid <= `ysyx_041514_FALSE;
       ar_addr <= 0;
       ar_len <= 0;
       ar_size <= 0;
-      r_ready <= `FALSE;
-      _arb_rdata_ready_o <= `FALSE;
+      r_ready <= `ysyx_041514_FALSE;
+      _arb_rdata_ready_o <= `ysyx_041514_FALSE;
     end else begin
       case (axi_rstate)
         AXI_RRST: begin
           axi_rstate <= AXI_RIDLE;
         end
         AXI_RIDLE: begin
-          _arb_rdata_ready_o <= `FALSE;
+          _arb_rdata_ready_o <= `ysyx_041514_FALSE;
           // arb_raddr_valid_i & ~_arb_rdata_ready_o 为 arb 发出了读请求，且当前周期不为读数据返回周期
-          // 当 _arb_rdata_ready_o = `TRUE 时，读数据返回，且 下一个读地址在下一个周期才会来到
-          // 避免重复度读请求，_arb_rdata_ready_o = `TRUE 时，不能发生读请求
+          // 当 _arb_rdata_ready_o = `ysyx_041514_TRUE 时，读数据返回，且 下一个读地址在下一个周期才会来到
+          // 避免重复度读请求，_arb_rdata_ready_o = `ysyx_041514_TRUE 时，不能发生读请求
           if (arb_raddr_valid_i & ~_arb_rdata_ready_o) begin
             axi_rstate <= AXI_RADDR;
             /* ar 通道 */
             // cache miss 时,或者访问外设时,地址一定时对齐的
             ar_addr <= arb_read_addr_i;
-            ar_valid <= `TRUE;
+            ar_valid <= `ysyx_041514_TRUE;
             ar_size <= to_ar_size;
             ar_len <= arb_rlen_i;  // 支持突发传输
           end else begin
@@ -360,20 +313,20 @@ module axi_rw #(
         AXI_RADDR: begin : wait_for_ar_handshake
           if (axi_ar_handshake) begin : wait_for_ar_handshake
             axi_rstate <= AXI_RDATA;
-            ar_valid <= `FALSE;  // 地址握手成功后拉低
-            r_ready <= `TRUE;  // 准备接收读数据
+            ar_valid <= `ysyx_041514_FALSE;  // 地址握手成功后拉低
+            r_ready <= `ysyx_041514_TRUE;  // 准备接收读数据
           end
         end
         AXI_RDATA: begin  // 支持突发传输
           if (axi_r_handshake) begin : wait_for_r_handshake
             if (axi_r_last_i) begin  // 最后一个数据传输完成
               axi_rstate <= AXI_RIDLE;
-              r_ready <= `FALSE;  // 数据握手成功后拉低
+              r_ready <= `ysyx_041514_FALSE;  // 数据握手成功后拉低
             end
             _arb_rdata_o <= axi_r_data_i;
-            _arb_rdata_ready_o <= `TRUE;
+            _arb_rdata_ready_o <= `ysyx_041514_TRUE;
           end else begin // 没有接收到数据
-            _arb_rdata_ready_o <= `FALSE;
+            _arb_rdata_ready_o <= `ysyx_041514_FALSE;
           end
         end
         default: begin
@@ -398,14 +351,14 @@ module axi_rw #(
   // 写地址通道  ��下没有备注初始化信号的都可能是你需要产生和用到的
   assign axi_aw_valid_o = aw_valid;
   assign axi_aw_addr_o = aw_addr;
-  assign axi_aw_prot_o    = `AXI_PROT_UNPRIVILEGED_ACCESS | `AXI_PROT_SECURE_ACCESS | `AXI_PROT_DATA_ACCESS;  //初始化信号即可
+  assign axi_aw_prot_o    = `ysyx_041514_AXI_PROT_UNPRIVILEGED_ACCESS | `ysyx_041514_AXI_PROT_SECURE_ACCESS | `ysyx_041514_AXI_PROT_DATA_ACCESS;  //初始化信号即可
   assign axi_aw_id_o = axi_id;  //初始化信号即可
   assign axi_aw_user_o = axi_user;  //初始化信号即可
   assign axi_aw_len_o = aw_len;
   assign axi_aw_size_o = aw_size;
-  assign axi_aw_burst_o = `AXI_BURST_TYPE_INCR;
+  assign axi_aw_burst_o = `ysyx_041514_AXI_BURST_TYPE_INCR;
   assign axi_aw_lock_o = 1'b0;  //初始化信号即可
-  assign axi_aw_cache_o = `AXI_AWCACHE_WRITE_BACK_READ_AND_WRITE_ALLOCATE;  //初始化信号即可
+  assign axi_aw_cache_o = `ysyx_041514_AXI_AWCACHE_WRITE_BACK_READ_AND_WRITE_ALLOCATE;  //初始化信号即可
   assign axi_aw_qos_o = 4'h0;  //初始化信号即可
   assign axi_aw_region_o = 4'h0;  //初始化信号即可
 
@@ -426,14 +379,14 @@ module axi_rw #(
   // Read address channel signals
   assign axi_ar_valid_o = ar_valid;  // leesum
   assign axi_ar_addr_o = ar_addr;  // leesum
-  assign axi_ar_prot_o    = `AXI_PROT_UNPRIVILEGED_ACCESS | `AXI_PROT_SECURE_ACCESS | `AXI_PROT_DATA_ACCESS;  //初始化信号即可
+  assign axi_ar_prot_o    = `ysyx_041514_AXI_PROT_UNPRIVILEGED_ACCESS | `ysyx_041514_AXI_PROT_SECURE_ACCESS | `ysyx_041514_AXI_PROT_DATA_ACCESS;  //初始化信号即可
   assign axi_ar_id_o = axi_id;  //初始化信号即可                        
   assign axi_ar_user_o = axi_user;  //初始化信号即可
   assign axi_ar_len_o = ar_len;  // leesum
   assign axi_ar_size_o = ar_size;  // leesum
-  assign axi_ar_burst_o = `AXI_BURST_TYPE_INCR;
+  assign axi_ar_burst_o = `ysyx_041514_AXI_BURST_TYPE_INCR;
   assign axi_ar_lock_o = 1'b0;  //初始化信号即可
-  assign axi_ar_cache_o   = `AXI_ARCACHE_NORMAL_NON_CACHEABLE_NON_BUFFERABLE;                                 //初始化信号即可
+  assign axi_ar_cache_o   = `ysyx_041514_AXI_ARCACHE_NORMAL_NON_CACHEABLE_NON_BUFFERABLE;                                 //初始化信号即可
   assign axi_ar_qos_o = 4'h0;  //初始化信号即可
 
   // Read data channel signals

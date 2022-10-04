@@ -11,26 +11,26 @@
 // 6. 组号: 6bit（2^6==64）
 // 6. tag: 32-6-6 == 20 bit 
 
-module icache_top (
+module ysyx_041514_icache_top (
     input clk,
     input rst,
     /* cpu<-->cache 端口 */
-    input [`NPC_ADDR_BUS] preif_raddr_i,  // CPU 的访存信息 
+    input [`ysyx_041514_NPC_ADDR_BUS] preif_raddr_i,  // CPU 的访存信息 
     input [7:0] preif_rmask_i,  // 访存掩码
     input preif_raddr_valid_i,  // 地址是否有效，无效时，停止访问 cache
-    output [`XLEN_BUS] if_rdata_o,  // icache 返回读数据
+    output [`ysyx_041514_XLEN_BUS] if_rdata_o,  // icache 返回读数据
 
     //input  if_rdata_ready_i,  // 是否准备好接收数据
     output if_rdata_valid_o,  // icache 读数据是否准备好(未准备好需要暂停流水线)
 
     /* cache<-->mem 端口 */
-    output [`NPC_ADDR_BUS] ram_raddr_icache_o,
+    output [`ysyx_041514_NPC_ADDR_BUS] ram_raddr_icache_o,
     output ram_raddr_valid_icache_o,
     output [7:0] ram_rmask_icache_o,
     output [3:0] ram_rsize_icache_o,
     output [7:0] ram_rlen_icache_o,
     input ram_rdata_ready_icache_i,
-    input [`XLEN_BUS] ram_rdata_icache_i
+    input [`ysyx_041514_XLEN_BUS] ram_rdata_icache_i
 );
   wire [ 5:0] cache_blk_addr;
   wire [ 5:0] cache_line_idx;
@@ -56,7 +56,7 @@ module icache_top (
 
   reg icahce_rdata_ok;
   // cache<-->mem 端口 
-  reg [`NPC_ADDR_BUS] _ram_raddr_icache_o;
+  reg [`ysyx_041514_NPC_ADDR_BUS] _ram_raddr_icache_o;
   reg _ram_raddr_valid_icache_o;
   reg [7:0] _ram_rmask_icache_o;
   reg [3:0] _ram_rsize_icache_o;
@@ -87,35 +87,35 @@ module icache_top (
           blk_addr_reg   <= cache_blk_addr;
           line_idx_reg   <= cache_line_idx;
           line_tag_reg   <= cache_line_tag;
-          icache_tag_wen <= `FALSE;
+          icache_tag_wen <= `ysyx_041514_FALSE;
           // cache data 为单端口 ram,不能同时读写
           if (preif_raddr_valid_i && ~icache_tag_wen) begin
             // hit
             if (icache_hit) begin
               // 下一个周期给数据
               //icache_data <= {32'b0, cache_line_regs[cache_line_idx][cache_blk_addr*8+:32]};
-              icahce_rdata_ok <= `TRUE;
+              icahce_rdata_ok <= `ysyx_041514_TRUE;
               icahce_state <= CACHE_IDLE;
             end else begin  // miss 
               icahce_state <= CACHE_MISS;
-              icahce_rdata_ok <= `FALSE;
+              icahce_rdata_ok <= `ysyx_041514_FALSE;
               _ram_raddr_icache_o <= {cache_line_tag, cache_line_idx, 6'b0};  // 读地址
-              _ram_raddr_valid_icache_o <= `TRUE;  // 地址有效
+              _ram_raddr_valid_icache_o <= `ysyx_041514_TRUE;  // 地址有效
               _ram_rmask_icache_o <= 8'b1111_1111;  // 读掩码
               _ram_rsize_icache_o <= 4'b1000;  // 64bit
               _ram_rlen_icache_o <= 8'd7;  // 突发 8 次
               burst_count <= 0;  // 清空计数器
             end
           end else begin
-            icahce_rdata_ok <= `FALSE;
+            icahce_rdata_ok <= `ysyx_041514_FALSE;
           end
         end
         CACHE_MISS: begin
           if (ram_r_handshake) begin  // 在 handshake 时，向 ram 写入数据
             if (burst_count == _ram_rlen_icache_o[2:0]) begin  // 突发传输最后一个数据
               icahce_state <= CACHE_IDLE;
-              _ram_raddr_valid_icache_o <= `FALSE;  // 传输结束
-              icache_tag_wen <= `TRUE;  // 写 tag 
+              _ram_raddr_valid_icache_o <= `ysyx_041514_FALSE;  // 传输结束
+              icache_tag_wen <= `ysyx_041514_TRUE;  // 写 tag 
             end else begin
               burst_count <= burst_count_plus1;
             end
@@ -128,7 +128,7 @@ module icache_top (
     end
   end
 
-  icache_tag u_icache_tag (
+  ysyx_041514_icache_tag u_icache_tag (
       .clk           (clk),
       .rst           (rst),
       .icache_tag_i  (cache_line_tag),
@@ -144,8 +144,8 @@ module icache_top (
 
   wire [127:0] icache_wmask = ~burst_count[0]?{64'b0,64'hffff_ffff_ffff_ffff}:{64'hffff_ffff_ffff_ffff,64'b0};
   wire [127:0] icache_wdate = ~burst_count[0]?{64'b0,ram_rdata_icache_i}:{ram_rdata_icache_i,64'b0};
-  wire [`XLEN_BUS] icache_rdata;
-  icache_data u_icache_data (
+  wire [`ysyx_041514_XLEN_BUS] icache_rdata;
+  ysyx_041514_icache_data u_icache_data (
       .clk                (clk),
       .rst                (rst),
       .icache_index_i     (cache_line_idx),   //cache_line_idx 使用直接输入数据
@@ -159,7 +159,7 @@ module icache_top (
   );
 
 
-  // wire [`XLEN_BUS] _icache_data_o = {32'b0, icache_line_rdata[blk_addr_reg*8+:32]};
+  // wire [`ysyx_041514_XLEN_BUS] _icache_data_o = {32'b0, icache_line_rdata[blk_addr_reg*8+:32]};
 
   assign if_rdata_o = icache_rdata & {64{if_rdata_valid_o}};
 

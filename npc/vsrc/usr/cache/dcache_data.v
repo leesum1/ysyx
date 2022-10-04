@@ -1,7 +1,7 @@
 `include "sysconfig.v"
 
 
-module dcache_data #(
+module ysyx_041514_dcache_data #(
     IDX_LEN = 6,  // 组号 长度
     BLK_LEN = 6,  // 块内地址 长度
     TAG_NUM = 64  // tag 个数
@@ -16,12 +16,12 @@ module dcache_data #(
     input dcache_allocate_valid_i,
     input dcache_writeback_valid_i,
     input dcache_wen_i,
-    output [`XLEN_BUS] dcache_writeback_data_o,
-    output [`XLEN_BUS]    dcache_rdata_o
+    output [`ysyx_041514_XLEN_BUS] dcache_writeback_data_o,
+    output [`ysyx_041514_XLEN_BUS]    dcache_rdata_o
 
 );
 
-  reg [`XLEN_BUS] dcache_wb_data;
+  reg [`ysyx_041514_XLEN_BUS] dcache_wb_data;
   assign dcache_writeback_data_o = dcache_wb_data;
   always @(*) begin
     case (burst_count_i)
@@ -74,7 +74,7 @@ module dcache_data #(
                                  | ({128{hit_CEN10}}&Q10)
                                  | ({128{hit_CEN11}}&Q11);
 
-  wire [`XLEN_BUS] _dcache_rdata_o = {dcache_ram_data[dcache_blk_addr_i[3:0]*8+:64]};
+  wire [`ysyx_041514_XLEN_BUS] _dcache_rdata_o = {dcache_ram_data[dcache_blk_addr_i[3:0]*8+:64]};
   assign dcache_rdata_o = _dcache_rdata_o;
 
   S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW00 (

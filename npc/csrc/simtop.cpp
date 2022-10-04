@@ -371,6 +371,6 @@ void Simtop::showSimPerformance(){
 
     cout<< COLOR_GREEN<< "clk_num:"<<clk_count<<endl;
     cout<< COLOR_GREEN<< "commit_num:"<<commit_count<<endl;
-    cout<<COLOR_GREEN<<"IPC:"<<(float)((float)clk_count/(float)commit_count)<<COLOR_END<<endl;
+    cout<<COLOR_GREEN<<"CPI:"<<(float)((float)clk_count/(float)commit_count)<<COLOR_END<<endl;
 
 }

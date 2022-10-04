@@ -1,4 +1,4 @@
-TOP_MODULE := top
+TOP_MODULE := ysyx_041514
 
 # 原文件
 CSRC +=  $(shell find $(abspath ./csrc) -name "*.cpp")
@@ -16,7 +16,7 @@ VERILATOR_FLAGS +=  --trace-max-array 256
 VERILATOR_FLAGS +=  -O3 -noassert --x-assign fast --x-initial fast -j 2 
 VERILATOR_FLAGS +=  -cc --exe  --build  --clk clk  
 VERILATOR_FLAGS += ${VERILATOR_INC_PATH}
-VERILATOR_FLAGS += --top ${TOP_MODULE}
+VERILATOR_FLAGS += --top ${TOP_MODULE} --prefix Vtop
 
 
 # gcc flags 
@@ -49,7 +49,7 @@ GCC_FLAGS := ${GCC_CFLAGS} ${GCC_LDFLAGS}
 
 # run info:
 OBJ_DIR := ./obj_dir
-BIN := ${OBJ_DIR}/V${TOP_MODULE}
+BIN := ${OBJ_DIR}/Vtop
 
 com:${CSRC} ${VSRC}
 	@verilator ${VERILATOR_FLAGS} ${CSRC} ${VSRC} ${GCC_FLAGS} 

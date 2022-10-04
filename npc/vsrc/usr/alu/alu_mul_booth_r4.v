@@ -1,10 +1,10 @@
 `include "sysconfig.v"
-module alu_mul_booth_r4 (
+module ysyx_041514_alu_mul_booth_r4 (
 
     input             rs1_signed_valid_i,
     input             rs2_signed_valid_i,
-    input [`XLEN_BUS] rs1_data_i,
-    input [`XLEN_BUS] rs2_data_i,
+    input [`ysyx_041514_XLEN_BUS] rs1_data_i,
+    input [`ysyx_041514_XLEN_BUS] rs2_data_i,
 
     output [128-1:0] pp0_o,
     output [128-1:0] pp1_o,

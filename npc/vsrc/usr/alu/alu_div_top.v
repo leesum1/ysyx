@@ -2,17 +2,17 @@
 
 
 
-module alu_div_top (
+module ysyx_041514_alu_div_top (
     input clk,  //为流水线准备
     input rst,
     input signed_valid_i,
     input div32_valid_i,
-    input [`XLEN-1:0] sr1_data_i,
-    input [`XLEN-1:0] sr2_data_i,
+    input [`ysyx_041514_XLEN-1:0] sr1_data_i,
+    input [`ysyx_041514_XLEN-1:0] sr2_data_i,
     input div_valid_i,
     output div_ready_o,
-    output [`XLEN-1:0] div_out_o,
-    output [`XLEN-1:0] rem_out_o
+    output [`ysyx_041514_XLEN-1:0] div_out_o,
+    output [`ysyx_041514_XLEN-1:0] rem_out_o
 );
 
 
@@ -35,7 +35,7 @@ module alu_div_top (
   );
 
 `else
-  alu_div_slow u_alu_div_slow (
+  ysyx_041514_alu_div_slow u_alu_div_slow (
       .clk               (clk),
       .rst               (rst),
       .div_signed_valid_i(signed_valid_i),
@@ -56,17 +56,17 @@ module alu_div_top (
 
 
   // /* 64 位除法 */
-  // wire signed [`XLEN-1:0] sr1_64_signed = sr1_data_i;
-  // wire signed [`XLEN-1:0] sr2_64_signed = sr2_data_i;
+  // wire signed [`ysyx_041514_XLEN-1:0] sr1_64_signed = sr1_data_i;
+  // wire signed [`ysyx_041514_XLEN-1:0] sr2_64_signed = sr2_data_i;
   // // 有符号
-  // wire signed [`XLEN-1:0] div64_signed = sr1_64_signed / sr2_64_signed;
-  // wire signed [`XLEN-1:0] rem64_signed = sr1_64_signed % sr2_64_signed;
+  // wire signed [`ysyx_041514_XLEN-1:0] div64_signed = sr1_64_signed / sr2_64_signed;
+  // wire signed [`ysyx_041514_XLEN-1:0] rem64_signed = sr1_64_signed % sr2_64_signed;
   // // 无符号
-  // wire [`XLEN-1:0] div64_unsigned = sr1_data_i / sr2_data_i;
-  // wire [`XLEN-1:0] rem64_unsigned = sr1_data_i % sr2_data_i;
+  // wire [`ysyx_041514_XLEN-1:0] div64_unsigned = sr1_data_i / sr2_data_i;
+  // wire [`ysyx_041514_XLEN-1:0] rem64_unsigned = sr1_data_i % sr2_data_i;
   // // 结果
-  // wire [`XLEN-1:0] div64_result = (signed_valid_i) ? div64_signed : div64_unsigned;
-  // wire [`XLEN-1:0] rem64_result = (signed_valid_i) ? rem64_signed : rem64_unsigned;
+  // wire [`ysyx_041514_XLEN-1:0] div64_result = (signed_valid_i) ? div64_signed : div64_unsigned;
+  // wire [`ysyx_041514_XLEN-1:0] rem64_result = (signed_valid_i) ? rem64_signed : rem64_unsigned;
 
   // /* 32 位除法 */
   // wire signed [32-1:0] sr1_32_signed = sr1_data_i[31:0];

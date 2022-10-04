@@ -1,6 +1,6 @@
 // 触发器模板
 
-module regTemplate #(
+module ysyx_041514_regTemplate #(
     WIDTH = 1,
     RESET_VAL = 0
 ) (

@@ -1,7 +1,7 @@
 `include "sysconfig.v"
 
 
-module icache_data #(
+module ysyx_041514_icache_data #(
     IDX_LEN = 6,  // 组号 长度
     BLK_LEN = 6,  // 块内地址 长度
     TAG_NUM = 64  // tag 个数
@@ -14,7 +14,7 @@ module icache_data #(
     input  [128-1:0] icache_wmask,
     input [2:0] burst_count_i,
     input icache_wen_i,
-    output [`XLEN_BUS]    icache_rdata_o
+    output [`ysyx_041514_XLEN_BUS]    icache_rdata_o
 );
 
 
@@ -41,7 +41,7 @@ module icache_data #(
                                  | ({128{~CEN11}}&Q11);
 
 
-  wire [`XLEN_BUS] _icache_rdata_o = {32'b0, icache_ram_data[icache_blk_addr_i[3:0]*8+:32]};
+  wire [`ysyx_041514_XLEN_BUS] _icache_rdata_o = {32'b0, icache_ram_data[icache_blk_addr_i[3:0]*8+:32]};
   assign icache_rdata_o = _icache_rdata_o;
 
   S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW00 (

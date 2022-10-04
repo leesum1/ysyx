@@ -1,14 +1,14 @@
 `include "sysconfig.v"
-module alu_mul_wallace (
+module ysyx_041514_alu_mul_wallace (
     input                clk,
     input                rst,
     input                rs1_signed_valid_i,
     input                rs2_signed_valid_i,
-    input  [  `XLEN_BUS] rs1_data_i,
-    input  [  `XLEN_BUS] rs2_data_i,
+    input  [  `ysyx_041514_XLEN_BUS] rs1_data_i,
+    input  [  `ysyx_041514_XLEN_BUS] rs2_data_i,
     input                mul_valid_i,
     output               mul_ready_o,
-    output [`XLEN*2-1:0] mul_out_o
+    output [`ysyx_041514_XLEN*2-1:0] mul_out_o
 );
   localparam STATE_LEN = 3;
   localparam MUL_RST = 3'd0;
@@ -33,7 +33,7 @@ module alu_mul_wallace (
   always @(posedge clk) begin
     if (rst) begin
       mul_state   <= MUL_RST;
-      mul_ready   <= `FALSE;
+      mul_ready   <= `ysyx_041514_FALSE;
       mul_data128 <= 'b0;
     end else begin
       case (mul_state)
@@ -43,11 +43,11 @@ module alu_mul_wallace (
         // MUL_IDLE: begin
         //   if (_mul_valid) begin  // booth 结果有效
         //     mul_state <= MUL_BOOTH;
-        //     mul_busy  <= `TRUE;
+        //     mul_busy  <= `ysyx_041514_TRUE;
         //   end
         // end
         MUL_IDLE, MUL_BOOTH: begin
-          mul_ready <= `FALSE;
+          mul_ready <= `ysyx_041514_FALSE;
           if (_mul_valid) begin
             mul_state <= MUL_STEP1;  // booth 结果有效，进入 step 1
           end else begin
@@ -83,7 +83,7 @@ module alu_mul_wallace (
           if (_mul_valid) begin
             mul_state   <= MUL_IDLE;  // step4 2->1, 进入 idle
             mul_data128 <= mul_final128;
-            mul_ready   <= `TRUE;
+            mul_ready   <= `ysyx_041514_TRUE;
           end else begin
             mul_state   <= MUL_IDLE;
             mul_data128 <= 'b0;
@@ -152,10 +152,10 @@ module alu_mul_wallace (
   genvar step1_Dflap;
   generate
     for (step1_Dflap = 0; step1_Dflap < 33; step1_Dflap = step1_Dflap + 1) begin
-      regTemplate #(
+      ysyx_041514_regTemplate #(
           .WIDTH    (128),
           .RESET_VAL(0)
-      ) u_regTemplate (
+      ) u_ysyx_041514_regTemplate (
           .clk (clk),
           .rst (rst),
           .din (step1_pp_d[step1_Dflap]),
@@ -391,10 +391,10 @@ module alu_mul_wallace (
   genvar step2_Dflap;
   generate
     for (step2_Dflap = 0; step2_Dflap < 16; step2_Dflap = step2_Dflap + 1) begin
-      regTemplate #(
+      ysyx_041514_regTemplate #(
           .WIDTH    (128),
           .RESET_VAL(0)
-      ) u_regTemplate_step2 (
+      ) u_ysyx_041514_regTemplate_step2 (
           .clk (clk),
           .rst (rst),
           .din (step2_pp_d[step2_Dflap]),
@@ -508,10 +508,10 @@ module alu_mul_wallace (
   genvar step3_Dflap;
   generate
     for (step3_Dflap = 0; step3_Dflap < 8; step3_Dflap = step3_Dflap + 1) begin
-      regTemplate #(
+      ysyx_041514_regTemplate #(
           .WIDTH    (128),
           .RESET_VAL(0)
-      ) u_regTemplate_step3 (
+      ) u_ysyx_041514_regTemplate_step3 (
           .clk (clk),
           .rst (rst),
           .din (step3_pp_d[step3_Dflap]),
@@ -581,10 +581,10 @@ module alu_mul_wallace (
   genvar step4_Dflap;
   generate
     for (step4_Dflap = 0; step4_Dflap < 4; step4_Dflap = step4_Dflap + 1) begin
-      regTemplate #(
+      ysyx_041514_regTemplate #(
           .WIDTH    (128),
           .RESET_VAL(0)
-      ) u_regTemplate_step4 (
+      ) u_ysyx_041514_regTemplate_step4 (
           .clk (clk),
           .rst (rst),
           .din (step4_pp_d[step4_Dflap]),

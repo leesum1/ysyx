@@ -11,38 +11,38 @@
 // 6. 组号: 6bit（2^6==64）
 // 6. tag: 32-6-6 == 20 bit 
 
-module dcache_top (
+module ysyx_041514_dcache_top (
     input clk,
     input rst,
     input mem_fencei_valid_i,
     output mem_fencei_ready_o,
     /* cpu<-->cache 端口 */
-    input [`NPC_ADDR_BUS] mem_addr_i,  // CPU 的访存信息 
+    input [`ysyx_041514_NPC_ADDR_BUS] mem_addr_i,  // CPU 的访存信息 
     input [7:0] mem_mask_i,  // 访存掩码
     input [3:0] mem_size_i,
     input mem_addr_valid_i,  // 地址是否有效，无效时，停止访问 cache
     input mem_write_valid_i,  // 1'b1,表示写;1'b0 表示读 
-    input [`XLEN_BUS] mem_wdata_i,  // 写数据
-    output [`XLEN_BUS] mem_rdata_o,  // dcache 返回读数据
+    input [`ysyx_041514_XLEN_BUS] mem_wdata_i,  // 写数据
+    output [`ysyx_041514_XLEN_BUS] mem_rdata_o,  // dcache 返回读数据
     output mem_data_ready_o,  // dcache 读数据是否准备好(未准备好需要暂停流水线)
 
     /* dcache<-->mem 端口 */
     // 读端口
-    output [`NPC_ADDR_BUS] ram_raddr_dcache_o,
+    output [`ysyx_041514_NPC_ADDR_BUS] ram_raddr_dcache_o,
     output                 ram_raddr_valid_dcache_o,
     output [          7:0] ram_rmask_dcache_o,
     output [          3:0] ram_rsize_dcache_o,
     output [          7:0] ram_rlen_dcache_o,
     input                  ram_rdata_ready_dcache_i,
-    input  [    `XLEN_BUS] ram_rdata_dcache_i,
+    input  [    `ysyx_041514_XLEN_BUS] ram_rdata_dcache_i,
     // 写端口
-    output [`NPC_ADDR_BUS] ram_waddr_dcache_o,        // 地址
+    output [`ysyx_041514_NPC_ADDR_BUS] ram_waddr_dcache_o,        // 地址
     output                 ram_waddr_valid_dcache_o,  // 地址是否准备好
     output [          7:0] ram_wmask_dcache_o,        // 数据掩码,写入多少位
     output [          3:0] ram_wsize_dcache_o,
     output [          7:0] ram_wlen_dcache_o,         // 突发传输的长度
     input                  ram_wdata_ready_dcache_i,  // 数据是否已经写入
-    output [    `XLEN_BUS] ram_wdata_dcache_o         // 写入的数据
+    output [    `ysyx_041514_XLEN_BUS] ram_wdata_dcache_o         // 写入的数据
 );
 
   assign ram_wlen_dcache_o = _ram_wlen_dcache_o;
@@ -51,7 +51,7 @@ module dcache_top (
 
   // uncache 检查
 
-  wire uncache = (mem_addr_i & `MMIO_BASE) == `MMIO_BASE;
+  wire uncache = (mem_addr_i & `ysyx_041514_MMIO_BASE) == `ysyx_041514_MMIO_BASE;
   wire fencei_valid = mem_fencei_valid_i;
 
   wire [5:0] cache_blk_addr;
@@ -86,22 +86,22 @@ module dcache_top (
 
   reg dcache_data_ready;
   // cache<-->mem 端口 
-  reg [`NPC_ADDR_BUS] _ram_raddr_dcache_o;
+  reg [`ysyx_041514_NPC_ADDR_BUS] _ram_raddr_dcache_o;
   reg _ram_raddr_valid_dcache_o;
   reg [7:0] _ram_rmask_dcache_o;
   reg [3:0] _ram_rsize_dcache_o;
   reg [7:0] _ram_rlen_dcache_o;
 
-  reg [`NPC_ADDR_BUS] _ram_waddr_dcache_o;
+  reg [`ysyx_041514_NPC_ADDR_BUS] _ram_waddr_dcache_o;
   reg _ram_waddr_valid_dcache_o;
   reg [7:0] _ram_wmask_dcache_o;
   reg [3:0] _ram_wsize_dcache_o;
   reg [7:0] _ram_wlen_dcache_o;
-  reg [`XLEN_BUS] _ram_wdata_dcache_o;
+  reg [`ysyx_041514_XLEN_BUS] _ram_wdata_dcache_o;
 
 
   reg [127:0] dcache_wdata_writehit;
-  reg [`XLEN_BUS] uncache_rdata;
+  reg [`ysyx_041514_XLEN_BUS] uncache_rdata;
   reg dcache_data_wen;
   reg _dirty_bit_write;
   reg dcache_write_hit_valid;
@@ -133,8 +133,8 @@ module dcache_top (
       _ram_wsize_dcache_o <= 0;
       _ram_rlen_dcache_o <= 0;
       _ram_wlen_dcache_o <= 0;
-      _ram_raddr_valid_dcache_o <= `FALSE;
-      _ram_waddr_valid_dcache_o <= `FALSE;
+      _ram_raddr_valid_dcache_o <= `ysyx_041514_FALSE;
+      _ram_waddr_valid_dcache_o <= `ysyx_041514_FALSE;
 
     end else begin
       case (dcache_state)
@@ -145,7 +145,7 @@ module dcache_top (
           blk_addr_reg <= cache_blk_addr;
           line_tag_reg <= cache_line_tag;
           fencei_ready <= 0;
-          _dirty_flush <=`FALSE;
+          _dirty_flush <=`ysyx_041514_FALSE;
           //dcache_wmask <= 0;
           // cache data 为单端口 ram,不能同时读写, uncache 直接访问内存
           if (mem_addr_valid_i && ~dcache_data_wen && ~uncache && ~dcache_tag_wen) begin
@@ -154,26 +154,26 @@ module dcache_top (
             })
               2'b11: begin : write_hit  // TODO : 只写入 cache ，不写入内存
                 dcache_state <= CACHE_IDLE;
-                dcache_data_ready <= `FALSE;
+                dcache_data_ready <= `ysyx_041514_FALSE;
                 //写 cache
-                dcache_data_wen <= `TRUE;
-                dcache_data_ready <= `TRUE;  // 完成信号
-                dcache_tag_wen <= `TRUE;
-                _dirty_bit_write <= `TRUE;  // 标记为脏
-                dcache_write_hit_valid <= `TRUE;  //写信号
+                dcache_data_wen <= `ysyx_041514_TRUE;
+                dcache_data_ready <= `ysyx_041514_TRUE;  // 完成信号
+                dcache_tag_wen <= `ysyx_041514_TRUE;
+                _dirty_bit_write <= `ysyx_041514_TRUE;  // 标记为脏
+                dcache_write_hit_valid <= `ysyx_041514_TRUE;  //写信号
                 dcache_wdata_writehit <= (mem_addr_i[3]) ? {mem_wdata_i, 64'b0} : {64'b0, mem_wdata_i};
                 dcache_wmask_writehit <= (mem_addr_i[3]) ? {wmask_bit, 64'b0} : {64'b0, wmask_bit};
               end
               2'b10: begin : read_hit
-                dcache_data_ready <= `TRUE;
+                dcache_data_ready <= `ysyx_041514_TRUE;
                 dcache_state <= CACHE_IDLE;
               end
               2'b00, 2'b01: begin : miss_allocate  // miss 时 分配 cache，需要考虑脏位
                 if (dirty_bit_read) begin  // 需要写回
                   dcache_state <= CACHE_WRITE_BACK;
-                  dcache_data_ready <= `FALSE;
+                  dcache_data_ready <= `ysyx_041514_FALSE;
                   _ram_waddr_dcache_o <= {dcache_tag_read, cache_line_idx, 6'b0};  // 写地址
-                  _ram_waddr_valid_dcache_o <= `TRUE;  // 地址有效
+                  _ram_waddr_valid_dcache_o <= `ysyx_041514_TRUE;  // 地址有效
                   _ram_wmask_dcache_o <= 8'b1111_1111;  // 写掩码
                   _ram_wdata_dcache_o <= dcache_writeback_data;  // 写数据
                   _ram_wsize_dcache_o <= 4'b1000;  //写大小 8byte
@@ -181,9 +181,9 @@ module dcache_top (
                   burst_count <= 0;  // 清空计数器
                 end else begin  // 不需要写回
                   dcache_state              <= CACHE_MISS_ALLOCATE;
-                  dcache_data_ready         <= `FALSE;
+                  dcache_data_ready         <= `ysyx_041514_FALSE;
                   _ram_raddr_dcache_o       <= {cache_line_tag, cache_line_idx, 6'b0};  // 读地址
-                  _ram_raddr_valid_dcache_o <= `TRUE;  // 地址有效
+                  _ram_raddr_valid_dcache_o <= `ysyx_041514_TRUE;  // 地址有效
                   _ram_rmask_dcache_o       <= 8'b1111_1111;  // 读掩码
                   _ram_rsize_dcache_o       <= 4'b1000;  //读大小 8byte
                   _ram_rlen_dcache_o        <= 8'd7;  // 突发 7 次
@@ -195,18 +195,18 @@ module dcache_top (
             // 判断是读还是写
             if (mem_write_valid_i) begin
               dcache_state              <= UNCACHE_WRITE;
-              dcache_data_ready         <= `FALSE;
+              dcache_data_ready         <= `ysyx_041514_FALSE;
               _ram_waddr_dcache_o       <= mem_addr_i;  // 写地址
-              _ram_waddr_valid_dcache_o <= `TRUE;  // 地址有效
+              _ram_waddr_valid_dcache_o <= `ysyx_041514_TRUE;  // 地址有效
               _ram_wmask_dcache_o       <= mem_mask_i;  // 写掩码
               _ram_wdata_dcache_o       <= mem_wdata_i;  // 写数据
               _ram_wsize_dcache_o       <= mem_size_i;  //写大小
               _ram_wlen_dcache_o        <= 8'd0;  // 不突发
             end else begin
               dcache_state              <= UNCACHE_READ;
-              dcache_data_ready         <= `FALSE;
+              dcache_data_ready         <= `ysyx_041514_FALSE;
               _ram_raddr_dcache_o       <= mem_addr_i;  // 读地址
-              _ram_raddr_valid_dcache_o <= `TRUE;  // 地址有效
+              _ram_raddr_valid_dcache_o <= `ysyx_041514_TRUE;  // 地址有效
               _ram_rmask_dcache_o       <= mem_mask_i;  // 读掩码
               _ram_rsize_dcache_o       <= mem_size_i;  //读大小
               _ram_rsize_dcache_o       <= mem_size_i;  //写大小
@@ -217,14 +217,14 @@ module dcache_top (
             dcache_state <= CACHE_FENCEI_WAIT;
             fencei_count <= 0;
           end else begin
-            dcache_data_ready <= `FALSE;
-            _ram_raddr_valid_dcache_o <= `FALSE;
-            _ram_waddr_valid_dcache_o <= `FALSE;
-            dcache_tag_wen <= `FALSE;
+            dcache_data_ready <= `ysyx_041514_FALSE;
+            _ram_raddr_valid_dcache_o <= `ysyx_041514_FALSE;
+            _ram_waddr_valid_dcache_o <= `ysyx_041514_FALSE;
+            dcache_tag_wen <= `ysyx_041514_FALSE;
             dcache_data_wen <= 0;
-            _dirty_bit_write <= `FALSE;
+            _dirty_bit_write <= `ysyx_041514_FALSE;
             dcache_wdata_writehit <= 0;
-            dcache_write_hit_valid <= `FALSE;  //写信号
+            dcache_write_hit_valid <= `ysyx_041514_FALSE;  //写信号
           end
         end
 
@@ -232,9 +232,9 @@ module dcache_top (
           if (ram_r_handshake) begin  // 在 handshake 时，向 ram 写入数据
             if (burst_count[3:0] == _ram_rlen_dcache_o[3:0]) begin  // 突发传输最后一个数据
               dcache_state              <= CACHE_IDLE;
-              dcache_tag_wen            <= `TRUE;  // 写 tag 
-              _dirty_bit_write          <= `FALSE;
-              _ram_raddr_valid_dcache_o <= `FALSE;  // 传输结束
+              dcache_tag_wen            <= `ysyx_041514_TRUE;  // 写 tag 
+              _dirty_bit_write          <= `ysyx_041514_FALSE;
+              _ram_raddr_valid_dcache_o <= `ysyx_041514_FALSE;  // 传输结束
               burst_count               <= 0;
             end else begin
               burst_count <= burst_count_plus1;
@@ -245,8 +245,8 @@ module dcache_top (
         CACHE_WRITE_MISS: begin
           if (_ram_waddr_valid_dcache_o & ram_wdata_ready_dcache_i) begin
 
-            _ram_waddr_valid_dcache_o <= `FALSE;
-            dcache_data_ready <= `TRUE;  // 完成信号
+            _ram_waddr_valid_dcache_o <= `ysyx_041514_FALSE;
+            dcache_data_ready <= `ysyx_041514_TRUE;  // 完成信号
             dcache_state <= CACHE_IDLE;
           end
         end
@@ -254,13 +254,13 @@ module dcache_top (
         CACHE_WRITE_BACK: begin
           if (ram_w_handshake) begin
             if (burst_count == 4'd7) begin  // 收到最后一个写响应
-              _ram_waddr_valid_dcache_o <= `FALSE;  // 传输结束
+              _ram_waddr_valid_dcache_o <= `ysyx_041514_FALSE;  // 传输结束
 
               // 写入 cache 中
               dcache_state              <= CACHE_MISS_ALLOCATE;
-              dcache_data_ready         <= `FALSE;
+              dcache_data_ready         <= `ysyx_041514_FALSE;
               _ram_raddr_dcache_o       <= {cache_line_tag, cache_line_idx, 6'b0};  // 读地址
-              _ram_raddr_valid_dcache_o <= `TRUE;  // 地址有效
+              _ram_raddr_valid_dcache_o <= `ysyx_041514_TRUE;  // 地址有效
               _ram_rmask_dcache_o       <= 8'b1111_1111;  // 读掩码
               _ram_rsize_dcache_o       <= 4'b1000;  //读大小 8byte
               _ram_rlen_dcache_o        <= 8'd7;  // 突发 7 次
@@ -273,16 +273,16 @@ module dcache_top (
         end
         UNCACHE_READ: begin
           if (_ram_raddr_valid_dcache_o & ram_rdata_ready_dcache_i) begin
-            _ram_raddr_valid_dcache_o <= `FALSE;
-            dcache_data_ready         <= `TRUE;  // 完成信号
+            _ram_raddr_valid_dcache_o <= `ysyx_041514_FALSE;
+            dcache_data_ready         <= `ysyx_041514_TRUE;  // 完成信号
             uncache_rdata             <= ram_rdata_dcache_i;  // 数据返回
             dcache_state              <= CACHE_IDLE;
           end
         end
         UNCACHE_WRITE: begin
           if (_ram_waddr_valid_dcache_o & ram_wdata_ready_dcache_i) begin
-            _ram_waddr_valid_dcache_o <= `FALSE;
-            dcache_data_ready         <= `TRUE;  // 完成信号
+            _ram_waddr_valid_dcache_o <= `ysyx_041514_FALSE;
+            dcache_data_ready         <= `ysyx_041514_TRUE;  // 完成信号
             dcache_state              <= CACHE_IDLE;
           end
         end
@@ -290,9 +290,9 @@ module dcache_top (
         CACHE_FENCEI: begin
           if (dirty_bit_read) begin
             dcache_state <= CACHE_FENCEI_WRITE_BACK;
-            dcache_data_ready <= `FALSE;
+            dcache_data_ready <= `ysyx_041514_FALSE;
             _ram_waddr_dcache_o <= {dcache_tag_read, fencei_line_idx, 6'b0};  // 写地址
-            _ram_waddr_valid_dcache_o <= `TRUE;  // 地址有效
+            _ram_waddr_valid_dcache_o <= `ysyx_041514_TRUE;  // 地址有效
             _ram_wmask_dcache_o <= 8'b1111_1111;  // 写掩码
             _ram_wdata_dcache_o <= dcache_writeback_data;  // 写数据
             _ram_wsize_dcache_o <= 4'b1000;  //写大小 8byte
@@ -306,7 +306,7 @@ module dcache_top (
         CACHE_FENCEI_WRITE_BACK: begin
           if (ram_w_handshake) begin
             if (burst_count == 4'd7) begin  // 收到最后一个写响应
-              _ram_waddr_valid_dcache_o <= `FALSE;  // 传输结束
+              _ram_waddr_valid_dcache_o <= `ysyx_041514_FALSE;  // 传输结束
               dcache_state              <= CACHE_FENCEI_WAIT;
               fencei_count              <= fencei_count_plus1;
 
@@ -317,11 +317,11 @@ module dcache_top (
           end
         end
         CACHE_FENCEI_WAIT: begin
-          dcache_tag_wen <= `FALSE;  // 写 tag 
+          dcache_tag_wen <= `ysyx_041514_FALSE;  // 写 tag 
           if (fencei_count == 'd64) begin
             dcache_state <= CACHE_IDLE;
-            _dirty_flush <=`TRUE;
-            fencei_ready <= `TRUE;
+            _dirty_flush <=`ysyx_041514_TRUE;
+            fencei_ready <= `ysyx_041514_TRUE;
             fencei_count <= 0;
           end else begin
             dcache_state <= CACHE_FENCEI;
@@ -371,7 +371,7 @@ module dcache_top (
   wire [19:0] dcache_tag_write = cache_line_tag;
   wire [19:0] dcache_tag_read;
   wire dirty_flush = _dirty_flush;
-  dcache_tag u_dcache_tag (
+  ysyx_041514_dcache_tag u_dcache_tag (
       .clk              (clk),
       .rst              (rst),
       .dcache_tag_i     (dcache_tag_write),   // tag
@@ -391,9 +391,9 @@ module dcache_top (
 
   wire [5:0] dcache_index = dcache_fencei_valid ? fencei_line_idx : cache_line_idx;
 
-  wire [`XLEN_BUS] dcache_rdata;
-  wire [`XLEN_BUS] dcache_writeback_data;
-  dcache_data u_dcache_data (
+  wire [`ysyx_041514_XLEN_BUS] dcache_rdata;
+  wire [`ysyx_041514_XLEN_BUS] dcache_writeback_data;
+  ysyx_041514_dcache_data u_dcache_data (
       .clk                     (clk),
       .rst                     (rst),
       .dcache_index_i          (dcache_index),

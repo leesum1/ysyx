@@ -1,54 +1,54 @@
 `include "./../sysconfig.v"
 
 
-module dcode (
+module ysyx_041514_dcode (
     /* from if/id */
-    input [`XLEN_BUS] inst_addr_i,
-    input [`INST_LEN-1:0] inst_data_i,
-    input [`TRAP_BUS] trap_bus_i,
+    input [`ysyx_041514_XLEN_BUS] inst_addr_i,
+    input [`ysyx_041514_INST_LEN-1:0] inst_data_i,
+    input [`ysyx_041514_TRAP_BUS] trap_bus_i,
     /* from gpr regs */
-    input [`XLEN_BUS] rs1_data_i,
-    input [`XLEN_BUS] rs2_data_i,
+    input [`ysyx_041514_XLEN_BUS] rs1_data_i,
+    input [`ysyx_041514_XLEN_BUS] rs2_data_i,
     /* from csr regs */
-    input [`XLEN_BUS] csr_data_i,
+    input [`ysyx_041514_XLEN_BUS] csr_data_i,
     /* from id/ex stage */
-    input [`EXCOP_LEN-1:0] id_ex_exc_op_i, // 上一条指令的类型，用于判断上一条指令是否是访存指令
+    input [`ysyx_041514_EXCOP_LEN-1:0] id_ex_exc_op_i, // 上一条指令的类型，用于判断上一条指令是否是访存指令
     /* from exc bypass */
-    input [`XLEN_BUS] ex_rd_data_i,
-    input [`REG_ADDRWIDTH-1:0] ex_rd_addr_i,
-    input [`CSR_REG_ADDRWIDTH-1:0] ex_csr_writeaddr_i,
-    input [`XLEN_BUS] ex_csr_writedata_i,
+    input [`ysyx_041514_XLEN_BUS] ex_rd_data_i,
+    input [`ysyx_041514_REG_ADDRWIDTH-1:0] ex_rd_addr_i,
+    input [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] ex_csr_writeaddr_i,
+    input [`ysyx_041514_XLEN_BUS] ex_csr_writedata_i,
     /* from mem bypass */
-    input [`XLEN_BUS] mem_rd_data_i,
-    input [`REG_ADDRWIDTH-1:0] mem_rd_addr_i,
+    input [`ysyx_041514_XLEN_BUS] mem_rd_data_i,
+    input [`ysyx_041514_REG_ADDRWIDTH-1:0] mem_rd_addr_i,
 
 
     /*通用寄存器译码结果：to id/ex */
-    output [    `REG_ADDRWIDTH-1:0] rs1_idx_o,
-    output [    `REG_ADDRWIDTH-1:0] rs2_idx_o,
-    output [    `REG_ADDRWIDTH-1:0] rd_idx_o,
-    output [             `XLEN_BUS] rs1_data_o,
-    output [             `XLEN_BUS] rs2_data_o,
-    output [          `IMM_LEN-1:0] imm_data_o,
+    output [    `ysyx_041514_REG_ADDRWIDTH-1:0] rs1_idx_o,
+    output [    `ysyx_041514_REG_ADDRWIDTH-1:0] rs2_idx_o,
+    output [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_o,
+    output [             `ysyx_041514_XLEN_BUS] rs1_data_o,
+    output [             `ysyx_041514_XLEN_BUS] rs2_data_o,
+    output [          `ysyx_041514_IMM_LEN-1:0] imm_data_o,
     /* CSR 译码结果：to id/ex*/
-    output [          `IMM_LEN-1:0] csr_imm_o,
+    output [          `ysyx_041514_IMM_LEN-1:0] csr_imm_o,
     output                          csr_imm_valid_o,
-    output [`CSR_REG_ADDRWIDTH-1:0] csr_idx_o,
-    output [             `XLEN_BUS] csr_readdata_o,
+    output [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] csr_idx_o,
+    output [             `ysyx_041514_XLEN_BUS] csr_readdata_o,
 
-    output [`ALUOP_LEN-1:0] alu_op_o,  // alu 操作码
-    output [`MEMOP_LEN-1:0] mem_op_o,  // mem 操作码
-    output [`EXCOP_LEN-1:0] exc_op_o,  // exc 操作码
-    output [ `PCOP_LEN-1:0] pc_op_o,   // pc 操作码
-    output [`CSROP_LEN-1:0] csr_op_o,  // csr 操作码
+    output [`ysyx_041514_ALUOP_LEN-1:0] alu_op_o,  // alu 操作码
+    output [`ysyx_041514_MEMOP_LEN-1:0] mem_op_o,  // mem 操作码
+    output [`ysyx_041514_EXCOP_LEN-1:0] exc_op_o,  // exc 操作码
+    output [ `ysyx_041514_PCOP_LEN-1:0] pc_op_o,   // pc 操作码
+    output [`ysyx_041514_CSROP_LEN-1:0] csr_op_o,  // csr 操作码
 
 
-    output [`XLEN_BUS] inst_addr_o,
-    output [`INST_LEN-1:0] inst_data_o,
+    output [`ysyx_041514_XLEN_BUS] inst_addr_o,
+    output [`ysyx_041514_INST_LEN-1:0] inst_data_o,
     // 请求暂停流水线
     output _load_use_valid_o,
     /* TARP 总线 */
-    output wire [`TRAP_BUS] trap_bus_o
+    output wire [`ysyx_041514_TRAP_BUS] trap_bus_o
 
 );
   assign inst_addr_o = inst_addr_i;
@@ -58,24 +58,24 @@ module dcode (
 
 
 
-  wire [`INST_LEN-1:0] _inst = inst_data_i;
+  wire [`ysyx_041514_INST_LEN-1:0] _inst = inst_data_i;
   /* 指令分解 */
   wire [4:0] _rd = _inst[11:7];
   wire [2:0] _func3 = _inst[14:12];
   wire [4:0] _rs1 = _inst[19:15];
   wire [4:0] _rs2 = _inst[24:20];
   wire [6:0] _func7 = _inst[31:25];
-  wire [`CSR_REG_ADDRWIDTH-1:0] _csr = _inst[31:20];  // CSR 地址
+  wire [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] _csr = _inst[31:20];  // CSR 地址
 
   // 不同指令类型的立即数
-  wire [`IMM_LEN-1:0] _immI = {{21 + 32{_inst[31]}}, _inst[30:20]};
-  wire [`IMM_LEN-1:0] _immS = {{21 + 32{_inst[31]}}, _inst[30:25], _inst[11:8], _inst[7]};
-  wire [`IMM_LEN-1:0] _immB = {{20 + 32{_inst[31]}}, _inst[7], _inst[30:25], _inst[11:8], 1'b0};
-  wire [`IMM_LEN-1:0] _immU = {{1 + 32{_inst[31]}}, _inst[30:20], _inst[19:12], 12'b0};
-  wire [`IMM_LEN-1:0] _immJ = {
+  wire [`ysyx_041514_IMM_LEN-1:0] _immI = {{21 + 32{_inst[31]}}, _inst[30:20]};
+  wire [`ysyx_041514_IMM_LEN-1:0] _immS = {{21 + 32{_inst[31]}}, _inst[30:25], _inst[11:8], _inst[7]};
+  wire [`ysyx_041514_IMM_LEN-1:0] _immB = {{20 + 32{_inst[31]}}, _inst[7], _inst[30:25], _inst[11:8], 1'b0};
+  wire [`ysyx_041514_IMM_LEN-1:0] _immU = {{1 + 32{_inst[31]}}, _inst[30:20], _inst[19:12], 12'b0};
+  wire [`ysyx_041514_IMM_LEN-1:0] _immJ = {
     {12 + 32{_inst[31]}}, _inst[19:12], _inst[20], _inst[30:25], _inst[24:21], 1'b0
   };
-  wire [`IMM_LEN-1:0] _immCSR = {59'b0, _inst[19:15]};
+  wire [`ysyx_041514_IMM_LEN-1:0] _immCSR = {59'b0, _inst[19:15]};
 
 
 
@@ -322,15 +322,15 @@ module dcode (
   wire [4:0] _rs1_idx = (_isNeed_rs1) ? _rs1 : 5'b0;
   wire [4:0] _rs2_idx = (_isNeed_rs2) ? _rs2 : 5'b0;
   wire [4:0] _rd_idx = (_isNeed_rd) ? _rd : 5'b0;
-  wire [`CSR_REG_ADDRWIDTH-1:0] _csr_idx = (_isNeed_csr) ? _csr : `CSR_REG_ADDRWIDTH'b0;
+  wire [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] _csr_idx = (_isNeed_csr) ? _csr : `ysyx_041514_CSR_REG_ADDRWIDTH'b0;
 
 
   /* assign 实现多路选择器：根据指令类型选立即数 */
-  wire [`IMM_LEN-1:0] _imm_data = ({`IMM_LEN{_I_type}}&_immI) |
-                                  ({`IMM_LEN{_S_type}}&_immS) |
-                                  ({`IMM_LEN{_B_type}}&_immB) |
-                                  ({`IMM_LEN{_U_type}}&_immU) |
-                                  ({`IMM_LEN{_J_type}}&_immJ);
+  wire [`ysyx_041514_IMM_LEN-1:0] _imm_data = ({`ysyx_041514_IMM_LEN{_I_type}}&_immI) |
+                                  ({`ysyx_041514_IMM_LEN{_S_type}}&_immS) |
+                                  ({`ysyx_041514_IMM_LEN{_B_type}}&_immB) |
+                                  ({`ysyx_041514_IMM_LEN{_U_type}}&_immU) |
+                                  ({`ysyx_041514_IMM_LEN{_J_type}}&_immJ);
 
   /* 输出指定 */
   assign rs1_idx_o = _rs1_idx;
@@ -344,11 +344,11 @@ module dcode (
   assign csr_imm_o = _immCSR;
 
   /******************************************冲突处理***************************************************/
-  wire _pre_inst_is_load = (id_ex_exc_op_i == `EXCOP_LOAD);
+  wire _pre_inst_is_load = (id_ex_exc_op_i == `ysyx_041514_EXCOP_LOAD);
 
   // 0 号寄存器特殊处理，不然出错
-  wire _rs1_idx_not_zero = (_rs1_idx != `REG_ADDRWIDTH'b0);
-  wire _rs2_idx_not_zero = (_rs2_idx != `REG_ADDRWIDTH'b0);
+  wire _rs1_idx_not_zero = (_rs1_idx != `ysyx_041514_REG_ADDRWIDTH'b0);
+  wire _rs2_idx_not_zero = (_rs2_idx != `ysyx_041514_REG_ADDRWIDTH'b0);
 
   // exc stage bypass
   wire _rs1_exc_bypass_valid = (_rs1_idx == ex_rd_addr_i) && (_rs1_idx_not_zero);
@@ -360,11 +360,11 @@ module dcode (
 
 
   // 优先级选择权 ex > mem > wb > gpr (wb 和 gpr 的优先级在通用寄存器堆中实现)
-  wire [`XLEN_BUS] _rs1_data = (_rs1_exc_bypass_valid)?ex_rd_data_i:
+  wire [`ysyx_041514_XLEN_BUS] _rs1_data = (_rs1_exc_bypass_valid)?ex_rd_data_i:
                                 (_rs1_mem_bypass_valid)?mem_rd_data_i:
                                 rs1_data_i;
   // 优先级选择权 ex > mem > wb > gpr
-  wire [`XLEN_BUS] _rs2_data = (_rs2_exc_bypass_valid)?ex_rd_data_i:
+  wire [`ysyx_041514_XLEN_BUS] _rs2_data = (_rs2_exc_bypass_valid)?ex_rd_data_i:
                                 (_rs2_mem_bypass_valid)?mem_rd_data_i:
                                 rs2_data_i;
   // load-use hazard: 前一条指令为 load 类型，且下一条 rs1、rs2 为 load 指令的 rd，
@@ -392,10 +392,10 @@ module dcode (
   // CSRRS/CSRRC must not write from x0 to CSRs (rs1=='0)
   wire _csr_read = (_csr_set | _csr_clear) & (_rs1 == '0);
   // read 优先级高
-  wire [`CSROP_LEN-1:0]_csr_op = (_csr_read)?`CSROP_READ:(
-                 ({`CSROP_LEN{_csr_write}}&`CSROP_WRITE)|
-                 ({`CSROP_LEN{_csr_set}}&`CSROP_SET)|
-                 ({`CSROP_LEN{_csr_clear}}&`CSROP_CLEAR));
+  wire [`ysyx_041514_CSROP_LEN-1:0]_csr_op = (_csr_read)?`ysyx_041514_CSROP_READ:(
+                 ({`ysyx_041514_CSROP_LEN{_csr_write}}&`ysyx_041514_CSROP_WRITE)|
+                 ({`ysyx_041514_CSROP_LEN{_csr_set}}&`ysyx_041514_CSROP_SET)|
+                 ({`ysyx_041514_CSROP_LEN{_csr_clear}}&`ysyx_041514_CSROP_CLEAR));
   assign csr_op_o = _csr_op;
 
   /* ALU_OP */
@@ -443,79 +443,79 @@ module dcode (
   // // ALU 计算结果是否需要符号扩展,放在 execute 下实现
   // wire _alu_sext = _type_op_imm_32 | _type_op_32;
   //多路选择器
-  wire [`ALUOP_LEN-1:0] _alu_op = ({`ALUOP_LEN{_alu_add}} & `ALUOP_ADD)|
-                                  ({`ALUOP_LEN{_alu_sub}} & `ALUOP_SUB)|
-                                  ({`ALUOP_LEN{_alu_xor}} & `ALUOP_XOR)|
-                                  ({`ALUOP_LEN{_alu_or}} & `ALUOP_OR)|
-                                  ({`ALUOP_LEN{_alu_and}} & `ALUOP_AND)|
-                                  ({`ALUOP_LEN{_alu_sll}} & `ALUOP_SLL)|
-                                  ({`ALUOP_LEN{_alu_srl}} & `ALUOP_SRL)|
-                                  ({`ALUOP_LEN{_alu_sra}} & `ALUOP_SRA)|
-                                  ({`ALUOP_LEN{_alu_sllw}} & `ALUOP_SLLW)|
-                                  ({`ALUOP_LEN{_alu_srlw}} & `ALUOP_SRLW)|
-                                  ({`ALUOP_LEN{_alu_sraw}} & `ALUOP_SRAW)|
-                                  ({`ALUOP_LEN{_alu_slt}} & `ALUOP_SLT)|
-                                  ({`ALUOP_LEN{_alu_sltu}} & `ALUOP_SLTU)|
-                                  ({`ALUOP_LEN{_alu_beq}} & `ALUOP_BEQ)|
-                                  ({`ALUOP_LEN{_alu_bne}} & `ALUOP_BNE)|
-                                  ({`ALUOP_LEN{_alu_blt}} & `ALUOP_BLT)|
-                                  ({`ALUOP_LEN{_alu_bge}} & `ALUOP_BGE)|
-                                  ({`ALUOP_LEN{_alu_bltu}} & `ALUOP_BLTU)|
-                                  ({`ALUOP_LEN{_alu_bgeu}} & `ALUOP_BGEU)|
-                                  ({`ALUOP_LEN{_alu_mul}} & `ALUOP_MUL)|
-                                  ({`ALUOP_LEN{_alu_mulh}} & `ALUOP_MULH)|
-                                  ({`ALUOP_LEN{_alu_mulhsu}} & `ALUOP_MULHSU)|
-                                  ({`ALUOP_LEN{_alu_mulhu}} & `ALUOP_MULHU)|
-                                  ({`ALUOP_LEN{_alu_mulw}} & `ALUOP_MULW)|
-                                  ({`ALUOP_LEN{_alu_div}} & `ALUOP_DIV)|
-                                  ({`ALUOP_LEN{_alu_divu}} & `ALUOP_DIVU)|
-                                  ({`ALUOP_LEN{_alu_rem}} & `ALUOP_REM)|
-                                  ({`ALUOP_LEN{_alu_remu}} & `ALUOP_REMU)|
-                                  ({`ALUOP_LEN{_alu_divw}} & `ALUOP_DIVW)|
-                                  ({`ALUOP_LEN{_alu_divuw}} & `ALUOP_DIVUW)|
-                                  ({`ALUOP_LEN{_alu_remw}} & `ALUOP_REMW)|
-                                  ({`ALUOP_LEN{_alu_remuw}} & `ALUOP_REMUW);
+  wire [`ysyx_041514_ALUOP_LEN-1:0] _alu_op = ({`ysyx_041514_ALUOP_LEN{_alu_add}} & `ysyx_041514_ALUOP_ADD)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_sub}} & `ysyx_041514_ALUOP_SUB)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_xor}} & `ysyx_041514_ALUOP_XOR)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_or}} & `ysyx_041514_ALUOP_OR)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_and}} & `ysyx_041514_ALUOP_AND)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_sll}} & `ysyx_041514_ALUOP_SLL)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_srl}} & `ysyx_041514_ALUOP_SRL)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_sra}} & `ysyx_041514_ALUOP_SRA)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_sllw}} & `ysyx_041514_ALUOP_SLLW)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_srlw}} & `ysyx_041514_ALUOP_SRLW)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_sraw}} & `ysyx_041514_ALUOP_SRAW)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_slt}} & `ysyx_041514_ALUOP_SLT)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_sltu}} & `ysyx_041514_ALUOP_SLTU)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_beq}} & `ysyx_041514_ALUOP_BEQ)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_bne}} & `ysyx_041514_ALUOP_BNE)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_blt}} & `ysyx_041514_ALUOP_BLT)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_bge}} & `ysyx_041514_ALUOP_BGE)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_bltu}} & `ysyx_041514_ALUOP_BLTU)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_bgeu}} & `ysyx_041514_ALUOP_BGEU)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_mul}} & `ysyx_041514_ALUOP_MUL)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_mulh}} & `ysyx_041514_ALUOP_MULH)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_mulhsu}} & `ysyx_041514_ALUOP_MULHSU)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_mulhu}} & `ysyx_041514_ALUOP_MULHU)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_mulw}} & `ysyx_041514_ALUOP_MULW)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_div}} & `ysyx_041514_ALUOP_DIV)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_divu}} & `ysyx_041514_ALUOP_DIVU)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_rem}} & `ysyx_041514_ALUOP_REM)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_remu}} & `ysyx_041514_ALUOP_REMU)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_divw}} & `ysyx_041514_ALUOP_DIVW)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_divuw}} & `ysyx_041514_ALUOP_DIVUW)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_remw}} & `ysyx_041514_ALUOP_REMW)|
+                                  ({`ysyx_041514_ALUOP_LEN{_alu_remuw}} & `ysyx_041514_ALUOP_REMUW);
 
   assign alu_op_o = _alu_op;
 
   /* EXC_OP */
-  wire [`EXCOP_LEN-1:0] _exc_op = ({`EXCOP_LEN{_type_auipc}}&`EXCOP_AUIPC) |
-                                  ({`EXCOP_LEN{_type_lui}}&`EXCOP_LUI) |
-                                  ({`EXCOP_LEN{_type_jal}}&`EXCOP_JAL) |
-                                  ({`EXCOP_LEN{_type_jalr}}&`EXCOP_JALR) |
-                                  ({`EXCOP_LEN{_type_load}}&`EXCOP_LOAD) |
-                                  ({`EXCOP_LEN{_type_store}}&`EXCOP_STORE) |
-                                  ({`EXCOP_LEN{_type_branch}}&`EXCOP_BRANCH) |
-                                  ({`EXCOP_LEN{_type_op_imm}}&`EXCOP_OPIMM) |
-                                  ({`EXCOP_LEN{_type_op_imm_32}}&`EXCOP_OPIMM32) |
-                                  ({`EXCOP_LEN{_type_op}}&`EXCOP_OP) |
-                                  ({`EXCOP_LEN{_type_op_32}}&`EXCOP_OP32) |
-                                  ({`EXCOP_LEN{_isNeed_csr}}&`EXCOP_CSR) |
-                                  ({`EXCOP_LEN{_inst_ebreak}}&`EXCOP_EBREAK) | //TODO:暂时对 ebreak 特殊处理
+  wire [`ysyx_041514_EXCOP_LEN-1:0] _exc_op = ({`ysyx_041514_EXCOP_LEN{_type_auipc}}&`ysyx_041514_EXCOP_AUIPC) |
+                                  ({`ysyx_041514_EXCOP_LEN{_type_lui}}&`ysyx_041514_EXCOP_LUI) |
+                                  ({`ysyx_041514_EXCOP_LEN{_type_jal}}&`ysyx_041514_EXCOP_JAL) |
+                                  ({`ysyx_041514_EXCOP_LEN{_type_jalr}}&`ysyx_041514_EXCOP_JALR) |
+                                  ({`ysyx_041514_EXCOP_LEN{_type_load}}&`ysyx_041514_EXCOP_LOAD) |
+                                  ({`ysyx_041514_EXCOP_LEN{_type_store}}&`ysyx_041514_EXCOP_STORE) |
+                                  ({`ysyx_041514_EXCOP_LEN{_type_branch}}&`ysyx_041514_EXCOP_BRANCH) |
+                                  ({`ysyx_041514_EXCOP_LEN{_type_op_imm}}&`ysyx_041514_EXCOP_OPIMM) |
+                                  ({`ysyx_041514_EXCOP_LEN{_type_op_imm_32}}&`ysyx_041514_EXCOP_OPIMM32) |
+                                  ({`ysyx_041514_EXCOP_LEN{_type_op}}&`ysyx_041514_EXCOP_OP) |
+                                  ({`ysyx_041514_EXCOP_LEN{_type_op_32}}&`ysyx_041514_EXCOP_OP32) |
+                                  ({`ysyx_041514_EXCOP_LEN{_isNeed_csr}}&`ysyx_041514_EXCOP_CSR) |
+                                  ({`ysyx_041514_EXCOP_LEN{_inst_ebreak}}&`ysyx_041514_EXCOP_EBREAK) | //TODO:暂时对 ebreak 特殊处理
 
-  ({`EXCOP_LEN{_NONE_type}} & `EXCOP_NONE);
+  ({`ysyx_041514_EXCOP_LEN{_NONE_type}} & `ysyx_041514_EXCOP_NONE);
 
   assign exc_op_o = _exc_op;
 
 
   /* MEM_OP */
-  wire [`MEMOP_LEN-1:0] _mem_op =  ({`MEMOP_LEN{_inst_lb}}&`MEMOP_LB)|
-                                   ({`MEMOP_LEN{_inst_lbu}}&`MEMOP_LBU)|
-                                   ({`MEMOP_LEN{_inst_lh}}&`MEMOP_LH)|
-                                   ({`MEMOP_LEN{_inst_lw}}&`MEMOP_LW)|
-                                   ({`MEMOP_LEN{_inst_lhu}}&`MEMOP_LHU)|
-                                   ({`MEMOP_LEN{_inst_sb}}&`MEMOP_SB)|
-                                   ({`MEMOP_LEN{_inst_sh}}&`MEMOP_SH)|
-                                   ({`MEMOP_LEN{_inst_sw}}&`MEMOP_SW)|
-                                   ({`MEMOP_LEN{_inst_lwu}}&`MEMOP_LWU)|
-                                   ({`MEMOP_LEN{_inst_ld}}&`MEMOP_LD)|
-                                   ({`MEMOP_LEN{_inst_sd}}&`MEMOP_SD)|
-                                   ({`MEMOP_LEN{_inst_fence_i}}&`MEMOP_FENCEI);
+  wire [`ysyx_041514_MEMOP_LEN-1:0] _mem_op =  ({`ysyx_041514_MEMOP_LEN{_inst_lb}}&`ysyx_041514_MEMOP_LB)|
+                                   ({`ysyx_041514_MEMOP_LEN{_inst_lbu}}&`ysyx_041514_MEMOP_LBU)|
+                                   ({`ysyx_041514_MEMOP_LEN{_inst_lh}}&`ysyx_041514_MEMOP_LH)|
+                                   ({`ysyx_041514_MEMOP_LEN{_inst_lw}}&`ysyx_041514_MEMOP_LW)|
+                                   ({`ysyx_041514_MEMOP_LEN{_inst_lhu}}&`ysyx_041514_MEMOP_LHU)|
+                                   ({`ysyx_041514_MEMOP_LEN{_inst_sb}}&`ysyx_041514_MEMOP_SB)|
+                                   ({`ysyx_041514_MEMOP_LEN{_inst_sh}}&`ysyx_041514_MEMOP_SH)|
+                                   ({`ysyx_041514_MEMOP_LEN{_inst_sw}}&`ysyx_041514_MEMOP_SW)|
+                                   ({`ysyx_041514_MEMOP_LEN{_inst_lwu}}&`ysyx_041514_MEMOP_LWU)|
+                                   ({`ysyx_041514_MEMOP_LEN{_inst_ld}}&`ysyx_041514_MEMOP_LD)|
+                                   ({`ysyx_041514_MEMOP_LEN{_inst_sd}}&`ysyx_041514_MEMOP_SD)|
+                                   ({`ysyx_041514_MEMOP_LEN{_inst_fence_i}}&`ysyx_041514_MEMOP_FENCEI);
   assign mem_op_o = _mem_op;
 
 
   // 已废弃
-  assign pc_op_o  = `PCOP_LEN'b0;
+  assign pc_op_o  = `ysyx_041514_PCOP_LEN'b0;
 
 
 
@@ -525,17 +525,17 @@ module dcode (
   wire _Illegal_instruction = _NONE_type;
 
 
-  reg [`TRAP_BUS] _decode_trap_bus;
+  reg [`ysyx_041514_TRAP_BUS] _decode_trap_bus;
   integer i;
   always @(*) begin
-    for (i = 0; i < `TRAP_LEN; i = i + 1) begin
-      if (i == `TRAP_MRET) begin
+    for (i = 0; i < `ysyx_041514_TRAP_LEN; i = i + 1) begin
+      if (i == `ysyx_041514_TRAP_MRET) begin
         _decode_trap_bus[i] = _inst_mret;
-      end else if (i == `TRAP_EBREAK) begin
+      end else if (i == `ysyx_041514_TRAP_EBREAK) begin
         _decode_trap_bus[i] = _inst_ebreak;
-      end else if (i == `TRAP_ECALL_M) begin // TODO 权限设置
+      end else if (i == `ysyx_041514_TRAP_ECALL_M) begin // TODO 权限设置
         _decode_trap_bus[i] = _inst_ecall;
-      end else if (i == `TRAP_ILLEGAL_INST) begin
+      end else if (i == `ysyx_041514_TRAP_ILLEGAL_INST) begin
         _decode_trap_bus[i] = _Illegal_instruction;
       end else begin
         _decode_trap_bus[i] = trap_bus_i[i];
