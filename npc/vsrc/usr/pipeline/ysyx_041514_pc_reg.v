@@ -18,7 +18,7 @@ module ysyx_041514_pc_reg (
 
     input              if_rdata_valid_i,
     output             read_req_o,
-    output [`ysyx_041514_XLEN_BUS] pc_next_o,         //输出 next_pc
+    output [`ysyx_041514_XLEN_BUS] pc_next_o,         //输出 next_pc, icache 取指
     output [`ysyx_041514_XLEN_BUS] pc_o               //输出pc
 );
 

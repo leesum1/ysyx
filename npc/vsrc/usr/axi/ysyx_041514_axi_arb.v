@@ -2,6 +2,8 @@
 
 // 仲裁模块
 module ysyx_041514_axi_arb (
+    input clk,
+    input rst,
 
     // if 访存请求端口（读）
     input [`ysyx_041514_NPC_ADDR_BUS] if_read_addr_i,  // if 阶段的 read
@@ -19,6 +21,7 @@ module ysyx_041514_axi_arb (
     input [7:0] mem_rlen_i,
     output [`ysyx_041514_XLEN_BUS] mem_rdata_o,
     output mem_rdata_ready_o,
+    input arb_rlast_i,
     // mem 访存请求端口（写）,独占
     input [`ysyx_041514_NPC_ADDR_BUS] mem_write_addr_i,  // mem 阶段的 write
     input mem_write_valid_i,
@@ -48,47 +51,71 @@ module ysyx_041514_axi_arb (
     input arb_wdata_ready_i  // 数据是否已经写入
 );
 
-  reg if_read_state, mem_read_state;
+
+
+  localparam ARB_IDLE = 2'd0;
+  localparam IF_READ_STATE = 2'd1;
+  localparam MEM_READ_STATE = 2'd2;
 
   // 读通道
   reg [`ysyx_041514_NPC_ADDR_BUS]  _arb_read_addr_o;
-  reg                  _arb_raddr_valid_o;  // 是否发起读请求
-  reg [          7:0 ] _arb_rmask_o;  // 数据掩码
-  reg [          3:0 ] _arb_rsize_o;
-  reg [7:0] _arb_rlen_o;// 突发大小
+  reg                              _arb_raddr_valid_o;  // 是否发起读请求
+  reg [                      7:0 ] _arb_rmask_o;  // 数据掩码
+  reg [                      3:0 ] _arb_rsize_o;
+  reg [                      7:0 ] _arb_rlen_o;  // 突发大小
 
 
-
-  always @(*) begin
-    if (if_raddr_valid_i) begin : if_read
-      if_read_state = `ysyx_041514_TRUE;
-      mem_read_state = `ysyx_041514_FALSE;
-
-      _arb_read_addr_o = if_read_addr_i;
-      _arb_raddr_valid_o = if_raddr_valid_i;
-      _arb_rmask_o = if_rmask_i;
-      _arb_rsize_o = if_rsize_i;
-      _arb_rlen_o = if_rlen_i;
-    end else if (mem_raddr_valid_i) begin : mem_read
-      if_read_state = `ysyx_041514_FALSE;
-      mem_read_state = `ysyx_041514_TRUE;
-
-      _arb_read_addr_o = mem_read_addr_i;
-      _arb_raddr_valid_o = mem_raddr_valid_i;
-      _arb_rmask_o = mem_rmask_i;
-      _arb_rsize_o = mem_rsize_i;
-      _arb_rlen_o = mem_rlen_i;
+  reg [                      1:0 ] arb_state;
+  
+  always @(posedge clk) begin
+    if (rst) begin
+      arb_state <= ARB_IDLE;
+      _arb_read_addr_o <= 0;
+      _arb_raddr_valid_o <= 0;
+      _arb_rmask_o <= 0;
+      _arb_rsize_o <= 0;
+      _arb_rlen_o <= 0;
     end else begin
-      if_read_state = `ysyx_041514_FALSE;
-      mem_read_state = `ysyx_041514_FALSE;
+      case (arb_state)
+        ARB_IDLE: begin
+          if (mem_raddr_valid_i) begin
+            arb_state <= MEM_READ_STATE;
+            _arb_read_addr_o <= mem_read_addr_i;
+            _arb_raddr_valid_o <= mem_raddr_valid_i;
+            _arb_rmask_o <= mem_rmask_i;
+            _arb_rsize_o <= mem_rsize_i;
+            _arb_rlen_o <= mem_rlen_i;
+          end else if (if_raddr_valid_i) begin
+            arb_state <= IF_READ_STATE;
+            _arb_read_addr_o <= if_read_addr_i;
+            _arb_raddr_valid_o <= if_raddr_valid_i;
+            _arb_rmask_o <= if_rmask_i;
+            _arb_rsize_o <= if_rsize_i;
+            _arb_rlen_o <= if_rlen_i;
+          end
+        end
+        MEM_READ_STATE: begin
+          if (arb_rlast_i) begin
+            arb_state <= ARB_IDLE;
+            _arb_raddr_valid_o<=`ysyx_041514_FALSE;
+          end
 
-      _arb_read_addr_o = 0;
-      _arb_raddr_valid_o = 0;
-      _arb_rmask_o = 0;
-      _arb_rsize_o = 0;
-      _arb_rlen_o = 0;
+        end
+        IF_READ_STATE: begin
+          if (arb_rlast_i) begin
+            arb_state <= ARB_IDLE;
+            _arb_raddr_valid_o<=`ysyx_041514_FALSE;
+          end
+        end
+        default: begin
+        end
+      endcase
     end
   end
+
+
+  wire if_read_state = arb_state == IF_READ_STATE;
+  wire mem_read_state = arb_state == MEM_READ_STATE;
 
 
   // 读响应

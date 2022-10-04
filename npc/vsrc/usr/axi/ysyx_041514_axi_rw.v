@@ -23,6 +23,7 @@ module ysyx_041514_axi_rw #(
     input [7:0] arb_rlen_i,  // 突发传输大小
     output [`ysyx_041514_XLEN_BUS] arb_rdata_o,  // 读数据返回mem
     output arb_rdata_ready_o,  // 读数据是否有效
+    output arb_rlast_o,
     //写通道
     input [`ysyx_041514_NPC_ADDR_BUS] arb_write_addr_i,  // mem 阶段的 write
     input arb_write_valid_i,
@@ -271,6 +272,7 @@ module ysyx_041514_axi_rw #(
   reg [AXI_RSTATE_LEN-1:0] axi_rstate;
   reg _arb_rdata_ready_o;
   reg [`ysyx_041514_XLEN_BUS] _arb_rdata_o;
+  reg _arb_rlast_o;
 
   reg ar_valid;
   reg [AXI_ADDR_WIDTH-1:0] ar_addr;
@@ -286,6 +288,7 @@ module ysyx_041514_axi_rw #(
       ar_addr <= 0;
       ar_len <= 0;
       ar_size <= 0;
+      _arb_rlast_o<=0;
       r_ready <= `ysyx_041514_FALSE;
       _arb_rdata_ready_o <= `ysyx_041514_FALSE;
     end else begin
@@ -295,6 +298,7 @@ module ysyx_041514_axi_rw #(
         end
         AXI_RIDLE: begin
           _arb_rdata_ready_o <= `ysyx_041514_FALSE;
+          _arb_rlast_o<=0;
           // arb_raddr_valid_i & ~_arb_rdata_ready_o 为 arb 发出了读请求，且当前周期不为读数据返回周期
           // 当 _arb_rdata_ready_o = `ysyx_041514_TRUE 时，读数据返回，且 下一个读地址在下一个周期才会来到
           // 避免重复度读请求，_arb_rdata_ready_o = `ysyx_041514_TRUE 时，不能发生读请求
@@ -321,6 +325,7 @@ module ysyx_041514_axi_rw #(
           if (axi_r_handshake) begin : wait_for_r_handshake
             if (axi_r_last_i) begin  // 最后一个数据传输完成
               axi_rstate <= AXI_RIDLE;
+              _arb_rlast_o<=`ysyx_041514_TRUE;
               r_ready <= `ysyx_041514_FALSE;  // 数据握手成功后拉低
             end
             _arb_rdata_o <= axi_r_data_i;
@@ -340,6 +345,7 @@ module ysyx_041514_axi_rw #(
 
   assign arb_rdata_o = _arb_rdata_o;
   assign arb_rdata_ready_o = _arb_rdata_ready_o;
+  assign arb_rlast_o = _arb_rlast_o;
   assign arb_wdata_ready_o = _arb_wdata_ready_o;
 
 

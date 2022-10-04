@@ -38,6 +38,8 @@ module ysyx_041514_icache_top (
   assign {cache_line_tag, cache_line_idx, cache_blk_addr} = preif_raddr_i;
 
   wire icache_hit;
+  wire uncache = `ysyx_041514_TRUE;
+  reg [`ysyx_041514_XLEN_BUS] uncache_rdata;
 
   /* cache 命中 */
   localparam CACHE_RST = 4'd0;
@@ -45,8 +47,9 @@ module ysyx_041514_icache_top (
   localparam CACHE_HIT = 4'd2;
   localparam CACHE_MISS = 4'd3;
   localparam CACHE_MISS2 = 4'd4;
+  localparam UNCACHE_READ = 4'd5;
 
-  reg [3:0] icahce_state;
+  reg [3:0] icache_state;
 
 
   reg [5:0] blk_addr_reg;
@@ -54,7 +57,7 @@ module ysyx_041514_icache_top (
   reg [19:0] line_tag_reg;
   reg icache_tag_wen;
 
-  reg icahce_rdata_ok;
+  reg icache_data_ready;
   // cache<-->mem 端口 
   reg [`ysyx_041514_NPC_ADDR_BUS] _ram_raddr_icache_o;
   reg _ram_raddr_valid_icache_o;
@@ -67,10 +70,10 @@ module ysyx_041514_icache_top (
   wire ram_r_handshake = _ram_raddr_valid_icache_o & ram_rdata_ready_icache_i;
   wire [2:0] burst_count_plus1 = burst_count + 1;
 
-  
+
   always @(posedge clk) begin
     if (rst) begin
-      icahce_state        <= CACHE_RST;
+      icache_state        <= CACHE_RST;
       blk_addr_reg        <= 0;
       line_idx_reg        <= 0;
       line_tag_reg        <= 0;
@@ -79,9 +82,9 @@ module ysyx_041514_icache_top (
       _ram_rlen_icache_o  <= 0;
       burst_count         <= 0;
     end else begin
-      case (icahce_state)
+      case (icache_state)
         CACHE_RST: begin
-          icahce_state <= CACHE_IDLE;
+          icache_state <= CACHE_IDLE;
         end
         CACHE_IDLE: begin
           blk_addr_reg   <= cache_blk_addr;
@@ -89,16 +92,16 @@ module ysyx_041514_icache_top (
           line_tag_reg   <= cache_line_tag;
           icache_tag_wen <= `ysyx_041514_FALSE;
           // cache data 为单端口 ram,不能同时读写
-          if (preif_raddr_valid_i && ~icache_tag_wen) begin
+          if (preif_raddr_valid_i && ~icache_tag_wen && ~uncache) begin
             // hit
             if (icache_hit) begin
               // 下一个周期给数据
               //icache_data <= {32'b0, cache_line_regs[cache_line_idx][cache_blk_addr*8+:32]};
-              icahce_rdata_ok <= `ysyx_041514_TRUE;
-              icahce_state <= CACHE_IDLE;
+              icache_data_ready <= `ysyx_041514_TRUE;
+              icache_state <= CACHE_IDLE;
             end else begin  // miss 
-              icahce_state <= CACHE_MISS;
-              icahce_rdata_ok <= `ysyx_041514_FALSE;
+              icache_state <= CACHE_MISS;
+              icache_data_ready <= `ysyx_041514_FALSE;
               _ram_raddr_icache_o <= {cache_line_tag, cache_line_idx, 6'b0};  // 读地址
               _ram_raddr_valid_icache_o <= `ysyx_041514_TRUE;  // 地址有效
               _ram_rmask_icache_o <= 8'b1111_1111;  // 读掩码
@@ -106,19 +109,36 @@ module ysyx_041514_icache_top (
               _ram_rlen_icache_o <= 8'd7;  // 突发 8 次
               burst_count <= 0;  // 清空计数器
             end
+          end else if (preif_raddr_valid_i && uncache) begin : uncache_rw
+            icache_state              <= UNCACHE_READ;
+            icache_data_ready         <= `ysyx_041514_FALSE;
+            _ram_raddr_icache_o       <= preif_raddr_i;  // 读地址
+            _ram_raddr_valid_icache_o <= `ysyx_041514_TRUE;  // 地址有效
+            _ram_rmask_icache_o       <= 8'b1111_1111;  // 读掩码
+            _ram_rsize_icache_o       <= 4'b0100;  //读大小 32bit,一条指令
+            _ram_rlen_icache_o        <= 8'd0;  // 不突发
           end else begin
-            icahce_rdata_ok <= `ysyx_041514_FALSE;
+            icache_data_ready <= `ysyx_041514_FALSE;
           end
         end
+
         CACHE_MISS: begin
           if (ram_r_handshake) begin  // 在 handshake 时，向 ram 写入数据
             if (burst_count == _ram_rlen_icache_o[2:0]) begin  // 突发传输最后一个数据
-              icahce_state <= CACHE_IDLE;
+              icache_state <= CACHE_IDLE;
               _ram_raddr_valid_icache_o <= `ysyx_041514_FALSE;  // 传输结束
               icache_tag_wen <= `ysyx_041514_TRUE;  // 写 tag 
             end else begin
               burst_count <= burst_count_plus1;
             end
+          end
+        end
+        UNCACHE_READ: begin
+          if (ram_r_handshake) begin
+            _ram_raddr_valid_icache_o <= `ysyx_041514_FALSE;
+            icache_data_ready <= `ysyx_041514_TRUE;  // 完成信号
+            uncache_rdata     <= _ram_raddr_icache_o[2]?{32'b0,ram_rdata_icache_i[63:32]}:ram_rdata_icache_i;  // 数据返回
+            icache_state <= CACHE_IDLE;
           end
         end
 
@@ -161,10 +181,11 @@ module ysyx_041514_icache_top (
 
   // wire [`ysyx_041514_XLEN_BUS] _icache_data_o = {32'b0, icache_line_rdata[blk_addr_reg*8+:32]};
 
-  assign if_rdata_o = icache_rdata & {64{if_rdata_valid_o}};
+  wire [`ysyx_041514_XLEN_BUS] icache_final_data = uncache ? uncache_rdata : icache_rdata;
+  assign if_rdata_o = icache_final_data;
 
 
-  assign if_rdata_valid_o = icahce_rdata_ok && (icahce_state == CACHE_IDLE);
+  assign if_rdata_valid_o = icache_data_ready && (icache_state == CACHE_IDLE);
   assign ram_raddr_icache_o = _ram_raddr_icache_o;
   assign ram_raddr_valid_icache_o = _ram_raddr_valid_icache_o;
   assign ram_rmask_icache_o = _ram_rmask_icache_o;

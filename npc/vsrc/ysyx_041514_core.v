@@ -875,7 +875,7 @@ module ysyx_041514_core (
       /* cpu<-->cache 端口 */
       .mem_addr_i        (mem_addr),          // CPU 的访存信息 
       .mem_mask_i        (mem_mask),          // 访存掩码
-      .mem_addr_valid_i  (mem_addr_valid),    // 地址是否有效，无效时，停止访问 cache
+      .mem_addr_valid_i  (mem_addr_valid),    // 地址是否有效，无效时，���止访问 cache
       .mem_write_valid_i (mem_write_valid),   // 1'b1,表示写;1'b0 表示读 
       .mem_wdata_i       (mem_wdata),         // 写数据
       .mem_rdata_o       (mem_rdata),         // dcache 返回读数据
@@ -937,6 +937,7 @@ module ysyx_041514_core (
   wire [7:0] arb_rlen;
   wire [`ysyx_041514_XLEN_BUS] arb_rdata;  // 读数据返回mem
   wire arb_rdata_ready;  // 读数据是否有效
+  wire arb_rlast;
   //写通道
   wire [`ysyx_041514_NPC_ADDR_BUS] arb_write_addr;  // mem 阶段的 write
   wire arb_write_valid;
@@ -947,6 +948,8 @@ module ysyx_041514_core (
   wire arb_wdata_ready;  // 数据是否已经写入
 
   ysyx_041514_axi_arb u_axi_arb (
+      .clk(clk),
+      .rst(rst),
 
       /* if 访存请求端口（读）*/
       .if_read_addr_i(ram_raddr_icache),  // if 阶段的 read
@@ -982,6 +985,7 @@ module ysyx_041514_core (
       .arb_rlen_o       (arb_rlen),
       .arb_rdata_i      (arb_rdata),        // 读数据返回mem
       .arb_rdata_ready_i(arb_rdata_ready),  // 读数据是否有效
+      .arb_rlast_i(arb_rlast),
       //写通道
       .arb_write_addr_o (arb_write_addr),   // mem 阶段的 write
       .arb_write_valid_o(arb_write_valid),
@@ -1030,6 +1034,7 @@ module ysyx_041514_core (
       .arb_rlen_i       (arb_rlen),
       .arb_rdata_o      (arb_rdata),        // 读数据返回mem
       .arb_rdata_ready_o(arb_rdata_ready),  // 读数据是否有效//写通道
+      .arb_rlast_o(arb_rlast),
       // 写通道
       .arb_write_addr_i (arb_write_addr),   // mem 阶段的 write
       .arb_write_valid_i(arb_write_valid),
