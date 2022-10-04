@@ -1,4 +1,4 @@
-`include "./../sysconfig.v"
+`include "sysconfig.v"
 
 module ysyx_041514_alu_shift (
     input shift_sra_i,

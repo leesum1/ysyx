@@ -1,11 +1,9 @@
 `include "sysconfig.v"
 
 /* 需要设为为input熟悉才能才仿真中改变值 */
-module ysyx_041514 (
+module ysyx_041514_core (
     input clk,  //todo clock reset
     input rst,
-    input io_interrupt,  // 外部中断
-
     /* AXI4 master */
     // 写地址通道
     input io_master_awready,
@@ -42,41 +40,54 @@ module ysyx_041514 (
     input io_master_rlast,
     input [3:0] io_master_rid,
 
-    /* AXI4 slave */
-    // 写地址通道
-    input io_slave_awready,
-    output io_slave_awvalid,
-    output [31:0] io_slave_awaddr,
-    output [3:0] io_slave_awid,
-    output [7:0] io_slave_awlen,
-    output [2:0] io_slave_awsize,
-    output [1:0] io_slave_awburst,
-    // 写数据通道
-    input io_slave_wready,
-    output io_slave_wvalid,
-    output [63:0] io_slave_wdata,
-    output [7:0] io_slave_wstrb,
-    output io_slave_wlast,
-    // 写响应通道
-    output io_slave_bready,
-    input io_slave_bvalid,
-    input [1:0] io_slave_bresp,
-    input [3:0] io_slave_bid,
-    // 读地址通道
-    input io_slave_arready,
-    output io_slave_arvalid,
-    output [31:0] io_slave_araddr,
-    output [3:0] io_slave_arid,
-    output [7:0] io_slave_arlen,
-    output [2:0] io_slave_arsize,
-    output [1:0] io_slave_arburst,
-    // 读数据通道
-    output io_slave_rready,
-    input io_slave_rvalid,
-    input [1:0] io_slave_rresp,
-    input [63:0] io_slave_rdata,
-    input io_slave_rlast,
-    input [3:0] io_slave_rid
+    output [  5:0] io_sram0_addr,
+    output         io_sram0_cen,
+    output         io_sram0_wen,
+    output [127:0] io_sram0_wmask,
+    output [127:0] io_sram0_wdata,
+    input  [127:0] io_sram0_rdata,
+    output [  5:0] io_sram1_addr,
+    output         io_sram1_cen,
+    output         io_sram1_wen,
+    output [127:0] io_sram1_wmask,
+    output [127:0] io_sram1_wdata,
+    input  [127:0] io_sram1_rdata,
+    output [  5:0] io_sram2_addr,
+    output         io_sram2_cen,
+    output         io_sram2_wen,
+    output [127:0] io_sram2_wmask,
+    output [127:0] io_sram2_wdata,
+    input  [127:0] io_sram2_rdata,
+    output [  5:0] io_sram3_addr,
+    output         io_sram3_cen,
+    output         io_sram3_wen,
+    output [127:0] io_sram3_wmask,
+    output [127:0] io_sram3_wdata,
+    input  [127:0] io_sram3_rdata,
+    output [  5:0] io_sram4_addr,
+    output         io_sram4_cen,
+    output         io_sram4_wen,
+    output [127:0] io_sram4_wmask,
+    output [127:0] io_sram4_wdata,
+    input  [127:0] io_sram4_rdata,
+    output [  5:0] io_sram5_addr,
+    output         io_sram5_cen,
+    output         io_sram5_wen,
+    output [127:0] io_sram5_wmask,
+    output [127:0] io_sram5_wdata,
+    input  [127:0] io_sram5_rdata,
+    output [  5:0] io_sram6_addr,
+    output         io_sram6_cen,
+    output         io_sram6_wen,
+    output [127:0] io_sram6_wmask,
+    output [127:0] io_sram6_wdata,
+    input  [127:0] io_sram6_rdata,
+    output [  5:0] io_sram7_addr,
+    output         io_sram7_cen,
+    output         io_sram7_wen,
+    output [127:0] io_sram7_wmask,
+    output [127:0] io_sram7_wdata,
+    input  [127:0] io_sram7_rdata
 );
 
   /*×××××××××××××××××××××××××× PC 模块 用于选择吓一跳指令地址 ×××××××××××××××××××××××*/
@@ -168,7 +179,7 @@ module ysyx_041514 (
   wire [          `ysyx_041514_IMM_LEN-1:0 ] imm_data_id;
   /* CSR 译码结果：to id/ex*/
   wire [          `ysyx_041514_IMM_LEN-1:0 ] csr_imm_id;
-  wire                           csr_imm_valid_id;
+  wire                                       csr_imm_valid_id;
   wire [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0 ] csr_idx_id;
   wire [             `ysyx_041514_XLEN_BUS]  csr_readdata_id;
 
@@ -181,7 +192,7 @@ module ysyx_041514 (
   wire [             `ysyx_041514_XLEN_BUS]  inst_addr_id;
   wire [         `ysyx_041514_INST_LEN-1:0 ] inst_data_id;
   // 请求暂停流水线
-  wire                           load_use_valid;
+  wire                                       load_use_valid;
   /* TARP 总线 */
   wire [             `ysyx_041514_TRAP_BUS]  trap_bus_id;
 
@@ -242,7 +253,7 @@ module ysyx_041514 (
   wire [             `ysyx_041514_XLEN_BUS]  rs2_data_id_ex;
   wire [          `ysyx_041514_IMM_LEN-1:0 ] imm_data_id_ex;
   wire [          `ysyx_041514_IMM_LEN-1:0 ] csr_imm_id_ex;
-  wire                           csr_imm_valid_id_ex;
+  wire                                       csr_imm_valid_id_ex;
   wire [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0 ] csr_idx_id_ex;
   wire [             `ysyx_041514_XLEN_BUS]  csr_readdata_id_ex;
   wire [        `ysyx_041514_ALUOP_LEN-1:0 ] alu_op_id_ex;  // alu 操作码
@@ -322,23 +333,23 @@ module ysyx_041514 (
   wire [          `ysyx_041514_IMM_LEN-1:0 ] imm_data_ex;
   wire [             `ysyx_041514_XLEN_BUS]  csr_data_ex;
   wire [          `ysyx_041514_IMM_LEN-1:0 ] csr_imm_ex;
-  wire                           csr_imm_valid_ex;
+  wire                                       csr_imm_valid_ex;
   wire [        `ysyx_041514_MEMOP_LEN-1:0 ] mem_op_ex;  // 访存操作码
   wire [         `ysyx_041514_PCOP_LEN-1:0 ] pc_op_ex;
   wire [             `ysyx_041514_XLEN_BUS]  exc_alu_data_ex;  // 同时送给 ID 和 EX/MEM
   wire [             `ysyx_041514_XLEN_BUS]  exc_csr_data_ex;
-  wire                           exc_csr_valid_ex;
+  wire                                       exc_csr_valid_ex;
   wire [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0 ] exc_csr_addr_ex;
   wire [        `ysyx_041514_EXCOP_LEN-1:0 ] exc_op_ex;  // exc 操作码
   // 请求暂停流水线
-  wire                           jump_hazard_valid;
-  wire                           alu_mul_div_valid;
+  wire                                       jump_hazard_valid;
+  wire                                       alu_mul_div_valid;
   /* TARP 总线 */
   wire [             `ysyx_041514_TRAP_BUS]  trap_bus_ex;
 
 
   wire [             `ysyx_041514_XLEN_BUS]  branch_pc;
-  wire                           branch_pc_valid;
+  wire                                       branch_pc_valid;
 
   ysyx_041514_execute_top u_execute_top (
       .clk            (clk),
@@ -419,7 +430,7 @@ module ysyx_041514 (
   wire [             `ysyx_041514_XLEN_BUS]  rs2_data_ex_mem;
   wire [             `ysyx_041514_XLEN_BUS]  alu_data_ex_mem;
   wire [             `ysyx_041514_XLEN_BUS]  csr_writedata_ex_mem;
-  wire                           csr_writevalid_ex_mem;
+  wire                                       csr_writevalid_ex_mem;
   wire [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0 ] csr_addr_ex_mem;
   wire [         `ysyx_041514_PCOP_LEN-1:0 ] pc_op_ex_mem;
   wire [        `ysyx_041514_MEMOP_LEN-1:0 ] mem_op_ex_mem;
@@ -471,32 +482,32 @@ module ysyx_041514 (
   wire [    `ysyx_041514_REG_ADDRWIDTH-1:0 ] rd_idx_mem;
   wire [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0 ] csr_addr_mem;
   wire [             `ysyx_041514_XLEN_BUS]  exc_csr_data_mem;
-  wire                           exc_csr_valid_mem;
+  wire                                       exc_csr_valid_mem;
 
   /* clint 接口 */
   wire [         `ysyx_041514_NPC_ADDR_BUS]  clint_addr;
-  wire                           clint_valid;
-  wire                           clint_write_valid;
+  wire                                       clint_valid;
+  wire                                       clint_write_valid;
   wire [             `ysyx_041514_XLEN_BUS]  clint_wdata;
   wire [             `ysyx_041514_XLEN_BUS]  clint_rdata;
 
   /* dcache 接口 */
   wire [         `ysyx_041514_NPC_ADDR_BUS]  mem_addr;  // 地址
-  wire                           mem_addr_valid;  // 地址是否有效
-  wire [                   7:0 ] mem_mask;  // 数据掩码,读取多少位
+  wire                                       mem_addr_valid;  // 地址是否有效
+  wire [                               7:0 ] mem_mask;  // 数据掩码,读取多少位
   wire [             `ysyx_041514_XLEN_BUS]  mem_rdata;  // 返回到读取的数据
   wire [             `ysyx_041514_XLEN_BUS]  mem_wdata;  // 写入的数据
-  wire [                   3:0 ] mem_size;  // 数据大小
-  wire                           mem_write_valid;  // 1'b1,表示写;1'b0 表示读 
-  wire                           mem_data_ready;  // 读/写 数据是否准备好
-  wire                           mem_fencei_valid;
-  wire                           mem_fencei_ready;
+  wire [                               3:0 ] mem_size;  // 数据大小
+  wire                                       mem_write_valid;  // 1'b1,表示写;1'b0 表示读 
+  wire                                       mem_data_ready;  // 读/写 数据是否准备好
+  wire                                       mem_fencei_valid;
+  wire                                       mem_fencei_ready;
 
 
   /* TARP 总线 */
   wire [             `ysyx_041514_TRAP_BUS]  trap_bus_mem;
 
-  wire                           ram_stall_valid_mem;
+  wire                                       ram_stall_valid_mem;
 
   ysyx_041514_memory u_memory (
       //TODO:TEST
@@ -632,20 +643,20 @@ module ysyx_041514 (
   wire [             `ysyx_041514_XLEN-1:0 ] csr_mie_writedata_mem_wb;
   wire [             `ysyx_041514_XLEN-1:0 ] csr_mip_writedata_mem_wb;
 
-  wire                           csr_mstatus_write_valid_mem_wb;
-  wire                           csr_mepc_write_valid_mem_wb;
-  wire                           csr_mcause_write_valid_mem_wb;
-  wire                           csr_mtval_write_valid_mem_wb;
-  wire                           csr_mtvec_write_valid_mem_wb;
-  wire                           csr_mie_write_valid_mem_wb;
-  wire                           csr_mip_write_valid_mem_wb;
+  wire                                       csr_mstatus_write_valid_mem_wb;
+  wire                                       csr_mepc_write_valid_mem_wb;
+  wire                                       csr_mcause_write_valid_mem_wb;
+  wire                                       csr_mtval_write_valid_mem_wb;
+  wire                                       csr_mtvec_write_valid_mem_wb;
+  wire                                       csr_mie_write_valid_mem_wb;
+  wire                                       csr_mip_write_valid_mem_wb;
   wire [             `ysyx_041514_XLEN-1:0 ] pc_mem_wb;  //指令地址
   wire [         `ysyx_041514_INST_LEN-1:0 ] inst_data_mem_wb;  //指令内容
 
 
   wire [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0 ] csr_addr_mem_wb;  //csr 写回地址
   wire [             `ysyx_041514_XLEN_BUS]  exc_csr_data_mem_wb;  //csr 写回数据
-  wire                           exc_csr_valid_mem_wb;  // csr 写回使能
+  wire                                       exc_csr_valid_mem_wb;  // csr 写回使能
   wire [    `ysyx_041514_REG_ADDRWIDTH-1:0 ] rd_addr_mem_wb;  // gpr 写回使能
   wire [             `ysyx_041514_XLEN-1:0 ] mem_data_mem_wb;  //访存阶段的数据
 
@@ -810,11 +821,11 @@ module ysyx_041514 (
 
 
   wire [`ysyx_041514_NPC_ADDR_BUS]  ram_raddr_icache;
-  wire                  ram_raddr_valid_icache;
-  wire [          7:0 ] ram_rmask_icache;
-  wire [          3:0 ] ram_rsize_icache;
-  wire [          7:0 ] ram_rlen_icache;
-  wire                  ram_rdata_ready_icache;
+  wire                              ram_raddr_valid_icache;
+  wire [                      7:0 ] ram_rmask_icache;
+  wire [                      3:0 ] ram_rsize_icache;
+  wire [                      7:0 ] ram_rlen_icache;
+  wire                              ram_rdata_ready_icache;
   wire [    `ysyx_041514_XLEN_BUS]  ram_rdata_icache;
 
 
@@ -841,20 +852,20 @@ module ysyx_041514 (
   /* dcache<-->mem 端口 */
   // 读端口
   wire [`ysyx_041514_NPC_ADDR_BUS]  ram_raddr_dcache;
-  wire                  ram_raddr_valid_dcache;
-  wire [          7:0 ] ram_rmask_dcache;
-  wire [          3:0 ] ram_rsize_dcache;
-  wire [          7:0 ] ram_rlen_dcache;
-  wire                  ram_rdata_ready_dcache;
+  wire                              ram_raddr_valid_dcache;
+  wire [                      7:0 ] ram_rmask_dcache;
+  wire [                      3:0 ] ram_rsize_dcache;
+  wire [                      7:0 ] ram_rlen_dcache;
+  wire                              ram_rdata_ready_dcache;
   wire [    `ysyx_041514_XLEN_BUS]  ram_rdata_dcache;
   // 写端口
   wire [`ysyx_041514_NPC_ADDR_BUS]  ram_waddr_dcache;  // 地址
-  wire                  ram_waddr_valid_dcache;  // 地址是否准备好
-  wire [          7:0 ] ram_wmask_dcache;  // 数据掩码,写入多少位
-  wire                  ram_wdata_ready_dcache;  // 数据是否已经写入
+  wire                              ram_waddr_valid_dcache;  // 地址是否准备好
+  wire [                      7:0 ] ram_wmask_dcache;  // 数据掩码,写入多少位
+  wire                              ram_wdata_ready_dcache;  // 数据是否已经写入
   wire [    `ysyx_041514_XLEN_BUS]  ram_wdata_dcache;  // 写入的数据
-  wire [          3:0 ] ram_wsize_dcache;
-  wire [          7:0 ] ram_wlen_dcache;
+  wire [                      3:0 ] ram_wsize_dcache;
+  wire [                      7:0 ] ram_wlen_dcache;
 
   ysyx_041514_dcache_top u_dcache_top (
       .clk               (clk),
@@ -1084,12 +1095,12 @@ module ysyx_041514 (
   /********************** 各种数据缓存  ***********************/
   /* 乘法器数据缓存 */
   wire [`ysyx_041514_XLEN_BUS] alu_data = exc_alu_data_ex;
-  wire                                         alu_data_ready;
-  wire                                         alu_data_buff_valid;
+  wire                                                     alu_data_ready;
+  wire                                                     alu_data_buff_valid;
   wire [`ysyx_041514_XLEN_BUS]                             alu_data_buff;
 
 
-  wire                                         rdata_buff_valid;
+  wire                                                     rdata_buff_valid;
   wire [`ysyx_041514_XLEN_BUS]                             rdata_buff;
   ysyx_041514_data_buff u_data_buff (
       .clk                  (clk),

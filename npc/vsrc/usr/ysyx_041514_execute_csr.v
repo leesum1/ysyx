@@ -1,4 +1,4 @@
-`include "./../sysconfig.v"
+`include "sysconfig.v"
 
 
 module ysyx_041514_execute_csr (

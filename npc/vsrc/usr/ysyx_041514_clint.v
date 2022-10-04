@@ -1,4 +1,4 @@
-`include "./../sysconfig.v"
+`include "sysconfig.v"
 /* 与 mem 位于同一阶段 */
 module ysyx_041514_clint (
     input wire clk,
