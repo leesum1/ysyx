@@ -46,21 +46,21 @@ Simtop::~Simtop() {
 
 void Simtop::reset() {
     int i = 5;
-    top->rst = 1;
+    top->reset = 1;
     while (i-- > 0) {
         stepCycle(false);
     }
-    top->rst = 0;
+    top->reset = 0;
 }
 
 void Simtop::changeCLK() {
-    top->clk = !top->clk;
+    top->clock = !top->clock;
     top->eval();
 }
 
 
 void Simtop::posedgeCLK() {
-    top->clk = 1;
+    top->clock = 1;
     u_axi4->update_input(); // 上升沿采集到的是之前的值
     top->eval();
     u_axi4->beat();
@@ -69,7 +69,7 @@ void Simtop::posedgeCLK() {
     clk_count++; // 记录时钟数
 }
 void Simtop::negedgeCLK() {
-    top->clk = 0;
+    top->clock = 0;
     top->eval();
 }
 
@@ -322,7 +322,7 @@ void Simtop::sdbRun(void) {
     if (isSdbOk("difftest")) {
         this->u_difftest.difftest_step();
     }
-    if (!top->rst && isSdbOk("itrace")) {
+    if (!top->reset && isSdbOk("itrace")) {
         u_itrace.llvmDis();
     }
     if (isSdbOk("wp")) {

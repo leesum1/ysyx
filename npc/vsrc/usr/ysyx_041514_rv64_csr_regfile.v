@@ -35,8 +35,12 @@ module ysyx_041514_rv64_csr_regfile (
     input wire [`ysyx_041514_XLEN-1:0] csr_writedata_i
 );
 
-  // mstatus
-  wire [`ysyx_041514_XLEN-1:0] _mstatus_d = (csr_mstatus_write_valid_i) ? csr_mstatus_writedata_i : csr_writedata_i;
+
+  // mstatus TODO 
+  wire [`ysyx_041514_XLEN-1:0] _mstatus_d = (csr_mstatus_write_valid_i) ? csr_mstatus_writedata_i : 
+                                            (_mstatus_en)?csr_writedata_i:
+                                            {_mstatus_q[63:13],1'b1,1'b1,_mstatus_q[10:0]};
+
   reg [`ysyx_041514_XLEN-1:0] _mstatus_q;
   reg _mstatus_en;
 
@@ -60,8 +64,10 @@ module ysyx_041514_rv64_csr_regfile (
   reg [`ysyx_041514_XLEN-1:0] _mtvec_q;
   reg _mtvec_en;
 
-  // mip
-  wire [`ysyx_041514_XLEN-1:0] _mip_d = (csr_mip_write_valid_i) ? csr_mip_writedata_i : csr_writedata_i;
+  // mip TODO 设计不完善 目前只有 mtime 会使用
+  wire [`ysyx_041514_XLEN-1:0] _mip_d = (csr_mip_write_valid_i) ? csr_mip_writedata_i : 
+                                        (_mip_en)?csr_writedata_i:
+                                        {_mip_q[63:8],1'b0,_mip_q[6:0]}; // mtime 清 0
   reg [`ysyx_041514_XLEN-1:0] _mip_q;
   reg _mip_en;
 
@@ -93,7 +99,7 @@ module ysyx_041514_rv64_csr_regfile (
     endcase
   end
 
-  /* 读取数据 */
+  /* 读取���据 */
   reg [`ysyx_041514_XLEN-1:0] _csr_readdata;
   always @(*) begin
     case (csr_readaddr_i)
@@ -128,7 +134,7 @@ module ysyx_041514_rv64_csr_regfile (
       .rst (rst),
       .din (_mstatus_d),
       .dout(_mstatus_q),
-      .wen (_mstatus_en)
+      .wen (1'b1)
   );
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_XLEN),
@@ -179,7 +185,7 @@ module ysyx_041514_rv64_csr_regfile (
       .rst (rst),
       .din (_mip_d),
       .dout(_mip_q),
-      .wen (_mip_en)
+      .wen (1'b1)
   );
 
   ysyx_041514_regTemplate #(

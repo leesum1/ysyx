@@ -29,29 +29,63 @@ module ysyx_041514_dcache_top (
     /* dcache<-->mem 端口 */
     // 读端口
     output [`ysyx_041514_NPC_ADDR_BUS] ram_raddr_dcache_o,
-    output                 ram_raddr_valid_dcache_o,
-    output [          7:0] ram_rmask_dcache_o,
-    output [          3:0] ram_rsize_dcache_o,
-    output [          7:0] ram_rlen_dcache_o,
-    input                  ram_rdata_ready_dcache_i,
+    output                             ram_raddr_valid_dcache_o,
+    output [                      7:0] ram_rmask_dcache_o,
+    output [                      3:0] ram_rsize_dcache_o,
+    output [                      7:0] ram_rlen_dcache_o,
+    input                              ram_rdata_ready_dcache_i,
     input  [    `ysyx_041514_XLEN_BUS] ram_rdata_dcache_i,
     // 写端口
     output [`ysyx_041514_NPC_ADDR_BUS] ram_waddr_dcache_o,        // 地址
-    output                 ram_waddr_valid_dcache_o,  // 地址是否准备好
-    output [          7:0] ram_wmask_dcache_o,        // 数据掩码,写入多少位
-    output [          3:0] ram_wsize_dcache_o,
-    output [          7:0] ram_wlen_dcache_o,         // 突发传输的长度
-    input                  ram_wdata_ready_dcache_i,  // 数据是否已经写入
-    output [    `ysyx_041514_XLEN_BUS] ram_wdata_dcache_o         // 写入的数据
+    output                             ram_waddr_valid_dcache_o,  // 地址是否准备好
+    output [                      7:0] ram_wmask_dcache_o,        // 数据掩码,写入多少位
+    output [                      3:0] ram_wsize_dcache_o,
+    output [                      7:0] ram_wlen_dcache_o,         // 突发传输的长度
+    input                              ram_wdata_ready_dcache_i,  // 数据是否已经写入
+    output [    `ysyx_041514_XLEN_BUS] ram_wdata_dcache_o,        // 写入的数据
+
+
+    /* sram */
+    output [  5:0] io_sram0_addr,
+    output         io_sram0_cen,
+    output         io_sram0_wen,
+    output [127:0] io_sram0_wmask,
+    output [127:0] io_sram0_wdata,
+    input  [127:0] io_sram0_rdata,
+    output [  5:0] io_sram1_addr,
+    output         io_sram1_cen,
+    output         io_sram1_wen,
+    output [127:0] io_sram1_wmask,
+    output [127:0] io_sram1_wdata,
+    input  [127:0] io_sram1_rdata,
+    output [  5:0] io_sram2_addr,
+    output         io_sram2_cen,
+    output         io_sram2_wen,
+    output [127:0] io_sram2_wmask,
+    output [127:0] io_sram2_wdata,
+    input  [127:0] io_sram2_rdata,
+    output [  5:0] io_sram3_addr,
+    output         io_sram3_cen,
+    output         io_sram3_wen,
+    output [127:0] io_sram3_wmask,
+    output [127:0] io_sram3_wdata,
+    input  [127:0] io_sram3_rdata
 );
 
-  assign ram_wlen_dcache_o = _ram_wlen_dcache_o;
-  assign ram_rlen_dcache_o = _ram_rlen_dcache_o;
+  assign ram_wlen_dcache_o  = _ram_wlen_dcache_o;
+  assign ram_rlen_dcache_o  = _ram_rlen_dcache_o;
   assign mem_fencei_ready_o = fencei_ready;
 
   // uncache 检查
 
-  wire uncache = (mem_addr_i & `ysyx_041514_MMIO_BASE) == `ysyx_041514_MMIO_BASE;
+  // wire uncache = (mem_addr_i & `ysyx_041514_MMIO_BASE) == `ysyx_041514_MMIO_BASE;
+  wire uncache;
+  ysyx_041514_uncache_check u_ysyx_041514_uncache_check1 (
+      .addr_check_i   (mem_addr_i),
+      .uncache_valid_o(uncache)
+  );
+
+
   wire fencei_valid = mem_fencei_valid_i;
 
   wire [5:0] cache_blk_addr;
@@ -125,7 +159,7 @@ module ysyx_041514_dcache_top (
       dcache_tag_wen <= 0;
       dcache_data_wen <= 0;
       _dirty_bit_write <= 0;
-      _dirty_flush<=0;
+      _dirty_flush <= 0;
       fencei_ready <= 0;
       dcache_write_hit_valid <= 0;
       dcache_wdata_writehit <= 0;
@@ -145,7 +179,7 @@ module ysyx_041514_dcache_top (
           blk_addr_reg <= cache_blk_addr;
           line_tag_reg <= cache_line_tag;
           fencei_ready <= 0;
-          _dirty_flush <=`ysyx_041514_FALSE;
+          _dirty_flush <= `ysyx_041514_FALSE;
           //dcache_wmask <= 0;
           // cache data 为单端口 ram,不能同时读写, uncache 直接访问内存
           if (mem_addr_valid_i && ~dcache_data_wen && ~uncache && ~dcache_tag_wen) begin
@@ -198,7 +232,7 @@ module ysyx_041514_dcache_top (
               dcache_data_ready         <= `ysyx_041514_FALSE;
               _ram_waddr_dcache_o       <= mem_addr_i;  // 写地址
               _ram_waddr_valid_dcache_o <= `ysyx_041514_TRUE;  // 地址有效
-              _ram_wmask_dcache_o       <= mem_mask_i;  // 写掩码
+              _ram_wmask_dcache_o       <= 8'b1111_1111;  // 写掩码
               _ram_wdata_dcache_o       <= mem_wdata_i;  // 写数据
               _ram_wsize_dcache_o       <= mem_size_i;  //写大小
               _ram_wlen_dcache_o        <= 8'd0;  // 不突发
@@ -207,9 +241,8 @@ module ysyx_041514_dcache_top (
               dcache_data_ready         <= `ysyx_041514_FALSE;
               _ram_raddr_dcache_o       <= mem_addr_i;  // 读地址
               _ram_raddr_valid_dcache_o <= `ysyx_041514_TRUE;  // 地址有效
-              _ram_rmask_dcache_o       <= mem_mask_i;  // 读掩码
+              _ram_rmask_dcache_o       <= 8'b1111_1111;  // 读掩码
               _ram_rsize_dcache_o       <= mem_size_i;  //读大小
-              _ram_rsize_dcache_o       <= mem_size_i;  //写大小
               _ram_rlen_dcache_o        <= 8'd0;  // 不突发
             end
 
@@ -274,9 +307,9 @@ module ysyx_041514_dcache_top (
         UNCACHE_READ: begin
           if (_ram_raddr_valid_dcache_o & ram_rdata_ready_dcache_i) begin
             _ram_raddr_valid_dcache_o <= `ysyx_041514_FALSE;
-            dcache_data_ready         <= `ysyx_041514_TRUE;  // 完成信号
-            uncache_rdata             <= ram_rdata_dcache_i;  // 数据返回
-            dcache_state              <= CACHE_IDLE;
+            dcache_data_ready <= `ysyx_041514_TRUE;  // 完成信号
+            uncache_rdata <= ram_rdata_dcache_i >> {blk_addr_reg[2:0], 3'b0};  // 数据返回
+            dcache_state <= CACHE_IDLE;
           end
         end
         UNCACHE_WRITE: begin
@@ -320,7 +353,7 @@ module ysyx_041514_dcache_top (
           dcache_tag_wen <= `ysyx_041514_FALSE;  // 写 tag 
           if (fencei_count == 'd64) begin
             dcache_state <= CACHE_IDLE;
-            _dirty_flush <=`ysyx_041514_TRUE;
+            _dirty_flush <= `ysyx_041514_TRUE;
             fencei_ready <= `ysyx_041514_TRUE;
             fencei_count <= 0;
           end else begin
@@ -374,13 +407,13 @@ module ysyx_041514_dcache_top (
   ysyx_041514_dcache_tag u_dcache_tag (
       .clk              (clk),
       .rst              (rst),
-      .dcache_tag_i     (dcache_tag_write),   // tag
-      .dcache_index_i   (dcache_index),   // index
-      .write_valid_i    (dcache_tag_wen),   // 写使能
+      .dcache_tag_i     (dcache_tag_write),  // tag
+      .dcache_index_i   (dcache_index),      // index
+      .write_valid_i    (dcache_tag_wen),    // 写使能
       .dcache_tag_o     (dcache_tag_read),
       .dirty_bit_read_o (dirty_bit_read),
       .dirty_bit_write_i(dirty_bit_write),
-      .dirty_flush_i(dirty_flush),
+      .dirty_flush_i    (dirty_flush),
       .dcache_hit_o     (dcache_hit)
   );
 
@@ -394,8 +427,8 @@ module ysyx_041514_dcache_top (
   wire [`ysyx_041514_XLEN_BUS] dcache_rdata;
   wire [`ysyx_041514_XLEN_BUS] dcache_writeback_data;
   ysyx_041514_dcache_data u_dcache_data (
-      .clk                     (clk),
-      .rst                     (rst),
+      // .clk                     (clk),
+      // .rst                     (rst),
       .dcache_index_i          (dcache_index),
       // index
       .dcache_blk_addr_i       (cache_blk_addr),
@@ -406,8 +439,35 @@ module ysyx_041514_dcache_top (
       .dcache_allocate_valid_i (dcache_allocate_valid),
       .dcache_writeback_valid_i(dcache_writeback_valid),
       .dcache_writeback_data_o (dcache_writeback_data),
-      .dcache_rdata_o          (dcache_rdata)
+      .dcache_rdata_o          (dcache_rdata),
+      /* sram */
+      .io_sram0_addr           (io_sram0_addr),
+      .io_sram0_cen            (io_sram0_cen),
+      .io_sram0_wen            (io_sram0_wen),
+      .io_sram0_wmask          (io_sram0_wmask),
+      .io_sram0_wdata          (io_sram0_wdata),
+      .io_sram0_rdata          (io_sram0_rdata),
+      .io_sram1_addr           (io_sram1_addr),
+      .io_sram1_cen            (io_sram1_cen),
+      .io_sram1_wen            (io_sram1_wen),
+      .io_sram1_wmask          (io_sram1_wmask),
+      .io_sram1_wdata          (io_sram1_wdata),
+      .io_sram1_rdata          (io_sram1_rdata),
+      .io_sram2_addr           (io_sram2_addr),
+      .io_sram2_cen            (io_sram2_cen),
+      .io_sram2_wen            (io_sram2_wen),
+      .io_sram2_wmask          (io_sram2_wmask),
+      .io_sram2_wdata          (io_sram2_wdata),
+      .io_sram2_rdata          (io_sram2_rdata),
+      .io_sram3_addr           (io_sram3_addr),
+      .io_sram3_cen            (io_sram3_cen),
+      .io_sram3_wen            (io_sram3_wen),
+      .io_sram3_wmask          (io_sram3_wmask),
+      .io_sram3_wdata          (io_sram3_wdata),
+      .io_sram3_rdata          (io_sram3_rdata)
   );
+
+
 
 
   assign mem_rdata_o = (uncache) ? uncache_rdata : dcache_rdata;

@@ -584,6 +584,7 @@ module ysyx_041514_core (
       .clk(clk),
       .rst(rst),
       .pc_i(pc_ex_mem),
+      .pc_from_exe_i(pc_ex),
       .inst_data_i(inst_data_ex_mem),
       /* 各级流水线的 stall 请求 */
       .load_use_valid_id_i(load_use_valid),  //load-use data hazard from id
@@ -845,7 +846,32 @@ module ysyx_041514_core (
       .ram_rsize_icache_o(ram_rsize_icache),
       .ram_rlen_icache_o(ram_rlen_icache),
       .ram_rdata_ready_icache_i(ram_rdata_ready_icache),
-      .ram_rdata_icache_i(ram_rdata_icache)
+      .ram_rdata_icache_i(ram_rdata_icache),
+      /* sram */
+      .io_sram4_addr(io_sram4_addr),
+      .io_sram4_cen(io_sram4_cen),
+      .io_sram4_wen(io_sram4_wen),
+      .io_sram4_wmask(io_sram4_wmask),
+      .io_sram4_wdata(io_sram4_wdata),
+      .io_sram4_rdata(io_sram4_rdata),
+      .io_sram5_addr(io_sram5_addr),
+      .io_sram5_cen(io_sram5_cen),
+      .io_sram5_wen(io_sram5_wen),
+      .io_sram5_wmask(io_sram5_wmask),
+      .io_sram5_wdata(io_sram5_wdata),
+      .io_sram5_rdata(io_sram5_rdata),
+      .io_sram6_addr(io_sram6_addr),
+      .io_sram6_cen(io_sram6_cen),
+      .io_sram6_wen(io_sram6_wen),
+      .io_sram6_wmask(io_sram6_wmask),
+      .io_sram6_wdata(io_sram6_wdata),
+      .io_sram6_rdata(io_sram6_rdata),
+      .io_sram7_addr(io_sram7_addr),
+      .io_sram7_cen(io_sram7_cen),
+      .io_sram7_wen(io_sram7_wen),
+      .io_sram7_wmask(io_sram7_wmask),
+      .io_sram7_wdata(io_sram7_wdata),
+      .io_sram7_rdata(io_sram7_rdata)
   );
 
 
@@ -868,19 +894,19 @@ module ysyx_041514_core (
   wire [                      7:0 ] ram_wlen_dcache;
 
   ysyx_041514_dcache_top u_dcache_top (
-      .clk               (clk),
-      .rst               (rst),
+      .clk(clk),
+      .rst(rst),
       .mem_fencei_valid_i(mem_fencei_valid),
       .mem_fencei_ready_o(mem_fencei_ready),
       /* cpu<-->cache 端口 */
-      .mem_addr_i        (mem_addr),          // CPU 的访存信息 
-      .mem_mask_i        (mem_mask),          // 访存掩码
+      .mem_addr_i(mem_addr),  // CPU 的访存信息 
+      .mem_mask_i(mem_mask),  // 访存掩码
       .mem_addr_valid_i  (mem_addr_valid),    // 地址是否有效，无效时，���止访问 cache
-      .mem_write_valid_i (mem_write_valid),   // 1'b1,表示写;1'b0 表示读 
-      .mem_wdata_i       (mem_wdata),         // 写数据
-      .mem_rdata_o       (mem_rdata),         // dcache 返回读数据
-      .mem_data_ready_o  (mem_data_ready),
-      .mem_size_i        (mem_size),
+      .mem_write_valid_i(mem_write_valid),  // 1'b1,表示写;1'b0 表示读 
+      .mem_wdata_i(mem_wdata),  // 写数据
+      .mem_rdata_o(mem_rdata),  // dcache 返回读数据
+      .mem_data_ready_o(mem_data_ready),
+      .mem_size_i(mem_size),
       // dcache 读数据是否准备好(未准备好需要暂停流水线)
 
       /* cache<-->mem 端口 */
@@ -899,7 +925,33 @@ module ysyx_041514_core (
       .ram_wsize_dcache_o(ram_wsize_dcache),
       .ram_wlen_dcache_o(ram_wlen_dcache),
       .ram_wdata_ready_dcache_i(ram_wdata_ready_dcache),// 数据是否已经写入// 写入的数据
-      .ram_wdata_dcache_o(ram_wdata_dcache)
+      .ram_wdata_dcache_o(ram_wdata_dcache),
+
+      /* sram */
+      .io_sram0_addr (io_sram0_addr),
+      .io_sram0_cen  (io_sram0_cen),
+      .io_sram0_wen  (io_sram0_wen),
+      .io_sram0_wmask(io_sram0_wmask),
+      .io_sram0_wdata(io_sram0_wdata),
+      .io_sram0_rdata(io_sram0_rdata),
+      .io_sram1_addr (io_sram1_addr),
+      .io_sram1_cen  (io_sram1_cen),
+      .io_sram1_wen  (io_sram1_wen),
+      .io_sram1_wmask(io_sram1_wmask),
+      .io_sram1_wdata(io_sram1_wdata),
+      .io_sram1_rdata(io_sram1_rdata),
+      .io_sram2_addr (io_sram2_addr),
+      .io_sram2_cen  (io_sram2_cen),
+      .io_sram2_wen  (io_sram2_wen),
+      .io_sram2_wmask(io_sram2_wmask),
+      .io_sram2_wdata(io_sram2_wdata),
+      .io_sram2_rdata(io_sram2_rdata),
+      .io_sram3_addr (io_sram3_addr),
+      .io_sram3_cen  (io_sram3_cen),
+      .io_sram3_wen  (io_sram3_wen),
+      .io_sram3_wmask(io_sram3_wmask),
+      .io_sram3_wdata(io_sram3_wdata),
+      .io_sram3_rdata(io_sram3_rdata)
   );
 
   /****************************测试中的访存模块***********************************/
@@ -985,7 +1037,7 @@ module ysyx_041514_core (
       .arb_rlen_o       (arb_rlen),
       .arb_rdata_i      (arb_rdata),        // 读数据返回mem
       .arb_rdata_ready_i(arb_rdata_ready),  // 读数据是否有效
-      .arb_rlast_i(arb_rlast),
+      .arb_rlast_i      (arb_rlast),
       //写通道
       .arb_write_addr_o (arb_write_addr),   // mem 阶段的 write
       .arb_write_valid_o(arb_write_valid),
@@ -1034,7 +1086,7 @@ module ysyx_041514_core (
       .arb_rlen_i       (arb_rlen),
       .arb_rdata_o      (arb_rdata),        // 读数据返回mem
       .arb_rdata_ready_o(arb_rdata_ready),  // 读数据是否有效//写通道
-      .arb_rlast_o(arb_rlast),
+      .arb_rlast_o      (arb_rlast),
       // 写通道
       .arb_write_addr_i (arb_write_addr),   // mem 阶段的 write
       .arb_write_valid_i(arb_write_valid),

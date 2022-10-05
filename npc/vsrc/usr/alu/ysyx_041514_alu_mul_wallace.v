@@ -103,7 +103,7 @@ module ysyx_041514_alu_mul_wallace (
 
 
   wire [127:0] Partial_product[33-1:0];
-  alu_mul_booth_r4 u_alu_mul_booth_r4 (
+  ysyx_041514_alu_mul_booth_r4 u_alu_mul_booth_r4 (
       .rs1_signed_valid_i(rs1_signed_valid_i),
       .rs2_signed_valid_i(rs2_signed_valid_i),
       .rs1_data_i        (rs1_data_i),
@@ -187,7 +187,7 @@ module ysyx_041514_alu_mul_wallace (
   genvar step1_A0;
   generate
     for (step1_A0 = 0; step1_A0 < 128; step1_A0 = step1_A0 + 1) begin
-      alu_mul_compressor52 u_alu_mul_compressor52 (
+      ysyx_041514_alu_mul_compressor52 u_alu_mul_compressor52 (
           .x0   (step1_pp[0][step1_A0]),
           .x1   (step1_pp[1][step1_A0]),
           .x2   (step1_pp[2][step1_A0]),
@@ -229,7 +229,7 @@ module ysyx_041514_alu_mul_wallace (
   genvar step1_A1;
   generate
     for (step1_A1 = 0; step1_A1 < 128; step1_A1 = step1_A1 + 1) begin
-      alu_mul_compressor42 u_alu_mul_compressor42_step1_A1 (
+      ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step1_A1 (
           .x0   (step1_pp[5][step1_A1]),
           .x1   (step1_pp[6][step1_A1]),
           .x2   (step1_pp[7][step1_A1]),
@@ -249,7 +249,7 @@ module ysyx_041514_alu_mul_wallace (
   genvar step1_A2;
   generate
     for (step1_A2 = 0; step1_A2 < 128; step1_A2 = step1_A2 + 1) begin
-      alu_mul_compressor42 u_alu_mul_compressor42_step1_A2 (
+      ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step1_A2 (
           .x0   (step1_pp[9][step1_A2]),
           .x1   (step1_pp[10][step1_A2]),
           .x2   (step1_pp[11][step1_A2]),
@@ -269,7 +269,7 @@ module ysyx_041514_alu_mul_wallace (
   genvar step1_A3;
   generate
     for (step1_A3 = 0; step1_A3 < 128; step1_A3 = step1_A3 + 1) begin
-      alu_mul_compressor42 u_alu_mul_compressor42_step1_A3 (
+      ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step1_A3 (
           .x0   (step1_pp[13][step1_A3]),
           .x1   (step1_pp[14][step1_A3]),
           .x2   (step1_pp[15][step1_A3]),
@@ -291,7 +291,7 @@ module ysyx_041514_alu_mul_wallace (
   genvar step1_A4;
   generate
     for (step1_A4 = 0; step1_A4 < 128; step1_A4 = step1_A4 + 1) begin
-      alu_mul_compressor42 u_alu_mul_compressor42_step1_A4 (
+      ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step1_A4 (
           .x0   (step1_pp[17][step1_A4]),
           .x1   (step1_pp[18][step1_A4]),
           .x2   (step1_pp[19][step1_A4]),
@@ -312,7 +312,7 @@ module ysyx_041514_alu_mul_wallace (
   genvar step1_A5;
   generate
     for (step1_A5 = 0; step1_A5 < 128; step1_A5 = step1_A5 + 1) begin
-      alu_mul_compressor42 u_alu_mul_compressor42_tep1_A5 (
+      ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_tep1_A5 (
           .x0   (step1_pp[21][step1_A5]),
           .x1   (step1_pp[22][step1_A5]),
           .x2   (step1_pp[23][step1_A5]),
@@ -332,7 +332,7 @@ module ysyx_041514_alu_mul_wallace (
   genvar step1_A6;
   generate
     for (step1_A6 = 0; step1_A6 < 128; step1_A6 = step1_A6 + 1) begin
-      alu_mul_compressor42 u_alu_mul_compressor42_step1_A6 (
+      ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step1_A6 (
           .x0   (step1_pp[25][step1_A6]),
           .x1   (step1_pp[26][step1_A6]),
           .x2   (step1_pp[27][step1_A6]),
@@ -352,7 +352,7 @@ module ysyx_041514_alu_mul_wallace (
   genvar step1_A7;
   generate
     for (step1_A7 = 0; step1_A7 < 128; step1_A7 = step1_A7 + 1) begin
-      alu_mul_compressor42 u_alu_mul_compressor42_step1_A7 (
+      ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step1_A7 (
           .x0   (step1_pp[29][step1_A7]),
           .x1   (step1_pp[30][step1_A7]),
           .x2   (step1_pp[31][step1_A7]),
@@ -418,7 +418,7 @@ module ysyx_041514_alu_mul_wallace (
   genvar step2_A0;
   generate
     for (step2_A0 = 0; step2_A0 < 128; step2_A0 = step2_A0 + 1) begin
-      alu_mul_compressor42 u_alu_mul_compressor42_step2_A0 (
+      ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step2_A0 (
           .x0   (step2_pp[0][step2_A0]),
           .x1   (step2_pp[1][step2_A0]),
           .x2   (step2_pp[2][step2_A0]),
@@ -438,7 +438,7 @@ module ysyx_041514_alu_mul_wallace (
   genvar step2_A1;
   generate
     for (step2_A1 = 0; step2_A1 < 128; step2_A1 = step2_A1 + 1) begin
-      alu_mul_compressor42 u_alu_mul_compressor42_step2_A1 (
+      ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step2_A1 (
           .x0   (step2_pp[4][step2_A1]),
           .x1   (step2_pp[5][step2_A1]),
           .x2   (step2_pp[6][step2_A1]),
@@ -458,7 +458,7 @@ module ysyx_041514_alu_mul_wallace (
   genvar step2_A2;
   generate
     for (step2_A2 = 0; step2_A2 < 128; step2_A2 = step2_A2 + 1) begin
-      alu_mul_compressor42 u_alu_mul_compressor42_step2_A2 (
+      ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step2_A2 (
           .x0   (step2_pp[8][step2_A2]),
           .x1   (step2_pp[9][step2_A2]),
           .x2   (step2_pp[10][step2_A2]),
@@ -478,7 +478,7 @@ module ysyx_041514_alu_mul_wallace (
   genvar step2_A3;
   generate
     for (step2_A3 = 0; step2_A3 < 128; step2_A3 = step2_A3 + 1) begin
-      alu_mul_compressor42 u_alu_mul_compressor42_step2_A3 (
+      ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step2_A3 (
           .x0   (step2_pp[12][step2_A3]),
           .x1   (step2_pp[13][step2_A3]),
           .x2   (step2_pp[14][step2_A3]),
@@ -534,7 +534,7 @@ module ysyx_041514_alu_mul_wallace (
   genvar step3_A0;
   generate
     for (step3_A0 = 0; step3_A0 < 128; step3_A0 = step3_A0 + 1) begin
-      alu_mul_compressor42 u_alu_mul_compressor42_step3_A0 (
+      ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step3_A0 (
           .x0   (step3_pp[0][step3_A0]),
           .x1   (step3_pp[1][step3_A0]),
           .x2   (step3_pp[2][step3_A0]),
@@ -554,7 +554,7 @@ module ysyx_041514_alu_mul_wallace (
   genvar step3_A1;
   generate
     for (step3_A1 = 0; step3_A1 < 128; step3_A1 = step3_A1 + 1) begin
-      alu_mul_compressor42 u_alu_mul_compressor42_step3_A1 (
+      ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step3_A1 (
           .x0   (step3_pp[4][step3_A1]),
           .x1   (step3_pp[5][step3_A1]),
           .x2   (step3_pp[6][step3_A1]),
@@ -603,7 +603,7 @@ module ysyx_041514_alu_mul_wallace (
   genvar step4_A0;
   generate
     for (step4_A0 = 0; step4_A0 < 128; step4_A0 = step4_A0 + 1) begin
-      alu_mul_compressor42 u_alu_mul_compressor42_step4_A0 (
+      ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step4_A0 (
           .x0   (step4_pp[0][step4_A0]),
           .x1   (step4_pp[1][step4_A0]),
           .x2   (step4_pp[2][step4_A0]),

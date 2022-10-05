@@ -66,7 +66,7 @@ module ysyx_041514_axi_arb (
 
 
   reg [                      1:0 ] arb_state;
-  
+
   always @(posedge clk) begin
     if (rst) begin
       arb_state <= ARB_IDLE;
@@ -93,18 +93,33 @@ module ysyx_041514_axi_arb (
             _arb_rsize_o <= if_rsize_i;
             _arb_rlen_o <= if_rlen_i;
           end
+          // if (if_raddr_valid_i) begin
+          //   arb_state <= IF_READ_STATE;
+          //   _arb_read_addr_o <= if_read_addr_i;
+          //   _arb_raddr_valid_o <= if_raddr_valid_i;
+          //   _arb_rmask_o <= if_rmask_i;
+          //   _arb_rsize_o <= if_rsize_i;
+          //   _arb_rlen_o <= if_rlen_i;
+          // end else if (mem_raddr_valid_i) begin
+          //   arb_state <= MEM_READ_STATE;
+          //   _arb_read_addr_o <= mem_read_addr_i;
+          //   _arb_raddr_valid_o <= mem_raddr_valid_i;
+          //   _arb_rmask_o <= mem_rmask_i;
+          //   _arb_rsize_o <= mem_rsize_i;
+          //   _arb_rlen_o <= mem_rlen_i;
+          // end
         end
         MEM_READ_STATE: begin
           if (arb_rlast_i) begin
             arb_state <= ARB_IDLE;
-            _arb_raddr_valid_o<=`ysyx_041514_FALSE;
+            _arb_raddr_valid_o <= `ysyx_041514_FALSE;
           end
 
         end
         IF_READ_STATE: begin
           if (arb_rlast_i) begin
             arb_state <= ARB_IDLE;
-            _arb_raddr_valid_o<=`ysyx_041514_FALSE;
+            _arb_raddr_valid_o <= `ysyx_041514_FALSE;
           end
         end
         default: begin

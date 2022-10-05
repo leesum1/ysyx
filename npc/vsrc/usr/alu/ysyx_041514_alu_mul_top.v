@@ -36,7 +36,7 @@ ysyx_041514_alu_mul_sim u_alu_mul_sim (
     .mul_out_o             (mul_out_o)
 );
 `else
-  alu_mul_wallace u_alu_mul_wallace (
+  ysyx_041514_alu_mul_wallace u_alu_mul_wallace (
       .clk               (clk),
       .rst               (rst),
       .rs1_signed_valid_i(rs1_signed_valid_i),

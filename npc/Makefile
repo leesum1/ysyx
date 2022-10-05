@@ -1,4 +1,4 @@
-TOP_MODULE := ysyx_041514_core
+TOP_MODULE := ysyx_041514
 
 # 原文件
 CSRC +=  $(shell find $(abspath ./csrc) -name "*.cpp")

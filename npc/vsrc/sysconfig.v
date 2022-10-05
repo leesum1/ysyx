@@ -1,15 +1,21 @@
 
 // 仅仅用于仿真加快速度，替换多周期乘除法
-`define MUL_SIM
+//`define MUL_SIM
 //`define DIV_SIM
-
+`define ysyx_041514_YSYX_SOC
 
 `define ysyx_041514_XLEN 64             //cpu 位数
 `define ysyx_041514_INST_LEN 32         //指令长度
 `define ysyx_041514_IMM_LEN 64          //立即数长度
 `define ysyx_041514_REG_NUM 32          //寄存器个数
 `define ysyx_041514_REG_ADDRWIDTH 5     //寄存器地址宽度
+
+`ifndef ysyx_041514_YSYX_SOC
 `define ysyx_041514_PC_RESET_ADDR `ysyx_041514_XLEN'h0000_0000_8000_0000
+`else
+`define ysyx_041514_PC_RESET_ADDR `ysyx_041514_XLEN'h0000_0000_3000_0000
+`endif
+
 
 `define ysyx_041514_NPC_ADDR_LEN 32
 `define ysyx_041514_NPC_ADDR_BUS `ysyx_041514_NPC_ADDR_LEN-1:0
@@ -164,7 +170,7 @@
 `define ysyx_041514_CSR_MTVAL2 12'h34b
 
 
-`define ysyx_041514_CSR_MSTATUS_DEFAULT `ysyx_041514_XLEN'ha00001800
+`define ysyx_041514_CSR_MSTATUS_DEFAULT `ysyx_041514_XLEN'ha00001800 
 
 
 `define ysyx_041514_MTIMECMP_ADDR 32'h2004000

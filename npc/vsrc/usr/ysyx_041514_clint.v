@@ -4,7 +4,8 @@ module ysyx_041514_clint (
     input wire clk,
     input wire rst,
 
-    input [`ysyx_041514_XLEN-1:0] pc_i,
+    input [`ysyx_041514_XLEN-1:0] pc_i, // from mem
+    input [`ysyx_041514_XLEN-1:0] pc_from_exe_i, // from exe
     input [`ysyx_041514_INST_LEN-1:0] inst_data_i,
 
     /* clint 接口 */
@@ -186,9 +187,12 @@ module ysyx_041514_clint (
 
 
 
+  
+
+
   /* set the csr register and new pc if traps happened */
   // step 1: save current pc 
-  assign csr_mepc_writedata_o   = pc_i;
+  assign csr_mepc_writedata_o   = Machine_timer_interrupt?pc_from_exe_i:pc_i; // trap or int
   assign csr_mepc_write_valid_o = trap_valid;
   // step 2: set the trap pc
   wire [`ysyx_041514_XLEN-1:0]_trap_pc_o = csr_mtvec_readdata_i;  // TODO:now only suppot direct mode,need to add vector mode
@@ -204,26 +208,29 @@ module ysyx_041514_clint (
                                    1'b0,1'b0,csr_mstatus_readdata_i[10:8],
                                    csr_mstatus_readdata_i[3],csr_mstatus_readdata_i[6:4],
                                    1'b0,csr_mstatus_readdata_i[2:0]};
+
   wire trap_mstatus_valid = trap_valid;
 
 
   /* restore pc and csr register if mret happened*/
   wire [`ysyx_041514_XLEN-1:0] _mret_pc_o = csr_mepc_readdata_i; // TODO mstatus
   wire _mret_pc_valid_o = trap_mret;
-
+  
+  wire mret_mstatus_valid = trap_mret;
   wire  [`ysyx_041514_XLEN_BUS] mret_mstatus_wdata = {csr_mstatus_readdata_i[63:13],1'b1,1'b1,
                                           csr_mstatus_readdata_i[10:8],1'b1,
                                           csr_mstatus_readdata_i[6:4],
                                           csr_mstatus_readdata_i[7],
                                           csr_mstatus_readdata_i[2:0]};
 
-  wire mret_mstatus_valid = trap_mret;
 
 
   /* mstatus mux */
-  
-  //assign csr_mstatus_write_valid_o = mret_mstatus_valid|trap_mstatus_valid;
-  assign csr_mstatus_write_valid_o = `ysyx_041514_FALSE; // TODO: 需要学习 mstatus，再编写代码
+  `ifndef ysyx_041514_YSYX_SOC
+    assign csr_mstatus_write_valid_o = `ysyx_041514_FALSE;
+  `else
+    assign csr_mstatus_write_valid_o = mret_mstatus_valid|trap_mstatus_valid;
+  `endif 
   assign csr_mstatus_writedata_o = ({`ysyx_041514_XLEN{mret_mstatus_valid}}&mret_mstatus_wdata)|
                                    ({`ysyx_041514_XLEN{trap_mstatus_valid}}&trap_mstatus_wdata);
 
@@ -234,38 +241,9 @@ module ysyx_041514_clint (
   assign clint_pc_valid_o = trap_valid | trap_mret;
 
 
-
-  //   /* type of trap */
-  // wire _trap_ecall = trap_bus_i[`ysyx_041514_TRAP_ECALL_M];
-  // wire _trap_ebreak = trap_bus_i[`ysyx_041514_TRAP_EBREAK];
-  // wire _trap_mret = trap_bus_i[`ysyx_041514_TRAP_MRET];
-  // wire _trap_ebreak = trap_bus_i[`ysyx_041514_TRAP_EBREAK];
-  // wire _trap_valid = (_trap_ecall | _trap_ebreak | _trap_mret);
-
-  // /* set the csr register and new pc if traps happened */
-
-  // // step 1: save current pc 
-  // assign csr_mepc_writedata_o   = pc_i;
-  // assign csr_mepc_write_valid_o = _trap_ecall;
-  // // step 2: set the trap pc
-  // wire [`ysyx_041514_XLEN-1:0]_trap_pc_o = csr_mtvec_readdata_i;  // TODO:now only suppot direct mode,need to add vector mode
-  // wire _trap_pc_valid_o = _trap_ecall;
-  // // step 3: save trap cuase to mcause
-  // assign csr_mcause_writedata_o = 11; //TODO:now,only support ecall from mathine mode(11),need to add more
-  // assign csr_mcause_write_valid_o = _trap_ecall;
-  // // step 4: save inst_data to mtval
-  // assign csr_mtval_writedata_o = {32'b0, inst_data_i};
-  // assign csr_mtval_write_valid_o = _trap_ecall;
-
-  // /* restore pc and csr register if mret happened*/
-  // wire [`ysyx_041514_XLEN-1:0] _mret_pc_o = csr_mepc_readdata_i;
-  // wire _mret_pc_valid_o = _trap_mret;
-
-  // /* pc mux */
-  // assign clint_pc_o = ({`ysyx_041514_XLEN{_mret_pc_valid_o}}&_mret_pc_o)|
-  //                       ({`ysyx_041514_XLEN{_trap_pc_valid_o}}&_trap_pc_o);
-  // assign clint_pc_valid_o = _trap_valid;
-
+  /* mip TODO: 暂时只支持 mtime 中断 */
+  assign csr_mip_write_valid_o = Machine_timer_interrupt;
+  assign csr_mip_writedata_o = {csr_mip_readdata_i[63:8],1'b1,csr_mip_readdata_i[6:0]};
 
 
   /*********************************clint******************************************/
@@ -275,7 +253,11 @@ module ysyx_041514_clint (
   reg [`ysyx_041514_XLEN_BUS] mtime,mtimecmp;
   wire mtime_ge_mtime = (mtime >= mtimecmp); // mtime >= mtimecmp
 
-  wire Machine_timer_interrupt = mtime_ge_mtime&csr_mstatus_mie_valid&csr_mie_mtie_valid;
+
+  wire pc_from_exe_valid = (|pc_from_exe_i[31:0]); // exe 阶段为有效指令
+  wire Machine_timer_interrupt = mtime_ge_mtime&csr_mstatus_mie_valid&csr_mie_mtie_valid&pc_from_exe_valid;
+
+  
 
 
 
@@ -328,10 +310,13 @@ module ysyx_041514_clint (
   end 
 
   /*************ebreak仿真使用**************************/
+
+`ifndef ysyx_041514_YSYX_SOC
   always @(*) begin
     if (_trap_ebreak) begin
       $finish;
     end
   end
+`endif 
 
 endmodule

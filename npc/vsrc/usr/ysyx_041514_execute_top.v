@@ -25,8 +25,8 @@ module ysyx_041514_execute_top (
     /* TARP 总线 */
     input  [             `ysyx_041514_TRAP_BUS] trap_bus_i,
     /********************** to ex/mem **************************/
-    // pc
-    output [             `ysyx_041514_XLEN_BUS] pc_o,
+    // pc 同时给 EX/MEM 和 MEM（用于中断返回地址）
+    output [             `ysyx_041514_XLEN_BUS] pc_o,  
     output [         `ysyx_041514_INST_LEN-1:0] inst_data_o,
     // gpr 译码结果
     output [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_o,
@@ -39,7 +39,7 @@ module ysyx_041514_execute_top (
     output                          csr_imm_valid_o,
     output [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] exc_csr_addr_o,
     output [        `ysyx_041514_MEMOP_LEN-1:0] mem_op_o,         // 访存操作码
-    output [         `ysyx_041514_PCOP_LEN-1:0] pc_op_o,
+    output [         `ysyx_041514_PCOP_LEN-1:0] pc_op_o,  
 
     output [     `ysyx_041514_XLEN_BUS] exc_alu_data_o,   // 同时送给 ID 和 EX/MEM
     output [     `ysyx_041514_XLEN_BUS] exc_csr_data_o,

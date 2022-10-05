@@ -25,12 +25,37 @@ module ysyx_041514_icache_top (
 
     /* cache<-->mem 端口 */
     output [`ysyx_041514_NPC_ADDR_BUS] ram_raddr_icache_o,
-    output ram_raddr_valid_icache_o,
-    output [7:0] ram_rmask_icache_o,
-    output [3:0] ram_rsize_icache_o,
-    output [7:0] ram_rlen_icache_o,
-    input ram_rdata_ready_icache_i,
-    input [`ysyx_041514_XLEN_BUS] ram_rdata_icache_i
+    output                             ram_raddr_valid_icache_o,
+    output [                      7:0] ram_rmask_icache_o,
+    output [                      3:0] ram_rsize_icache_o,
+    output [                      7:0] ram_rlen_icache_o,
+    input                              ram_rdata_ready_icache_i,
+    input  [    `ysyx_041514_XLEN_BUS] ram_rdata_icache_i,
+    /* sram */
+    output [                      5:0] io_sram4_addr,
+    output                             io_sram4_cen,
+    output                             io_sram4_wen,
+    output [                    127:0] io_sram4_wmask,
+    output [                    127:0] io_sram4_wdata,
+    input  [                    127:0] io_sram4_rdata,
+    output [                      5:0] io_sram5_addr,
+    output                             io_sram5_cen,
+    output                             io_sram5_wen,
+    output [                    127:0] io_sram5_wmask,
+    output [                    127:0] io_sram5_wdata,
+    input  [                    127:0] io_sram5_rdata,
+    output [                      5:0] io_sram6_addr,
+    output                             io_sram6_cen,
+    output                             io_sram6_wen,
+    output [                    127:0] io_sram6_wmask,
+    output [                    127:0] io_sram6_wdata,
+    input  [                    127:0] io_sram6_rdata,
+    output [                      5:0] io_sram7_addr,
+    output                             io_sram7_cen,
+    output                             io_sram7_wen,
+    output [                    127:0] io_sram7_wmask,
+    output [                    127:0] io_sram7_wdata,
+    input  [                    127:0] io_sram7_rdata
 );
   wire [ 5:0] cache_blk_addr;
   wire [ 5:0] cache_line_idx;
@@ -38,7 +63,12 @@ module ysyx_041514_icache_top (
   assign {cache_line_tag, cache_line_idx, cache_blk_addr} = preif_raddr_i;
 
   wire icache_hit;
-  wire uncache = `ysyx_041514_TRUE;
+  wire uncache;
+  ysyx_041514_uncache_check u_ysyx_041514_uncache_check (
+    .addr_check_i       (preif_raddr_i),
+    .uncache_valid_o    (uncache)
+);
+
   reg [`ysyx_041514_XLEN_BUS] uncache_rdata;
 
   /* cache 命中 */
@@ -166,8 +196,8 @@ module ysyx_041514_icache_top (
   wire [127:0] icache_wdate = ~burst_count[0]?{64'b0,ram_rdata_icache_i}:{ram_rdata_icache_i,64'b0};
   wire [`ysyx_041514_XLEN_BUS] icache_rdata;
   ysyx_041514_icache_data u_icache_data (
-      .clk                (clk),
-      .rst                (rst),
+      // .clk                (clk),
+      // .rst                (rst),
       .icache_index_i     (cache_line_idx),   //cache_line_idx 使用直接输入数据
       // index
       .icache_blk_addr_i  (blk_addr_reg),     // icache_blk_addr_i 使用寄存器中的数据
@@ -175,8 +205,37 @@ module ysyx_041514_icache_top (
       .icache_wmask       (icache_wmask),
       .icache_wen_i       (ram_r_handshake),  // 写入有效
       .burst_count_i      (burst_count),
-      .icache_rdata_o     (icache_rdata)
+      .icache_rdata_o     (icache_rdata),
+      /* sram */
+      .io_sram4_addr      (io_sram4_addr),
+      .io_sram4_cen       (io_sram4_cen),
+      .io_sram4_wen       (io_sram4_wen),
+      .io_sram4_wmask     (io_sram4_wmask),
+      .io_sram4_wdata     (io_sram4_wdata),
+      .io_sram4_rdata     (io_sram4_rdata),
+      .io_sram5_addr      (io_sram5_addr),
+      .io_sram5_cen       (io_sram5_cen),
+      .io_sram5_wen       (io_sram5_wen),
+      .io_sram5_wmask     (io_sram5_wmask),
+      .io_sram5_wdata     (io_sram5_wdata),
+      .io_sram5_rdata     (io_sram5_rdata),
+      .io_sram6_addr      (io_sram6_addr),
+      .io_sram6_cen       (io_sram6_cen),
+      .io_sram6_wen       (io_sram6_wen),
+      .io_sram6_wmask     (io_sram6_wmask),
+      .io_sram6_wdata     (io_sram6_wdata),
+      .io_sram6_rdata     (io_sram6_rdata),
+      .io_sram7_addr      (io_sram7_addr),
+      .io_sram7_cen       (io_sram7_cen),
+      .io_sram7_wen       (io_sram7_wen),
+      .io_sram7_wmask     (io_sram7_wmask),
+      .io_sram7_wdata     (io_sram7_wdata),
+      .io_sram7_rdata     (io_sram7_rdata)
   );
+
+
+
+
 
 
   // wire [`ysyx_041514_XLEN_BUS] _icache_data_o = {32'b0, icache_line_rdata[blk_addr_reg*8+:32]};

@@ -14,3 +14,4 @@ build/
 !README.md
 !*.drawio
 obj_dir
+testfile.v

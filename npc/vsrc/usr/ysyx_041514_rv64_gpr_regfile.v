@@ -35,8 +35,11 @@ module ysyx_041514_rv64_gpr_regfile (
 
 
   /************仿真使用：传递二维数组指针************/
+`ifndef ysyx_041514_YSYX_SOC
   import "DPI-C" function void set_gpr_ptr(input logic [63:0] a[]);
   initial set_gpr_ptr(rf);  // rf为通用寄存器的二维数组变量
+`endif
+
 endmodule
 
 

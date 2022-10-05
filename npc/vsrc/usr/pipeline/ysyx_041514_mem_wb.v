@@ -18,20 +18,20 @@ module ysyx_041514_mem_wb (
     input [`ysyx_041514_XLEN-1:0] csr_mie_writedata_mem_wb_i,
     input [`ysyx_041514_XLEN-1:0] csr_mip_writedata_mem_wb_i,
 
-    input                 csr_mstatus_write_valid_mem_wb_i,
-    input                 csr_mepc_write_valid_mem_wb_i,
-    input                 csr_mcause_write_valid_mem_wb_i,
-    input                 csr_mtval_write_valid_mem_wb_i,
-    input                 csr_mtvec_write_valid_mem_wb_i,
-    input                 csr_mie_write_valid_mem_wb_i,
-    input                 csr_mip_write_valid_mem_wb_i,
+    input                             csr_mstatus_write_valid_mem_wb_i,
+    input                             csr_mepc_write_valid_mem_wb_i,
+    input                             csr_mcause_write_valid_mem_wb_i,
+    input                             csr_mtval_write_valid_mem_wb_i,
+    input                             csr_mtvec_write_valid_mem_wb_i,
+    input                             csr_mie_write_valid_mem_wb_i,
+    input                             csr_mip_write_valid_mem_wb_i,
     input [    `ysyx_041514_XLEN-1:0] pc_mem_wb_i,                       //指令地址
     input [`ysyx_041514_INST_LEN-1:0] inst_data_mem_wb_i,                //指令内容
 
 
     input [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] csr_addr_mem_wb_i,       //csr 写回地址
     input [             `ysyx_041514_XLEN_BUS] exc_csr_data_mem_wb_i,   //csr 写回数据
-    input                          exc_csr_valid_mem_wb_i,  // csr 写回使能
+    input                                      exc_csr_valid_mem_wb_i,  // csr 写回使能
     input [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_addr_mem_wb_i,        // gpr 写回使能
     input [             `ysyx_041514_XLEN-1:0] mem_data_mem_wb_i,       //访存阶段的数据
 
@@ -57,7 +57,7 @@ module ysyx_041514_mem_wb (
 
     output [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] csr_addr_mem_wb_o,       //csr 写回地址
     output [             `ysyx_041514_XLEN_BUS] exc_csr_data_mem_wb_o,   //csr 写回数据
-    output                          exc_csr_valid_mem_wb_o,  // csr 写回使能
+    output                                      exc_csr_valid_mem_wb_o,  // csr 写回使能
     output [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_addr_mem_wb_o,        // gpr 写回使能
     output [             `ysyx_041514_XLEN-1:0] mem_data_mem_wb_o        //访存阶段的数据
 );
@@ -66,7 +66,7 @@ module ysyx_041514_mem_wb (
   wire _flush_valid = flush_valid_i[`ysyx_041514_CTRLBUS_MEM_WB];
 
 
-
+`ifndef ysyx_041514_YSYX_SOC
   // 用于 difftest，获取即将提交的下一条指令的 pc
   import "DPI-C" function void set_nextpc(input longint nextpc);
   always @(posedge clk) begin
@@ -75,6 +75,7 @@ module ysyx_041514_mem_wb (
       set_nextpc(pc_mem_wb_i);
     end
   end
+`endif
 
   //   /* pc 寄存器 */
   //   wire [`ysyx_041514_XLEN_BUS] _pc_mem_wb_d = (_flush_valid) ? `ysyx_041514_XLEN'b0 : pc_mem_wb_i;
@@ -457,7 +458,7 @@ module ysyx_041514_mem_wb (
       .dout(_rd_addr_mem_wb_q),
       .wen (reg_wen)
   );
-  assign rd_addr_mem_wb_o = _rd_addr_mem_wb_q; 
+  assign rd_addr_mem_wb_o = _rd_addr_mem_wb_q;
 
 
   /* mem_data寄存器 */

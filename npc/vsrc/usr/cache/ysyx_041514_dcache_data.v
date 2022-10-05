@@ -3,11 +3,11 @@
 
 module ysyx_041514_dcache_data #(
     IDX_LEN = 6,  // 组号 长度
-    BLK_LEN = 6,  // 块内地址 长度
-    TAG_NUM = 64  // tag 个数
+    BLK_LEN = 6   // 块内地址 长度
+    // TAG_NUM = 64  // tag 个数
 ) (
-    input clk,
-    input rst,
+    // input clk,
+    // input rst,
     input [IDX_LEN-1:0] dcache_index_i,  // index
     input [BLK_LEN-1:0] dcache_blk_addr_i,
     input [128-1:0] dcache_line_wdata_i,
@@ -17,7 +17,34 @@ module ysyx_041514_dcache_data #(
     input dcache_writeback_valid_i,
     input dcache_wen_i,
     output [`ysyx_041514_XLEN_BUS] dcache_writeback_data_o,
-    output [`ysyx_041514_XLEN_BUS]    dcache_rdata_o
+    output [`ysyx_041514_XLEN_BUS]    dcache_rdata_o,
+
+
+    /* sram */
+    output [  5:0] io_sram0_addr,
+    output         io_sram0_cen,
+    output         io_sram0_wen,
+    output [127:0] io_sram0_wmask,
+    output [127:0] io_sram0_wdata,
+    input  [127:0] io_sram0_rdata,
+    output [  5:0] io_sram1_addr,
+    output         io_sram1_cen,
+    output         io_sram1_wen,
+    output [127:0] io_sram1_wmask,
+    output [127:0] io_sram1_wdata,
+    input  [127:0] io_sram1_rdata,
+    output [  5:0] io_sram2_addr,
+    output         io_sram2_cen,
+    output         io_sram2_wen,
+    output [127:0] io_sram2_wmask,
+    output [127:0] io_sram2_wdata,
+    input  [127:0] io_sram2_rdata,
+    output [  5:0] io_sram3_addr,
+    output         io_sram3_cen,
+    output         io_sram3_wen,
+    output [127:0] io_sram3_wmask,
+    output [127:0] io_sram3_wdata,
+    input  [127:0] io_sram3_rdata
 
 );
 
@@ -77,52 +104,70 @@ module ysyx_041514_dcache_data #(
   wire [`ysyx_041514_XLEN_BUS] _dcache_rdata_o = {dcache_ram_data[dcache_blk_addr_i[3:0]*8+:64]};
   assign dcache_rdata_o = _dcache_rdata_o;
 
-  S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW00 (
-      .Q   (Q00),
-      .CLK (clk),
-      .CEN (1'b0), // 低电平有效
-      .WEN (WEN00),
-      .BWEN(BWEN),
-      .A   (A),
-      .D   (D)
-  );
-  S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW01 (
-      .Q   (Q01),
-      .CLK (clk),
-      .CEN (1'b0), // 低电平有效
-      .WEN (WEN01),
-      .BWEN(BWEN),
-      .A   (A),
-      .D   (D)
-  );
-  S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW10 (
-      .Q   (Q10),
-      .CLK (clk),
-      .CEN (1'b0), // 低电平有效
-      .WEN (WEN10),
-      .BWEN(BWEN),
-      .A   (A),
-      .D   (D)
-  );
-  S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW11 (
-      .Q   (Q11),
-      .CLK (clk),
-      .CEN (1'b0), // 低电平有效
-      .WEN (WEN11),
-      .BWEN(BWEN),
-      .A   (A),
-      .D   (D)
-  );
+  // S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW00 (
+  //     .Q   (Q00),
+  //     .CLK (clk),
+  //     .CEN (1'b0), // 低电平有效
+  //     .WEN (WEN00),
+  //     .BWEN(BWEN),
+  //     .A   (A),
+  //     .D   (D)
+  // );
+  // S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW01 (
+  //     .Q   (Q01),
+  //     .CLK (clk),
+  //     .CEN (1'b0), // 低电平有效
+  //     .WEN (WEN01),
+  //     .BWEN(BWEN),
+  //     .A   (A),
+  //     .D   (D)
+  // );
+  // S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW10 (
+  //     .Q   (Q10),
+  //     .CLK (clk),
+  //     .CEN (1'b0), // 低电平有效
+  //     .WEN (WEN10),
+  //     .BWEN(BWEN),
+  //     .A   (A),
+  //     .D   (D)
+  // );
+  // S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW11 (
+  //     .Q   (Q11),
+  //     .CLK (clk),
+  //     .CEN (1'b0), // 低电平有效
+  //     .WEN (WEN11),
+  //     .BWEN(BWEN),
+  //     .A   (A),
+  //     .D   (D)
+  // );
 
+  assign io_sram0_cen = 1'b0;
+  assign io_sram0_wmask = BWEN;
+  assign io_sram0_addr = A;
+  assign io_sram0_wdata = D;
+  assign io_sram0_wen = WEN00;
+  assign Q00 = io_sram0_rdata;
 
-  //   S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW (
-  //       .Q   (dcache_line_rdata_o),
-  //       .CLK (clk),
-  //       .CEN (1'b0), // 低电平有效
-  //       .WEN (~dcache_wen_i),
-  //       .BWEN(~dcache_wmask),
-  //       .A   ({1'b0,dcache_index_i}),
-  //       .D   (dcache_line_wdata_i)
-  //   );
+  assign io_sram1_cen = 1'b0;
+  assign io_sram1_wmask = BWEN;
+  assign io_sram1_addr = A;
+  assign io_sram1_wdata = D;
+  assign io_sram1_wen = WEN01;
+  assign Q01 = io_sram1_rdata;
+
+  assign io_sram2_cen = 1'b0;
+  assign io_sram2_wmask = BWEN;
+  assign io_sram2_addr = A;
+  assign io_sram2_wdata = D;
+  assign io_sram2_wen = WEN10;
+  assign Q10 = io_sram2_rdata;
+
+  assign io_sram3_cen = 1'b0;
+  assign io_sram3_wmask = BWEN;
+  assign io_sram3_addr = A;
+  assign io_sram3_wdata = D;
+  assign io_sram3_wen = WEN11;
+  assign Q11 = io_sram3_rdata;
+
 
 endmodule
