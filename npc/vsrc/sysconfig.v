@@ -2,7 +2,7 @@
 // 仅仅用于仿真加快速度，替换多周期乘除法
 //`define MUL_SIM
 //`define DIV_SIM
-`define ysyx_041514_YSYX_SOC
+//`define ysyx_041514_YSYX_SOC
 
 `define ysyx_041514_XLEN 64             //cpu 位数
 `define ysyx_041514_INST_LEN 32         //指令长度

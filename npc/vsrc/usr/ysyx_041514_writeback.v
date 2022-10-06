@@ -2,7 +2,7 @@
 module ysyx_041514_writeback (
 
     input                             clk,
-    input                             rst,
+    // input                             rst,
     /* from MEM/WB */
     input [    `ysyx_041514_XLEN_BUS] pc_wb_i,
     input [`ysyx_041514_INST_LEN-1:0] inst_data_wb_i

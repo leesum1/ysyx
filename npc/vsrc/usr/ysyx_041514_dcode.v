@@ -16,7 +16,7 @@ module ysyx_041514_dcode (
     /* from exc bypass */
     input [`ysyx_041514_XLEN_BUS] ex_rd_data_i,
     input [`ysyx_041514_REG_ADDRWIDTH-1:0] ex_rd_addr_i,
-    input [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] ex_csr_writeaddr_i,
+    input [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] ex_csr_writeaddr_i,// TODO 用于 csr bypass
     input [`ysyx_041514_XLEN_BUS] ex_csr_writedata_i,
     /* from mem bypass */
     input [`ysyx_041514_XLEN_BUS] mem_rd_data_i,
@@ -39,7 +39,7 @@ module ysyx_041514_dcode (
     output [`ysyx_041514_ALUOP_LEN-1:0] alu_op_o,  // alu 操作码
     output [`ysyx_041514_MEMOP_LEN-1:0] mem_op_o,  // mem 操作码
     output [`ysyx_041514_EXCOP_LEN-1:0] exc_op_o,  // exc 操作码
-    output [ `ysyx_041514_PCOP_LEN-1:0] pc_op_o,   // pc 操作码
+    // output [ `ysyx_041514_PCOP_LEN-1:0] pc_op_o,   // pc 操作码
     output [`ysyx_041514_CSROP_LEN-1:0] csr_op_o,  // csr 操作码
 
 
@@ -82,23 +82,23 @@ module ysyx_041514_dcode (
   /* 分解_opcode */
   wire [6:0] _opcode = _inst[6:0];
   /* 1:0 */
-  wire _opcode_1_0_00 = (_opcode[1:0] == 2'b00);
-  wire _opcode_1_0_01 = (_opcode[1:0] == 2'b01);
-  wire _opcode_1_0_10 = (_opcode[1:0] == 2'b10);
+  // wire _opcode_1_0_00 = (_opcode[1:0] == 2'b00);
+  // wire _opcode_1_0_01 = (_opcode[1:0] == 2'b01);
+  // wire _opcode_1_0_10 = (_opcode[1:0] == 2'b10);
   wire _opcode_1_0_11 = (_opcode[1:0] == 2'b11);
   /* 4:2 */
   wire _opcode_4_2_000 = (_opcode[4:2] == 3'b000);
   wire _opcode_4_2_001 = (_opcode[4:2] == 3'b001);
-  wire _opcode_4_2_010 = (_opcode[4:2] == 3'b010);
+  // wire _opcode_4_2_010 = (_opcode[4:2] == 3'b010);
   wire _opcode_4_2_011 = (_opcode[4:2] == 3'b011);
   wire _opcode_4_2_100 = (_opcode[4:2] == 3'b100);
   wire _opcode_4_2_101 = (_opcode[4:2] == 3'b101);
   wire _opcode_4_2_110 = (_opcode[4:2] == 3'b110);
-  wire _opcode_4_2_111 = (_opcode[4:2] == 3'b111);
+  // wire _opcode_4_2_111 = (_opcode[4:2] == 3'b111);
   /* 6:5 */
   wire _opcode_6_5_00 = (_opcode[6:5] == 2'b00);
   wire _opcode_6_5_01 = (_opcode[6:5] == 2'b01);
-  wire _opcode_6_5_10 = (_opcode[6:5] == 2'b10);
+  // wire _opcode_6_5_10 = (_opcode[6:5] == 2'b10);
   wire _opcode_6_5_11 = (_opcode[6:5] == 2'b11);
   /* 分解 func3 */
   wire _func3_000 = (_func3 == 3'b000);
@@ -142,38 +142,38 @@ module ysyx_041514_dcode (
   /* 000 */
   wire _type_load = _opcode_6_5_00 & _opcode_4_2_000 & _opcode_1_0_11;
   wire _type_store = _opcode_6_5_01 & _opcode_4_2_000 & _opcode_1_0_11;
-  wire _type_madd = _opcode_6_5_10 & _opcode_4_2_000 & _opcode_1_0_11;
+  //wire _type_madd = _opcode_6_5_10 & _opcode_4_2_000 & _opcode_1_0_11;
   wire _type_branch = _opcode_6_5_11 & _opcode_4_2_000 & _opcode_1_0_11;
   /* 001 */
-  wire _type_load_fp = _opcode_6_5_00 & _opcode_4_2_001 & _opcode_1_0_11;
-  wire _type_store_fp = _opcode_6_5_01 & _opcode_4_2_001 & _opcode_1_0_11;
-  wire _type_msub = _opcode_6_5_10 & _opcode_4_2_001 & _opcode_1_0_11;
+  // wire _type_load_fp = _opcode_6_5_00 & _opcode_4_2_001 & _opcode_1_0_11;
+  // wire _type_store_fp = _opcode_6_5_01 & _opcode_4_2_001 & _opcode_1_0_11;
+  // wire _type_msub = _opcode_6_5_10 & _opcode_4_2_001 & _opcode_1_0_11;
   wire _type_jalr = _opcode_6_5_11 & _opcode_4_2_001 & _opcode_1_0_11;
   /* 010 */
-  wire _type_custom0 = _opcode_6_5_00 & _opcode_4_2_010 & _opcode_1_0_11;
-  wire _type_custom1 = _opcode_6_5_01 & _opcode_4_2_010 & _opcode_1_0_11;
-  wire _type_nmsub = _opcode_6_5_10 & _opcode_4_2_010 & _opcode_1_0_11;
-  wire _type_resved0 = _opcode_6_5_11 & _opcode_4_2_010 & _opcode_1_0_11;
+  // wire _type_custom0 = _opcode_6_5_00 & _opcode_4_2_010 & _opcode_1_0_11;
+  // wire _type_custom1 = _opcode_6_5_01 & _opcode_4_2_010 & _opcode_1_0_11;
+  // wire _type_nmsub = _opcode_6_5_10 & _opcode_4_2_010 & _opcode_1_0_11;
+  // wire _type_resved0 = _opcode_6_5_11 & _opcode_4_2_010 & _opcode_1_0_11;
   /* 011 */
   wire _type_miscmem = _opcode_6_5_00 & _opcode_4_2_011 & _opcode_1_0_11;
-  wire _type_amo = _opcode_6_5_01 & _opcode_4_2_011 & _opcode_1_0_11;
-  wire _type_nmadd = _opcode_6_5_10 & _opcode_4_2_011 & _opcode_1_0_11;
+  // wire _type_amo = _opcode_6_5_01 & _opcode_4_2_011 & _opcode_1_0_11;
+  // wire _type_nmadd = _opcode_6_5_10 & _opcode_4_2_011 & _opcode_1_0_11;
   wire _type_jal = _opcode_6_5_11 & _opcode_4_2_011 & _opcode_1_0_11;
   /* 100 */
   wire _type_op_imm = _opcode_6_5_00 & _opcode_4_2_100 & _opcode_1_0_11;
   wire _type_op = _opcode_6_5_01 & _opcode_4_2_100 & _opcode_1_0_11;
-  wire _type_op_fp = _opcode_6_5_10 & _opcode_4_2_100 & _opcode_1_0_11;
+  // wire _type_op_fp = _opcode_6_5_10 & _opcode_4_2_100 & _opcode_1_0_11;
   wire _type_system = _opcode_6_5_11 & _opcode_4_2_100 & _opcode_1_0_11;
   /* 101 */
   wire _type_auipc = _opcode_6_5_00 & _opcode_4_2_101 & _opcode_1_0_11;
   wire _type_lui = _opcode_6_5_01 & _opcode_4_2_101 & _opcode_1_0_11;
-  wire _type_resved1 = _opcode_6_5_10 & _opcode_4_2_101 & _opcode_1_0_11;
-  wire _type_resved2 = _opcode_6_5_11 & _opcode_4_2_101 & _opcode_1_0_11;
+  // wire _type_resved1 = _opcode_6_5_10 & _opcode_4_2_101 & _opcode_1_0_11;
+  // wire _type_resved2 = _opcode_6_5_11 & _opcode_4_2_101 & _opcode_1_0_11;
   /* 110 */
   wire _type_op_imm_32 = _opcode_6_5_00 & _opcode_4_2_110 & _opcode_1_0_11;
   wire _type_op_32 = _opcode_6_5_01 & _opcode_4_2_110 & _opcode_1_0_11;
-  wire _type_custom2 = _opcode_6_5_10 & _opcode_4_2_110 & _opcode_1_0_11;
-  wire _type_custom3 = _opcode_6_5_11 & _opcode_4_2_110 & _opcode_1_0_11;
+  // wire _type_custom2 = _opcode_6_5_10 & _opcode_4_2_110 & _opcode_1_0_11;
+  // wire _type_custom3 = _opcode_6_5_11 & _opcode_4_2_110 & _opcode_1_0_11;
 
   /******************************RV64I Base Instruction************************************/
   /* _type_lui */
@@ -272,11 +272,11 @@ module ysyx_041514_dcode (
   wire _inst_csrrci = _type_system & _func3_111;
 
   wire _inst_mret = _type_system & _func3_000 & (_inst[31:20] == 12'b0011_0000_0010);
-  wire _inst_dret = _type_system & _func3_000 & (_inst[31:20] == 12'b0111_1011_0010);
-  wire _inst_wfi = _type_system & _func3_000 & (_inst[31:20] == 12'b0001_0000_0101);
+  // wire _inst_dret = _type_system & _func3_000 & (_inst[31:20] == 12'b0111_1011_0010);
+  // wire _inst_wfi = _type_system & _func3_000 & (_inst[31:20] == 12'b0001_0000_0101);
 
   /*_type_miscmem*/
-  wire _inst_fence = _type_miscmem & _func3_000;
+  // wire _inst_fence = _type_miscmem & _func3_000;
   wire _inst_fence_i = _type_miscmem & _func3_001;
 
 
@@ -310,7 +310,7 @@ module ysyx_041514_dcode (
   wire _NONE_type = ~(_R_type | _I_type | _S_type | _U_type | _J_type | _B_type|_type_miscmem);
 
   /*获取操作数  */  //TODO:一些特殊指令没有归类ecall,ebreak
-  wire _isNeed_imm = (_I_type | _S_type | _B_type | _U_type | _J_type);
+  // wire _isNeed_imm = (_I_type | _S_type | _B_type | _U_type | _J_type);
   wire _csr_imm_valid = (_inst_csrrci | _inst_csrrsi | _inst_csrrwi);
 
   // I 型指令中, CSR 立即数占了 rs1 的位置
@@ -515,7 +515,7 @@ module ysyx_041514_dcode (
 
 
   // 已废弃
-  assign pc_op_o  = `ysyx_041514_PCOP_LEN'b0;
+  // assign pc_op_o  = `ysyx_041514_PCOP_LEN'b0;
 
 
 

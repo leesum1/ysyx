@@ -27,8 +27,8 @@ module ysyx_041514_clint (
     /* trap 所需寄存器，来自于 csr (读)*/
     input wire [`ysyx_041514_XLEN-1:0] csr_mstatus_readdata_i,
     input wire [`ysyx_041514_XLEN-1:0] csr_mepc_readdata_i,
-    input wire [`ysyx_041514_XLEN-1:0] csr_mcause_readdata_i,
-    input wire [`ysyx_041514_XLEN-1:0] csr_mtval_readdata_i,
+    //input wire [`ysyx_041514_XLEN-1:0] csr_mcause_readdata_i,
+    //input wire [`ysyx_041514_XLEN-1:0] csr_mtval_readdata_i,
     input wire [`ysyx_041514_XLEN-1:0] csr_mtvec_readdata_i,
     input wire [`ysyx_041514_XLEN-1:0] csr_mip_readdata_i,
     input wire [`ysyx_041514_XLEN-1:0] csr_mie_readdata_i,
@@ -37,17 +37,17 @@ module ysyx_041514_clint (
     output wire [`ysyx_041514_XLEN-1:0] csr_mepc_writedata_o,
     output wire [`ysyx_041514_XLEN-1:0] csr_mcause_writedata_o,
     output wire [`ysyx_041514_XLEN-1:0] csr_mtval_writedata_o,
-    output wire [`ysyx_041514_XLEN-1:0] csr_mtvec_writedata_o,
+    //output wire [`ysyx_041514_XLEN-1:0] csr_mtvec_writedata_o,
     output wire [`ysyx_041514_XLEN-1:0] csr_mip_writedata_o,
-    output wire [`ysyx_041514_XLEN-1:0] csr_mie_writedata_o,
+    //output wire [`ysyx_041514_XLEN-1:0] csr_mie_writedata_o,
 
     output wire csr_mstatus_write_valid_o,
     output wire csr_mepc_write_valid_o,
     output wire csr_mcause_write_valid_o,
     output wire csr_mtval_write_valid_o,
-    output wire csr_mtvec_write_valid_o,
+    //output wire csr_mtvec_write_valid_o,
     output wire csr_mip_write_valid_o,
-    output wire csr_mie_write_valid_o,
+    //output wire csr_mie_write_valid_o,
 
     /* 输出至取指阶段 */
     output wire [`ysyx_041514_XLEN-1:0] clint_pc_o,
@@ -126,7 +126,7 @@ module ysyx_041514_clint (
   // wire trap_illegal_inst = trap_bus_i[`ysyx_041514_TRAP_INST_ACCESS_FAULT]; // 1
 
   wire trap_mret = trap_bus_i[`ysyx_041514_TRAP_MRET];
-  wire _trap_ebreak = trap_bus_i[`ysyx_041514_TRAP_EBREAK];
+
 
   wire trap_valid = (|trap_bus_i[15:0])| Machine_timer_interrupt; // 0 - 15 表示 trap 发生
 
@@ -312,6 +312,7 @@ module ysyx_041514_clint (
   /*************ebreak仿真使用**************************/
 
 `ifndef ysyx_041514_YSYX_SOC
+  wire _trap_ebreak = trap_bus_i[`ysyx_041514_TRAP_EBREAK];
   always @(*) begin
     if (_trap_ebreak) begin
       $finish;

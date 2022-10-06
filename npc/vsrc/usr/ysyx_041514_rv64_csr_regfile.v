@@ -8,21 +8,21 @@ module ysyx_041514_rv64_csr_regfile (
     input wire [`ysyx_041514_XLEN-1:0] csr_mepc_writedata_i,
     input wire [`ysyx_041514_XLEN-1:0] csr_mcause_writedata_i,
     input wire [`ysyx_041514_XLEN-1:0] csr_mtval_writedata_i,
-    input wire [`ysyx_041514_XLEN-1:0] csr_mtvec_writedata_i,
+    // input wire [`ysyx_041514_XLEN-1:0] csr_mtvec_writedata_i,
     input wire [`ysyx_041514_XLEN-1:0] csr_mip_writedata_i,
-    input wire [`ysyx_041514_XLEN-1:0] csr_mie_writedata_i,
+    // input wire [`ysyx_041514_XLEN-1:0] csr_mie_writedata_i,
     input wire csr_mstatus_write_valid_i,
     input wire csr_mepc_write_valid_i,
     input wire csr_mcause_write_valid_i,
     input wire csr_mtval_write_valid_i,
-    input wire csr_mtvec_write_valid_i,
+    // input wire csr_mtvec_write_valid_i,
     input wire csr_mip_write_valid_i,
-    input wire csr_mie_write_valid_i,
+    // input wire csr_mie_write_valid_i,
     /* 单独引出寄存器(读) */
     output wire [`ysyx_041514_XLEN-1:0] csr_mstatus_readdata_o,
     output wire [`ysyx_041514_XLEN-1:0] csr_mepc_readdata_o,
-    output wire [`ysyx_041514_XLEN-1:0] csr_mcause_readdata_o,
-    output wire [`ysyx_041514_XLEN-1:0] csr_mtval_readdata_o,
+    // output wire [`ysyx_041514_XLEN-1:0] csr_mcause_readdata_o,
+    // output wire [`ysyx_041514_XLEN-1:0] csr_mtval_readdata_o,
     output wire [`ysyx_041514_XLEN-1:0] csr_mtvec_readdata_o,
     output wire [`ysyx_041514_XLEN-1:0] csr_mip_readdata_o,
     output wire [`ysyx_041514_XLEN-1:0] csr_mie_readdata_o,
@@ -60,7 +60,7 @@ module ysyx_041514_rv64_csr_regfile (
   reg _mtval_en;
 
   // mtvec
-  wire [`ysyx_041514_XLEN-1:0] _mtvec_d = (csr_mtvec_write_valid_i) ? csr_mtvec_writedata_i : csr_writedata_i;
+  wire [`ysyx_041514_XLEN-1:0] _mtvec_d = csr_writedata_i;
   reg [`ysyx_041514_XLEN-1:0] _mtvec_q;
   reg _mtvec_en;
 
@@ -72,7 +72,7 @@ module ysyx_041514_rv64_csr_regfile (
   reg _mip_en;
 
   // mie
-  wire [`ysyx_041514_XLEN-1:0] _mie_d = (csr_mie_write_valid_i) ? csr_mie_writedata_i : csr_writedata_i;
+  wire [`ysyx_041514_XLEN-1:0] _mie_d = csr_writedata_i;
   reg [`ysyx_041514_XLEN-1:0] _mie_q;
   reg _mie_en;
 
@@ -84,9 +84,9 @@ module ysyx_041514_rv64_csr_regfile (
     _mepc_en = csr_mepc_write_valid_i;
     _mcause_en = csr_mcause_write_valid_i;
     _mtval_en = csr_mtval_write_valid_i;
-    _mtvec_en = csr_mtvec_write_valid_i;
+    _mtvec_en = `ysyx_041514_FALSE;
     _mip_en = csr_mip_write_valid_i;
-    _mie_en = csr_mie_write_valid_i;
+    _mie_en = `ysyx_041514_FALSE;
     case (csr_writeaddr_i)
       `ysyx_041514_CSR_MSTATUS: _mstatus_en = csr_write_valid_i;
       `ysyx_041514_CSR_MEPC: _mepc_en = csr_write_valid_i;
@@ -117,8 +117,8 @@ module ysyx_041514_rv64_csr_regfile (
   assign csr_readdata_o = _csr_readdata;
 
   assign csr_mepc_readdata_o = _mepc_q;
-  assign csr_mcause_readdata_o = _mcause_q;
-  assign csr_mtval_readdata_o = _mtval_q;
+//   assign csr_mcause_readdata_o = _mcause_q;
+//   assign csr_mtval_readdata_o = _mtval_q;
   assign csr_mtvec_readdata_o = _mtvec_q;
   assign csr_mstatus_readdata_o = _mstatus_q;
   assign csr_mie_readdata_o = _mie_q;

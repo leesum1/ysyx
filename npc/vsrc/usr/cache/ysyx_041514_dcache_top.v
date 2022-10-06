@@ -105,16 +105,15 @@ module ysyx_041514_dcache_top (
   localparam CACHE_FENCEI_WRITE_BACK = 4'd5;
   localparam CACHE_FENCEI_WAIT = 4'd6;
   localparam CACHE_WRITE_MISS = 4'd7;
-  localparam CACHE_WRITE_MISS2 = 4'd8;
-  localparam UNCACHE_READ = 4'd9;
-  localparam UNCACHE_WRITE = 4'd10;
+  localparam UNCACHE_READ = 4'd8;
+  localparam UNCACHE_WRITE = 4'd9;
 
   reg [3:0] dcache_state;
 
 
   reg [5:0] blk_addr_reg;
 
-  reg [19:0] line_tag_reg;
+  // reg [19:0] line_tag_reg;
   reg dcache_tag_wen;
 
 
@@ -155,7 +154,7 @@ module ysyx_041514_dcache_top (
     if (rst) begin
       dcache_state <= CACHE_RST;
       blk_addr_reg <= 0;
-      line_tag_reg <= 0;
+      //line_tag_reg <= 0;
       dcache_tag_wen <= 0;
       dcache_data_wen <= 0;
       _dirty_bit_write <= 0;
@@ -177,7 +176,7 @@ module ysyx_041514_dcache_top (
         end
         CACHE_IDLE: begin
           blk_addr_reg <= cache_blk_addr;
-          line_tag_reg <= cache_line_tag;
+          // line_tag_reg <= cache_line_tag;
           fencei_ready <= 0;
           _dirty_flush <= `ysyx_041514_FALSE;
           //dcache_wmask <= 0;

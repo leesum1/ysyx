@@ -74,17 +74,15 @@ module ysyx_041514_icache_top (
   /* cache 命中 */
   localparam CACHE_RST = 4'd0;
   localparam CACHE_IDLE = 4'd1;
-  localparam CACHE_HIT = 4'd2;
-  localparam CACHE_MISS = 4'd3;
-  localparam CACHE_MISS2 = 4'd4;
-  localparam UNCACHE_READ = 4'd5;
+  localparam CACHE_MISS = 4'd2;
+  localparam UNCACHE_READ = 4'd3;
 
   reg [3:0] icache_state;
 
 
   reg [5:0] blk_addr_reg;
-  reg [5:0] line_idx_reg;
-  reg [19:0] line_tag_reg;
+  // reg [5:0] line_idx_reg;
+  // reg [19:0] line_tag_reg;
   reg icache_tag_wen;
 
   reg icache_data_ready;
@@ -105,8 +103,8 @@ module ysyx_041514_icache_top (
     if (rst) begin
       icache_state        <= CACHE_RST;
       blk_addr_reg        <= 0;
-      line_idx_reg        <= 0;
-      line_tag_reg        <= 0;
+      // line_idx_reg        <= 0;
+      // line_tag_reg        <= 0;
       icache_tag_wen      <= 0;
       _ram_rsize_icache_o <= 0;
       _ram_rlen_icache_o  <= 0;
@@ -118,8 +116,8 @@ module ysyx_041514_icache_top (
         end
         CACHE_IDLE: begin
           blk_addr_reg   <= cache_blk_addr;
-          line_idx_reg   <= cache_line_idx;
-          line_tag_reg   <= cache_line_tag;
+          // line_idx_reg   <= cache_line_idx;
+          // line_tag_reg   <= cache_line_tag;
           icache_tag_wen <= `ysyx_041514_FALSE;
           // cache data 为单端口 ram,不能同时读写
           if (preif_raddr_valid_i && ~icache_tag_wen && ~uncache) begin

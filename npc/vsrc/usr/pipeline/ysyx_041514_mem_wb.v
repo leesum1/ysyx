@@ -14,16 +14,16 @@ module ysyx_041514_mem_wb (
     input [`ysyx_041514_XLEN-1:0] csr_mepc_writedata_mem_wb_i,
     input [`ysyx_041514_XLEN-1:0] csr_mcause_writedata_mem_wb_i,
     input [`ysyx_041514_XLEN-1:0] csr_mtval_writedata_mem_wb_i,
-    input [`ysyx_041514_XLEN-1:0] csr_mtvec_writedata_mem_wb_i,
-    input [`ysyx_041514_XLEN-1:0] csr_mie_writedata_mem_wb_i,
+    // input [`ysyx_041514_XLEN-1:0] csr_mtvec_writedata_mem_wb_i,
+    // input [`ysyx_041514_XLEN-1:0] csr_mie_writedata_mem_wb_i,
     input [`ysyx_041514_XLEN-1:0] csr_mip_writedata_mem_wb_i,
 
     input                             csr_mstatus_write_valid_mem_wb_i,
     input                             csr_mepc_write_valid_mem_wb_i,
     input                             csr_mcause_write_valid_mem_wb_i,
     input                             csr_mtval_write_valid_mem_wb_i,
-    input                             csr_mtvec_write_valid_mem_wb_i,
-    input                             csr_mie_write_valid_mem_wb_i,
+    // input                             csr_mtvec_write_valid_mem_wb_i,
+    // input                             csr_mie_write_valid_mem_wb_i,
     input                             csr_mip_write_valid_mem_wb_i,
     input [    `ysyx_041514_XLEN-1:0] pc_mem_wb_i,                       //指令地址
     input [`ysyx_041514_INST_LEN-1:0] inst_data_mem_wb_i,                //指令内容
@@ -40,16 +40,16 @@ module ysyx_041514_mem_wb (
     output [`ysyx_041514_XLEN-1:0] csr_mepc_writedata_mem_wb_o,
     output [`ysyx_041514_XLEN-1:0] csr_mcause_writedata_mem_wb_o,
     output [`ysyx_041514_XLEN-1:0] csr_mtval_writedata_mem_wb_o,
-    output [`ysyx_041514_XLEN-1:0] csr_mtvec_writedata_mem_wb_o,
-    output [`ysyx_041514_XLEN-1:0] csr_mie_writedata_mem_wb_o,
+    // output [`ysyx_041514_XLEN-1:0] csr_mtvec_writedata_mem_wb_o,
+    // output [`ysyx_041514_XLEN-1:0] csr_mie_writedata_mem_wb_o,
     output [`ysyx_041514_XLEN-1:0] csr_mip_writedata_mem_wb_o,
 
     output csr_mstatus_write_valid_mem_wb_o,
     output csr_mepc_write_valid_mem_wb_o,
     output csr_mcause_write_valid_mem_wb_o,
     output csr_mtval_write_valid_mem_wb_o,
-    output csr_mtvec_write_valid_mem_wb_o,
-    output csr_mie_write_valid_mem_wb_o,
+    // output csr_mtvec_write_valid_mem_wb_o,
+    // output csr_mie_write_valid_mem_wb_o,
     output csr_mip_write_valid_mem_wb_o,
 
     output [`ysyx_041514_XLEN-1:0] pc_mem_wb_o,  //指令地址
@@ -126,37 +126,37 @@ module ysyx_041514_mem_wb (
 
 
 
-  /* csr_mie_write_valid寄存器 */
-  wire _csr_mie_write_valid_mem_wb_d = (_flush_valid) ? `ysyx_041514_FALSE : csr_mie_write_valid_mem_wb_i;
-  reg _csr_mie_write_valid_mem_wb_q;
-  ysyx_041514_regTemplate #(
-      .WIDTH    (1),
-      .RESET_VAL(`ysyx_041514_FALSE)  //TODO:默认值未设置
-  ) u_csr_mie_write_valid_mem_wb (
-      .clk (clk),
-      .rst (rst),
-      .din (_csr_mie_write_valid_mem_wb_d),
-      .dout(_csr_mie_write_valid_mem_wb_q),
-      .wen (reg_wen)
-  );
-  assign csr_mie_write_valid_mem_wb_o = _csr_mie_write_valid_mem_wb_q;
+//   /* csr_mie_write_valid寄存器 */
+//   wire _csr_mie_write_valid_mem_wb_d = (_flush_valid) ? `ysyx_041514_FALSE : csr_mie_write_valid_mem_wb_i;
+//   reg _csr_mie_write_valid_mem_wb_q;
+//   ysyx_041514_regTemplate #(
+//       .WIDTH    (1),
+//       .RESET_VAL(`ysyx_041514_FALSE)  //TODO:默认值未设置
+//   ) u_csr_mie_write_valid_mem_wb (
+//       .clk (clk),
+//       .rst (rst),
+//       .din (_csr_mie_write_valid_mem_wb_d),
+//       .dout(_csr_mie_write_valid_mem_wb_q),
+//       .wen (reg_wen)
+//   );
+//   assign csr_mie_write_valid_mem_wb_o = _csr_mie_write_valid_mem_wb_q;
 
 
 
-  /* csr_mtvec_write_valid寄存器 */
-  wire _csr_mtvec_write_valid_mem_wb_d = (_flush_valid) ? `ysyx_041514_FALSE : csr_mtvec_write_valid_mem_wb_i;
-  reg _csr_mtvec_write_valid_mem_wb_q;
-  ysyx_041514_regTemplate #(
-      .WIDTH    (1),
-      .RESET_VAL(`ysyx_041514_FALSE)  //TODO:默认值未设置
-  ) u_csr_mtvec_write_valid_mem_wb (
-      .clk (clk),
-      .rst (rst),
-      .din (_csr_mtvec_write_valid_mem_wb_d),
-      .dout(_csr_mtvec_write_valid_mem_wb_q),
-      .wen (reg_wen)
-  );
-  assign csr_mtvec_write_valid_mem_wb_o = _csr_mtvec_write_valid_mem_wb_q;
+//   /* csr_mtvec_write_valid寄存器 */
+//   wire _csr_mtvec_write_valid_mem_wb_d = (_flush_valid) ? `ysyx_041514_FALSE : csr_mtvec_write_valid_mem_wb_i;
+//   reg _csr_mtvec_write_valid_mem_wb_q;
+//   ysyx_041514_regTemplate #(
+//       .WIDTH    (1),
+//       .RESET_VAL(`ysyx_041514_FALSE)  //TODO:默认值未设置
+//   ) u_csr_mtvec_write_valid_mem_wb (
+//       .clk (clk),
+//       .rst (rst),
+//       .din (_csr_mtvec_write_valid_mem_wb_d),
+//       .dout(_csr_mtvec_write_valid_mem_wb_q),
+//       .wen (reg_wen)
+//   );
+//   assign csr_mtvec_write_valid_mem_wb_o = _csr_mtvec_write_valid_mem_wb_q;
 
 
   /* csr_mtval_write_valid寄存器 */
@@ -240,36 +240,36 @@ module ysyx_041514_mem_wb (
   assign csr_mip_writedata_mem_wb_o = _csr_mip_writedata_mem_wb_q;
 
 
-  /* csr_mie_writedata寄存器 */
-  wire [`ysyx_041514_XLEN-1:0] _csr_mie_writedata_mem_wb_d = (_flush_valid) ? `ysyx_041514_XLEN'b0 : csr_mie_writedata_mem_wb_i;
-  reg [`ysyx_041514_XLEN-1:0] _csr_mie_writedata_mem_wb_q;
-  ysyx_041514_regTemplate #(
-      .WIDTH    (`ysyx_041514_XLEN),
-      .RESET_VAL(`ysyx_041514_XLEN'b0)  //TODO:默认值未设置
-  ) u_csr_mie_writedata_mem_wb (
-      .clk (clk),
-      .rst (rst),
-      .din (_csr_mie_writedata_mem_wb_d),
-      .dout(_csr_mie_writedata_mem_wb_q),
-      .wen (reg_wen)
-  );
-  assign csr_mie_writedata_mem_wb_o = _csr_mie_writedata_mem_wb_q;
+//   /* csr_mie_writedata寄存器 */
+//   wire [`ysyx_041514_XLEN-1:0] _csr_mie_writedata_mem_wb_d = (_flush_valid) ? `ysyx_041514_XLEN'b0 : csr_mie_writedata_mem_wb_i;
+//   reg [`ysyx_041514_XLEN-1:0] _csr_mie_writedata_mem_wb_q;
+//   ysyx_041514_regTemplate #(
+//       .WIDTH    (`ysyx_041514_XLEN),
+//       .RESET_VAL(`ysyx_041514_XLEN'b0)  //TODO:默认值未设置
+//   ) u_csr_mie_writedata_mem_wb (
+//       .clk (clk),
+//       .rst (rst),
+//       .din (_csr_mie_writedata_mem_wb_d),
+//       .dout(_csr_mie_writedata_mem_wb_q),
+//       .wen (reg_wen)
+//   );
+//   assign csr_mie_writedata_mem_wb_o = _csr_mie_writedata_mem_wb_q;
 
 
-  /* csr_mtvec_writedata寄存器 */
-  wire [`ysyx_041514_XLEN-1:0] _csr_mtvec_writedata_mem_wb_d = (_flush_valid) ? `ysyx_041514_XLEN'b0 : csr_mtvec_writedata_mem_wb_i;
-  reg [`ysyx_041514_XLEN-1:0] _csr_mtvec_writedata_mem_wb_q;
-  ysyx_041514_regTemplate #(
-      .WIDTH    (`ysyx_041514_XLEN),
-      .RESET_VAL(`ysyx_041514_XLEN'b0)  //TODO:默认值未设置
-  ) u_csr_mtvec_writedata_mem_wb (
-      .clk (clk),
-      .rst (rst),
-      .din (_csr_mtvec_writedata_mem_wb_d),
-      .dout(_csr_mtvec_writedata_mem_wb_q),
-      .wen (reg_wen)
-  );
-  assign csr_mtvec_writedata_mem_wb_o = _csr_mtvec_writedata_mem_wb_q;
+//   /* csr_mtvec_writedata寄存器 */
+//   wire [`ysyx_041514_XLEN-1:0] _csr_mtvec_writedata_mem_wb_d = (_flush_valid) ? `ysyx_041514_XLEN'b0 : csr_mtvec_writedata_mem_wb_i;
+//   reg [`ysyx_041514_XLEN-1:0] _csr_mtvec_writedata_mem_wb_q;
+//   ysyx_041514_regTemplate #(
+//       .WIDTH    (`ysyx_041514_XLEN),
+//       .RESET_VAL(`ysyx_041514_XLEN'b0)  //TODO:默认值未设置
+//   ) u_csr_mtvec_writedata_mem_wb (
+//       .clk (clk),
+//       .rst (rst),
+//       .din (_csr_mtvec_writedata_mem_wb_d),
+//       .dout(_csr_mtvec_writedata_mem_wb_q),
+//       .wen (reg_wen)
+//   );
+//   assign csr_mtvec_writedata_mem_wb_o = _csr_mtvec_writedata_mem_wb_q;
 
   /* csr_mtval_writedata寄存器 */
   wire [`ysyx_041514_XLEN-1:0] _csr_mtval_writedata_mem_wb_d = (_flush_valid) ? `ysyx_041514_XLEN'b0 :csr_mtval_writedata_mem_wb_i;

@@ -21,7 +21,7 @@ module ysyx_041514_execute_top (
     input  [        `ysyx_041514_MEMOP_LEN-1:0] mem_op_i,         // 访存操作码
     input  [        `ysyx_041514_EXCOP_LEN-1:0] exc_op_i,         // exc 操作码
     input  [        `ysyx_041514_CSROP_LEN-1:0] csr_op_i,         // exc_csr 操作码
-    input  [         `ysyx_041514_PCOP_LEN-1:0] pc_op_i,
+    // input  [         `ysyx_041514_PCOP_LEN-1:0] pc_op_i,
     /* TARP 总线 */
     input  [             `ysyx_041514_TRAP_BUS] trap_bus_i,
     /********************** to ex/mem **************************/
@@ -30,22 +30,22 @@ module ysyx_041514_execute_top (
     output [         `ysyx_041514_INST_LEN-1:0] inst_data_o,
     // gpr 译码结果
     output [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_o,
-    output [             `ysyx_041514_XLEN_BUS] rs1_data_o,
+    // output [             `ysyx_041514_XLEN_BUS] rs1_data_o,
     output [             `ysyx_041514_XLEN_BUS] rs2_data_o,
-    output [          `ysyx_041514_IMM_LEN-1:0] imm_data_o,
+    // output [          `ysyx_041514_IMM_LEN-1:0] imm_data_o,
     // CSR 译码结果 
-    output [             `ysyx_041514_XLEN_BUS] csr_data_o,
-    output [          `ysyx_041514_IMM_LEN-1:0] csr_imm_o,
-    output                          csr_imm_valid_o,
+    // output [             `ysyx_041514_XLEN_BUS] csr_data_o,
+    // output [          `ysyx_041514_IMM_LEN-1:0] csr_imm_o,
+    // output                          csr_imm_valid_o,
     output [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] exc_csr_addr_o,
     output [        `ysyx_041514_MEMOP_LEN-1:0] mem_op_o,         // 访存操作码
-    output [         `ysyx_041514_PCOP_LEN-1:0] pc_op_o,  
+    // output [         `ysyx_041514_PCOP_LEN-1:0] pc_op_o,  
 
     output [     `ysyx_041514_XLEN_BUS] exc_alu_data_o,   // 同时送给 ID 和 EX/MEM
     output [     `ysyx_041514_XLEN_BUS] exc_csr_data_o,
     output                  exc_csr_valid_o,
     /************************to id *************************************/
-    output [`ysyx_041514_EXCOP_LEN-1:0] exc_op_o,         // exc 操作码
+    // output [`ysyx_041514_EXCOP_LEN-1:0] exc_op_o,         // exc 操作码
 
     /************************to pc_reg ******************************************/
     output [`ysyx_041514_XLEN_BUS] branch_pc_o,
@@ -66,16 +66,16 @@ module ysyx_041514_execute_top (
 );
   assign pc_o = pc_i;
   assign inst_data_o = inst_data_i;
-  assign exc_op_o = exc_op_i;
+  // assign exc_op_o = exc_op_i;
   assign mem_op_o = mem_op_i;
-  assign pc_op_o = pc_op_i;
-  assign rs1_data_o = rs1_data_i;
+  // assign pc_op_o = pc_op_i;
+  // assign rs1_data_o = rs1_data_i;
   assign rs2_data_o = rs2_data_i;
   assign rd_idx_o = rd_idx_i;
-  assign imm_data_o = imm_data_i;
-  assign csr_data_o = csr_data_i;
-  assign csr_imm_o = csr_imm_i;
-  assign csr_imm_valid_o = csr_imm_valid_i;
+  // assign imm_data_o = imm_data_i;
+  // assign csr_data_o = csr_data_i;
+  // assign csr_imm_o = csr_imm_i;
+  // assign csr_imm_valid_o = csr_imm_valid_i;
   assign exc_csr_addr_o = csr_readaddr_i;
 
 
@@ -93,8 +93,8 @@ module ysyx_041514_execute_top (
   wire _excop_op = (exc_op_i == `ysyx_041514_EXCOP_OP);
   wire _excop_op32 = (exc_op_i == `ysyx_041514_EXCOP_OP32);
   wire _excop_csr = (exc_op_i == `ysyx_041514_EXCOP_CSR);
-  wire _excop_ebreak = (exc_op_i == `ysyx_041514_EXCOP_EBREAK);
-  wire _excop_none = (exc_op_i == `ysyx_041514_EXCOP_NONE);
+  // wire _excop_ebreak = (exc_op_i == `ysyx_041514_EXCOP_EBREAK);
+  // wire _excop_none = (exc_op_i == `ysyx_041514_EXCOP_NONE);
 
   /*****************************branch 操作********************************/
   wire [`ysyx_041514_XLEN_BUS] _pc_add_imm;

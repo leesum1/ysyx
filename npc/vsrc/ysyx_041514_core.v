@@ -92,7 +92,7 @@ module ysyx_041514_core (
 
   /*×××××××××××××××××××××××××× PC 模块 用于选择吓一跳指令地址 ×××××××××××××××××××××××*/
   wire [`ysyx_041514_XLEN_BUS] inst_addr;
-  wire [`ysyx_041514_XLEN_BUS] pc_next;
+  wire [`ysyx_041514_NPC_ADDR_BUS] pc_next;  // 输出给 icache
   wire read_req;
   ysyx_041514_pc_reg u_pc_reg (
       .clk              (clk),
@@ -107,7 +107,7 @@ module ysyx_041514_core (
       //trap pc valide,来自mem
       //输出pc
       .read_req_o       (read_req),
-      .if_rdata_valid_i (if_rdata_valid),
+      //.if_rdata_valid_i (if_rdata_valid),
       .pc_next_o        (pc_next),          //输出 next_pc
       .pc_o             (inst_addr)
   );
@@ -130,7 +130,7 @@ module ysyx_041514_core (
 
   ysyx_041514_fetch u_fetch (
       //指令地址
-      .rst        (rst),
+      //   .rst        (rst),
       .inst_addr_i(inst_addr),
       // from pc_reg
 
@@ -186,7 +186,7 @@ module ysyx_041514_core (
   wire [        `ysyx_041514_ALUOP_LEN-1:0 ] alu_op_id;  // alu 操作码
   wire [        `ysyx_041514_MEMOP_LEN-1:0 ] mem_op_id;  // mem 操作码
   wire [        `ysyx_041514_EXCOP_LEN-1:0 ] exc_op_id;  // exc 操作码
-  wire [         `ysyx_041514_PCOP_LEN-1:0 ] pc_op_id;  // pc 操作码
+  // wire [         `ysyx_041514_PCOP_LEN-1:0 ] pc_op_id;  // pc 操作码
   wire [        `ysyx_041514_CSROP_LEN-1:0 ] csr_op_id;  // csr 操作码
 
   wire [             `ysyx_041514_XLEN_BUS]  inst_addr_id;
@@ -234,7 +234,7 @@ module ysyx_041514_core (
       // mem 操作码
       .exc_op_o(exc_op_id),
       // exc 操作码
-      .pc_op_o(pc_op_id),
+      // .pc_op_o(pc_op_id),
       // pc 操作码
       .csr_op_o(csr_op_id),
       // csr 操作码
@@ -246,8 +246,8 @@ module ysyx_041514_core (
       .trap_bus_o(trap_bus_id)
   );
   /*************************** id/ex 流水线缓存 *************************************/
-  wire [    `ysyx_041514_REG_ADDRWIDTH-1:0 ] rs1_idx_id_ex;
-  wire [    `ysyx_041514_REG_ADDRWIDTH-1:0 ] rs2_idx_id_ex;
+//   wire [    `ysyx_041514_REG_ADDRWIDTH-1:0 ] rs1_idx_id_ex;
+//   wire [    `ysyx_041514_REG_ADDRWIDTH-1:0 ] rs2_idx_id_ex;
   wire [    `ysyx_041514_REG_ADDRWIDTH-1:0 ] rd_idx_id_ex;
   wire [             `ysyx_041514_XLEN_BUS]  rs1_data_id_ex;
   wire [             `ysyx_041514_XLEN_BUS]  rs2_data_id_ex;
@@ -259,7 +259,7 @@ module ysyx_041514_core (
   wire [        `ysyx_041514_ALUOP_LEN-1:0 ] alu_op_id_ex;  // alu 操作码
   wire [        `ysyx_041514_MEMOP_LEN-1:0 ] mem_op_id_ex;  // mem 操作码
   wire [        `ysyx_041514_EXCOP_LEN-1:0 ] exc_op_id_ex;  // exc 操作码
-  wire [         `ysyx_041514_PCOP_LEN-1:0 ] pc_op_id_ex;  // pc 操作码
+  // wire [         `ysyx_041514_PCOP_LEN-1:0 ] pc_op_id_ex;  // pc 操作码
   wire [        `ysyx_041514_CSROP_LEN-1:0 ] csr_op_id_ex;  // csr 操作码
   wire [             `ysyx_041514_XLEN_BUS]  inst_addr_id_ex;
   wire [         `ysyx_041514_INST_LEN-1:0 ] inst_data_id_ex;
@@ -274,8 +274,8 @@ module ysyx_041514_core (
       /* 输入 */
       .pc_id_ex_i           (inst_addr_id),
       .inst_data_id_ex_i    (inst_data_id),
-      .rs1_idx_id_ex_i      (rs1_idx_id),
-      .rs2_idx_id_ex_i      (rs2_idx_id),
+    //   .rs1_idx_id_ex_i      (rs1_idx_id),
+    //   .rs2_idx_id_ex_i      (rs2_idx_id),
       .rd_idx_id_ex_i       (rd_idx_id),
       .imm_data_id_ex_i     (imm_data_id),
       .csr_imm_id_ex_i      (csr_imm_id),
@@ -290,7 +290,7 @@ module ysyx_041514_core (
       // mem 操作码
       .exc_op_id_ex_i       (exc_op_id),
       // exc 操作码
-      .pc_op_id_ex_i        (pc_op_id),
+      // .pc_op_id_ex_i        (pc_op_id),
       // pc 操作码
       .csr_op_id_ex_i       (csr_op_id),
       // csr 操作码
@@ -299,8 +299,8 @@ module ysyx_041514_core (
       /* 输出 */
       .pc_id_ex_o           (inst_addr_id_ex),
       .inst_data_id_ex_o    (inst_data_id_ex),
-      .rs1_idx_id_ex_o      (rs1_idx_id_ex),
-      .rs2_idx_id_ex_o      (rs2_idx_id_ex),
+    //   .rs1_idx_id_ex_o      (rs1_idx_id_ex),
+    //   .rs2_idx_id_ex_o      (rs2_idx_id_ex),
       .rd_idx_id_ex_o       (rd_idx_id_ex),
       .imm_data_id_ex_o     (imm_data_id_ex),
       .csr_imm_id_ex_o      (csr_imm_id_ex),
@@ -315,7 +315,7 @@ module ysyx_041514_core (
       // mem 操作码
       .exc_op_id_ex_o       (exc_op_id_ex),
       // exc 操作码
-      .pc_op_id_ex_o        (pc_op_id_ex),
+      // .pc_op_id_ex_o        (pc_op_id_ex),
       // pc 操作码
       .csr_op_id_ex_o       (csr_op_id_ex),
       // csr 操作码
@@ -328,19 +328,19 @@ module ysyx_041514_core (
   wire [             `ysyx_041514_XLEN_BUS]  pc_ex;
   wire [         `ysyx_041514_INST_LEN-1:0 ] inst_data_ex;
   wire [    `ysyx_041514_REG_ADDRWIDTH-1:0 ] rd_idx_ex;
-  wire [             `ysyx_041514_XLEN_BUS]  rs1_data_ex;
+//   wire [             `ysyx_041514_XLEN_BUS]  rs1_data_ex;
   wire [             `ysyx_041514_XLEN_BUS]  rs2_data_ex;
-  wire [          `ysyx_041514_IMM_LEN-1:0 ] imm_data_ex;
-  wire [             `ysyx_041514_XLEN_BUS]  csr_data_ex;
-  wire [          `ysyx_041514_IMM_LEN-1:0 ] csr_imm_ex;
-  wire                                       csr_imm_valid_ex;
+//   wire [          `ysyx_041514_IMM_LEN-1:0 ] imm_data_ex;
+//   wire [             `ysyx_041514_XLEN_BUS]  csr_data_ex;
+//   wire [          `ysyx_041514_IMM_LEN-1:0 ] csr_imm_ex;
+//   wire                                       csr_imm_valid_ex;
   wire [        `ysyx_041514_MEMOP_LEN-1:0 ] mem_op_ex;  // 访存操作码
-  wire [         `ysyx_041514_PCOP_LEN-1:0 ] pc_op_ex;
+//   wire [         `ysyx_041514_PCOP_LEN-1:0 ] pc_op_ex;
   wire [             `ysyx_041514_XLEN_BUS]  exc_alu_data_ex;  // 同时送给 ID 和 EX/MEM
   wire [             `ysyx_041514_XLEN_BUS]  exc_csr_data_ex;
   wire                                       exc_csr_valid_ex;
   wire [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0 ] exc_csr_addr_ex;
-  wire [        `ysyx_041514_EXCOP_LEN-1:0 ] exc_op_ex;  // exc 操作码
+//   wire [        `ysyx_041514_EXCOP_LEN-1:0 ] exc_op_ex;  // exc 操作码
   // 请求暂停流水线
   wire                                       jump_hazard_valid;
   wire                                       alu_mul_div_valid;
@@ -377,7 +377,7 @@ module ysyx_041514_core (
       // exc 操作码
       .csr_op_i       (csr_op_id_ex),
       // exc_csr 操作码
-      .pc_op_i        (pc_op_id_ex),
+      // .pc_op_i        (pc_op_id_ex),
       /* TARP 总线 */
       .trap_bus_i     (trap_bus_id_ex),
       /********************** to ex/mem **************************/
@@ -386,23 +386,23 @@ module ysyx_041514_core (
       .inst_data_o    (inst_data_ex),
       // gpr 译码结果
       .rd_idx_o       (rd_idx_ex),
-      .rs1_data_o     (rs1_data_ex),
+      // .rs1_data_o     (rs1_data_ex),
       .rs2_data_o     (rs2_data_ex),
-      .imm_data_o     (imm_data_ex),
+      // .imm_data_o     (imm_data_ex),
       // CSR 译码结果 
-      .csr_data_o     (csr_data_ex),
-      .csr_imm_o      (csr_imm_ex),
-      .csr_imm_valid_o(csr_imm_valid_ex),
+      // .csr_data_o     (csr_data_ex),
+      // .csr_imm_o      (csr_imm_ex),
+      // .csr_imm_valid_o(csr_imm_valid_ex),
       .mem_op_o       (mem_op_ex),
       // 访存操作码
-      .pc_op_o        (pc_op_ex),
+      // .pc_op_o        (pc_op_ex),
       .exc_alu_data_o (exc_alu_data_ex),
       // 同时送给 ID 和 EX/MEM
       .exc_csr_data_o (exc_csr_data_ex),
       .exc_csr_valid_o(exc_csr_valid_ex),
       .exc_csr_addr_o (exc_csr_addr_ex),
       /************************to id *************************************/
-      .exc_op_o       (exc_op_ex),
+      // .exc_op_o       (exc_op_ex),
       // exc 操作码
 
       /********************* from data_buff *******************/
@@ -424,15 +424,15 @@ module ysyx_041514_core (
 
   wire [             `ysyx_041514_XLEN_BUS]  pc_ex_mem;
   wire [         `ysyx_041514_INST_LEN-1:0 ] inst_data_ex_mem;
-  wire [             `ysyx_041514_XLEN_BUS]  imm_data_ex_mem;
+//   wire [             `ysyx_041514_XLEN_BUS]  imm_data_ex_mem;
   wire [    `ysyx_041514_REG_ADDRWIDTH-1:0 ] rd_idx_ex_mem;
-  wire [             `ysyx_041514_XLEN_BUS]  rs1_data_ex_mem;
+//   wire [             `ysyx_041514_XLEN_BUS]  rs1_data_ex_mem;
   wire [             `ysyx_041514_XLEN_BUS]  rs2_data_ex_mem;
   wire [             `ysyx_041514_XLEN_BUS]  alu_data_ex_mem;
   wire [             `ysyx_041514_XLEN_BUS]  csr_writedata_ex_mem;
   wire                                       csr_writevalid_ex_mem;
   wire [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0 ] csr_addr_ex_mem;
-  wire [         `ysyx_041514_PCOP_LEN-1:0 ] pc_op_ex_mem;
+//   wire [         `ysyx_041514_PCOP_LEN-1:0 ] pc_op_ex_mem;
   wire [        `ysyx_041514_MEMOP_LEN-1:0 ] mem_op_ex_mem;
   /* TARP 总线 */
   wire [             `ysyx_041514_TRAP_BUS]  trap_bus_ex_mem;
@@ -444,29 +444,29 @@ module ysyx_041514_core (
       .stall_valid_i          (stall_clint),
       .pc_ex_mem_i            (pc_ex),
       .inst_data_ex_mem_i     (inst_data_ex),
-      .imm_data_ex_mem_i      (imm_data_ex),
+    //   .imm_data_ex_mem_i      (imm_data_ex),
       .rd_idx_ex_mem_i        (rd_idx_ex),
-      .rs1_data_ex_mem_i      (rs1_data_ex),
+    //   .rs1_data_ex_mem_i      (rs1_data_ex),
       .rs2_data_ex_mem_i      (rs2_data_ex),
       .alu_data_ex_mem_i      (exc_alu_data_ex),
       .csr_writedata_ex_mem_i (exc_csr_data_ex),
       .csr_writevalid_ex_mem_i(exc_csr_valid_ex),
       .csr_addr_ex_mem_i      (exc_csr_addr_ex),
-      .pc_op_ex_mem_i         (pc_op_ex),
+    //   .pc_op_ex_mem_i         (pc_op_ex),
       .mem_op_ex_mem_i        (mem_op_ex),
       /* TARP 总线 */
       .trap_bus_ex_mem_i      (trap_bus_ex),
       .pc_ex_mem_o            (pc_ex_mem),
       .inst_data_ex_mem_o     (inst_data_ex_mem),
-      .imm_data_ex_mem_o      (imm_data_ex_mem),
+    //   .imm_data_ex_mem_o      (imm_data_ex_mem),
       .rd_idx_ex_mem_o        (rd_idx_ex_mem),
-      .rs1_data_ex_mem_o      (rs1_data_ex_mem),
+    //   .rs1_data_ex_mem_o      (rs1_data_ex_mem),
       .rs2_data_ex_mem_o      (rs2_data_ex_mem),
       .alu_data_ex_mem_o      (alu_data_ex_mem),
       .csr_writedata_ex_mem_o (csr_writedata_ex_mem),
       .csr_writevalid_ex_mem_o(csr_writevalid_ex_mem),
       .csr_addr_ex_mem_o      (csr_addr_ex_mem),
-      .pc_op_ex_mem_o         (pc_op_ex_mem),
+    //   .pc_op_ex_mem_o         (pc_op_ex_mem),
       .mem_op_ex_mem_o        (mem_op_ex_mem),
       /* TARP 总线 */
       .trap_bus_ex_mem_o      (trap_bus_ex_mem)
@@ -563,16 +563,16 @@ module ysyx_041514_core (
   wire [`ysyx_041514_XLEN-1:0] csr_mepc_writedata;
   wire [`ysyx_041514_XLEN-1:0] csr_mcause_writedata;
   wire [`ysyx_041514_XLEN-1:0] csr_mtval_writedata;
-  wire [`ysyx_041514_XLEN-1:0] csr_mtvec_writedata;
+  //wire [`ysyx_041514_XLEN-1:0] csr_mtvec_writedata;
   wire [`ysyx_041514_XLEN-1:0] csr_mip_writedata;
-  wire [`ysyx_041514_XLEN-1:0] csr_mie_writedata;
+  //wire [`ysyx_041514_XLEN-1:0] csr_mie_writedata;
   wire csr_mstatus_write_valid;
   wire csr_mepc_write_valid;
   wire csr_mcause_write_valid;
   wire csr_mtval_write_valid;
-  wire csr_mtvec_write_valid;
+  //wire csr_mtvec_write_valid;
   wire csr_mip_write_valid;
-  wire csr_mie_write_valid;
+  //wire csr_mie_write_valid;
   /* 输出至取指阶段 */
   wire [`ysyx_041514_XLEN-1:0] clint_pc;
   wire clint_pc_valid;
@@ -605,8 +605,8 @@ module ysyx_041514_core (
       /* trap 所需寄存器，来自于 csr (读)*/
       .csr_mstatus_readdata_i(csr_mstatus_readdata_csr),
       .csr_mepc_readdata_i(csr_mepc_readdata_csr),
-      .csr_mcause_readdata_i(csr_mcause_readdata_csr),
-      .csr_mtval_readdata_i(csr_mtval_readdata_csr),
+      //   .csr_mcause_readdata_i(csr_mcause_readdata_csr),
+      //   .csr_mtval_readdata_i(csr_mtval_readdata_csr),
       .csr_mtvec_readdata_i(csr_mtvec_readdata_csr),
       .csr_mie_readdata_i(csr_mie_readdata_csr),
       .csr_mip_readdata_i(csr_mip_readdata_csr),
@@ -615,16 +615,16 @@ module ysyx_041514_core (
       .csr_mepc_writedata_o(csr_mepc_writedata),
       .csr_mcause_writedata_o(csr_mcause_writedata),
       .csr_mtval_writedata_o(csr_mtval_writedata),
-      .csr_mtvec_writedata_o(csr_mtvec_writedata),
-      .csr_mie_writedata_o(csr_mie_writedata),
+      //   .csr_mtvec_writedata_o(csr_mtvec_writedata),
+      //   .csr_mie_writedata_o(csr_mie_writedata),
       .csr_mip_writedata_o(csr_mip_writedata),
 
       .csr_mstatus_write_valid_o(csr_mstatus_write_valid),
       .csr_mepc_write_valid_o(csr_mepc_write_valid),
       .csr_mcause_write_valid_o(csr_mcause_write_valid),
       .csr_mtval_write_valid_o(csr_mtval_write_valid),
-      .csr_mtvec_write_valid_o(csr_mtvec_write_valid),
-      .csr_mie_write_valid_o(csr_mie_write_valid),
+      //   .csr_mtvec_write_valid_o(csr_mtvec_write_valid),
+      //   .csr_mie_write_valid_o(csr_mie_write_valid),
       .csr_mip_write_valid_o(csr_mip_write_valid),
       /* 输出至取指阶段 */
       .clint_pc_o(clint_pc),  // trap pc
@@ -640,16 +640,16 @@ module ysyx_041514_core (
   wire [             `ysyx_041514_XLEN-1:0 ] csr_mepc_writedata_mem_wb;
   wire [             `ysyx_041514_XLEN-1:0 ] csr_mcause_writedata_mem_wb;
   wire [             `ysyx_041514_XLEN-1:0 ] csr_mtval_writedata_mem_wb;
-  wire [             `ysyx_041514_XLEN-1:0 ] csr_mtvec_writedata_mem_wb;
-  wire [             `ysyx_041514_XLEN-1:0 ] csr_mie_writedata_mem_wb;
+  //   wire [             `ysyx_041514_XLEN-1:0 ] csr_mtvec_writedata_mem_wb;
+  //   wire [             `ysyx_041514_XLEN-1:0 ] csr_mie_writedata_mem_wb;
   wire [             `ysyx_041514_XLEN-1:0 ] csr_mip_writedata_mem_wb;
 
   wire                                       csr_mstatus_write_valid_mem_wb;
   wire                                       csr_mepc_write_valid_mem_wb;
   wire                                       csr_mcause_write_valid_mem_wb;
   wire                                       csr_mtval_write_valid_mem_wb;
-  wire                                       csr_mtvec_write_valid_mem_wb;
-  wire                                       csr_mie_write_valid_mem_wb;
+  //   wire                                       csr_mtvec_write_valid_mem_wb;
+  //   wire                                       csr_mie_write_valid_mem_wb;
   wire                                       csr_mip_write_valid_mem_wb;
   wire [             `ysyx_041514_XLEN-1:0 ] pc_mem_wb;  //指令地址
   wire [         `ysyx_041514_INST_LEN-1:0 ] inst_data_mem_wb;  //指令内容
@@ -683,16 +683,16 @@ module ysyx_041514_core (
       .csr_mepc_writedata_mem_wb_i   (csr_mepc_writedata),
       .csr_mcause_writedata_mem_wb_i (csr_mcause_writedata),
       .csr_mtval_writedata_mem_wb_i  (csr_mtval_writedata),
-      .csr_mtvec_writedata_mem_wb_i  (csr_mtvec_writedata),
-      .csr_mie_writedata_mem_wb_i    (csr_mie_writedata),
+      //.csr_mtvec_writedata_mem_wb_i  (csr_mtvec_writedata),
+      //.csr_mie_writedata_mem_wb_i    (csr_mie_writedata),
       .csr_mip_writedata_mem_wb_i    (csr_mip_writedata),
 
       .csr_mstatus_write_valid_mem_wb_i(csr_mstatus_write_valid),
       .csr_mepc_write_valid_mem_wb_i   (csr_mepc_write_valid),
       .csr_mcause_write_valid_mem_wb_i (csr_mcause_write_valid),
       .csr_mtval_write_valid_mem_wb_i  (csr_mtval_write_valid),
-      .csr_mtvec_write_valid_mem_wb_i  (csr_mtvec_write_valid),
-      .csr_mie_write_valid_mem_wb_i  (csr_mie_write_valid),
+      //.csr_mtvec_write_valid_mem_wb_i  (csr_mtvec_write_valid),
+      //.csr_mie_write_valid_mem_wb_i  (csr_mie_write_valid),
       .csr_mip_write_valid_mem_wb_i  (csr_mip_write_valid),
 
       .pc_mem_wb_i           (pc_mem),
@@ -708,16 +708,16 @@ module ysyx_041514_core (
       .csr_mepc_writedata_mem_wb_o(csr_mepc_writedata_mem_wb),
       .csr_mcause_writedata_mem_wb_o(csr_mcause_writedata_mem_wb),
       .csr_mtval_writedata_mem_wb_o(csr_mtval_writedata_mem_wb),
-      .csr_mtvec_writedata_mem_wb_o(csr_mtvec_writedata_mem_wb),
-      .csr_mie_writedata_mem_wb_o(csr_mie_writedata_mem_wb),
+      //   .csr_mtvec_writedata_mem_wb_o(csr_mtvec_writedata_mem_wb),
+      //   .csr_mie_writedata_mem_wb_o(csr_mie_writedata_mem_wb),
       .csr_mip_writedata_mem_wb_o(csr_mip_writedata_mem_wb),
 
       .csr_mstatus_write_valid_mem_wb_o(csr_mstatus_write_valid_mem_wb),
       .csr_mepc_write_valid_mem_wb_o(csr_mepc_write_valid_mem_wb),
       .csr_mcause_write_valid_mem_wb_o(csr_mcause_write_valid_mem_wb),
       .csr_mtval_write_valid_mem_wb_o(csr_mtval_write_valid_mem_wb),
-      .csr_mtvec_write_valid_mem_wb_o(csr_mtvec_write_valid_mem_wb),
-      .csr_mie_write_valid_mem_wb_o(csr_mie_write_valid_mem_wb),
+      //   .csr_mtvec_write_valid_mem_wb_o(csr_mtvec_write_valid_mem_wb),
+      //   .csr_mie_write_valid_mem_wb_o(csr_mie_write_valid_mem_wb),
       .csr_mip_write_valid_mem_wb_o(csr_mip_write_valid_mem_wb),
 
       .pc_mem_wb_o(pc_mem_wb),
@@ -735,7 +735,7 @@ module ysyx_041514_core (
   /***************************写回阶段***********************************/
   ysyx_041514_writeback u_writeback (
       .clk           (clk),
-      .rst           (rst),
+      //   .rst           (rst),
       .pc_wb_i       (pc_mem_wb),
       .inst_data_wb_i(inst_data_mem_wb)
       //   .mem_data_i     (mem_data_mem_wb),
@@ -774,8 +774,8 @@ module ysyx_041514_core (
   /* 单独引出寄存器(读) */
   wire [`ysyx_041514_XLEN-1:0] csr_mstatus_readdata_csr;
   wire [`ysyx_041514_XLEN-1:0] csr_mepc_readdata_csr;
-  wire [`ysyx_041514_XLEN-1:0] csr_mcause_readdata_csr;
-  wire [`ysyx_041514_XLEN-1:0] csr_mtval_readdata_csr;
+  //   wire [`ysyx_041514_XLEN-1:0] csr_mcause_readdata_csr;
+  //   wire [`ysyx_041514_XLEN-1:0] csr_mtval_readdata_csr;
   wire [`ysyx_041514_XLEN-1:0] csr_mtvec_readdata_csr;
   wire [`ysyx_041514_XLEN-1:0] csr_mie_readdata_csr;
   wire [`ysyx_041514_XLEN-1:0] csr_mip_readdata_csr;
@@ -789,22 +789,22 @@ module ysyx_041514_core (
       .csr_mepc_writedata_i   (csr_mepc_writedata_mem_wb),
       .csr_mcause_writedata_i (csr_mcause_writedata_mem_wb),
       .csr_mtval_writedata_i  (csr_mtval_writedata_mem_wb),
-      .csr_mtvec_writedata_i  (csr_mtvec_writedata_mem_wb),
-      .csr_mie_writedata_i    (csr_mie_writedata_mem_wb),
+      //   .csr_mtvec_writedata_i  (csr_mtvec_writedata_mem_wb),
+      //   .csr_mie_writedata_i    (csr_mie_writedata_mem_wb),
       .csr_mip_writedata_i    (csr_mip_writedata_mem_wb),
 
       .csr_mstatus_write_valid_i(csr_mstatus_write_valid_mem_wb),
       .csr_mepc_write_valid_i   (csr_mepc_write_valid_mem_wb),
       .csr_mcause_write_valid_i (csr_mcause_write_valid_mem_wb),
       .csr_mtval_write_valid_i  (csr_mtval_write_valid_mem_wb),
-      .csr_mtvec_write_valid_i  (csr_mtvec_write_valid_mem_wb),
-      .csr_mie_write_valid_i    (csr_mie_write_valid_mem_wb),
+      //   .csr_mtvec_write_valid_i  (csr_mtvec_write_valid_mem_wb),
+      //   .csr_mie_write_valid_i    (csr_mie_write_valid_mem_wb),
       .csr_mip_write_valid_i    (csr_mip_write_valid_mem_wb),
       /* 单独引出寄存器(读) */
       .csr_mstatus_readdata_o   (csr_mstatus_readdata_csr),
       .csr_mepc_readdata_o      (csr_mepc_readdata_csr),
-      .csr_mcause_readdata_o    (csr_mcause_readdata_csr),
-      .csr_mtval_readdata_o     (csr_mtval_readdata_csr),
+      //   .csr_mcause_readdata_o    (csr_mcause_readdata_csr),
+      //   .csr_mtval_readdata_o     (csr_mtval_readdata_csr),
       .csr_mtvec_readdata_o     (csr_mtvec_readdata_csr),
       .csr_mie_readdata_o       (csr_mie_readdata_csr),
       .csr_mip_readdata_o       (csr_mip_readdata_csr),
@@ -1057,14 +1057,14 @@ module ysyx_041514_core (
   wire [3:0] io_master_awqos;
   wire [3:0] io_master_awregion;
   wire io_master_wuser;
-  wire io_master_buser;
+  wire io_master_buser = 0;
   wire [2:0] io_master_arprot;
   wire io_master_aruser;
   wire io_master_arlock;
   wire [3:0] io_master_arcache;
   wire [3:0] io_master_arqos;
   wire [3:0] io_master_arregion;
-  wire io_master_ruser;
+  wire io_master_ruser = 0;
 
   ysyx_041514_axi_rw #(
       .RW_DATA_WIDTH (64),

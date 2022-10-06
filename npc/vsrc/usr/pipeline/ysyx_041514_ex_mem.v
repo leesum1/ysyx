@@ -8,15 +8,15 @@ module ysyx_041514_ex_mem (
 
     input [             `ysyx_041514_XLEN_BUS] pc_ex_mem_i,
     input [         `ysyx_041514_INST_LEN-1:0] inst_data_ex_mem_i,
-    input [             `ysyx_041514_XLEN_BUS] imm_data_ex_mem_i,
+    // input [             `ysyx_041514_XLEN_BUS] imm_data_ex_mem_i,
     input [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_ex_mem_i,
-    input [             `ysyx_041514_XLEN_BUS] rs1_data_ex_mem_i,
+    // input [             `ysyx_041514_XLEN_BUS] rs1_data_ex_mem_i,
     input [             `ysyx_041514_XLEN_BUS] rs2_data_ex_mem_i,
     input [             `ysyx_041514_XLEN_BUS] alu_data_ex_mem_i,
     input [             `ysyx_041514_XLEN_BUS] csr_writedata_ex_mem_i,   // CSR 写回数据
     input                          csr_writevalid_ex_mem_i,  // CSR 写回使能
     input [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] csr_addr_ex_mem_i,        // CSR 写回地址
-    input [         `ysyx_041514_PCOP_LEN-1:0] pc_op_ex_mem_i,
+    // input [         `ysyx_041514_PCOP_LEN-1:0] pc_op_ex_mem_i,
     input [        `ysyx_041514_MEMOP_LEN-1:0] mem_op_ex_mem_i,
 
     /* TARP 总线 */
@@ -25,15 +25,15 @@ module ysyx_041514_ex_mem (
 
     output [             `ysyx_041514_XLEN_BUS] pc_ex_mem_o,
     output [         `ysyx_041514_INST_LEN-1:0] inst_data_ex_mem_o,
-    output [             `ysyx_041514_XLEN_BUS] imm_data_ex_mem_o,
+    // output [             `ysyx_041514_XLEN_BUS] imm_data_ex_mem_o,
     output [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_ex_mem_o,
-    output [             `ysyx_041514_XLEN_BUS] rs1_data_ex_mem_o,
+    // output [             `ysyx_041514_XLEN_BUS] rs1_data_ex_mem_o,
     output [             `ysyx_041514_XLEN_BUS] rs2_data_ex_mem_o,
     output [             `ysyx_041514_XLEN_BUS] alu_data_ex_mem_o,
     output [             `ysyx_041514_XLEN_BUS] csr_writedata_ex_mem_o,
     output                          csr_writevalid_ex_mem_o,
     output [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] csr_addr_ex_mem_o,        // CSR 写回地址
-    output [         `ysyx_041514_PCOP_LEN-1:0] pc_op_ex_mem_o,
+    // output [         `ysyx_041514_PCOP_LEN-1:0] pc_op_ex_mem_o,
     output [        `ysyx_041514_MEMOP_LEN-1:0] mem_op_ex_mem_o,
 
     /* TARP 总线 */
@@ -94,20 +94,20 @@ module ysyx_041514_ex_mem (
   assign rd_idx_ex_mem_o = _rd_idx_ex_mem_q;
 
 
-  /* rs1_data 寄存器 */
-  wire [`ysyx_041514_XLEN_BUS] _rs1_data_ex_mem_d = (_flush_valid) ? `ysyx_041514_XLEN'b0 : rs1_data_ex_mem_i;
-  reg [`ysyx_041514_XLEN_BUS] _rs1_data_ex_mem_q;
-  ysyx_041514_regTemplate #(
-      .WIDTH    (`ysyx_041514_XLEN),
-      .RESET_VAL(`ysyx_041514_XLEN'b0)  //TODO:默认值未设置
-  ) u_rs1_data_ex_mem_id (
-      .clk (clk),
-      .rst (rst),
-      .din (_rs1_data_ex_mem_d),
-      .dout(_rs1_data_ex_mem_q),
-      .wen (reg_wen)
-  );
-  assign rs1_data_ex_mem_o = _rs1_data_ex_mem_q;
+//   /* rs1_data 寄存器 */
+//   wire [`ysyx_041514_XLEN_BUS] _rs1_data_ex_mem_d = (_flush_valid) ? `ysyx_041514_XLEN'b0 : rs1_data_ex_mem_i;
+//   reg [`ysyx_041514_XLEN_BUS] _rs1_data_ex_mem_q;
+//   ysyx_041514_regTemplate #(
+//       .WIDTH    (`ysyx_041514_XLEN),
+//       .RESET_VAL(`ysyx_041514_XLEN'b0)  //TODO:默认值未设置
+//   ) u_rs1_data_ex_mem_id (
+//       .clk (clk),
+//       .rst (rst),
+//       .din (_rs1_data_ex_mem_d),
+//       .dout(_rs1_data_ex_mem_q),
+//       .wen (reg_wen)
+//   );
+//   assign rs1_data_ex_mem_o = _rs1_data_ex_mem_q;
 
 
   /* rs2_data 寄存器 */
@@ -126,20 +126,20 @@ module ysyx_041514_ex_mem (
   assign rs2_data_ex_mem_o = _rs2_data_ex_mem_q;
 
 
-  /* imm_data 寄存器 */
-  wire [`ysyx_041514_XLEN_BUS] _imm_data_ex_mem_d = (_flush_valid) ? `ysyx_041514_XLEN'b0 : imm_data_ex_mem_i;
-  reg [`ysyx_041514_XLEN_BUS] _imm_data_ex_mem_q;
-  ysyx_041514_regTemplate #(
-      .WIDTH    (`ysyx_041514_XLEN),
-      .RESET_VAL(`ysyx_041514_XLEN'b0)  //TODO:默认值未设置
-  ) u_imm_data_ex_mem_id (
-      .clk (clk),
-      .rst (rst),
-      .din (_imm_data_ex_mem_d),
-      .dout(_imm_data_ex_mem_q),
-      .wen (reg_wen)
-  );
-  assign imm_data_ex_mem_o = _imm_data_ex_mem_q;
+//   /* imm_data 寄存器 */
+//   wire [`ysyx_041514_XLEN_BUS] _imm_data_ex_mem_d = (_flush_valid) ? `ysyx_041514_XLEN'b0 : imm_data_ex_mem_i;
+//   reg [`ysyx_041514_XLEN_BUS] _imm_data_ex_mem_q;
+//   ysyx_041514_regTemplate #(
+//       .WIDTH    (`ysyx_041514_XLEN),
+//       .RESET_VAL(`ysyx_041514_XLEN'b0)  //TODO:默认值未设置
+//   ) u_imm_data_ex_mem_id (
+//       .clk (clk),
+//       .rst (rst),
+//       .din (_imm_data_ex_mem_d),
+//       .dout(_imm_data_ex_mem_q),
+//       .wen (reg_wen)
+//   );
+//   assign imm_data_ex_mem_o = _imm_data_ex_mem_q;
 
 
   /* alu_data 寄存器 */
@@ -206,20 +206,20 @@ module ysyx_041514_ex_mem (
 
 
 
-  /* pc_op 寄存器 */
-  wire [`ysyx_041514_PCOP_LEN-1:0] _pc_op_ex_mem_d = (_flush_valid) ? `ysyx_041514_PCOP_NONE : pc_op_ex_mem_i;
-  reg [`ysyx_041514_PCOP_LEN-1:0] _pc_op_ex_mem_q;
-  ysyx_041514_regTemplate #(
-      .WIDTH    (`ysyx_041514_PCOP_LEN),
-      .RESET_VAL(`ysyx_041514_PCOP_NONE)  //TODO:默认值未设置
-  ) u_pc_op_ex_mem_id (
-      .clk (clk),
-      .rst (rst),
-      .din (_pc_op_ex_mem_d),
-      .dout(_pc_op_ex_mem_q),
-      .wen (reg_wen)
-  );
-  assign pc_op_ex_mem_o = _pc_op_ex_mem_q;
+//   /* pc_op 寄存器 */
+//   wire [`ysyx_041514_PCOP_LEN-1:0] _pc_op_ex_mem_d = (_flush_valid) ? `ysyx_041514_PCOP_NONE : pc_op_ex_mem_i;
+//   reg [`ysyx_041514_PCOP_LEN-1:0] _pc_op_ex_mem_q;
+//   ysyx_041514_regTemplate #(
+//       .WIDTH    (`ysyx_041514_PCOP_LEN),
+//       .RESET_VAL(`ysyx_041514_PCOP_NONE)  //TODO:默认值未设置
+//   ) u_pc_op_ex_mem_id (
+//       .clk (clk),
+//       .rst (rst),
+//       .din (_pc_op_ex_mem_d),
+//       .dout(_pc_op_ex_mem_q),
+//       .wen (reg_wen)
+//   );
+//   assign pc_op_ex_mem_o = _pc_op_ex_mem_q;
 
 
   /* mem_op 寄存器 */

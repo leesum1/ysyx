@@ -6,7 +6,7 @@
 */
 module ysyx_041514_fetch (
     //指令地址
-    input rst,
+    // input rst,
     input [`ysyx_041514_XLEN_BUS] inst_addr_i,  // from pc_reg
     /* ram 接口 */
     // output [`ysyx_041514_NPC_ADDR_BUS] if_read_addr_o,  // 地址
