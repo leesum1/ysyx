@@ -59,7 +59,7 @@ module ysyx_041514_sram (
     output [127:0] io_sram7_rdata
 );
 
-S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram0 (
+ysyx_041514_S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram0 (
     .Q       (io_sram0_rdata),
     .CLK     (clk),
     .CEN     (io_sram0_cen),
@@ -69,7 +69,7 @@ S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram0 (
     .D       (io_sram0_wdata)
 );
 
-S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram1 (
+ysyx_041514_S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram1 (
     .Q       (io_sram1_rdata),
     .CLK     (clk),
     .CEN     (io_sram1_cen),
@@ -80,7 +80,7 @@ S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram1 (
 );
 
 
-S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram2 (
+ysyx_041514_S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram2 (
     .Q       (io_sram2_rdata),
     .CLK     (clk),
     .CEN     (io_sram2_cen),
@@ -91,7 +91,7 @@ S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram2 (
 );
 
 
-S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram3 (
+ysyx_041514_S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram3 (
     .Q       (io_sram3_rdata),
     .CLK     (clk),
     .CEN     (io_sram3_cen),
@@ -102,7 +102,7 @@ S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram3 (
 );
 
 
-S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram4 (
+ysyx_041514_S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram4 (
     .Q       (io_sram4_rdata),
     .CLK     (clk),
     .CEN     (io_sram4_cen),
@@ -113,7 +113,7 @@ S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram4 (
 );
 
 
-S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram5 (
+ysyx_041514_S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram5 (
     .Q       (io_sram5_rdata),
     .CLK     (clk),
     .CEN     (io_sram5_cen),
@@ -124,7 +124,7 @@ S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram5 (
 );
 
 
-S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram6 (
+ysyx_041514_S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram6 (
     .Q       (io_sram6_rdata),
     .CLK     (clk),
     .CEN     (io_sram6_cen),
@@ -135,7 +135,7 @@ S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram6 (
 );
 
 
-S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram7 (
+ysyx_041514_S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW_sram7 (
     .Q       (io_sram7_rdata),
     .CLK     (clk),
     .CEN     (io_sram7_cen),

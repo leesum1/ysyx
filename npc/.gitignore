@@ -8,10 +8,11 @@ build/
 !*.v
 !*.cpp
 !*.hpp
-!*.h
+!*.hs
 !.vscode/*
 !.gitignore
 !README.md
 !*.drawio
+!mergefile.py
 obj_dir
 testfile.v

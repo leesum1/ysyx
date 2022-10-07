@@ -65,9 +65,9 @@ module ysyx_041514_icache_top (
   wire icache_hit;
   wire uncache;
   ysyx_041514_uncache_check u_ysyx_041514_uncache_check (
-    .addr_check_i       (preif_raddr_i),
-    .uncache_valid_o    (uncache)
-);
+      .addr_check_i   (preif_raddr_i),
+      .uncache_valid_o(uncache)
+  );
 
   reg [`ysyx_041514_XLEN_BUS] uncache_rdata;
 
@@ -109,6 +109,7 @@ module ysyx_041514_icache_top (
       _ram_rsize_icache_o <= 0;
       _ram_rlen_icache_o  <= 0;
       burst_count         <= 0;
+      uncache_rdata       <= 0;
     end else begin
       case (icache_state)
         CACHE_RST: begin

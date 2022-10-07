@@ -8,7 +8,7 @@
 | input [5:0] A      | 读写地址                               |
 | input [127:0] D    | 写数据                                 |
 */
-module S011HD1P_X32Y2D128_BW (
+module ysyx_041514_S011HD1P_X32Y2D128_BW (
     Q,
     CLK,
     CEN,

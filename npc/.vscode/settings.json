@@ -63,5 +63,6 @@
         "random": "cpp",
         "bitset": "cpp"
     },
-    "systemverilog.antlrVerification": false
+    "systemverilog.antlrVerification": false,
+    "python.formatting.provider": "black"
 }

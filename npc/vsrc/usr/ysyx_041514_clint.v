@@ -226,11 +226,12 @@ module ysyx_041514_clint (
 
 
   /* mstatus mux */
-  `ifndef ysyx_041514_YSYX_SOC
-    assign csr_mstatus_write_valid_o = `ysyx_041514_FALSE;
-  `else
-    assign csr_mstatus_write_valid_o = mret_mstatus_valid|trap_mstatus_valid;
-  `endif 
+  // `ifndef ysyx_041514_YSYX_SOC
+  //   assign csr_mstatus_write_valid_o = `ysyx_041514_FALSE;
+  // `else
+  //   assign csr_mstatus_write_valid_o = mret_mstatus_valid|trap_mstatus_valid;
+  // `endif 
+  assign csr_mstatus_write_valid_o = mret_mstatus_valid|trap_mstatus_valid;
   assign csr_mstatus_writedata_o = ({`ysyx_041514_XLEN{mret_mstatus_valid}}&mret_mstatus_wdata)|
                                    ({`ysyx_041514_XLEN{trap_mstatus_valid}}&trap_mstatus_wdata);
 
