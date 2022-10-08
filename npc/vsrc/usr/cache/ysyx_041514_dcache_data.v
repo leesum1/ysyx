@@ -104,42 +104,6 @@ module ysyx_041514_dcache_data #(
   wire [`ysyx_041514_XLEN_BUS] _dcache_rdata_o = {dcache_ram_data[dcache_blk_addr_i[3:0]*8+:64]};
   assign dcache_rdata_o = _dcache_rdata_o;
 
-  // S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW00 (
-  //     .Q   (Q00),
-  //     .CLK (clk),
-  //     .CEN (1'b0), // 低电平有效
-  //     .WEN (WEN00),
-  //     .BWEN(BWEN),
-  //     .A   (A),
-  //     .D   (D)
-  // );
-  // S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW01 (
-  //     .Q   (Q01),
-  //     .CLK (clk),
-  //     .CEN (1'b0), // 低电平有效
-  //     .WEN (WEN01),
-  //     .BWEN(BWEN),
-  //     .A   (A),
-  //     .D   (D)
-  // );
-  // S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW10 (
-  //     .Q   (Q10),
-  //     .CLK (clk),
-  //     .CEN (1'b0), // 低电平有效
-  //     .WEN (WEN10),
-  //     .BWEN(BWEN),
-  //     .A   (A),
-  //     .D   (D)
-  // );
-  // S011HD1P_X32Y2D128_BW u_S011HD1P_X32Y2D128_BW11 (
-  //     .Q   (Q11),
-  //     .CLK (clk),
-  //     .CEN (1'b0), // 低电平有效
-  //     .WEN (WEN11),
-  //     .BWEN(BWEN),
-  //     .A   (A),
-  //     .D   (D)
-  // );
 
   assign io_sram0_cen = 1'b0;
   assign io_sram0_wmask = BWEN;

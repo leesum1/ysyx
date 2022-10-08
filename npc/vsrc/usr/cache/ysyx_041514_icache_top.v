@@ -101,15 +101,19 @@ module ysyx_041514_icache_top (
 
   always @(posedge clk) begin
     if (rst) begin
-      icache_state        <= CACHE_RST;
-      blk_addr_reg        <= 0;
+      icache_state              <= CACHE_RST;
+      blk_addr_reg              <= 0;
       // line_idx_reg        <= 0;
       // line_tag_reg        <= 0;
-      icache_tag_wen      <= 0;
-      _ram_rsize_icache_o <= 0;
-      _ram_rlen_icache_o  <= 0;
-      burst_count         <= 0;
-      uncache_rdata       <= 0;
+      icache_tag_wen            <= 0;
+      _ram_rmask_icache_o       <= 0;
+      _ram_rsize_icache_o       <= 0;
+      _ram_raddr_valid_icache_o <= 0;
+      icache_data_ready         <= 0;
+      _ram_raddr_icache_o       <= 0;
+      _ram_rlen_icache_o        <= 0;
+      burst_count               <= 0;
+      uncache_rdata             <= 0;
     end else begin
       case (icache_state)
         CACHE_RST: begin

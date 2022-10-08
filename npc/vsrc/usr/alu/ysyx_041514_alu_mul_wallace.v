@@ -1,13 +1,13 @@
 `include "sysconfig.v"
 module ysyx_041514_alu_mul_wallace (
-    input                clk,
-    input                rst,
-    input                rs1_signed_valid_i,
-    input                rs2_signed_valid_i,
+    input                            clk,
+    input                            rst,
+    input                            rs1_signed_valid_i,
+    input                            rs2_signed_valid_i,
     input  [  `ysyx_041514_XLEN_BUS] rs1_data_i,
     input  [  `ysyx_041514_XLEN_BUS] rs2_data_i,
-    input                mul_valid_i,
-    output               mul_ready_o,
+    input                            mul_valid_i,
+    output                           mul_ready_o,
     output [`ysyx_041514_XLEN*2-1:0] mul_out_o
 );
   localparam STATE_LEN = 3;
@@ -29,7 +29,9 @@ module ysyx_041514_alu_mul_wallace (
   assign mul_ready_o = mul_ready;
 
   assign mul_out_o   = mul_data128;
+ 
 
+  /* 乘法状态机切换 */
   always @(posedge clk) begin
     if (rst) begin
       mul_state   <= MUL_RST;
@@ -82,7 +84,7 @@ module ysyx_041514_alu_mul_wallace (
         MUL_STEP4: begin
           if (_mul_valid) begin
             mul_state   <= MUL_IDLE;  // step4 2->1, 进入 idle
-            mul_data128 <= mul_final128;
+            mul_data128 <= mul_final128;  // 结果有效
             mul_ready   <= `ysyx_041514_TRUE;
           end else begin
             mul_state   <= MUL_IDLE;

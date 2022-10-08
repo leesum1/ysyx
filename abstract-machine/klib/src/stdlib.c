@@ -30,19 +30,64 @@ int atoi(const char* nptr) {
   return x;
 }
 
-void* malloc(size_t size) {
-  static int i = 0;
-  if (i == 0) {
-    i++;
-    printf("malloc init\n");
-    init_memory_pool(heap.end - heap.start + 1, heap.start);
+/**
+ * 数字转字符串
+*/
+char* itoa(int num, char* str, int radix) {
+  /*索引表*/
+  char index[] = "0123456789ABCDEF";
+  unsigned unum;/*中间变量*/
+  int i = 0, j, k;
+  /*确定unum的值*/
+  if (radix == 10 && num < 0)/*十进制负数*/
+  {
+    unum = (unsigned)-num;
+    str[i++] = '-';
   }
-  printf("malloc\n");
-  return tlsf_malloc(size);
+  else unum = (unsigned)num;/*其他情况*/
+  /*转换*/
+  do {
+    str[i++] = index[unum % (unsigned)radix];
+    unum /= radix;
+  } while (unum);
+  str[i] = '\0';
+  /*逆序*/
+  if (str[0] == '-')
+    k = 1;/*十进制负数*/
+  else
+    k = 0;
+
+  for (j = k;j <= (i - 1) / 2;j++) {
+    char temp;
+    temp = str[j];
+    str[j] = str[i - 1 + k - j];
+    str[i - 1 + k - j] = temp;
+  }
+  return str;
+}
+
+
+char* head_start_p = NULL;
+void* malloc(size_t size) {
+  if (head_start_p==NULL)
+  {
+    head_start_p = heap.start;
+  }
+  // static int i = 0;
+  // if (i == 0) {
+  //   i++;
+  //   printf("malloc init\n");
+  //   init_memory_pool(heap.end - heap.start + 1, heap.start);
+  // }
+  // printf("malloc\n");
+  // return tlsf_malloc(size);
+  char* last_p = head_start_p;
+  head_start_p+=size;
+  return last_p;
 }
 
 void free(void* ptr) {
-  tlsf_free(ptr);
+  // tlsf_free(ptr);
 }
 
 #endif

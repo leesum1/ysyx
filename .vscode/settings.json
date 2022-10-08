@@ -120,5 +120,8 @@
         "**/target": true
     },
     "C_Cpp.errorSquiggles": "Enabled",
-    "search.useIgnoreFiles": false
+    "search.useIgnoreFiles": false,
+    "cSpell.enableFiletypes": [
+        "!c"
+    ]
 }

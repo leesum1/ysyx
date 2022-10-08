@@ -17,6 +17,8 @@ for path in files.splitlines():
     f = open(path).read()                         # 将打开的文件内容保存到变量f
     f = f.replace('`include "sysconfig.v"', " ")  #  include 去除
     f = f.replace('ysyx_041514_soc','ysyx_041514')# 模块名称替换，满足端口要求
+    f = f.replace('`define MUL_SIM',' ')
+    f = f.replace('`define DIV_SIM',' ')
 
     log.write(f)  # 写入文件
     print('已经合并：' + path)

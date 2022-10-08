@@ -22,8 +22,13 @@ module ysyx_041514_rv64_gpr_regfile (
   wire [`ysyx_041514_XLEN-1:0] _write_data = (_isX0) ? `ysyx_041514_XLEN'b0 : write_data_i;  // x0 恒为0
   /* 写入使能 */
   wire _wen = write_data_valid_i;
+  integer i;
   always @(posedge clk) begin
-    if (_wen) rf[write_idx_i] <= _write_data;
+    if (rst) begin
+      for (i = 0; i < 32; i = i + 1) begin
+        rf[i] <= 0;
+      end
+    end else if (_wen) rf[write_idx_i] <= _write_data;
   end
 
   /* 读取数据 */

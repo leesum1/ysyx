@@ -31,7 +31,7 @@ extern "C" {
   void   free(void* ptr);
   int    abs(int x);
   int    atoi(const char* nptr);
-
+  char* itoa(int num, char* str, int radix);
   // stdio.h
   int    printf(const char* format, ...);
   int    sprintf(char* str, const char* format, ...);

@@ -77,8 +77,6 @@ module ysyx_041514_dcache_top (
   assign mem_fencei_ready_o = fencei_ready;
 
   // uncache 检查
-
-  // wire uncache = (mem_addr_i & `ysyx_041514_MMIO_BASE) == `ysyx_041514_MMIO_BASE;
   wire uncache;
   ysyx_041514_uncache_check u_ysyx_041514_uncache_check1 (
       .addr_check_i   (mem_addr_i),
@@ -153,6 +151,8 @@ module ysyx_041514_dcache_top (
   always @(posedge clk) begin
     if (rst) begin
       dcache_state <= CACHE_RST;
+      burst_count <= 0;
+      fencei_count <= 0;
       blk_addr_reg <= 0;
       //line_tag_reg <= 0;
       dcache_tag_wen <= 0;
@@ -166,6 +166,11 @@ module ysyx_041514_dcache_top (
       _ram_wsize_dcache_o <= 0;
       _ram_rlen_dcache_o <= 0;
       _ram_wlen_dcache_o <= 0;
+      uncache_rdata <= 0;
+      _ram_wdata_dcache_o <= 0;
+      _ram_waddr_dcache_o <= 0;
+      _ram_rmask_dcache_o <= 0;
+      dcache_data_ready <= 0;
       _ram_raddr_valid_dcache_o <= `ysyx_041514_FALSE;
       _ram_waddr_valid_dcache_o <= `ysyx_041514_FALSE;
 
