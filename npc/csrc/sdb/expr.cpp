@@ -88,6 +88,7 @@ namespace expr_namespace {
         Exprinternal expr_in(tokens, nr_token);
 
         for (size_t i = 0; i < nr_token; i++) {
+            /* 如果是逻辑运算符 ，&& ｜｜，拆为两个表达式，目前只支持两个 */
             if (isLogicOprator(tokens[i])) {
                 Exprinternal expr_left(tokens, i);
                 Exprinternal expr_right(&tokens[i + 1], nr_token - (i + 1));

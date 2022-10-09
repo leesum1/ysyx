@@ -155,7 +155,7 @@ size_t fs_write(int fd, const void* buf, size_t len) {
     return file_table[fd].write(buf, open_offset, len);
   }
   // ramdisk, device type:block
-  else if (NULL == file_table[fd].write) {
+  else if (NULL == file_table[fd].write) { // NULL 表示为普通读写函数
     //不允许新增文件大小
     assert((open_offset + len) <= file_size);
     file_table[fd].open_offset += len;

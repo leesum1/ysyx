@@ -169,7 +169,7 @@ module ysyx_041514_memory (
   // 4. 不是读写 clint mtime 指令
   assign mem_addr_valid_o = (_isload | _isstore) & (~mem_data_ready_i) & (~rdata_buff_valid_i) & (~clint_valid);
   assign mem_write_valid_o = _isstore & (~mem_data_ready_i) & mem_addr_valid_o;
-  assign mem_wdata_o = _mem_write << {addr_last3, 3'b0};  // 对齐位置调整
+  assign mem_wdata_o = _mem_write << {addr_last3, 3'b0};  // 对齐位置调整 TODO 移位器优化
   assign mem_size_o = _mem_size;
   assign mem_data_o = ({64{~rdata_buff_valid_i & _load_valid}}&_mem_final_out) |  // 使用直接返回的读数据
       ({64{rdata_buff_valid_i & _load_valid}} & rdata_buff_i) |  // 使用读数据缓存
@@ -184,11 +184,27 @@ module ysyx_041514_memory (
 
 
   /* trap_bus TODO:add more*/
+  wire _1byte_misaligned = `ysyx_041514_FALSE;
+  wire _2byte_misaligned = _addr[0];
+  wire _4byte_misaligned = |_addr[1:0];
+  wire _8byte_misaligned = |_addr[2:0];
+
+  wire _addr_misaligned;
+  wire _load_addr_misaligned;
+  wire _store_addr_misaligned;
   reg [`ysyx_041514_TRAP_BUS] _mem_trap_bus;
   integer i;
   always @(*) begin
     for (i = 0; i < `ysyx_041514_TRAP_LEN; i = i + 1) begin
-      _mem_trap_bus[i] = trap_bus_i[i];
+      if (i==`ysyx_041514_TRAP_LOAD_ADDR_MISALIGNED) begin
+        
+      end
+      else if (i==`ysyx_041514_TRAP_STORE_ADDR_MISALIGNED) begin
+        
+      end
+      else begin
+        _mem_trap_bus[i] = trap_bus_i[i];
+      end
     end
   end
   assign trap_bus_o = _mem_trap_bus;
