@@ -14,5 +14,7 @@ build/
 !README.md
 !*.drawio
 !mergefile.py
+!libnemu.so
+!dummy-riscv64-npc.bin
 obj_dir
 testfile.v

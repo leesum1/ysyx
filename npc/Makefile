@@ -1,6 +1,6 @@
 TOP_MODULE := ysyx_041514
 
-# 原文件
+# src
 CSRC +=  $(shell find $(abspath ./csrc) -name "*.cpp")
 VSRC +=  $(shell find $(abspath ./vsrc) -name "*.v" -or -name "*.sv")
 
@@ -36,9 +36,10 @@ LLVM_FLAGS += -Ofast  -fexceptions
  
 GCC_LIB = -lreadline \
 		  -ldl \
-		  -lnemu \
 		  -lSDL2 
-		  
+
+GCC_LIB += $(NPC_HOME)/libnemu.so
+
 GCC_LIB += ${LLVM_LIB} -flto 
 
 
@@ -50,6 +51,7 @@ GCC_FLAGS := ${GCC_CFLAGS} ${GCC_LDFLAGS}
 # run info:
 OBJ_DIR := ./obj_dir
 BIN := ${OBJ_DIR}/Vtop
+IMG ?= $(NPC_HOME)/dummy-riscv64-npc.bin
 
 com:${CSRC} ${VSRC}
 	@verilator ${VERILATOR_FLAGS} ${CSRC} ${VSRC} ${GCC_FLAGS} 
@@ -59,8 +61,8 @@ all: default
 
 run: com
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-# 运行 bin文件,传入 img 参数
-	${BIN} ${IMG} 
+# 运行 bin文件,传入 img 参数, difftest 文件参数
+	${BIN} ${IMG} $(NPC_HOME)/libnemu.so
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by your self."

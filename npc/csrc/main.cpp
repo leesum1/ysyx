@@ -14,7 +14,7 @@
 namespace cr = CppReadline;
 using ret = cr::Console::ReturnCode;
 
-const char* nemu_so_path = "/lib/libnemu.so";
+const char* nemu_so_path = " ";
 const char* img_path = " ";
 
 Simtop* mysim_p;
@@ -25,6 +25,10 @@ int main(int argc, char* argv[]) {
     printf("argv:%s\n", argv[i]);
     if (i == 1) {
       img_path = argv[i];
+    }
+    else if (i == 2)
+    {
+      nemu_so_path = argv[i];
     }
   }
 
