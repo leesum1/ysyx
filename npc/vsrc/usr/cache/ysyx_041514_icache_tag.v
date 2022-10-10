@@ -12,12 +12,13 @@ module ysyx_041514_icache_tag #(
     input [TAG_LEN-1:0] icache_tag_i,  // tag
     input [IDX_LEN-1:0] icache_index_i,  // index
     input write_valid_i,  // 写使能
+    input fencei_valid_i,
     output icache_hit_o
 );
   reg [TAG_LEN-1+1:0] icache_tag_regs[TAG_NUM-1:0];  //{valid,tag}
 
 
-  wire _fencei_valid;
+  wire _fencei_valid = fencei_valid_i;
   wire valid_bit;
   wire [TAG_LEN-1:0] tag_read;
   assign {valid_bit, tag_read} = icache_tag_regs[icache_index_i];

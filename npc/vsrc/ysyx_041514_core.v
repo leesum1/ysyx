@@ -513,6 +513,8 @@ module ysyx_041514_core (
       //TODO:TEST
       .rdata_buff_valid_i(rdata_buff_valid),
       .rdata_buff_i(rdata_buff),
+      .mem_fencei_ready_buff_i(mem_fencei_ready_buff),
+      .mem_fencei_buff_valid_i(mem_fencei_ready_buff),
       /* from ex/mem */
       .pc_i(pc_ex_mem),
       .inst_data_i(inst_data_ex_mem),
@@ -583,7 +585,7 @@ module ysyx_041514_core (
   ysyx_041514_clint u_clint (
       .clk(clk),
       .rst(rst),
-      .pc_i(pc_ex_mem),
+      .pc_from_mem_i(pc_ex_mem),
       .pc_from_exe_i(pc_ex),
       .inst_data_i(inst_data_ex_mem),
       /* 各级流水线的 stall 请求 */
@@ -832,6 +834,7 @@ module ysyx_041514_core (
       .preif_raddr_valid_i(read_req),  // 地址是否有效，无效时，停止访问 cache
       .if_rdata_o(if_rdata),  // icache 返回读数据
       .if_rdata_valid_o          (if_rdata_valid),// icache 读数据是否准备好(未准备好需要暂停流水线)
+      .mem_fencei_valid_i(mem_fencei_valid),
       /* cache<-->mem 端口 */
       .ram_raddr_icache_o(ram_raddr_icache),
       .ram_raddr_valid_icache_o(ram_raddr_valid_icache),
@@ -1127,21 +1130,30 @@ module ysyx_041514_core (
 
   wire                                                     rdata_buff_valid;
   wire [`ysyx_041514_XLEN_BUS]                             rdata_buff;
+
+  /* fencei ready 缓存 */
+  //wire  mem_fencei_ready_i,
+  wire                                                     mem_fencei_ready_buff;
+  wire                                                     mem_fencei_buff_valid;
   ysyx_041514_data_buff u_data_buff (
-      .clk                  (clk),
-      .rst                  (rst),
-      .flush_i              (flush_clint),
-      .stall_i              (stall_clint),
+      .clk                    (clk),
+      .rst                    (rst),
+      .flush_i                (flush_clint),
+      .stall_i                (stall_clint),
       /* 乘法器数据缓存 */
-      .alu_data_i           (alu_data),
-      .alu_data_ready_i     (alu_data_ready),
-      .alu_data_buff_valid_o(alu_data_buff_valid),
-      .alu_data_buff_o      (alu_data_buff),
+      .alu_data_i             (alu_data),
+      .alu_data_ready_i       (alu_data_ready),
+      .alu_data_buff_valid_o  (alu_data_buff_valid),
+      .alu_data_buff_o        (alu_data_buff),
+      /* fencei ready 缓存 */
+      .mem_fencei_ready_i     (mem_fencei_ready),
+      .mem_fencei_ready_buff_o(mem_fencei_ready_buff),
+      .mem_fencei_buff_valid_o(mem_fencei_buff_valid),
       /* mem load 数据缓存 */
-      .mem_data_mem_i       (mem_data_mem),
-      .mem_data_ready_i     (mem_data_ready),
-      .rdata_buff_valid_o   (rdata_buff_valid),
-      .rdata_buff_o         (rdata_buff)
+      .mem_data_mem_i         (mem_data_mem),
+      .mem_data_ready_i       (mem_data_ready),
+      .rdata_buff_valid_o     (rdata_buff_valid),
+      .rdata_buff_o           (rdata_buff)
   );
 
 endmodule

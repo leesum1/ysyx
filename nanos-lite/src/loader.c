@@ -71,6 +71,7 @@ static uintptr_t loader(PCB* pcb, const char* filename) {
 
   free(Ehdr);
   free(Phdr);
+  asm volatile("fence.i"); // 添加 fencei 指令
   return Ehdr->e_entry;
 }
 

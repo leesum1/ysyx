@@ -21,7 +21,8 @@ module ysyx_041514_icache_top (
     output [`ysyx_041514_XLEN_BUS] if_rdata_o,  // icache 返回读数据
 
     //input  if_rdata_ready_i,  // 是否准备好接收数据
-    output if_rdata_valid_o,  // icache 读数据是否准备好(未准备好需要暂停流水线)
+    output if_rdata_valid_o,   // icache 读数据是否准备好(未准备好需要暂停流水线)
+    input  mem_fencei_valid_i,
 
     /* cache<-->mem 端口 */
     output [`ysyx_041514_NPC_ADDR_BUS] ram_raddr_icache_o,
@@ -62,6 +63,7 @@ module ysyx_041514_icache_top (
   wire [19:0] cache_line_tag;
   assign {cache_line_tag, cache_line_idx, cache_blk_addr} = preif_raddr_i;
 
+  wire _fencei_valid = mem_fencei_valid_i;
   wire icache_hit;
   wire uncache;
   ysyx_041514_uncache_check u_ysyx_041514_uncache_check (
@@ -125,7 +127,8 @@ module ysyx_041514_icache_top (
           // line_tag_reg   <= cache_line_tag;
           icache_tag_wen <= `ysyx_041514_FALSE;
           // cache data 为单端口 ram,不能同时读写
-          if (preif_raddr_valid_i && ~icache_tag_wen && ~uncache) begin
+          // fencei 有效时，停止访问
+          if (preif_raddr_valid_i && ~icache_tag_wen && ~uncache && ~_fencei_valid) begin
             // hit
             if (icache_hit) begin
               // 下一个周期给数据
@@ -142,7 +145,7 @@ module ysyx_041514_icache_top (
               _ram_rlen_icache_o <= 8'd7;  // 突发 8 次
               burst_count <= 0;  // 清空计数器
             end
-          end else if (preif_raddr_valid_i && uncache) begin : uncache_rw
+          end else if (preif_raddr_valid_i && uncache && ~_fencei_valid) begin : uncache_rw
             icache_state              <= UNCACHE_READ;
             icache_data_ready         <= `ysyx_041514_FALSE;
             _ram_raddr_icache_o       <= preif_raddr_i;  // 读地址
@@ -184,12 +187,10 @@ module ysyx_041514_icache_top (
   ysyx_041514_icache_tag u_icache_tag (
       .clk           (clk),
       .rst           (rst),
-      .icache_tag_i  (cache_line_tag),
-      // tag
-      .icache_index_i(cache_line_idx),
-      // index
-      .write_valid_i (icache_tag_wen),
-      // 写使能
+      .icache_tag_i  (cache_line_tag),// tag
+      .icache_index_i(cache_line_idx),// index
+      .write_valid_i (icache_tag_wen),// 写使能
+      .fencei_valid_i(_fencei_valid),
       .icache_hit_o  (icache_hit)
   );
 

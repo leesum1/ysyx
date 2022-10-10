@@ -8,10 +8,6 @@ module ysyx_041514_fetch (
     //指令地址
     // input rst,
     input [`ysyx_041514_XLEN_BUS] inst_addr_i,  // from pc_reg
-    /* ram 接口 */
-    // output [`ysyx_041514_NPC_ADDR_BUS] if_read_addr_o,  // 地址
-    // output if_raddr_valid_o,  // 地址是否准备好
-    // output [7:0] if_rmask_o,  // 数据掩码,读取多少位
     input if_rdata_valid_i,  // 读数据是否准备好
     input [`ysyx_041514_XLEN_BUS] if_rdata_i,
 
@@ -26,6 +22,9 @@ module ysyx_041514_fetch (
 
   assign inst_addr_o = inst_addr_i;
 
+  // 判断是否是 fencei 指令
+  // wire inst_fencei = (if_rdata_i[6:0] == 7'b0001111) & (if_rdata_i[14:12] == 3'b001);
+  // assign fencei_valid_o = inst_fencei & (~fencei_ready_i);
 
   // 选择读取数据
   wire [`ysyx_041514_NPC_ADDR_BUS] _inst_data = (if_rdata_valid_i) ? if_rdata_i[31:0] : `ysyx_041514_INST_NOP;

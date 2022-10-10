@@ -13,10 +13,15 @@ module ysyx_041514_data_buff (
     output alu_data_buff_valid_o,
     output [`ysyx_041514_XLEN_BUS] alu_data_buff_o,
 
+    /* fencei ready 缓存 */
+    input  mem_fencei_ready_i,
+    output mem_fencei_ready_buff_o,
+    output mem_fencei_buff_valid_o,
+
     /* mem 读数据缓存 */
-    input              mem_data_ready_i,
+    input                          mem_data_ready_i,
     input  [`ysyx_041514_XLEN-1:0] mem_data_mem_i,      //访存阶段的数据
-    output             rdata_buff_valid_o,
+    output                         rdata_buff_valid_o,
     output [`ysyx_041514_XLEN_BUS] rdata_buff_o
 );
 
@@ -63,5 +68,31 @@ module ysyx_041514_data_buff (
 
   assign rdata_buff_valid_o = rdata_buff_valid;
   assign rdata_buff_o = rdata_buff;
+
+
+  reg mem_fencei_ready_buff;
+  reg mem_fencei_buff_valid;
+
+  always @(posedge clk) begin
+    if (rst) begin
+      mem_fencei_buff_valid <= `ysyx_041514_FALSE;
+      mem_fencei_ready_buff <= 'b0;
+
+    end else if (mem_fencei_ready_i & stall_i[`ysyx_041514_CTRLBUS_EX_MEM]) begin  // 1. 接收到数据，且 mem 阶段 stall 时，缓存数据
+      mem_fencei_buff_valid <= `ysyx_041514_TRUE;  // 缓存数据有效
+      mem_fencei_ready_buff <= mem_fencei_ready_i;  // 记录读取的数据
+    end else if ((~stall_i[`ysyx_041514_CTRLBUS_EX_MEM])&mem_fencei_buff_valid) begin  // 2. mem 阶段不是 stall 时，清空缓存
+      mem_fencei_buff_valid <= `ysyx_041514_FALSE;  // 流水线不阻塞，缓存清空
+      mem_fencei_ready_buff <= 'b0;
+    end
+    // else 保持不变
+  end
+
+  assign mem_fencei_ready_buff_o = mem_fencei_ready_buff;
+  assign mem_fencei_buff_valid_o = mem_fencei_buff_valid;
+
+
+
+
 
 endmodule

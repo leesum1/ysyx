@@ -2,48 +2,52 @@
 module ysyx_041514_memory (
 
     /* from databuff */
-    input                           rdata_buff_valid_i,     // 读缓存有效
-    input  [             `ysyx_041514_XLEN_BUS] rdata_buff_i,           // 读缓存
+    input rdata_buff_valid_i,  // 读缓存有效
+    input [`ysyx_041514_XLEN_BUS] rdata_buff_i,  // 读缓存
+
+
+    input mem_fencei_ready_buff_i,
+    input mem_fencei_buff_valid_i,
     /* from ex/mem */
-    input  [             `ysyx_041514_XLEN_BUS] pc_i,
-    input  [         `ysyx_041514_INST_LEN-1:0] inst_data_i,
-    input  [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_i,
-    input  [             `ysyx_041514_XLEN_BUS] rs2_data_i,
-    input  [        `ysyx_041514_MEMOP_LEN-1:0] mem_op_i,               // 访存操作码
-    input  [             `ysyx_041514_XLEN_BUS] exc_alu_data_i,
-    input  [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] csr_addr_i,
-    input  [             `ysyx_041514_XLEN_BUS] exc_csr_data_i,
-    input                           exc_csr_valid_i,
+    input [`ysyx_041514_XLEN_BUS] pc_i,
+    input [`ysyx_041514_INST_LEN-1:0] inst_data_i,
+    input [`ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_i,
+    input [`ysyx_041514_XLEN_BUS] rs2_data_i,
+    input [`ysyx_041514_MEMOP_LEN-1:0] mem_op_i,  // 访存操作码
+    input [`ysyx_041514_XLEN_BUS] exc_alu_data_i,
+    input [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] csr_addr_i,
+    input [`ysyx_041514_XLEN_BUS] exc_csr_data_i,
+    input exc_csr_valid_i,
     /* clint 接口 */
-    output [         `ysyx_041514_NPC_ADDR_BUS] clint_addr_o,
-    output                          clint_valid_o,
-    output                          clint_write_valid_o,
-    output [             `ysyx_041514_XLEN_BUS] clint_wdata_o,
-    input  [             `ysyx_041514_XLEN_BUS] clint_rdata_i,
+    output [`ysyx_041514_NPC_ADDR_BUS] clint_addr_o,
+    output clint_valid_o,
+    output clint_write_valid_o,
+    output [`ysyx_041514_XLEN_BUS] clint_wdata_o,
+    input [`ysyx_041514_XLEN_BUS] clint_rdata_i,
     /* dcache 接口 */
-    output [         `ysyx_041514_NPC_ADDR_BUS] mem_addr_o,             // 地址
-    output                          mem_addr_valid_o,       // 地址是否有效
-    output [                   7:0] mem_mask_o,             // 数据掩码,读取多少位
-    output                          mem_write_valid_o,      // 1'b1,表示写;1'b0 表示读 
-    output [                   3:0] mem_size_o,             // 数据宽度 8、4、2、1 byte
-    input                           mem_data_ready_i,       // 读/写 数据是否准备好
-    input  [             `ysyx_041514_XLEN_BUS] mem_rdata_i,            // 返回到读取的数据
-    output [             `ysyx_041514_XLEN_BUS] mem_wdata_o,            // 写入的数据
-    output                          mem_fencei_valid_o,
-    input                           mem_fencei_ready_i,
+    output [`ysyx_041514_NPC_ADDR_BUS] mem_addr_o,  // 地址
+    output mem_addr_valid_o,  // 地址是否有效
+    output [7:0] mem_mask_o,  // 数据掩码,读取多少位
+    output mem_write_valid_o,  // 1'b1,表示写;1'b0 表示读 
+    output [3:0] mem_size_o,  // 数据宽度 8、4、2、1 byte
+    input mem_data_ready_i,  // 读/写 数据是否准备好
+    input [`ysyx_041514_XLEN_BUS] mem_rdata_i,  // 返回到读取的数据
+    output [`ysyx_041514_XLEN_BUS] mem_wdata_o,  // 写入的数据
+    output mem_fencei_valid_o,
+    input mem_fencei_ready_i,
     /* to mem/wb */
-    output [             `ysyx_041514_XLEN_BUS] pc_o,
-    output [         `ysyx_041514_INST_LEN-1:0] inst_data_o,
-    output [             `ysyx_041514_XLEN_BUS] mem_data_o,             //同时送回 id 阶段（bypass）
-    output [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_o,
+    output [`ysyx_041514_XLEN_BUS] pc_o,
+    output [`ysyx_041514_INST_LEN-1:0] inst_data_o,
+    output [`ysyx_041514_XLEN_BUS] mem_data_o,  //同时送回 id 阶段（bypass）
+    output [`ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_o,
     output [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] csr_addr_o,
-    output [             `ysyx_041514_XLEN_BUS] exc_csr_data_o,
-    output                          exc_csr_valid_o,
+    output [`ysyx_041514_XLEN_BUS] exc_csr_data_o,
+    output exc_csr_valid_o,
     /* stall req */
-    output                          ram_stall_valid_mem_o,  // mem 阶段访存暂停
+    output ram_stall_valid_mem_o,  // mem 阶段访存暂停
     /* TARP 总线 */
-    input  [             `ysyx_041514_TRAP_BUS] trap_bus_i,
-    output [             `ysyx_041514_TRAP_BUS] trap_bus_o
+    input [`ysyx_041514_TRAP_BUS] trap_bus_i,
+    output [`ysyx_041514_TRAP_BUS] trap_bus_o
 );
 
   assign pc_o = pc_i;
@@ -71,7 +75,8 @@ module ysyx_041514_memory (
   wire _memop_fencei = (mem_op_i == `ysyx_041514_MEMOP_FENCEI);
 
   /* fencei 指令 */
-  assign mem_fencei_valid_o = _memop_fencei && (~mem_fencei_ready_i);
+  wire mem_fencei_ready_final = (mem_fencei_buff_valid_i)?mem_fencei_ready_buff_i:mem_fencei_ready_i;
+  assign mem_fencei_valid_o = _memop_fencei && (~mem_fencei_ready_final);
 
 
   /* 写入还是读取 */
@@ -79,10 +84,10 @@ module ysyx_041514_memory (
   wire _isstore = (_memop_sb | _memop_sd | _memop_sh | _memop_sw);
 
   /* 读取或写入的 byte */
-  wire _ls8byte = _memop_lb | _memop_lbu | _memop_sb;
-  wire _ls16byte = _memop_lh | _memop_lhu | _memop_sh;
-  wire _ls32byte = _memop_lw | _memop_sw | _memop_lwu;
-  wire _ls64byte = _memop_ld | _memop_sd;
+  wire _ls1byte = _memop_lb | _memop_lbu | _memop_sb;
+  wire _ls2byte = _memop_lh | _memop_lhu | _memop_sh;
+  wire _ls4byte = _memop_lw | _memop_sw | _memop_lwu;
+  wire _ls8byte = _memop_ld | _memop_sd;
 
   /* 是否进行符号扩展 */
   wire _unsigned = _memop_lhu | _memop_lbu | _memop_lwu;
@@ -96,38 +101,38 @@ module ysyx_041514_memory (
   wire [`ysyx_041514_XLEN_BUS] rdata_switch = (clint_valid) ? clint_rdata : mem_rdata;
 
   /* 符号扩展后的结果 TODO:改成并行编码*/
-  wire [     `ysyx_041514_XLEN_BUS] _mem_signed_out = ({64{_ls8byte}}&{{`ysyx_041514_XLEN-8{rdata_switch[7]}},rdata_switch[7:0]})
-                                        | ({64{_ls16byte}}&{{`ysyx_041514_XLEN-16{rdata_switch[15]}},rdata_switch[15:0]})
-                                        | ({64{_ls32byte}}&{{`ysyx_041514_XLEN-32{rdata_switch[31]}},rdata_switch[31:0]})
-                                        | ({64{_ls64byte}}&rdata_switch);
+  wire [     `ysyx_041514_XLEN_BUS] _mem_signed_out = ({64{_ls1byte}}&{{`ysyx_041514_XLEN-8{rdata_switch[7]}},rdata_switch[7:0]})
+                                        | ({64{_ls2byte}}&{{`ysyx_041514_XLEN-16{rdata_switch[15]}},rdata_switch[15:0]})
+                                        | ({64{_ls4byte}}&{{`ysyx_041514_XLEN-32{rdata_switch[31]}},rdata_switch[31:0]})
+                                        | ({64{_ls8byte}}&rdata_switch);
 
   /* 不进行符号扩展的结果 TODO:改成并行编码 */
-  wire [     `ysyx_041514_XLEN_BUS] _mem_unsigned_out = ({64{_ls8byte}}&{{`ysyx_041514_XLEN-8{1'b0}},rdata_switch[7:0]})
-                                          | ({64{_ls16byte}}&{{`ysyx_041514_XLEN-16{1'b0}},rdata_switch[15:0]})
-                                          | ({64{_ls32byte}}&{{`ysyx_041514_XLEN-32{1'b0}},rdata_switch[31:0]})
-                                          | ({64{_ls64byte}}&rdata_switch);
+  wire [     `ysyx_041514_XLEN_BUS] _mem_unsigned_out = ({64{_ls1byte}}&{{`ysyx_041514_XLEN-8{1'b0}},rdata_switch[7:0]})
+                                          | ({64{_ls2byte}}&{{`ysyx_041514_XLEN-16{1'b0}},rdata_switch[15:0]})
+                                          | ({64{_ls4byte}}&{{`ysyx_041514_XLEN-32{1'b0}},rdata_switch[31:0]})
+                                          | ({64{_ls8byte}}&rdata_switch);
 
   /* 选择最终读取的数据 */
   wire [`ysyx_041514_XLEN_BUS] _mem_final_out = ({64{_signed}}&_mem_signed_out)
                                   | ({64{_unsigned}}&_mem_unsigned_out);
 
   /* 写入数据选择 */
-  wire [`ysyx_041514_XLEN_BUS] _mem_write = ({64{_ls8byte}}&{56'b0, rs2_data_i[7:0]})  
-                              | ({64{_ls16byte}}&{48'b0, rs2_data_i[15:0]}) 
-                              | ({64{_ls32byte}}&{32'b0, rs2_data_i[31:0]}) 
-                              | ({64{_ls64byte}}&rs2_data_i);
+  wire [`ysyx_041514_XLEN_BUS] _mem_write = ({64{_ls1byte}}&{56'b0, rs2_data_i[7:0]})  
+                              | ({64{_ls2byte}}&{48'b0, rs2_data_i[15:0]}) 
+                              | ({64{_ls4byte}}&{32'b0, rs2_data_i[31:0]}) 
+                              | ({64{_ls8byte}}&rs2_data_i);
 
   /*  mask 选择, byte 选通 */
-  wire [7:0] _mask = ({8{_ls8byte}}&8'b0000_0001)  
-                   | ({8{_ls16byte}}&8'b0000_0011) 
-                   | ({8{_ls32byte}}&8'b0000_1111) 
-                   | ({8{_ls64byte}}&8'b1111_1111);
+  wire [7:0] _mask = ({8{_ls1byte}}&8'b0000_0001)  
+                   | ({8{_ls2byte}}&8'b0000_0011) 
+                   | ({8{_ls4byte}}&8'b0000_1111) 
+                   | ({8{_ls8byte}}&8'b1111_1111);
 
   wire [7:0] rmask = _mask;
   wire [7:0] wmask = (_mask << addr_last3);
 
   wire [3:0] _mem_size = {
-    _ls64byte, _ls32byte, _ls16byte, _ls8byte
+    _ls8byte, _ls4byte, _ls2byte, _ls1byte
   };  // 全为 0 时，表示没有数据写入或读取
 
   // wire [7:0] _wmask = (_isstore) ? _mask : 8'b0000_0000;
@@ -184,25 +189,26 @@ module ysyx_041514_memory (
 
 
   /* trap_bus TODO:add more*/
-  wire _1byte_misaligned = `ysyx_041514_FALSE;
-  wire _2byte_misaligned = _addr[0];
-  wire _4byte_misaligned = |_addr[1:0];
-  wire _8byte_misaligned = |_addr[2:0];
+  wire _1byte_misaligned = `ysyx_041514_FALSE & _ls1byte;
+  wire _2byte_misaligned = _addr[0] & _ls2byte;
+  wire _4byte_misaligned = (|_addr[1:0]) & _ls4byte;
+  wire _8byte_misaligned = (|_addr[2:0]) & _ls8byte;
 
-  wire _addr_misaligned;
-  wire _load_addr_misaligned;
-  wire _store_addr_misaligned;
+  wire _addr_misaligned = _1byte_misaligned|_2byte_misaligned|_4byte_misaligned|_8byte_misaligned;
+  wire _load_addr_misaligned = _isload & _addr_misaligned;
+  wire _store_addr_misaligned = _isstore & _addr_misaligned;
+
   reg [`ysyx_041514_TRAP_BUS] _mem_trap_bus;
   integer i;
   always @(*) begin
     for (i = 0; i < `ysyx_041514_TRAP_LEN; i = i + 1) begin
-      if (i==`ysyx_041514_TRAP_LOAD_ADDR_MISALIGNED) begin
-        
-      end
-      else if (i==`ysyx_041514_TRAP_STORE_ADDR_MISALIGNED) begin
-        
-      end
-      else begin
+      if (i == `ysyx_041514_TRAP_LOAD_ADDR_MISALIGNED) begin
+        _mem_trap_bus[i] = _load_addr_misaligned;
+      end else if (i == `ysyx_041514_TRAP_STORE_ADDR_MISALIGNED) begin
+        _mem_trap_bus[i] = _store_addr_misaligned;
+      end else if (i == `ysyx_041514_TRAP_FENCEI) begin  // fencei 复用 trap 线路，实现跳转
+        _mem_trap_bus[i] = mem_fencei_valid_o;
+      end else begin
         _mem_trap_bus[i] = trap_bus_i[i];
       end
     end
@@ -221,6 +227,6 @@ module ysyx_041514_memory (
       set_mem_pc(pc_i);
     end
   end
-`endif 
+`endif
 
 endmodule

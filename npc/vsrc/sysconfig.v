@@ -201,8 +201,7 @@
 
 `define ysyx_041514_TRAP_MRET 16 // 把 MRET 当成 trap
 `define ysyx_041514_TRAP_EBREAK 17 // 把 EBREAK 当成 trap
-`define ysyx_041514_TRAP_ECALL 18 // 把 ECALL 当成 trap
-
+`define ysyx_041514_TRAP_FENCEI 18 // 把 fencei 当成 trap,复用线路
 `define ysyx_041514_TRAP_LEN 19
 `define ysyx_041514_TRAP_BUS `ysyx_041514_TRAP_LEN-1:0
 

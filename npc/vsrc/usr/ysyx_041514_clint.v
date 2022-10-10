@@ -4,7 +4,7 @@ module ysyx_041514_clint (
     input wire clk,
     input wire rst,
 
-    input [`ysyx_041514_XLEN-1:0] pc_i, // from mem
+    input [`ysyx_041514_XLEN-1:0] pc_from_mem_i, // from mem
     input [`ysyx_041514_XLEN-1:0] pc_from_exe_i, // from exe
     input [`ysyx_041514_INST_LEN-1:0] inst_data_i,
 
@@ -92,8 +92,8 @@ module ysyx_041514_clint (
       stall_o = ram_if_stall;
       flush_o = ram_if_flush;
     // 中断|异常,(发生在 mem 阶段)
-    end else if (trap_valid | trap_mret) begin
-      stall_o = trap_stall;
+    end else if (trap_valid | trap_mret| trap_fencei) begin
+      stall_o = trap_stall; 
       flush_o = trap_flush;
     // 跳转指令,(发生在 ex 阶段)
     end else if (jump_valid_ex_i) begin
@@ -126,6 +126,8 @@ module ysyx_041514_clint (
   // wire trap_illegal_inst = trap_bus_i[`ysyx_041514_TRAP_INST_ACCESS_FAULT]; // 1
 
   wire trap_mret = trap_bus_i[`ysyx_041514_TRAP_MRET];
+  wire trap_fencei = trap_bus_i[`ysyx_041514_TRAP_FENCEI];
+  wire [`ysyx_041514_XLEN_BUS]_fencei_pc = pc_from_mem_i+'d4; // TODO 加 4 操作，统一到 pc 自增上，节省一个加法器
 
 
   wire trap_valid = (|trap_bus_i[15:0])| Machine_timer_interrupt; // 0 - 15 表示 trap 发生
@@ -192,7 +194,7 @@ module ysyx_041514_clint (
 
   /* set the csr register and new pc if traps happened */
   // step 1: save current pc 
-  assign csr_mepc_writedata_o   = Machine_timer_interrupt?pc_from_exe_i:pc_i; // trap or int
+  assign csr_mepc_writedata_o   = Machine_timer_interrupt?pc_from_exe_i:pc_from_mem_i; // trap or int
   assign csr_mepc_write_valid_o = trap_valid;
   // step 2: set the trap pc
   wire [`ysyx_041514_XLEN-1:0]_trap_pc_o = csr_mtvec_readdata_i;  // TODO:now only suppot direct mode,need to add vector mode
@@ -235,11 +237,15 @@ module ysyx_041514_clint (
   assign csr_mstatus_writedata_o = ({`ysyx_041514_XLEN{mret_mstatus_valid}}&mret_mstatus_wdata)|
                                    ({`ysyx_041514_XLEN{trap_mstatus_valid}}&trap_mstatus_wdata);
 
-  /* pc mux */
+  /* pc mux TODO 是否应该考虑优先级问题？同一时刻有多个跳转如何考虑？ */
+  // 1. trap 发生，包括中断和异常
+  // 2. mret 指令
+  // 3. fencei 指令
   assign clint_pc_o = ({`ysyx_041514_XLEN{_mret_pc_valid_o}}&_mret_pc_o)|
-                      ({`ysyx_041514_XLEN{_trap_pc_valid_o}}&_trap_pc_o);
-  // mret 指令和 中断异常需要跳转 pc
-  assign clint_pc_valid_o = trap_valid | trap_mret;
+                      ({`ysyx_041514_XLEN{_trap_pc_valid_o}}&_trap_pc_o)|
+                      ({`ysyx_041514_XLEN{trap_fencei}}&_fencei_pc);
+                  
+  assign clint_pc_valid_o = trap_valid | trap_mret|trap_fencei;
 
 
   /* mip TODO: 暂时只支持 mtime 中断 */
