@@ -11,7 +11,7 @@
 
 
 
-class Device2axi4 : public mmio_dev {
+class Device2axi4: public mmio_dev {
 private:
 
     Topdevice::DeviceManager* myDevices;
@@ -36,7 +36,25 @@ public:
         return true;
     }
     bool do_write(uint64_t start_addr, uint64_t size, const uint8_t* buffer) {
-        uint64_t wdata = *(uint64_t*)buffer;
+        uint64_t wdata = 0;
+        switch (size) {
+        case 1:
+            wdata = *(uint8_t*)buffer;
+            break;
+        case 2:
+            wdata = *(uint16_t*)buffer;
+            break;
+        case 4:
+            wdata = *(uint32_t*)buffer;
+            break;
+        case 8:
+            wdata = *(uint64_t*)buffer;
+            break;
+        default:
+            printf("Device2axi4 err,size,%d\n", size);
+            assert(0);
+            break;
+        }
         myDevices->write(getRealAddr(start_addr), wdata, size);
         return true;
     }

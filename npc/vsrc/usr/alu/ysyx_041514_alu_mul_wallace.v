@@ -10,6 +10,7 @@ module ysyx_041514_alu_mul_wallace (
     output                           mul_ready_o,
     output [`ysyx_041514_XLEN*2-1:0] mul_out_o
 );
+// 寄存器已经复位
   localparam STATE_LEN = 3;
   localparam MUL_RST = 3'd0;
   localparam MUL_IDLE = 3'd1;
@@ -147,11 +148,8 @@ module ysyx_041514_alu_mul_wallace (
       .pp32_o            (Partial_product[32])
   );
 
-  // 部分积生成 ( 共33 个)
-  wire [127:0] step1_pp_d[33-1:0];
-  assign step1_pp_d = Partial_product;
+  //  部分积生成 ( 共33 个),缓存一个周期
   reg [127:0] step1_pp_q[33-1:0];
-
 
   genvar step1_Dflap;
   generate
@@ -162,16 +160,15 @@ module ysyx_041514_alu_mul_wallace (
       ) u_ysyx_041514_regTemplate (
           .clk (clk),
           .rst (rst),
-          .din (step1_pp_d[step1_Dflap]),
+          .din (Partial_product[step1_Dflap]),
           .dout(step1_pp_q[step1_Dflap]),
           .wen (1'b1)
       );
     end
   endgenerate
 
-  wire [127:0] step1_pp[33-1:0];
-  assign step1_pp = step1_pp_q;
-
+  // wire [127:0] step1_pp[33-1:0];
+  // assign step1_pp = step1_pp_q;
 
   /*******             wallace tree            ********/
   /*******(33) 5-2 4-2 4-2 4-2 4-2 4-2 4-2 4-2 ********/
@@ -192,11 +189,11 @@ module ysyx_041514_alu_mul_wallace (
   generate
     for (step1_A0 = 0; step1_A0 < 128; step1_A0 = step1_A0 + 1) begin
       ysyx_041514_alu_mul_compressor52 u_alu_mul_compressor52 (
-          .x0   (step1_pp[0][step1_A0]),
-          .x1   (step1_pp[1][step1_A0]),
-          .x2   (step1_pp[2][step1_A0]),
-          .x3   (step1_pp[3][step1_A0]),
-          .x4   (step1_pp[4][step1_A0]),
+          .x0   (step1_pp_q[0][step1_A0]),
+          .x1   (step1_pp_q[1][step1_A0]),
+          .x2   (step1_pp_q[2][step1_A0]),
+          .x3   (step1_pp_q[3][step1_A0]),
+          .x4   (step1_pp_q[4][step1_A0]),
           .cin0 (step1_A0_cout0[step1_A0]),
           .cin1 (step1_A0_cout1[step1_A0]),
           .cout0(step1_A0_cout0[step1_A0+1]),
@@ -234,10 +231,10 @@ module ysyx_041514_alu_mul_wallace (
   generate
     for (step1_A1 = 0; step1_A1 < 128; step1_A1 = step1_A1 + 1) begin
       ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step1_A1 (
-          .x0   (step1_pp[5][step1_A1]),
-          .x1   (step1_pp[6][step1_A1]),
-          .x2   (step1_pp[7][step1_A1]),
-          .x3   (step1_pp[8][step1_A1]),
+          .x0   (step1_pp_q[5][step1_A1]),
+          .x1   (step1_pp_q[6][step1_A1]),
+          .x2   (step1_pp_q[7][step1_A1]),
+          .x3   (step1_pp_q[8][step1_A1]),
           .ci   (step1_A1_cout[step1_A1]),
           .sum  (step1_A1_sum[step1_A1]),
           .co   (step1_A1_cout[step1_A1+1]),
@@ -254,10 +251,10 @@ module ysyx_041514_alu_mul_wallace (
   generate
     for (step1_A2 = 0; step1_A2 < 128; step1_A2 = step1_A2 + 1) begin
       ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step1_A2 (
-          .x0   (step1_pp[9][step1_A2]),
-          .x1   (step1_pp[10][step1_A2]),
-          .x2   (step1_pp[11][step1_A2]),
-          .x3   (step1_pp[12][step1_A2]),
+          .x0   (step1_pp_q[9][step1_A2]),
+          .x1   (step1_pp_q[10][step1_A2]),
+          .x2   (step1_pp_q[11][step1_A2]),
+          .x3   (step1_pp_q[12][step1_A2]),
           .ci   (step1_A2_cout[step1_A2]),
           .sum  (step1_A2_sum[step1_A2]),
           .co   (step1_A2_cout[step1_A2+1]),
@@ -274,10 +271,10 @@ module ysyx_041514_alu_mul_wallace (
   generate
     for (step1_A3 = 0; step1_A3 < 128; step1_A3 = step1_A3 + 1) begin
       ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step1_A3 (
-          .x0   (step1_pp[13][step1_A3]),
-          .x1   (step1_pp[14][step1_A3]),
-          .x2   (step1_pp[15][step1_A3]),
-          .x3   (step1_pp[16][step1_A3]),
+          .x0   (step1_pp_q[13][step1_A3]),
+          .x1   (step1_pp_q[14][step1_A3]),
+          .x2   (step1_pp_q[15][step1_A3]),
+          .x3   (step1_pp_q[16][step1_A3]),
           .ci   (step1_A3_cout[step1_A3]),
           .sum  (step1_A3_sum[step1_A3]),
           .co   (step1_A3_cout[step1_A3+1]),
@@ -296,10 +293,10 @@ module ysyx_041514_alu_mul_wallace (
   generate
     for (step1_A4 = 0; step1_A4 < 128; step1_A4 = step1_A4 + 1) begin
       ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step1_A4 (
-          .x0   (step1_pp[17][step1_A4]),
-          .x1   (step1_pp[18][step1_A4]),
-          .x2   (step1_pp[19][step1_A4]),
-          .x3   (step1_pp[20][step1_A4]),
+          .x0   (step1_pp_q[17][step1_A4]),
+          .x1   (step1_pp_q[18][step1_A4]),
+          .x2   (step1_pp_q[19][step1_A4]),
+          .x3   (step1_pp_q[20][step1_A4]),
           .ci   (step1_A4_cout[step1_A4]),
           .sum  (step1_A4_sum[step1_A4]),
           .co   (step1_A4_cout[step1_A4+1]),
@@ -317,10 +314,10 @@ module ysyx_041514_alu_mul_wallace (
   generate
     for (step1_A5 = 0; step1_A5 < 128; step1_A5 = step1_A5 + 1) begin
       ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_tep1_A5 (
-          .x0   (step1_pp[21][step1_A5]),
-          .x1   (step1_pp[22][step1_A5]),
-          .x2   (step1_pp[23][step1_A5]),
-          .x3   (step1_pp[24][step1_A5]),
+          .x0   (step1_pp_q[21][step1_A5]),
+          .x1   (step1_pp_q[22][step1_A5]),
+          .x2   (step1_pp_q[23][step1_A5]),
+          .x3   (step1_pp_q[24][step1_A5]),
           .ci   (step1_A5_cout[step1_A5]),
           .sum  (step1_A5_sum[step1_A5]),
           .co   (step1_A5_cout[step1_A5+1]),
@@ -337,10 +334,10 @@ module ysyx_041514_alu_mul_wallace (
   generate
     for (step1_A6 = 0; step1_A6 < 128; step1_A6 = step1_A6 + 1) begin
       ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step1_A6 (
-          .x0   (step1_pp[25][step1_A6]),
-          .x1   (step1_pp[26][step1_A6]),
-          .x2   (step1_pp[27][step1_A6]),
-          .x3   (step1_pp[28][step1_A6]),
+          .x0   (step1_pp_q[25][step1_A6]),
+          .x1   (step1_pp_q[26][step1_A6]),
+          .x2   (step1_pp_q[27][step1_A6]),
+          .x3   (step1_pp_q[28][step1_A6]),
           .ci   (step1_A6_cout[step1_A6]),
           .sum  (step1_A6_sum[step1_A6]),
           .co   (step1_A6_cout[step1_A6+1]),
@@ -357,10 +354,10 @@ module ysyx_041514_alu_mul_wallace (
   generate
     for (step1_A7 = 0; step1_A7 < 128; step1_A7 = step1_A7 + 1) begin
       ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step1_A7 (
-          .x0   (step1_pp[29][step1_A7]),
-          .x1   (step1_pp[30][step1_A7]),
-          .x2   (step1_pp[31][step1_A7]),
-          .x3   (step1_pp[32][step1_A7]),
+          .x0   (step1_pp_q[29][step1_A7]),
+          .x1   (step1_pp_q[30][step1_A7]),
+          .x2   (step1_pp_q[31][step1_A7]),
+          .x3   (step1_pp_q[32][step1_A7]),
           .ci   (step1_A7_cout[step1_A7]),
           .sum  (step1_A7_sum[step1_A7]),
           .co   (step1_A7_cout[step1_A7+1]),
@@ -408,8 +405,8 @@ module ysyx_041514_alu_mul_wallace (
     end
   endgenerate
 
-  wire [127:0] step2_pp[16-1:0];
-  assign step2_pp = step2_pp_q;
+  // wire [127:0] step2_pp[16-1:0];
+  // assign step2_pp = step2_pp_q;
 
 
 
@@ -423,10 +420,10 @@ module ysyx_041514_alu_mul_wallace (
   generate
     for (step2_A0 = 0; step2_A0 < 128; step2_A0 = step2_A0 + 1) begin
       ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step2_A0 (
-          .x0   (step2_pp[0][step2_A0]),
-          .x1   (step2_pp[1][step2_A0]),
-          .x2   (step2_pp[2][step2_A0]),
-          .x3   (step2_pp[3][step2_A0]),
+          .x0   (step2_pp_q[0][step2_A0]),
+          .x1   (step2_pp_q[1][step2_A0]),
+          .x2   (step2_pp_q[2][step2_A0]),
+          .x3   (step2_pp_q[3][step2_A0]),
           .ci   (step2_A0_cout[step2_A0]),
           .sum  (step2_A0_sum[step2_A0]),
           .co   (step2_A0_cout[step2_A0+1]),
@@ -443,10 +440,10 @@ module ysyx_041514_alu_mul_wallace (
   generate
     for (step2_A1 = 0; step2_A1 < 128; step2_A1 = step2_A1 + 1) begin
       ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step2_A1 (
-          .x0   (step2_pp[4][step2_A1]),
-          .x1   (step2_pp[5][step2_A1]),
-          .x2   (step2_pp[6][step2_A1]),
-          .x3   (step2_pp[7][step2_A1]),
+          .x0   (step2_pp_q[4][step2_A1]),
+          .x1   (step2_pp_q[5][step2_A1]),
+          .x2   (step2_pp_q[6][step2_A1]),
+          .x3   (step2_pp_q[7][step2_A1]),
           .ci   (step2_A1_cout[step2_A1]),
           .sum  (step2_A1_sum[step2_A1]),
           .co   (step2_A1_cout[step2_A1+1]),
@@ -463,10 +460,10 @@ module ysyx_041514_alu_mul_wallace (
   generate
     for (step2_A2 = 0; step2_A2 < 128; step2_A2 = step2_A2 + 1) begin
       ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step2_A2 (
-          .x0   (step2_pp[8][step2_A2]),
-          .x1   (step2_pp[9][step2_A2]),
-          .x2   (step2_pp[10][step2_A2]),
-          .x3   (step2_pp[11][step2_A2]),
+          .x0   (step2_pp_q[8][step2_A2]),
+          .x1   (step2_pp_q[9][step2_A2]),
+          .x2   (step2_pp_q[10][step2_A2]),
+          .x3   (step2_pp_q[11][step2_A2]),
           .ci   (step2_A2_cout[step2_A2]),
           .sum  (step2_A2_sum[step2_A2]),
           .co   (step2_A2_cout[step2_A2+1]),
@@ -483,10 +480,10 @@ module ysyx_041514_alu_mul_wallace (
   generate
     for (step2_A3 = 0; step2_A3 < 128; step2_A3 = step2_A3 + 1) begin
       ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step2_A3 (
-          .x0   (step2_pp[12][step2_A3]),
-          .x1   (step2_pp[13][step2_A3]),
-          .x2   (step2_pp[14][step2_A3]),
-          .x3   (step2_pp[15][step2_A3]),
+          .x0   (step2_pp_q[12][step2_A3]),
+          .x1   (step2_pp_q[13][step2_A3]),
+          .x2   (step2_pp_q[14][step2_A3]),
+          .x3   (step2_pp_q[15][step2_A3]),
           .ci   (step2_A3_cout[step2_A3]),
           .sum  (step2_A3_sum[step2_A3]),
           .co   (step2_A3_cout[step2_A3+1]),
@@ -524,8 +521,8 @@ module ysyx_041514_alu_mul_wallace (
       );
     end
   endgenerate
-  wire [127:0] step3_pp[8-1:0];
-  assign step3_pp = step3_pp_q;
+  // wire [127:0] step3_pp[8-1:0];
+  // assign step3_pp = step3_pp_q;
 
 
 
@@ -539,10 +536,10 @@ module ysyx_041514_alu_mul_wallace (
   generate
     for (step3_A0 = 0; step3_A0 < 128; step3_A0 = step3_A0 + 1) begin
       ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step3_A0 (
-          .x0   (step3_pp[0][step3_A0]),
-          .x1   (step3_pp[1][step3_A0]),
-          .x2   (step3_pp[2][step3_A0]),
-          .x3   (step3_pp[3][step3_A0]),
+          .x0   (step3_pp_q[0][step3_A0]),
+          .x1   (step3_pp_q[1][step3_A0]),
+          .x2   (step3_pp_q[2][step3_A0]),
+          .x3   (step3_pp_q[3][step3_A0]),
           .ci   (step3_A0_cout[step3_A0]),
           .sum  (step3_A0_sum[step3_A0]),
           .co   (step3_A0_cout[step3_A0+1]),
@@ -559,10 +556,10 @@ module ysyx_041514_alu_mul_wallace (
   generate
     for (step3_A1 = 0; step3_A1 < 128; step3_A1 = step3_A1 + 1) begin
       ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step3_A1 (
-          .x0   (step3_pp[4][step3_A1]),
-          .x1   (step3_pp[5][step3_A1]),
-          .x2   (step3_pp[6][step3_A1]),
-          .x3   (step3_pp[7][step3_A1]),
+          .x0   (step3_pp_q[4][step3_A1]),
+          .x1   (step3_pp_q[5][step3_A1]),
+          .x2   (step3_pp_q[6][step3_A1]),
+          .x3   (step3_pp_q[7][step3_A1]),
           .ci   (step3_A1_cout[step3_A1]),
           .sum  (step3_A1_sum[step3_A1]),
           .co   (step3_A1_cout[step3_A1+1]),
@@ -597,8 +594,8 @@ module ysyx_041514_alu_mul_wallace (
       );
     end
   endgenerate
-  wire [127:0] step4_pp[4-1:0];
-  assign step4_pp = step4_pp_q;
+  // wire [127:0] step4_pp[4-1:0];
+  // assign step4_pp = step4_pp_q;
 
 
   wire [129-1:0] step4_A0_cout/* verilator split_var */;  // 最低位进位位 0 ，最高位进����不���用
@@ -608,10 +605,10 @@ module ysyx_041514_alu_mul_wallace (
   generate
     for (step4_A0 = 0; step4_A0 < 128; step4_A0 = step4_A0 + 1) begin
       ysyx_041514_alu_mul_compressor42 u_alu_mul_compressor42_step4_A0 (
-          .x0   (step4_pp[0][step4_A0]),
-          .x1   (step4_pp[1][step4_A0]),
-          .x2   (step4_pp[2][step4_A0]),
-          .x3   (step4_pp[3][step4_A0]),
+          .x0   (step4_pp_q[0][step4_A0]),
+          .x1   (step4_pp_q[1][step4_A0]),
+          .x2   (step4_pp_q[2][step4_A0]),
+          .x3   (step4_pp_q[3][step4_A0]),
           .ci   (step4_A0_cout[step4_A0]),
           .sum  (step4_A0_sum[step4_A0]),
           .co   (step4_A0_cout[step4_A0+1]),
@@ -619,8 +616,6 @@ module ysyx_041514_alu_mul_wallace (
       );
     end
   endgenerate
-
-
 
 
   assign mul_final128 = step4_A0_sum + {step4_A0_carry[126:0], 1'b0};

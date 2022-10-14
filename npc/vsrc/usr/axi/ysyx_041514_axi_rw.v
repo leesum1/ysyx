@@ -85,7 +85,7 @@ module ysyx_041514_axi_rw #(
     input  [    AXI_ID_WIDTH-1:0] axi_r_id_i,
     input  [  AXI_USER_WIDTH-1:0] axi_r_user_i
 );
-
+// 寄存器已复位
 
 
   //握手信号
@@ -145,6 +145,7 @@ module ysyx_041514_axi_rw #(
       b_ready <= `ysyx_041514_FALSE;
       w_strb <= 0;
       aw_size <= 0;
+      aw_addr <= 0;
       aw_len <= 0;
       burst_count <= 0;
       _arb_wdata_ready_o <= `ysyx_041514_FALSE;
@@ -287,7 +288,7 @@ module ysyx_041514_axi_rw #(
       ar_len <= 0;
       ar_size <= 0;
       _arb_rlast_o <= 0;
-      _arb_rdata_o<=0;
+      _arb_rdata_o <= 0;
       r_ready <= `ysyx_041514_FALSE;
       _arb_rdata_ready_o <= `ysyx_041514_FALSE;
     end else begin

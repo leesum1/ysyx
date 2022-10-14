@@ -1,12 +1,187 @@
-make -f /home/leesum/ysyx/nemu/Makefile -C /home/leesum/ysyx/nemu/ --dry-run --keep-going --print-directory
+make -f /home/leesum/ysyx/nemu/Makefile -C /home/leesum/ysyx/nemu/ --dry-run --always-make --keep-going --print-directory
 make: Entering directory '/home/leesum/ysyx/nemu'
- 
+echo + CC src/device/device.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/device.o src/device/device.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/device.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/device.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/device.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/device.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/device.d
+echo + CC src/device/alarm.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/alarm.o src/device/alarm.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/alarm.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/alarm.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/alarm.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/alarm.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/alarm.d
+echo + CC src/device/intr.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/intr.o src/device/intr.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/intr.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/intr.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/intr.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/intr.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/intr.d
+echo + CC src/device/serial.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/serial.o src/device/serial.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/serial.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/serial.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/serial.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/serial.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/serial.d
+echo + CC src/device/timer.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/timer.o src/device/timer.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/timer.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/timer.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/timer.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/timer.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/timer.d
+echo + CC src/device/keyboard.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/keyboard.o src/device/keyboard.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/keyboard.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/keyboard.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/keyboard.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/keyboard.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/keyboard.d
+echo + CC src/device/vga.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/vga.o src/device/vga.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/vga.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/vga.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/vga.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/vga.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/vga.d
+echo + CC src/nemu-main.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/nemu-main.o src/nemu-main.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/nemu-main.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/nemu-main.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/nemu-main.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/nemu-main.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/nemu-main.d
+echo + CC src/device/io/mmio.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/mmio.o src/device/io/mmio.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/mmio.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/mmio.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/mmio.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/mmio.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/mmio.d
+echo + CC src/device/io/port-io.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/port-io.o src/device/io/port-io.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/port-io.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/port-io.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/port-io.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/port-io.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/port-io.d
+echo + CC src/device/io/map.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/map.o src/device/io/map.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/map.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/map.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/map.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/map.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/map.d
+echo + CC src/isa/riscv64/difftest/dut.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/difftest/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/difftest/dut.o src/isa/riscv64/difftest/dut.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/difftest/dut.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/difftest/dut.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/difftest/dut.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/difftest/dut.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/difftest/dut.d
+echo + CC src/isa/riscv64/inst.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/inst.o src/isa/riscv64/inst.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/inst.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/inst.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/inst.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/inst.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/inst.d
+echo + CC src/isa/riscv64/init.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/init.o src/isa/riscv64/init.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/init.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/init.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/init.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/init.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/init.d
+echo + CC src/isa/riscv64/reg.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/reg.o src/isa/riscv64/reg.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/reg.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/reg.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/reg.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/reg.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/reg.d
+echo + CC src/isa/riscv64/logo.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/logo.o src/isa/riscv64/logo.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/logo.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/logo.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/logo.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/logo.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/logo.d
+echo + CC src/isa/riscv64/system/mmu.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/system/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/system/mmu.o src/isa/riscv64/system/mmu.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/system/mmu.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/system/mmu.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/system/mmu.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/system/mmu.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/system/mmu.d
+echo + CC src/isa/riscv64/system/intr.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/system/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/system/intr.o src/isa/riscv64/system/intr.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/system/intr.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/system/intr.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/system/intr.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/system/intr.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/system/intr.d
+echo + CC src/cpu/difftest/dut.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/difftest/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/difftest/dut.o src/cpu/difftest/dut.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/difftest/dut.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/difftest/dut.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/difftest/dut.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/difftest/dut.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/difftest/dut.d
+echo + CC src/cpu/difftest/ref.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/difftest/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/difftest/ref.o src/cpu/difftest/ref.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/difftest/ref.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/difftest/ref.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/difftest/ref.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/difftest/ref.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/difftest/ref.d
+echo + CC src/cpu/cpu-exec.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/cpu-exec.o src/cpu/cpu-exec.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/cpu-exec.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/cpu-exec.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/cpu-exec.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/cpu-exec.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/cpu-exec.d
+echo + CC src/monitor/monitor.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/monitor.o src/monitor/monitor.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/monitor.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/monitor.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/monitor.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/monitor.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/monitor.d
+echo + CC src/monitor/sdb/sdb.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/sdb/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/sdb/sdb.o src/monitor/sdb/sdb.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/sdb/sdb.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/sdb/sdb.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/sdb/sdb.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/sdb/sdb.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/sdb/sdb.d
+echo + CC src/monitor/sdb/expr.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/sdb/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/sdb/expr.o src/monitor/sdb/expr.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/sdb/expr.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/sdb/expr.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/sdb/expr.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/sdb/expr.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/sdb/expr.d
+echo + CC src/utils/log.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/log.o src/utils/log.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/log.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/log.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/log.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/log.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/log.d
+echo + CC src/utils/rand.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/rand.o src/utils/rand.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/rand.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/rand.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/rand.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/rand.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/rand.d
+echo + CC src/utils/state.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/state.o src/utils/state.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/state.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/state.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/state.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/state.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/state.d
+echo + CC src/utils/timer.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/timer.o src/utils/timer.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/timer.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/timer.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/timer.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/timer.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/timer.d
+echo + CC src/memory/paddr.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/paddr.o src/memory/paddr.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/paddr.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/paddr.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/paddr.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/paddr.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/paddr.d
+echo + CC src/memory/vaddr.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/vaddr.o src/memory/vaddr.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/vaddr.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/vaddr.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/vaddr.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/vaddr.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/vaddr.d
+echo + CC src/engine/interpreter/init.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/init.o src/engine/interpreter/init.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/init.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/init.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/init.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/init.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/init.d
+echo + CC src/engine/interpreter/hostcall.c
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/
+gcc -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/hostcall.o src/engine/interpreter/hostcall.c
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/hostcall.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/hostcall.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/hostcall.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/hostcall.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/hostcall.d
+echo + CXX src/utils/disasm.cc
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/
+g++ -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -I/usr/include -std=c++14   -fno-exceptions -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -fPIE -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/disasm.o src/utils/disasm.cc
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/disasm.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/disasm.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/disasm.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/disasm.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/disasm.d
+echo + CXX /home/leesum/ysyx/nemu/src/monitor/sdb/exprresult.cc
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter//home/leesum/ysyx/nemu/src/monitor/sdb/
+g++ -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -I/usr/include -std=c++14   -fno-exceptions -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -fPIE -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter//home/leesum/ysyx/nemu/src/monitor/sdb/exprresult.o /home/leesum/ysyx/nemu/src/monitor/sdb/exprresult.cc
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter//home/leesum/ysyx/nemu/src/monitor/sdb/exprresult.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter//home/leesum/ysyx/nemu/src/monitor/sdb/exprresult.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter//home/leesum/ysyx/nemu/src/monitor/sdb/exprresult.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter//home/leesum/ysyx/nemu/src/monitor/sdb/exprresult.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter//home/leesum/ysyx/nemu/src/monitor/sdb/exprresult.d
+echo + CXX /home/leesum/ysyx/nemu/src/monitor/sdb/watchpoint.cc
+mkdir -p /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter//home/leesum/ysyx/nemu/src/monitor/sdb/
+g++ -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa/riscv64/include -I/home/leesum/ysyx/nemu/src/engine/interpreter -I/usr/include/SDL2 -O2 -flto   -DITRACE_COND=true -D__GUEST_ISA__=riscv64  -I/usr/include -std=c++14   -fno-exceptions -D_GNU_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -fPIE -c -o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter//home/leesum/ysyx/nemu/src/monitor/sdb/watchpoint.o /home/leesum/ysyx/nemu/src/monitor/sdb/watchpoint.cc
+/home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter//home/leesum/ysyx/nemu/src/monitor/sdb/watchpoint.d  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter//home/leesum/ysyx/nemu/src/monitor/sdb/watchpoint.o unused >  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter//home/leesum/ysyx/nemu/src/monitor/sdb/watchpoint.d.tmp
+mv  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter//home/leesum/ysyx/nemu/src/monitor/sdb/watchpoint.d.tmp  /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter//home/leesum/ysyx/nemu/src/monitor/sdb/watchpoint.d
 flock /home/leesum/ysyx/nemu/../.git/ make -C /home/leesum/ysyx/nemu/.. .git_commit MSG=' "compile NEMU"'
- 
 sync
  
 echo + LD /home/leesum/ysyx/nemu/build/riscv64-nemu-interpreter
 g++ -o /home/leesum/ysyx/nemu/build/riscv64-nemu-interpreter /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/device.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/alarm.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/intr.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/serial.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/timer.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/keyboard.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/vga.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/nemu-main.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/mmio.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/port-io.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/map.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/difftest/dut.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/inst.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/init.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/reg.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/logo.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/system/mmu.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/system/intr.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/difftest/dut.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/difftest/ref.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/cpu-exec.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/monitor.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/sdb/sdb.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/sdb/expr.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/log.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/rand.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/state.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/timer.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/paddr.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/vaddr.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/init.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/hostcall.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/disasm.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter//home/leesum/ysyx/nemu/src/monitor/sdb/exprresult.o /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter//home/leesum/ysyx/nemu/src/monitor/sdb/watchpoint.o -O2 -O2 -flto   -fuse-ld=gold -fPIC  -lSDL2 -lLLVM-14 -lreadline -ldl -pie
- 
 make: Leaving directory '/home/leesum/ysyx/nemu'
  
+make: Warning: File '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter//home/leesum/ysyx/nemu/src/monitor/sdb/watchpoint.d' has modification time 8363 s in the future
+make: warning:  Clock skew detected.  Your build may be incomplete.
+

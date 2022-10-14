@@ -14,6 +14,8 @@ log.write(socdef)  # 添加宏定义，切换到 SOC 仿真环境
 for path in files.splitlines():
     if path.find("ysyx_041514.v")!=-1:
         continue
+    if path.find("ysyx_041514_S011HD1P_X32Y2D128_BW.v")!=-1:
+        continue
     f = open(path).read()                         # 将打开的文件内容保存到变量f
     f = f.replace('`include "sysconfig.v"', " ")  #  include 去除
     f = f.replace('ysyx_041514_soc','ysyx_041514')# 模块名称替换，满足端口要求

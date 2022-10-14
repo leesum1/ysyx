@@ -58,6 +58,8 @@ module ysyx_041514_icache_top (
     output [                    127:0] io_sram7_wdata,
     input  [                    127:0] io_sram7_rdata
 );
+// 寄存器已复位
+
   wire [ 5:0] cache_blk_addr;
   wire [ 5:0] cache_line_idx;
   wire [19:0] cache_line_tag;
@@ -71,7 +73,7 @@ module ysyx_041514_icache_top (
       .uncache_valid_o(uncache)
   );
 
-  reg [`ysyx_041514_XLEN_BUS] uncache_rdata;
+
 
   /* cache 命中 */
   localparam CACHE_RST = 4'd0;
@@ -79,6 +81,7 @@ module ysyx_041514_icache_top (
   localparam CACHE_MISS = 4'd2;
   localparam UNCACHE_READ = 4'd3;
 
+  reg [`ysyx_041514_XLEN_BUS] uncache_rdata;
   reg [3:0] icache_state;
 
 

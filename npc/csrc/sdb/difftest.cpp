@@ -108,7 +108,6 @@ bool Difftest::checkregs() {
             return false;
         }
     }
-    // TODO,流水线中没有找到好的比较 PC 的方法
     if (dutregs.pc != refregs.pc) {
         cout << "pc:err" << endl;
         cout << "----------------------------------dutregs----------------------------------" << endl;

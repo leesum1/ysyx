@@ -15,6 +15,7 @@ module ysyx_041514_icache_tag #(
     input fencei_valid_i,
     output icache_hit_o
 );
+// 寄存器已复位
   reg [TAG_LEN-1+1:0] icache_tag_regs[TAG_NUM-1:0];  //{valid,tag}
 
 

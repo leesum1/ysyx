@@ -29,6 +29,7 @@ module ysyx_041514_alu_div_slow (
     output div_ready_o
 
 );
+// 寄存器已复位
   localparam STATE_LEN = 3;
   localparam DIV_RST = 3'd0;
   localparam DIV_IDLE = 3'd1;
@@ -45,7 +46,7 @@ module ysyx_041514_alu_div_slow (
   reg [64:0] d_reg;  // 记录除数
   reg [64:0] d_neg_reg;  // 记录 除数的负数
   reg [64:0] div_count;  // 移位计数器
-  reg div_reday;
+  reg div_ready;
 
 
   /* 得到符号位 */
@@ -131,7 +132,7 @@ module ysyx_041514_alu_div_slow (
       div_state <= DIV_RST;
       div_data <= 0;
       rem_data <= 0;
-      div_reday <= `ysyx_041514_FALSE;
+      div_ready <= `ysyx_041514_FALSE;
       div_count <= 0;
       s_reg <= 0;
       d_reg <= 0;
@@ -142,7 +143,7 @@ module ysyx_041514_alu_div_slow (
           div_state <= DIV_IDLE;
         end
         DIV_IDLE: begin
-          div_reday <= `ysyx_041514_FALSE;
+          div_ready <= `ysyx_041514_FALSE;
           case ({
             div_valid_i, div32_valid_i
           })
@@ -186,14 +187,14 @@ module ysyx_041514_alu_div_slow (
         DIV_CORECT32: begin  //TODO DIV_CORECT64 DIV_CORECT32 阶段合并
           div_data  <= {32'b0, q_correct_32[31:0]};
           rem_data  <= {32'b0, s_correct_32[31:0]};
-          div_reday <= `ysyx_041514_TRUE;
+          div_ready <= `ysyx_041514_TRUE;
           div_state <= DIV_IDLE;
 
         end
         DIV_CORECT64: begin
           div_data  <= q_correct_64[63:0];
           rem_data  <= s_correct_64[63:0];
-          div_reday <= `ysyx_041514_TRUE;
+          div_ready <= `ysyx_041514_TRUE;
           div_state <= DIV_IDLE;
 
         end
@@ -206,7 +207,7 @@ module ysyx_041514_alu_div_slow (
 
   assign div_data_o  = div_data;
   assign rem_data_o  = rem_data;
-  assign div_ready_o = div_reday;
+  assign div_ready_o = div_ready;
 
 endmodule
 

@@ -17,17 +17,6 @@ module ysyx_041514_alu_top (
     //比较指令输出
     output compare_out_o
 
-    /* 测试用 */
-    // output [`ysyx_041514_XLEN-1:0] sra_out,
-    // output [`ysyx_041514_XLEN-1:0] srl_out,
-    // output [`ysyx_041514_XLEN-1:0] sll_out
-    // /* 标志位 */
-    // output OF,
-    // output ZF,
-    // output SLT,
-    // output CF,
-    // output SF,
-
 );
 
   //加减和逻辑
@@ -245,8 +234,8 @@ module ysyx_041514_alu_top (
                      alu_data_buff_valid_i ? alu_data_buff_i // 优先选择缓存数据
                      :_alu_out;
 
-  assign alu_data_ready_o = _mul_ready|_div_ready;  // TODO 暂时只有 乘法器 ready 信号
-    assign alu_stall_req_o = mul_stall_req |div_stall_req;  // TODO 暂时只有乘法
+  assign alu_data_ready_o = _mul_ready | _div_ready;  
+  assign alu_stall_req_o = mul_stall_req | div_stall_req;  
   assign compare_out_o = _compare_out;
 
 endmodule

@@ -28,7 +28,7 @@ module ysyx_041514_pc_reg (
                             branch_pc_valid_i?branch_pc_i:_pc_current+4;
 
 
-  reg _read_req = (~rst);  // pre if 阶段访问 icache, if 阶段返回数据
+  wire _read_req = (~rst);  // pre if 阶段访问 icache, if 阶段返回数据
 
   wire _pc_reg_wen = (~stall_valid_i[`ysyx_041514_CTRLBUS_PC]) & (~rst);  // stall
   wire _flush_valid = flush_valid_i[`ysyx_041514_CTRLBUS_PC];  // flush

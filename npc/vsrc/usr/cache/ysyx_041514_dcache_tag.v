@@ -18,7 +18,7 @@ module ysyx_041514_dcache_tag #(
     input                write_valid_i,      // 写使能
     output               dcache_hit_o
 );
-
+// 寄存器已复位
   reg [TAG_LEN-1+1:0] dcache_tag_regs[TAG_NUM-1:0];  // 最高位为脏位
 
   wire [TAG_LEN-1:0] read_tag;

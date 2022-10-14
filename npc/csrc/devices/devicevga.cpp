@@ -54,6 +54,7 @@ void Devicevga::write(paddr_t addr, word_t data, uint32_t len) {
         }
         else {
             vgaregs.sync = (uint32_t)data;
+            printf("vgaregs.sync,%d\n",data);
             //vga_update_screen();
         }
     }
@@ -152,7 +153,9 @@ void Devicevga::vga_update_screen() {
     }
 }
 void Devicevga::update() {
-    vga_update_screen();
+    // vga_update_screen();
+    update_screen();
+    vgaregs.sync = 0;
 }
 
 

@@ -71,7 +71,7 @@ module ysyx_041514_dcache_top (
     output [127:0] io_sram3_wdata,
     input  [127:0] io_sram3_rdata
 );
-
+// 寄存器已复位
   // uncache 检查
   wire uncache;
   ysyx_041514_uncache_check u_ysyx_041514_uncache_check1 (
@@ -176,6 +176,8 @@ module ysyx_041514_dcache_top (
       _ram_raddr_valid_dcache_o <= `ysyx_041514_FALSE;
       _ram_waddr_valid_dcache_o <= `ysyx_041514_FALSE;
       dcache_wmask_writehit <= 0;
+      _ram_raddr_dcache_o <=0;
+      _ram_wmask_dcache_o<=0;
 
     end else begin
       case (dcache_state)

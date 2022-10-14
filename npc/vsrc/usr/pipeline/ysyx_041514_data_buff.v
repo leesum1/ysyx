@@ -24,7 +24,7 @@ module ysyx_041514_data_buff (
     output                         rdata_buff_valid_o,
     output [`ysyx_041514_XLEN_BUS] rdata_buff_o
 );
-
+// 寄存器已复位
 
   reg [`ysyx_041514_XLEN_BUS] alu_data_buff;
   reg alu_data_buff_valid;

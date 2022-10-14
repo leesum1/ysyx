@@ -8,10 +8,8 @@ VERILATOR_INC_PATH := -I./vsrc \
 			-I./vsrc/usr \
 			-I./vsrc/lib 
 
-
-
 # verilator flags: 
-# VERILATOR_FLAGS +=  --trace  --trace-fst
+VERILATOR_FLAGS +=  --trace  --trace-fst
 # VERILATOR_FLAGS +=  --trace-max-array 256
 # VERILATOR_FLAGS +=  -threads 10
 VERILATOR_FLAGS +=  -O3 -noassert --x-assign fast --x-initial fast -j 12

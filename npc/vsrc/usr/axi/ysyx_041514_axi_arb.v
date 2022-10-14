@@ -50,7 +50,7 @@ module ysyx_041514_axi_arb (
     output [7:0] arb_wlen_o,
     input arb_wdata_ready_i  // 数据是否已经写入
 );
-
+// 寄存器已复位
 
 
   localparam ARB_IDLE = 2'd0;

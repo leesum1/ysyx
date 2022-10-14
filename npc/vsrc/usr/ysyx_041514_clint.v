@@ -89,7 +89,7 @@ module ysyx_041514_clint (
       stall_o = 6'b000000;
       flush_o = 6'b011111;
     // 访存时阻塞所有流水线
-    end else if (ram_stall_valid_mem_i) begin
+    end else if (ram_stall_valid_mem_i) begin // TODO ,if mem 访存合并
       stall_o = ram_mem_stall;
       flush_o = ram_mem_flush;
     // 访存时阻塞所有流水线
@@ -199,13 +199,13 @@ module ysyx_041514_clint (
 
   /* set the csr register and new pc if traps happened */
   // step 1: save current pc 
-  assign csr_mepc_writedata_o   = Machine_timer_interrupt?pc_from_exe_i:pc_from_mem_i; // trap or int
+  assign csr_mepc_writedata_o   = Machine_timer_interrupt?pc_from_exe_i:pc_from_mem_i; // trap or int，int 保存前一条指令，trap 保存当前指令
   assign csr_mepc_write_valid_o = trap_valid;
   // step 2: set the trap pc
   wire [`ysyx_041514_XLEN-1:0]_trap_pc_o = csr_mtvec_readdata_i;  // TODO:now only suppot direct mode,need to add vector mode
   wire _trap_pc_valid_o = trap_valid;
   // step 3: save trap cuase to mcause
-  assign csr_mcause_writedata_o = mcause_switch; //TODO:now,only support ecall from mathine mode(11),need to add more
+  assign csr_mcause_writedata_o = mcause_switch; 
   assign csr_mcause_write_valid_o = trap_valid;
   // step 4: save inst_data to mtval
   assign csr_mtval_writedata_o = {32'b0, inst_data_i};
@@ -266,13 +266,10 @@ module ysyx_041514_clint (
   wire mtime_ge_mtime = (mtime >= mtimecmp); // mtime >= mtimecmp
 
 
-  wire pc_from_exe_valid = (|pc_from_exe_i[31:0]); // exe 阶段为有效指令
+  wire pc_from_exe_valid = (|pc_from_exe_i[31:0]); // exe 阶段为有效指令时，才能进入中断，不然中断返回找不到返回地址
   assign Machine_timer_interrupt = mtime_ge_mtime&csr_mstatus_mie_valid&csr_mie_mtie_valid&pc_from_exe_valid;
 
   
-
-
-
   wire [`ysyx_041514_NPC_ADDR_BUS] clint_waddr = clint_addr_i;
   wire [`ysyx_041514_NPC_ADDR_BUS] clint_raddr = clint_addr_i;
   wire clint_waddr_valid = clint_write_valid_i & clint_valid_i; // 写有效
