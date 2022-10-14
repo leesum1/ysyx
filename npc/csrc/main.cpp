@@ -9,15 +9,22 @@
 #include "mysdb.h"
 #include "simMem.h"
 #include "simconf.h"
-
+#include <SDL2/SDL.h>
 
 namespace cr = CppReadline;
 using ret = cr::Console::ReturnCode;
+
+
+
+
+
 
 const char* nemu_so_path = " ";
 const char* img_path = " ";
 
 Simtop* mysim_p;
+
+
 int main(int argc, char* argv[]) {
 
   /* 解析参数 获取镜像路径*/
@@ -26,8 +33,7 @@ int main(int argc, char* argv[]) {
     if (i == 1) {
       img_path = argv[i];
     }
-    else if (i == 2)
-    {
+    else if (i == 2) {
       nemu_so_path = argv[i];
     }
   }
@@ -55,6 +61,7 @@ int main(int argc, char* argv[]) {
   c.registerCommand("w", cmd_w);
   c.registerCommand("d", cmd_d);
   c.registerCommand("sdb", cmd_sdb);
+
   int retCode;
 
 #ifdef TOP_TRACE

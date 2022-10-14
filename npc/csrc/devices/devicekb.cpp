@@ -44,6 +44,11 @@ void Devicekb::update() {
         case SDL_KEYDOWN:
         case SDL_KEYUP: {
             uint8_t k = event.key.keysym.scancode;
+            if (k == SDL_SCANCODE_F1) {
+                mysim_p->top_status = mysim_p->TOP_STOP; // 暂停仿真
+                printf("TOP_STOP\n");
+                mysim_p->showSimPerformance();
+            }
             bool is_keydown = (event.key.type == SDL_KEYDOWN);
             send_key(k, is_keydown);
             break;
