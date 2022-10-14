@@ -24,7 +24,7 @@ char* strcpy(char* dst, const char* src) {
   while (*src != '\0') {
     *dst_p++ = *src++;
   }
-  *dst_p = '\0';
+  *dst_p = '\0'; // 添加结束标志
   return dst;
 }
 
@@ -38,63 +38,62 @@ char* strncpy(char* dst, const char* src, size_t n) {
 }
 
 
-char* strcat(char* dst, const char* src) {  //test done.
+char* strcat(char* dst, const char* src) {
 
   char* dst_p = dst;
-  while (*dst_p != '\0') { // dst_p -> '\0'
+  while (*dst_p != '\0') { // 移动到字符串结尾
     dst_p++;
   }
   strcpy(dst_p, src);
   return dst;
 }
 
-int strcmp(const char* s1, const char* s2) {  //test done.
+int strcmp(const char* s1, const char* s2) {
   int ret = 0;
-  while (*s1 != '\0' && *s2 != '\0') {
-    ret = *s1++ - *s2++;
+  char* s1_p = (char*)s1;
+  char* s2_p = (char*)s2;
+  while (*s1_p != '\0' && *s2_p != '\0') {
+    ret = *s1_p++ - *s2_p++;
     if (ret != 0) // 不相等直接返回
       return ret;
   }
-  ret = *s1 - *s2; //check for finish '\0'.
+  ret = *s1_p - *s2_p; // 比较字符串结束标志 \0
   return ret;
-
 }
 
 int strncmp(const char* s1, const char* s2, size_t n) {
   int ret = 0;
+  char* s1_p = (char*)s1;
+  char* s2_p = (char*)s2;
   for (int i = 0; i < n;i++) {
-    ret = *(s1 + i) - *(s2 + i);
+    ret = *(s1_p++) - *(s2_p++);
     if (ret != 0)
       break;
   }
   return ret;
-
 }
 
-void* memset(void* s, int c, size_t n) { //test done.
-  unsigned char* s_p = (unsigned char*)s;
+void* memset(void* s, int c, size_t n) {
+  char* s_p = (char*)s;
   for (size_t i = 0;i < n;i++) {
-    *(s_p + i) = c;
+    *(s_p++) = c;
   }
   return s;
 }
 
 void* memmove(void* dst, const void* src, size_t n) {
-  // this function can be uesd for overlapping areas.
+  char* dst_p = (char*)dst;
+  char* src_p = (char*)src;
   if (dst <= src) { // 从前往后
-    // ----|dst----------|src---------|----------
-    char* pdst = (char*)dst;
-    char* psrc = (char*)src;
     for (size_t i = 0; i < n; i++) {
-      *pdst++ = *psrc++;
+      *dst_p++ = *src_p++;
     }
   }
   else {// 从后往前
-    // ----|src----------|dst---------|----------
-    char* pdst = (char*)dst + n;
-    char* psrc = (char*)src + n;
+    dst_p += (n - 1);
+    src_p += (n - 1);// 移动到最后一个元素上
     for (size_t i = 0; i < n; i++) {
-      *--pdst = *--psrc;
+      *dst_p-- = *src_p--;
     }
   }
   return dst;
@@ -106,12 +105,12 @@ void* memcpy(void* dst, const void* src, size_t n) {
   return dst;
 }
 
-int memcmp(const void* s1, const void* s2, size_t n) { //test done.
+int memcmp(const void* s1, const void* s2, size_t n) {
   int ret = 0;
-  const unsigned char* s1_p = s1;
-  const unsigned char* s2_p = s2;
+  char* s1_p = (char*)s1;
+  char* s2_p = (char*)s2;
   for (int i = 0; i < n;i++) {
-    ret = *(s1_p + i) - *(s2_p + i);
+    ret = *(s1_p++) - *(s2_p++);// 逐个比较，不相等就退出
     if (ret != 0)
       break;
   }

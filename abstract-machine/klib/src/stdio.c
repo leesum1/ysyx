@@ -26,11 +26,18 @@ int vsprintf(char* buf, const char* fmt, va_list args) {
         buf_p += len_s;
         break;
       case 'd':
-        int num = va_arg(args, int);
-        char* num2str = itoa(num, (char*)&str_temp, 10);
-        strcpy(buf_p, num2str);
-        size_t len_d = strlen(num2str);
+        int num_d = va_arg(args, int);
+        char* num_d2str = itoa(num_d, (char*)&str_temp, 10);
+        strcpy(buf_p, num_d2str);
+        size_t len_d = strlen(num_d2str);
         buf_p += len_d;
+        break;
+      case 'p':
+        int num_p = va_arg(args, int);
+        char* num_p2str = itoa(num_p, (char*)&str_temp, 16);
+        strcpy(buf_p, num_p2str);
+        size_t len_p = strlen(num_p2str);
+        buf_p += len_p;
         break;
       default:
         break;

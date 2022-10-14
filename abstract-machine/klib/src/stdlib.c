@@ -33,9 +33,9 @@ int atoi(const char* nptr) {
 /**
  * 数字转字符串
 */
+
+static char index[] = "0123456789ABCDEF"; // 索引
 char* itoa(int num, char* str, int radix) {
-  /*索引表*/
-  char index[] = "0123456789ABCDEF";
   unsigned unum;/*中间变量*/
   int i = 0, j, k;
   /*确定unum的值*/
@@ -45,18 +45,19 @@ char* itoa(int num, char* str, int radix) {
     str[i++] = '-';
   }
   else unum = (unsigned)num;/*其他情况*/
-  /*转换*/
+  //转换
   do {
     str[i++] = index[unum % (unsigned)radix];
     unum /= radix;
   } while (unum);
   str[i] = '\0';
-  /*逆序*/
+
+  // 逆序，若为负数，第一字符为 -
   if (str[0] == '-')
-    k = 1;/*十进制负数*/
+    k = 1;
   else
     k = 0;
-
+  // 头尾交换
   for (j = k;j <= (i - 1) / 2;j++) {
     char temp;
     temp = str[j];
@@ -69,8 +70,7 @@ char* itoa(int num, char* str, int radix) {
 
 char* head_start_p = NULL;
 void* malloc(size_t size) {
-  if (head_start_p==NULL)
-  {
+  if (head_start_p == NULL) {
     head_start_p = heap.start;
   }
   // static int i = 0;
@@ -82,7 +82,7 @@ void* malloc(size_t size) {
   // printf("malloc\n");
   // return tlsf_malloc(size);
   char* last_p = head_start_p;
-  head_start_p+=size;
+  head_start_p += size;
   return last_p;
 }
 
