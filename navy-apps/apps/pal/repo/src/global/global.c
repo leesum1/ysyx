@@ -170,7 +170,7 @@ PAL_InitGlobals(
    // Retrieve game resource version
    //
    if (!PAL_IsWINVersion(&gConfig.fIsWIN95)) return -1;
-
+   printf("PAL_IsWINVersion\n");
    //
    // Enable AVI playing only when the resource is WIN95
    //

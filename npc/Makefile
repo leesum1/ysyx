@@ -13,7 +13,7 @@ VERILATOR_INC_PATH := -I./vsrc \
 # verilator flags: 
 VERILATOR_FLAGS +=  --trace  --trace-fst
 # VERILATOR_FLAGS +=  --trace-max-array 256
-VERILATOR_FLAGS +=  -O3 -noassert --x-assign fast --x-initial fast -j 2 
+VERILATOR_FLAGS +=  -O3 -noassert --x-assign fast --x-initial fast -j 12
 VERILATOR_FLAGS +=  -cc --exe  --build  --clk clk  
 VERILATOR_FLAGS += ${VERILATOR_INC_PATH}
 VERILATOR_FLAGS += --top ${TOP_MODULE} --prefix Vtop -Wno-DECLFILENAME
