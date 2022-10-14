@@ -42,7 +42,7 @@ typedef struct {
 void MD5Init(MD5_CTX* context);
 void MD5Update(MD5_CTX* context, unsigned char* input, unsigned int inputlen);
 void MD5Final(MD5_CTX* context, unsigned char digest[16]);
-void MD5Transform(unsigned int state[4], unsigned char block[64]);
+void MD5Transform(unsigned int state[4], unsigned char *block);
 void MD5Encode(unsigned char* output, unsigned int* input, unsigned int len);
 void MD5Decode(unsigned int* output, unsigned char* input, unsigned int len);
 
@@ -114,7 +114,7 @@ void MD5Decode(unsigned int* output, unsigned char* input, unsigned int len) {
         j += 4;
     }
 }
-void MD5Transform(unsigned int state[4], unsigned char block[64]) {
+void MD5Transform(unsigned int state[4], unsigned char* block) {
     unsigned int a = state[0];
     unsigned int b = state[1];
     unsigned int c = state[2];
@@ -216,25 +216,25 @@ const  char* encryptlist[] = {
 "e4QnNYMNxSVkqcKXOgWUOJEcckmtzaas",
 "WAuTDa8hc39N2WfddywmqJN65oA1wOjxgzVlF3IKrLwoi3MfGqTe4gpvPAclbgE9"
 };
-/* 生成结果数组 */
-void gendata(void) {
-    unsigned char decrypt[16];
-    printf("static const unsigned char md5_table[] =\n{\n");
-    for (int i = 0; i < MD5_LIST_N; i++) {
-        MD5_CTX md5;
-        MD5Init(&md5);
-        MD5Update(&md5, (unsigned char*)encryptlist[i], strlen((char*)encryptlist[i]));
-        MD5Final(&md5, decrypt);
-        /* 输出 md5 共 16bybte ,占 4 int */
-        for (int j = 0; j < 16; j++) {
-            printf("0x");
-            printf("%02x", decrypt[j]);
-            putchar(',');
-        }
-        putchar('\n');
-    }
-    printf("};\n");
-}
+// /* 生成结果数组 */
+// void gendata(void) {
+//     unsigned char decrypt[16];
+//     printf("static const unsigned char md5_table[] =\n{\n");
+//     for (int i = 0; i < MD5_LIST_N; i++) {
+//         MD5_CTX md5;
+//         MD5Init(&md5);
+//         MD5Update(&md5, (unsigned char*)encryptlist[i], strlen((char*)encryptlist[i]));
+//         MD5Final(&md5, decrypt);
+//         /* 输出 md5 共 16bybte ,占 4 int */
+//         for (int j = 0; j < 16; j++) {
+//             printf("0x");
+//             printf("%02x", decrypt[j]);
+//             putchar(',');
+//         }
+//         putchar('\n');
+//     }
+//     printf("};\n");
+// }
 
 /* md5 结果 */
 static const unsigned char md5_table[] =
