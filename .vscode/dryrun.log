@@ -2,6 +2,7 @@ make -f /home/leesum/ysyx/nemu/Makefile -C /home/leesum/ysyx/nemu/ --dry-run --k
 make: Entering directory '/home/leesum/ysyx/nemu'
  
 flock /home/leesum/ysyx/nemu/../.git/ make -C /home/leesum/ysyx/nemu/.. .git_commit MSG=' "compile NEMU"'
+ 
 sync
  
 echo + LD /home/leesum/ysyx/nemu/build/riscv64-nemu-interpreter

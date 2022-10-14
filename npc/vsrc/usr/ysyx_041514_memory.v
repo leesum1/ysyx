@@ -58,6 +58,15 @@ module ysyx_041514_memory (
   assign exc_csr_valid_o = exc_csr_valid_i;
 
 
+  wire [`ysyx_041514_NPC_ADDR_BUS] clint_addr;
+  wire clint_valid;
+  wire clint_write_valid;
+  wire [`ysyx_041514_XLEN_BUS] clint_wdata;
+  wire [`ysyx_041514_XLEN_BUS] clint_rdata;
+  wire [`ysyx_041514_XLEN_BUS] mem_rdata;
+
+
+
 
 
   wire _memop_none = (mem_op_i == `ysyx_041514_MEMOP_NONE);
@@ -128,6 +137,10 @@ module ysyx_041514_memory (
                    | ({8{_ls4byte}}&8'b0000_1111) 
                    | ({8{_ls8byte}}&8'b1111_1111);
 
+  /* 地址 */
+  wire [`ysyx_041514_XLEN_BUS] _addr = (_memop_none) ? `ysyx_041514_PC_RESET_ADDR : exc_alu_data_i;
+  wire [2:0] addr_last3 = _addr[2:0];
+
   wire [7:0] rmask = _mask;
   wire [7:0] wmask = (_mask << addr_last3);
 
@@ -138,16 +151,15 @@ module ysyx_041514_memory (
   // wire [7:0] _wmask = (_isstore) ? _mask : 8'b0000_0000;
   // wire [7:0] _rmask = (_isload) ? _mask : 8'b0000_0000;
 
-  /* 地址 */
-  wire [`ysyx_041514_XLEN_BUS] _addr = (_memop_none) ? `ysyx_041514_PC_RESET_ADDR : exc_alu_data_i;
+
   // wire [`ysyx_041514_XLEN_BUS] _raddr = _addr;
   // wire [`ysyx_041514_XLEN_BUS] _waddr = _addr;
   /***************************** clint 接口 ************************************************/
-  wire [`ysyx_041514_NPC_ADDR_BUS] clint_addr = _addr[31:0];
-  wire clint_valid = (_addr[31:0] == `ysyx_041514_MTIME_ADDR) | (_addr[31:0] == `ysyx_041514_MTIMECMP_ADDR);
-  wire clint_write_valid = _isstore;
-  wire [`ysyx_041514_XLEN_BUS] clint_wdata = _mem_write;
-  wire [`ysyx_041514_XLEN_BUS] clint_rdata = clint_rdata_i;
+  assign clint_addr = _addr[31:0];
+  assign clint_valid = (_addr[31:0] == `ysyx_041514_MTIME_ADDR) | (_addr[31:0] == `ysyx_041514_MTIMECMP_ADDR);
+  assign clint_write_valid = _isstore;
+  assign clint_wdata = _mem_write;
+  assign clint_rdata = clint_rdata_i;
 
   assign clint_addr_o = clint_addr;
   assign clint_valid_o = clint_valid;
@@ -161,12 +173,12 @@ module ysyx_041514_memory (
   // 2. mem load 指令,需要调整 rmask,不能与 wmask 相同
   // 3. dcache 的 mask 和 data 需要调整
   // 4. axi write strobes 和 wdata 需要调整
-  wire [2:0] addr_last3 = _addr[2:0];
+
 
   assign mem_addr_o = _addr[31:0];
   assign mem_mask_o = mem_write_valid_o ? wmask : rmask;
   //assign _mem_read = (mem_data_ready_i) ? (mem_rdata_i) : `ysyx_041514_XLEN'b0;
-  wire [`ysyx_041514_XLEN_BUS] mem_rdata = (mem_data_ready_i) ? (mem_rdata_i) : `ysyx_041514_XLEN'b0;
+  assign mem_rdata = (mem_data_ready_i) ? (mem_rdata_i) : `ysyx_041514_XLEN'b0;
   // 访存有效条件
   // 1. 为访存指令
   // 2. 当前周期不是读数据返回周期、写数据成功周期(避免多次访存)

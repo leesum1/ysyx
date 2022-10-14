@@ -26,10 +26,12 @@ module ysyx_041514_alu_mul_wallace (
   reg mul_ready;
   reg [127:0] mul_data128;
 
+
+  wire [127:0] mul_final128;
   assign mul_ready_o = mul_ready;
 
   assign mul_out_o   = mul_data128;
- 
+
 
   /* 乘法状态机切换 */
   always @(posedge clk) begin
@@ -621,7 +623,7 @@ module ysyx_041514_alu_mul_wallace (
 
 
 
-  wire [127:0] mul_final128 = step4_A0_sum + {step4_A0_carry[126:0], 1'b0};
+  assign mul_final128 = step4_A0_sum + {step4_A0_carry[126:0], 1'b0};
 
   // /* step5 TODO:插入流水线 */
   // assign mul_out_o = 

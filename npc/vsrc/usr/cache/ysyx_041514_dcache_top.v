@@ -72,10 +72,6 @@ module ysyx_041514_dcache_top (
     input  [127:0] io_sram3_rdata
 );
 
-  assign ram_wlen_dcache_o  = _ram_wlen_dcache_o;
-  assign ram_rlen_dcache_o  = _ram_rlen_dcache_o;
-  assign mem_fencei_ready_o = fencei_ready;
-
   // uncache 检查
   wire uncache;
   ysyx_041514_uncache_check u_ysyx_041514_uncache_check1 (
@@ -93,6 +89,10 @@ module ysyx_041514_dcache_top (
 
 
   wire dcache_hit;
+  wire [63:0] wmask_bit;
+  wire dirty_bit_read;
+  wire [19:0] dcache_tag_read;
+  wire [`ysyx_041514_XLEN_BUS] dcache_writeback_data;
 
   /* cache 命中 */
   localparam CACHE_RST = 4'd0;
@@ -138,6 +138,8 @@ module ysyx_041514_dcache_top (
   reg dcache_write_hit_valid;
   reg fencei_ready;
 
+  reg [127:0] dcache_wmask_writehit;
+
 
   reg [3:0] burst_count;
   wire [3:0] burst_count_plus1 = burst_count + 1;
@@ -173,6 +175,7 @@ module ysyx_041514_dcache_top (
       dcache_data_ready <= 0;
       _ram_raddr_valid_dcache_o <= `ysyx_041514_FALSE;
       _ram_waddr_valid_dcache_o <= `ysyx_041514_FALSE;
+      dcache_wmask_writehit <= 0;
 
     end else begin
       case (dcache_state)
@@ -371,10 +374,8 @@ module ysyx_041514_dcache_top (
   end
 
 
-  reg [127:0] dcache_wmask_writehit;
 
-
-  wire [63:0] wmask_bit = {
+  assign wmask_bit = {
     {8{mem_mask_i[7]}},
     {8{mem_mask_i[6]}},
     {8{mem_mask_i[5]}},
@@ -403,11 +404,19 @@ module ysyx_041514_dcache_top (
 
   wire dcache_wwen = (state_readmiss & ram_r_handshake) | (state_writehit & dcache_data_wen);
 
-  wire dirty_bit_read;
+
   wire dirty_bit_write = _dirty_bit_write;
   wire [19:0] dcache_tag_write = cache_line_tag;
-  wire [19:0] dcache_tag_read;
+
   wire dirty_flush = _dirty_flush;
+
+  wire dcache_allocate_valid = state_readmiss;
+  wire dcache_writeback_valid = state_writeback | mem_fencei_valid_i;
+  wire dcache_fencei_valid = mem_fencei_valid_i;
+
+  wire [5:0] dcache_index = dcache_fencei_valid ? fencei_line_idx : cache_line_idx;
+
+  wire [`ysyx_041514_XLEN_BUS] dcache_rdata;
   ysyx_041514_dcache_tag u_dcache_tag (
       .clk              (clk),
       .rst              (rst),
@@ -421,15 +430,6 @@ module ysyx_041514_dcache_top (
       .dcache_hit_o     (dcache_hit)
   );
 
-
-  wire dcache_allocate_valid = state_readmiss;
-  wire dcache_writeback_valid = state_writeback | mem_fencei_valid_i;
-  wire dcache_fencei_valid = mem_fencei_valid_i;
-
-  wire [5:0] dcache_index = dcache_fencei_valid ? fencei_line_idx : cache_line_idx;
-
-  wire [`ysyx_041514_XLEN_BUS] dcache_rdata;
-  wire [`ysyx_041514_XLEN_BUS] dcache_writeback_data;
   ysyx_041514_dcache_data u_dcache_data (
       // .clk                     (clk),
       // .rst                     (rst),
@@ -471,6 +471,11 @@ module ysyx_041514_dcache_top (
       .io_sram3_rdata          (io_sram3_rdata)
   );
 
+
+
+  assign ram_wlen_dcache_o = _ram_wlen_dcache_o;
+  assign ram_rlen_dcache_o = _ram_rlen_dcache_o;
+  assign mem_fencei_ready_o = fencei_ready;
 
 
 

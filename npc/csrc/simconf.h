@@ -21,7 +21,7 @@
 #define DEVICE_VGA
 //#define AUTO_RUN
 #define TOP_TRACE
-#define TOP_WAVE
+// #define TOP_WAVE
 //#define MTRACH
 
 

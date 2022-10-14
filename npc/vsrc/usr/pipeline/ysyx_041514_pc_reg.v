@@ -22,10 +22,11 @@ module ysyx_041514_pc_reg (
     output [    `ysyx_041514_XLEN_BUS] pc_o               //输出pc
 );
 
+  wire [`ysyx_041514_XLEN_BUS] _pc_current;
 
   wire [`ysyx_041514_XLEN_BUS] _pc_next =  clint_pc_valid_i ? clint_pc_i : 
                             branch_pc_valid_i?branch_pc_i:_pc_current+4;
-  reg [`ysyx_041514_XLEN_BUS] _pc_current;
+
 
   reg _read_req = (~rst);  // pre if 阶段访问 icache, if 阶段返回数据
 

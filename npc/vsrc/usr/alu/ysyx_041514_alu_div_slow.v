@@ -37,6 +37,17 @@ module ysyx_041514_alu_div_slow (
   localparam DIV_CORECT32 = 3'd4;
   localparam DIV_CORECT64 = 3'd5;
 
+
+  reg [STATE_LEN-1:0] div_state;
+  reg [`ysyx_041514_XLEN_BUS] div_data;  // 最终 商
+  reg [`ysyx_041514_XLEN_BUS] rem_data;  // 最终 余数
+  reg [129:0] s_reg;  // 记录每一步的 部分余数
+  reg [64:0] d_reg;  // 记录除数
+  reg [64:0] d_neg_reg;  // 记录 除数的负数
+  reg [64:0] div_count;  // 移位计数器
+  reg div_reday;
+
+
   /* 得到符号位 */
   wire div64_rs1_sign = div_signed_valid_i ? dividented_i[63] : 1'b0;  // dividented
   wire div64_rs2_sign = div_signed_valid_i ? divisor_i[63] : 1'b0;  // divisor
@@ -114,15 +125,6 @@ module ysyx_041514_alu_div_slow (
   wire [64:0] div_count_next = {1'b0, div_count[64:1]};
   wire div_count_is_zero = ~div_count[0];
 
-
-  reg [STATE_LEN-1:0] div_state;
-  reg [`ysyx_041514_XLEN_BUS] div_data;  // 最终 商
-  reg [`ysyx_041514_XLEN_BUS] rem_data;  // 最终 余数
-  reg [129:0] s_reg;  // 记录每一步的 部分余数
-  reg [64:0] d_reg;  // 记录除数
-  reg [64:0] d_neg_reg;  // 记录 除数的负数
-  reg [64:0] div_count;  // 移位计数器
-  reg div_reday;
 
   always @(posedge clk) begin
     if (rst) begin

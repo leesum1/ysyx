@@ -1,7 +1,7 @@
 `include "sysconfig.v"
 module ysyx_041514_execute_top (
-    input                           clk,
-    input                           rst,
+    input                                       clk,
+    input                                       rst,
     /******************************* from id/ex *************************/
     // pc
     input  [             `ysyx_041514_XLEN_BUS] pc_i,
@@ -15,7 +15,7 @@ module ysyx_041514_execute_top (
     input  [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] csr_readaddr_i,
     input  [             `ysyx_041514_XLEN_BUS] csr_data_i,
     input  [          `ysyx_041514_IMM_LEN-1:0] csr_imm_i,
-    input                           csr_imm_valid_i,
+    input                                       csr_imm_valid_i,
     // 指令微码
     input  [        `ysyx_041514_ALUOP_LEN-1:0] alu_op_i,         // alu 操作码
     input  [        `ysyx_041514_MEMOP_LEN-1:0] mem_op_i,         // 访存操作码
@@ -26,7 +26,7 @@ module ysyx_041514_execute_top (
     input  [             `ysyx_041514_TRAP_BUS] trap_bus_i,
     /********************** to ex/mem **************************/
     // pc 同时给 EX/MEM 和 MEM（用于中断返回地址）
-    output [             `ysyx_041514_XLEN_BUS] pc_o,  
+    output [             `ysyx_041514_XLEN_BUS] pc_o,
     output [         `ysyx_041514_INST_LEN-1:0] inst_data_o,
     // gpr 译码结果
     output [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_o,
@@ -41,9 +41,9 @@ module ysyx_041514_execute_top (
     output [        `ysyx_041514_MEMOP_LEN-1:0] mem_op_o,         // 访存操作码
     // output [         `ysyx_041514_PCOP_LEN-1:0] pc_op_o,  
 
-    output [     `ysyx_041514_XLEN_BUS] exc_alu_data_o,   // 同时送给 ID 和 EX/MEM
-    output [     `ysyx_041514_XLEN_BUS] exc_csr_data_o,
-    output                  exc_csr_valid_o,
+    output [`ysyx_041514_XLEN_BUS] exc_alu_data_o,  // 同时送给 ID 和 EX/MEM
+    output [`ysyx_041514_XLEN_BUS] exc_csr_data_o,
+    output                         exc_csr_valid_o,
     /************************to id *************************************/
     // output [`ysyx_041514_EXCOP_LEN-1:0] exc_op_o,         // exc 操作码
 
@@ -79,6 +79,10 @@ module ysyx_041514_execute_top (
   assign exc_csr_addr_o = csr_readaddr_i;
 
 
+
+  wire [`ysyx_041514_XLEN_BUS] _alu_out;
+  wire _compare_out;
+  wire alu_stall_req;
 
 
   wire _excop_auipc = (exc_op_i == `ysyx_041514_EXCOP_AUIPC);
@@ -140,9 +144,7 @@ module ysyx_041514_execute_top (
                                        ({`ysyx_041514_XLEN{_pc_4}}&`ysyx_041514_XLEN'd4)   |
                                        ({`ysyx_041514_XLEN{_pc_imm12|_none_imm12}}&_imm_aui_auipc);
 
-  wire [`ysyx_041514_XLEN_BUS] _alu_out;
-  wire _compare_out;
-  wire alu_stall_req;
+
   ysyx_041514_alu_top u_alu (
       .clk(clk),
       .rst(rst),

@@ -55,11 +55,16 @@ module ysyx_041514_clint (
 
     /* ---signals to other stages of the pipeline  ----*/
     output reg[5:0]              stall_o,   // stall request to PC,IF_ID, ID_EX, EX_MEM, MEM_WB， one bit for one stage respectively
-    output wire [5:0] flush_o  // flush the whole pipleline, exception or interrupt happens
+    output reg [5:0] flush_o  // flush the whole pipleline, exception or interrupt happens
 );
 
   /* --------------------- handle the stall request -------------------*/
   // assign flush_o = trap_valid;
+  wire trap_valid;
+  wire Machine_timer_interrupt;
+  wire trap_mret;
+  wire trap_fencei;
+
 
   //stall request to PC,IF_ID, ID_EX, EX_MEM, MEM_WB
   localparam load_use_flush = 6'b000100;
@@ -125,12 +130,12 @@ module ysyx_041514_clint (
   // wire trap_inst_access_fault = trap_bus_i[`ysyx_041514_TRAP_INST_ACCESS_FAULT]; // 1
   // wire trap_illegal_inst = trap_bus_i[`ysyx_041514_TRAP_INST_ACCESS_FAULT]; // 1
 
-  wire trap_mret = trap_bus_i[`ysyx_041514_TRAP_MRET];
-  wire trap_fencei = trap_bus_i[`ysyx_041514_TRAP_FENCEI];
+  assign trap_mret = trap_bus_i[`ysyx_041514_TRAP_MRET];
+  assign trap_fencei = trap_bus_i[`ysyx_041514_TRAP_FENCEI];
   wire [`ysyx_041514_XLEN_BUS]_fencei_pc = pc_from_mem_i+'d4; // TODO 加 4 操作，统一到 pc 自增上，节省一个加法器
 
 
-  wire trap_valid = (|trap_bus_i[15:0])| Machine_timer_interrupt; // 0 - 15 表示 trap 发生
+  assign trap_valid = (|trap_bus_i[15:0])| Machine_timer_interrupt; // 0 - 15 表示 trap 发生
 
   reg [`ysyx_041514_XLEN_BUS]mcause_switch;
   always @(*) begin
@@ -262,7 +267,7 @@ module ysyx_041514_clint (
 
 
   wire pc_from_exe_valid = (|pc_from_exe_i[31:0]); // exe 阶段为有效指令
-  wire Machine_timer_interrupt = mtime_ge_mtime&csr_mstatus_mie_valid&csr_mie_mtie_valid&pc_from_exe_valid;
+  assign Machine_timer_interrupt = mtime_ge_mtime&csr_mstatus_mie_valid&csr_mie_mtie_valid&pc_from_exe_valid;
 
   
 
@@ -272,8 +277,10 @@ module ysyx_041514_clint (
   wire [`ysyx_041514_NPC_ADDR_BUS] clint_raddr = clint_addr_i;
   wire clint_waddr_valid = clint_write_valid_i & clint_valid_i; // 写有效
   wire [`ysyx_041514_XLEN_BUS]clint_wdata = clint_wdata_i;  // 写数据
-  assign clint_rdata_o = clint_rdata; // 读数据
   reg [`ysyx_041514_XLEN_BUS]clint_rdata;
+
+  assign clint_rdata_o = clint_rdata; // 读数据
+
 
   wire [`ysyx_041514_XLEN_BUS] mtime_plus1 = mtime+64'b1;
 

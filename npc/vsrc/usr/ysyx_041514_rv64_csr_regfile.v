@@ -37,12 +37,14 @@ module ysyx_041514_rv64_csr_regfile (
 
 
   // mstatus TODO 
+  reg _mstatus_en;
+  reg [`ysyx_041514_XLEN-1:0] _mstatus_q;
   wire [`ysyx_041514_XLEN-1:0] _mstatus_d = (csr_mstatus_write_valid_i) ? csr_mstatus_writedata_i : 
                                             (_mstatus_en)?csr_writedata_i:
                                             {_mstatus_q[63:13],1'b1,1'b1,_mstatus_q[10:0]};
 
-  reg [`ysyx_041514_XLEN-1:0] _mstatus_q;
-  reg _mstatus_en;
+
+
 
   // mepc
   wire [`ysyx_041514_XLEN-1:0] _mepc_d = (csr_mepc_write_valid_i) ? csr_mepc_writedata_i : csr_writedata_i;
@@ -65,11 +67,13 @@ module ysyx_041514_rv64_csr_regfile (
   reg _mtvec_en;
 
   // mip TODO 设计不完善 目前只有 mtime 会使用
+  reg _mip_en;
+  reg [`ysyx_041514_XLEN-1:0] _mip_q;
   wire [`ysyx_041514_XLEN-1:0] _mip_d = (csr_mip_write_valid_i) ? csr_mip_writedata_i : 
                                         (_mip_en)?csr_writedata_i:
                                         {_mip_q[63:8],1'b0,_mip_q[6:0]}; // mtime 清 0
-  reg [`ysyx_041514_XLEN-1:0] _mip_q;
-  reg _mip_en;
+
+
 
   // mie
   wire [`ysyx_041514_XLEN-1:0] _mie_d = csr_writedata_i;
@@ -117,8 +121,8 @@ module ysyx_041514_rv64_csr_regfile (
   assign csr_readdata_o = _csr_readdata;
 
   assign csr_mepc_readdata_o = _mepc_q;
-//   assign csr_mcause_readdata_o = _mcause_q;
-//   assign csr_mtval_readdata_o = _mtval_q;
+  //   assign csr_mcause_readdata_o = _mcause_q;
+  //   assign csr_mtval_readdata_o = _mtval_q;
   assign csr_mtvec_readdata_o = _mtvec_q;
   assign csr_mstatus_readdata_o = _mstatus_q;
   assign csr_mie_readdata_o = _mie_q;

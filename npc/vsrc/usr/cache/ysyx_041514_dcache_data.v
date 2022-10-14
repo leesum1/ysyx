@@ -48,6 +48,12 @@ module ysyx_041514_dcache_data #(
 
 );
 
+  wire [127:0] Q00, Q01, Q10, Q11;  // 读数据
+
+  wire [127:0] BWEN = ~dcache_wmask;  // 写掩码
+  wire [5:0] A = dcache_index_i;  // 写地址
+  wire [127:0] D = dcache_line_wdata_i;  // 写数据
+
   reg [`ysyx_041514_XLEN_BUS] dcache_wb_data;
   assign dcache_writeback_data_o = dcache_wb_data;
   always @(*) begin
@@ -83,15 +89,6 @@ module ysyx_041514_dcache_data #(
   wire WEN01 = ~((allocate_CEN01 | hit_CEN01) & dcache_wen_i);
   wire WEN10 = ~((allocate_CEN10 | hit_CEN10) & dcache_wen_i);
   wire WEN11 = ~((allocate_CEN11 | hit_CEN11) & dcache_wen_i);
-
-
-
-
-  wire [127:0] Q00, Q01, Q10, Q11;  // 读数据
-
-  wire [127:0] BWEN = ~dcache_wmask;  // 写掩码
-  wire [5:0] A = dcache_index_i;  // 写地址
-  wire [127:0] D = dcache_line_wdata_i;  // 写数据
 
 
 
