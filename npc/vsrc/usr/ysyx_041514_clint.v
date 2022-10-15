@@ -50,8 +50,9 @@ module ysyx_041514_clint (
     //output wire csr_mie_write_valid_o,
 
     /* 输出至取指阶段 */
-    output wire [`ysyx_041514_XLEN-1:0] clint_pc_o,
-    output wire clint_pc_valid_o,
+    output  [`ysyx_041514_XLEN-1:0] clint_pc_o,
+    output  clint_pc_valid_o,
+    output clint_pc_plus4_valid_o,
 
     /* ---signals to other stages of the pipeline  ----*/
     output reg[5:0]              stall_o,   // stall request to PC,IF_ID, ID_EX, EX_MEM, MEM_WB， one bit for one stage respectively
@@ -132,7 +133,7 @@ module ysyx_041514_clint (
 
   assign trap_mret = trap_bus_i[`ysyx_041514_TRAP_MRET];
   assign trap_fencei = trap_bus_i[`ysyx_041514_TRAP_FENCEI];
-  wire [`ysyx_041514_XLEN_BUS]_fencei_pc = pc_from_mem_i+'d4; // TODO 加 4 操作，统一到 pc 自增上，节省一个加法器
+  // wire [`ysyx_041514_XLEN_BUS]_fencei_pc = pc_from_mem_i+'d4; // TODO 加 4 操作，统一到 pc 自增上，节省一个加法器
 
 
   assign trap_valid = (|trap_bus_i[15:0])| Machine_timer_interrupt; // 0 - 15 表示 trap 发生
@@ -242,6 +243,12 @@ module ysyx_041514_clint (
   assign csr_mstatus_writedata_o = ({`ysyx_041514_XLEN{mret_mstatus_valid}}&mret_mstatus_wdata)|
                                    ({`ysyx_041514_XLEN{trap_mstatus_valid}}&trap_mstatus_wdata);
 
+
+
+  /* fencei pc */
+  wire [`ysyx_041514_XLEN_BUS]_fencei_pc = pc_from_mem_i; // +4 操作统一到 pc 阶段
+  assign clint_pc_plus4_valid_o = trap_fencei;
+  
   /* pc mux TODO 是否应该考虑优先级问题？同一时刻有多个跳转如何考虑？ */
   // 1. trap 发生，包括中断和异常
   // 2. mret 指令
@@ -251,6 +258,7 @@ module ysyx_041514_clint (
                       ({`ysyx_041514_XLEN{trap_fencei}}&_fencei_pc);
                   
   assign clint_pc_valid_o = trap_valid | trap_mret|trap_fencei;
+
 
 
   /* mip TODO: 暂时只支持 mtime 中断 */

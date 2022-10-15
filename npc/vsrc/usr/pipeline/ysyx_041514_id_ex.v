@@ -58,7 +58,7 @@ module ysyx_041514_id_ex (
 
   /* pc 寄存器 */
   wire [`ysyx_041514_XLEN-1:0] _pc_id_ex_d = (_flush_valid) ? `ysyx_041514_XLEN'b0 : pc_id_ex_i;
-  reg [`ysyx_041514_XLEN-1:0] _pc_id_ex_q;
+  wire [`ysyx_041514_XLEN-1:0] _pc_id_ex_q;
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_XLEN),
       .RESET_VAL(`ysyx_041514_XLEN'b0)
@@ -73,7 +73,7 @@ module ysyx_041514_id_ex (
 
   /* inst_data 寄存器 */
   wire [`ysyx_041514_INST_LEN-1:0] _inst_data_id_ex_d = (_flush_valid) ? `ysyx_041514_INST_NOP : inst_data_id_ex_i;
-  reg [`ysyx_041514_INST_LEN-1:0] _inst_data_id_ex_q;
+  wire [`ysyx_041514_INST_LEN-1:0] _inst_data_id_ex_q;
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_INST_LEN),
       .RESET_VAL(`ysyx_041514_INST_NOP)
@@ -89,7 +89,7 @@ module ysyx_041514_id_ex (
 
 //   /* rs1_idx 寄存器 */
 //   wire [`ysyx_041514_REG_ADDRWIDTH-1:0] _rs1_idx_id_ex_d = (_flush_valid) ? `ysyx_041514_REG_ADDRWIDTH'b0 : rs1_idx_id_ex_i;
-//   reg [`ysyx_041514_REG_ADDRWIDTH-1:0] _rs1_idx_id_ex_q;
+//   wire [`ysyx_041514_REG_ADDRWIDTH-1:0] _rs1_idx_id_ex_q;
 //   ysyx_041514_regTemplate #(
 //       .WIDTH    (`ysyx_041514_REG_ADDRWIDTH),
 //       .RESET_VAL(`ysyx_041514_REG_ADDRWIDTH'b0)
@@ -104,7 +104,7 @@ module ysyx_041514_id_ex (
 
 //   /* rs2_idx 寄存器 */
 //   wire [`ysyx_041514_REG_ADDRWIDTH-1:0] _rs2_idx_id_ex_d = (_flush_valid) ? `ysyx_041514_REG_ADDRWIDTH'b0 :rs2_idx_id_ex_i;
-//   reg [`ysyx_041514_REG_ADDRWIDTH-1:0] _rs2_idx_id_ex_q;
+//   wire [`ysyx_041514_REG_ADDRWIDTH-1:0] _rs2_idx_id_ex_q;
 //   ysyx_041514_regTemplate #(
 //       .WIDTH    (`ysyx_041514_REG_ADDRWIDTH),
 //       .RESET_VAL(`ysyx_041514_REG_ADDRWIDTH'b0)
@@ -120,7 +120,7 @@ module ysyx_041514_id_ex (
 
   /* rd_idx 寄存器 */
   wire [`ysyx_041514_REG_ADDRWIDTH-1:0] _rd_idx_id_ex_d = (_flush_valid) ? `ysyx_041514_REG_ADDRWIDTH'b0 : rd_idx_id_ex_i;
-  reg [`ysyx_041514_REG_ADDRWIDTH-1:0] _rd_idx_id_ex_q;
+  wire [`ysyx_041514_REG_ADDRWIDTH-1:0] _rd_idx_id_ex_q;
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_REG_ADDRWIDTH),
       .RESET_VAL(`ysyx_041514_REG_ADDRWIDTH'b0)
@@ -136,7 +136,7 @@ module ysyx_041514_id_ex (
 
   /* imm_data 寄存器 */
   wire [`ysyx_041514_XLEN-1:0] _imm_data_id_ex_d = (_flush_valid) ? `ysyx_041514_XLEN'b0 : imm_data_id_ex_i;
-  reg [`ysyx_041514_XLEN-1:0] _imm_data_id_ex_q;
+  wire [`ysyx_041514_XLEN-1:0] _imm_data_id_ex_q;
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_XLEN),
       .RESET_VAL(`ysyx_041514_XLEN'b0)
@@ -152,7 +152,7 @@ module ysyx_041514_id_ex (
 
   /* csr_imm 寄存器 */
   wire [`ysyx_041514_XLEN-1:0] _csr_imm_id_ex_d = (_flush_valid) ? `ysyx_041514_XLEN'b0 : csr_imm_id_ex_i;
-  reg [`ysyx_041514_XLEN-1:0] _csr_imm_id_ex_q;
+  wire [`ysyx_041514_XLEN-1:0] _csr_imm_id_ex_q;
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_XLEN),
       .RESET_VAL(`ysyx_041514_XLEN'b0)
@@ -184,7 +184,7 @@ module ysyx_041514_id_ex (
 
   /* csr_idx 寄存器 */
   wire [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] _csr_idx_id_ex_d = (_flush_valid) ? `ysyx_041514_CSR_REG_ADDRWIDTH'b0:csr_idx_id_ex_i;
-  reg [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] _csr_idx_id_ex_q;
+  wire [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] _csr_idx_id_ex_q;
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_CSR_REG_ADDRWIDTH),
       .RESET_VAL(`ysyx_041514_CSR_REG_ADDRWIDTH'b0)
@@ -200,7 +200,7 @@ module ysyx_041514_id_ex (
 
   /* rs1_data 寄存器 */
   wire [`ysyx_041514_XLEN-1:0] _rs1_data_id_ex_d = (_flush_valid) ? `ysyx_041514_XLEN'b0 : rs1_data_id_ex_i;
-  reg [`ysyx_041514_XLEN-1:0] _rs1_data_id_ex_q;
+  wire [`ysyx_041514_XLEN-1:0] _rs1_data_id_ex_q;
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_XLEN),
       .RESET_VAL(`ysyx_041514_XLEN'b0)
@@ -216,7 +216,7 @@ module ysyx_041514_id_ex (
 
   /* rs2_data 寄存器 */
   wire [`ysyx_041514_XLEN-1:0] _rs2_data_id_ex_d = (_flush_valid) ? `ysyx_041514_XLEN'b0 : rs2_data_id_ex_i;
-  reg [`ysyx_041514_XLEN-1:0] _rs2_data_id_ex_q;
+  wire [`ysyx_041514_XLEN-1:0] _rs2_data_id_ex_q;
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_XLEN),
       .RESET_VAL(`ysyx_041514_XLEN'b0)
@@ -233,7 +233,7 @@ module ysyx_041514_id_ex (
 
   /* csr_data 寄存器 */
   wire [`ysyx_041514_XLEN-1:0] _csr_data_id_ex_d = (_flush_valid) ? `ysyx_041514_XLEN'b0 : csr_data_id_ex_i;
-  reg [`ysyx_041514_XLEN-1:0] _csr_data_id_ex_q;
+  wire [`ysyx_041514_XLEN-1:0] _csr_data_id_ex_q;
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_XLEN),
       .RESET_VAL(`ysyx_041514_XLEN'b0)
@@ -249,7 +249,7 @@ module ysyx_041514_id_ex (
 
   /* alu_op 寄存器 */
   wire [`ysyx_041514_ALUOP_LEN-1:0] _alu_op_id_ex_d = (_flush_valid) ? `ysyx_041514_ALUOP_NONE : alu_op_id_ex_i;
-  reg [`ysyx_041514_ALUOP_LEN-1:0] _alu_op_id_ex_q;
+  wire [`ysyx_041514_ALUOP_LEN-1:0] _alu_op_id_ex_q;
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_ALUOP_LEN),
       .RESET_VAL(`ysyx_041514_ALUOP_NONE)
@@ -265,7 +265,7 @@ module ysyx_041514_id_ex (
 
   /* mem_op 寄存器 */
   wire [`ysyx_041514_MEMOP_LEN-1:0] _mem_op_id_ex_d = (_flush_valid) ? `ysyx_041514_MEMOP_NONE : mem_op_id_ex_i;
-  reg [`ysyx_041514_MEMOP_LEN-1:0] _mem_op_id_ex_q;
+  wire [`ysyx_041514_MEMOP_LEN-1:0] _mem_op_id_ex_q;
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_MEMOP_LEN),
       .RESET_VAL(`ysyx_041514_MEMOP_NONE)
@@ -281,7 +281,7 @@ module ysyx_041514_id_ex (
 
   /* exc_op 寄存器 */
   wire [`ysyx_041514_EXCOP_LEN-1:0] _exc_op_id_ex_d = (_flush_valid) ? `ysyx_041514_EXCOP_NONE : exc_op_id_ex_i;
-  reg [`ysyx_041514_EXCOP_LEN-1:0] _exc_op_id_ex_q;
+  wire [`ysyx_041514_EXCOP_LEN-1:0] _exc_op_id_ex_q;
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_EXCOP_LEN),
       .RESET_VAL(`ysyx_041514_EXCOP_NONE)
@@ -297,7 +297,7 @@ module ysyx_041514_id_ex (
 
   /* pc_op 寄存器 */
 //   wire [`ysyx_041514_PCOP_LEN-1:0] _pc_op_id_ex_d = (_flush_valid) ? `ysyx_041514_PCOP_NONE : pc_op_id_ex_i;
-//   reg [`ysyx_041514_PCOP_LEN-1:0] _pc_op_id_ex_q;
+//   wire [`ysyx_041514_PCOP_LEN-1:0] _pc_op_id_ex_q;
 //   ysyx_041514_regTemplate #(
 //       .WIDTH    (`ysyx_041514_PCOP_LEN),
 //       .RESET_VAL(`ysyx_041514_PCOP_NONE)
@@ -313,7 +313,7 @@ module ysyx_041514_id_ex (
 
   /* csr_op 寄存器 */
   wire [`ysyx_041514_CSROP_LEN-1:0] _csr_op_id_ex_d = (_flush_valid) ? `ysyx_041514_CSROP_NONE : csr_op_id_ex_i;
-  reg [`ysyx_041514_CSROP_LEN-1:0] _csr_op_id_ex_q;
+  wire [`ysyx_041514_CSROP_LEN-1:0] _csr_op_id_ex_q;
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_CSROP_LEN),
       .RESET_VAL(`ysyx_041514_CSROP_NONE)
@@ -329,7 +329,7 @@ module ysyx_041514_id_ex (
 
   /* trap_bus 寄存器 */
   wire [`ysyx_041514_TRAP_LEN-1:0] _trap_bus_id_ex_d = (_flush_valid) ? `ysyx_041514_TRAP_LEN'b0 : trap_bus_id_ex_i;
-  reg [`ysyx_041514_TRAP_LEN-1:0] _trap_bus_id_ex_q;
+  wire [`ysyx_041514_TRAP_LEN-1:0] _trap_bus_id_ex_q;
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_TRAP_LEN),
       .RESET_VAL(`ysyx_041514_TRAP_LEN'b0)

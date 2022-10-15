@@ -24,7 +24,7 @@ module ysyx_041514_if_id (
 
   /* inst_addr_if_i 寄存器 */
   wire [`ysyx_041514_XLEN-1:0] _inst_addr_if_id_d = (_flush_valid) ? `ysyx_041514_XLEN'b0 : inst_addr_if_i;
-  reg [`ysyx_041514_XLEN-1:0] _inst_addr_if_id_q;
+  wire [`ysyx_041514_XLEN-1:0] _inst_addr_if_id_q;
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_XLEN),
       .RESET_VAL(`ysyx_041514_XLEN'b0)
@@ -39,7 +39,7 @@ module ysyx_041514_if_id (
 
   /* inst_data_if_i 寄存器 */
   wire [`ysyx_041514_INST_LEN-1:0] _inst_data_if_id_d = (_flush_valid) ? `ysyx_041514_INST_NOP : inst_data_if_i;
-  reg [`ysyx_041514_INST_LEN-1:0] _inst_data_if_id_q;
+  wire [`ysyx_041514_INST_LEN-1:0] _inst_data_if_id_q;
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_INST_LEN),
       .RESET_VAL(`ysyx_041514_INST_NOP)
@@ -55,7 +55,7 @@ module ysyx_041514_if_id (
 
   /* trap_bus_if_i 寄存器 */
   wire [`ysyx_041514_TRAP_BUS] _trap_bus_if_id_d = (_flush_valid) ? `ysyx_041514_TRAP_LEN'b0 : trap_bus_if_i;
-  reg [`ysyx_041514_TRAP_BUS] _trap_bus_if_id_q;
+  wire [`ysyx_041514_TRAP_BUS] _trap_bus_if_id_q;
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_TRAP_LEN),
       .RESET_VAL(`ysyx_041514_TRAP_LEN'b0)

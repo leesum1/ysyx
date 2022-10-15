@@ -83,22 +83,36 @@ module ysyx_041514_execute_top (
   wire [`ysyx_041514_XLEN_BUS] _alu_out;
   wire _compare_out;
   wire alu_stall_req;
+  
 
-
-  wire _excop_auipc = (exc_op_i == `ysyx_041514_EXCOP_AUIPC);
-  wire _excop_lui = (exc_op_i == `ysyx_041514_EXCOP_LUI);
-  wire _excop_jal = (exc_op_i == `ysyx_041514_EXCOP_JAL);
-  wire _excop_jalr = (exc_op_i == `ysyx_041514_EXCOP_JALR);
-  wire _excop_load = (exc_op_i == `ysyx_041514_EXCOP_LOAD);
-  wire _excop_store = (exc_op_i == `ysyx_041514_EXCOP_STORE);
-  wire _excop_branch = (exc_op_i == `ysyx_041514_EXCOP_BRANCH);
-  wire _excop_opimm = (exc_op_i == `ysyx_041514_EXCOP_OPIMM);
-  wire _excop_opimm32 = (exc_op_i == `ysyx_041514_EXCOP_OPIMM32);
-  wire _excop_op = (exc_op_i == `ysyx_041514_EXCOP_OP);
-  wire _excop_op32 = (exc_op_i == `ysyx_041514_EXCOP_OP32);
-  wire _excop_csr = (exc_op_i == `ysyx_041514_EXCOP_CSR);
-  // wire _excop_ebreak = (exc_op_i == `ysyx_041514_EXCOP_EBREAK);
+  // wire _excop_auipc = (exc_op_i == `ysyx_041514_EXCOP_AUIPC);
+  // wire _excop_lui = (exc_op_i == `ysyx_041514_EXCOP_LUI);
+  // wire _excop_jal = (exc_op_i == `ysyx_041514_EXCOP_JAL);
+  // wire _excop_jalr = (exc_op_i == `ysyx_041514_EXCOP_JALR);
+  // wire _excop_load = (exc_op_i == `ysyx_041514_EXCOP_LOAD);
+  // wire _excop_store = (exc_op_i == `ysyx_041514_EXCOP_STORE);
+  // wire _excop_branch = (exc_op_i == `ysyx_041514_EXCOP_BRANCH);
+  // wire _excop_opimm = (exc_op_i == `ysyx_041514_EXCOP_OPIMM);
+  // wire _excop_opimm32 = (exc_op_i == `ysyx_041514_EXCOP_OPIMM32);
+  // wire _excop_op = (exc_op_i == `ysyx_041514_EXCOP_OP);
+  // wire _excop_op32 = (exc_op_i == `ysyx_041514_EXCOP_OP32);
+  // wire _excop_csr = (exc_op_i == `ysyx_041514_EXCOP_CSR);
+  // // wire _excop_ebreak = (exc_op_i == `ysyx_041514_EXCOP_EBREAK);
   // wire _excop_none = (exc_op_i == `ysyx_041514_EXCOP_NONE);
+
+  wire _excop_none = exc_op_i[`ysyx_041514_EXCOP_NONE];
+  wire _excop_auipc = exc_op_i[`ysyx_041514_EXCOP_AUIPC];
+  wire _excop_lui = exc_op_i[`ysyx_041514_EXCOP_LUI];
+  wire _excop_jal = exc_op_i[`ysyx_041514_EXCOP_JAL];
+  wire _excop_jalr = exc_op_i[`ysyx_041514_EXCOP_JALR];
+  wire _excop_load = exc_op_i[`ysyx_041514_EXCOP_LOAD];
+  wire _excop_store = exc_op_i[`ysyx_041514_EXCOP_STORE];
+  wire _excop_branch = exc_op_i[`ysyx_041514_EXCOP_BRANCH];
+  wire _excop_opimm = exc_op_i[`ysyx_041514_EXCOP_OPIMM];
+  wire _excop_opimm32 = exc_op_i[`ysyx_041514_EXCOP_OPIMM32];
+  wire _excop_op = exc_op_i[`ysyx_041514_EXCOP_OP];
+  wire _excop_op32 = exc_op_i[`ysyx_041514_EXCOP_OP32];
+  wire _excop_csr = exc_op_i[`ysyx_041514_EXCOP_CSR];
 
   /*****************************branch 操作********************************/
   wire [`ysyx_041514_XLEN_BUS] _pc_add_imm;

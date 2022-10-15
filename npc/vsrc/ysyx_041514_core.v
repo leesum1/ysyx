@@ -264,7 +264,7 @@ module ysyx_041514_core (
   /* 输出至取指阶段 */
   wire [`ysyx_041514_XLEN-1:0] clint_pc;
   wire clint_pc_valid;
-
+  wire clint_pc_plus4_valid;
   reg[5:0]stall_clint;  // stall request to PC,IF_ID, ID_EX, EX_MEM, MEM_WB， one bit for one stage respectively
   wire [5:0] flush_clint;
 
@@ -394,21 +394,19 @@ module ysyx_041514_core (
   wire mem_fencei_buff_valid;
 
   ysyx_041514_pc_reg u_pc_reg (
-      .clk              (clk),
-      .rst              (rst),
-      .stall_valid_i    (stall_clint),
-      .flush_valid_i    (flush_clint),
-      .branch_pc_i      (branch_pc),
-      .branch_pc_valid_i(branch_pc_valid),
-      .clint_pc_i       (clint_pc),
-      //trap pc,来自mem
-      .clint_pc_valid_i (clint_pc_valid),
-      //trap pc valide,来自mem
-      //输出pc
-      .read_req_o       (read_req),
+      .clk                   (clk),
+      .rst                   (rst),
+      .stall_valid_i         (stall_clint),
+      .flush_valid_i         (flush_clint),
+      .branch_pc_i           (branch_pc),
+      .branch_pc_valid_i     (branch_pc_valid),
+      .clint_pc_i            (clint_pc),              //trap pc,来自mem
+      .clint_pc_valid_i      (clint_pc_valid),        //trap pc valide,来自mem
+      .clint_pc_plus4_valid_o(clint_pc_plus4_valid),
+      .read_req_o            (read_req),
       //.if_rdata_valid_i (if_rdata_valid),
-      .pc_next_o        (pc_next),          //输出 next_pc
-      .pc_o             (inst_addr)
+      .pc_next_o             (pc_next),               //输出 next_pc
+      .pc_o                  (inst_addr)
   );
   ysyx_041514_fetch u_fetch (
       //指令地址
@@ -763,6 +761,7 @@ module ysyx_041514_core (
       /* 输出至取指阶段 */
       .clint_pc_o(clint_pc),  // trap pc
       .clint_pc_valid_o(clint_pc_valid),  // trap pc valid
+      .clint_pc_plus4_valid_o(clint_pc_plus4_valid),
       .stall_o(stall_clint),
       .flush_o(flush_clint)
   );

@@ -32,122 +32,120 @@
 
 
 /* exc 操作码 */
-`define ysyx_041514_EXCOP_LEN 5
+`define ysyx_041514_EXCOP_LEN 13
 
-`define ysyx_041514_EXCOP_NONE `ysyx_041514_EXCOP_LEN'd0
-`define ysyx_041514_EXCOP_AUIPC `ysyx_041514_EXCOP_LEN'd1
-`define ysyx_041514_EXCOP_LUI `ysyx_041514_EXCOP_LEN'd2
-`define ysyx_041514_EXCOP_JAL `ysyx_041514_EXCOP_LEN'd3
-`define ysyx_041514_EXCOP_JALR `ysyx_041514_EXCOP_LEN'd4
-`define ysyx_041514_EXCOP_LOAD `ysyx_041514_EXCOP_LEN'd5
-`define ysyx_041514_EXCOP_STORE `ysyx_041514_EXCOP_LEN'd6
-`define ysyx_041514_EXCOP_BRANCH `ysyx_041514_EXCOP_LEN'd7
-`define ysyx_041514_EXCOP_OPIMM `ysyx_041514_EXCOP_LEN'd8
-`define ysyx_041514_EXCOP_OPIMM32 `ysyx_041514_EXCOP_LEN'd9
-`define ysyx_041514_EXCOP_OP `ysyx_041514_EXCOP_LEN'd10
-`define ysyx_041514_EXCOP_OP32 `ysyx_041514_EXCOP_LEN'd11
-`define ysyx_041514_EXCOP_CSR `ysyx_041514_EXCOP_LEN'd12
+`define ysyx_041514_EXCOP_NONE 'd0
+`define ysyx_041514_EXCOP_AUIPC 'd1
+`define ysyx_041514_EXCOP_LUI 'd2
+`define ysyx_041514_EXCOP_JAL 'd3
+`define ysyx_041514_EXCOP_JALR 'd4
+`define ysyx_041514_EXCOP_LOAD 'd5
+`define ysyx_041514_EXCOP_STORE 'd6
+`define ysyx_041514_EXCOP_BRANCH 'd7
+`define ysyx_041514_EXCOP_OPIMM 'd8
+`define ysyx_041514_EXCOP_OPIMM32 'd9
+`define ysyx_041514_EXCOP_OP 'd10
+`define ysyx_041514_EXCOP_OP32 'd11
+`define ysyx_041514_EXCOP_CSR 'd12
 
-`define ysyx_041514_EXCOP_EBREAK `ysyx_041514_EXCOP_LEN'd13
 
 
 /* ALU 操作码 */
-`define ysyx_041514_ALUOP_LEN 6
+`define ysyx_041514_ALUOP_LEN 33
 
-`define ysyx_041514_ALUOP_NONE `ysyx_041514_ALUOP_LEN'd0
-`define ysyx_041514_ALUOP_ADD `ysyx_041514_ALUOP_LEN'd1
-`define ysyx_041514_ALUOP_SUB `ysyx_041514_ALUOP_LEN'd2
+`define ysyx_041514_ALUOP_NONE 'd0
+`define ysyx_041514_ALUOP_ADD 'd1
+`define ysyx_041514_ALUOP_SUB 'd2
 /* 逻辑操作 */
-`define ysyx_041514_ALUOP_XOR `ysyx_041514_ALUOP_LEN'd3
-`define ysyx_041514_ALUOP_OR `ysyx_041514_ALUOP_LEN'd4
-`define ysyx_041514_ALUOP_AND `ysyx_041514_ALUOP_LEN'd5
+`define ysyx_041514_ALUOP_XOR 'd3
+`define ysyx_041514_ALUOP_OR 'd4
+`define ysyx_041514_ALUOP_AND 'd5
 /* 移位操作 */
-`define ysyx_041514_ALUOP_SLL `ysyx_041514_ALUOP_LEN'd6
-`define ysyx_041514_ALUOP_SRL `ysyx_041514_ALUOP_LEN'd7
-`define ysyx_041514_ALUOP_SRA `ysyx_041514_ALUOP_LEN'd8
+`define ysyx_041514_ALUOP_SLL 'd6
+`define ysyx_041514_ALUOP_SRL 'd7
+`define ysyx_041514_ALUOP_SRA 'd8
 //忽略高32位的移位操作
-`define ysyx_041514_ALUOP_SLLW `ysyx_041514_ALUOP_LEN'd9
-`define ysyx_041514_ALUOP_SRLW `ysyx_041514_ALUOP_LEN'd10
-`define ysyx_041514_ALUOP_SRAW `ysyx_041514_ALUOP_LEN'd11
+`define ysyx_041514_ALUOP_SLLW 'd9
+`define ysyx_041514_ALUOP_SRLW 'd10
+`define ysyx_041514_ALUOP_SRAW 'd11
 /* 比较操作 */
-`define ysyx_041514_ALUOP_SLT `ysyx_041514_ALUOP_LEN'd12
-`define ysyx_041514_ALUOP_SLTU `ysyx_041514_ALUOP_LEN'd13
+`define ysyx_041514_ALUOP_SLT 'd12
+`define ysyx_041514_ALUOP_SLTU 'd13
 
-`define ysyx_041514_ALUOP_BEQ `ysyx_041514_ALUOP_LEN'd14
-`define ysyx_041514_ALUOP_BNE `ysyx_041514_ALUOP_LEN'd15
-`define ysyx_041514_ALUOP_BLT `ysyx_041514_ALUOP_LEN'd16
-`define ysyx_041514_ALUOP_BGE `ysyx_041514_ALUOP_LEN'd17
-`define ysyx_041514_ALUOP_BLTU `ysyx_041514_ALUOP_LEN'd18
-`define ysyx_041514_ALUOP_BGEU `ysyx_041514_ALUOP_LEN'd19
+`define ysyx_041514_ALUOP_BEQ 'd14
+`define ysyx_041514_ALUOP_BNE 'd15
+`define ysyx_041514_ALUOP_BLT 'd16
+`define ysyx_041514_ALUOP_BGE 'd17
+`define ysyx_041514_ALUOP_BLTU 'd18
+`define ysyx_041514_ALUOP_BGEU 'd19
 
 /* 乘除法 */
-`define ysyx_041514_ALUOP_MUL `ysyx_041514_ALUOP_LEN'd20
-`define ysyx_041514_ALUOP_MULH `ysyx_041514_ALUOP_LEN'd21
-`define ysyx_041514_ALUOP_MULHSU `ysyx_041514_ALUOP_LEN'd22
-`define ysyx_041514_ALUOP_MULHU `ysyx_041514_ALUOP_LEN'd23
-`define ysyx_041514_ALUOP_MULW `ysyx_041514_ALUOP_LEN'd24
+`define ysyx_041514_ALUOP_MUL 'd20
+`define ysyx_041514_ALUOP_MULH 'd21
+`define ysyx_041514_ALUOP_MULHSU 'd22
+`define ysyx_041514_ALUOP_MULHU 'd23
+`define ysyx_041514_ALUOP_MULW 'd24
 
-`define ysyx_041514_ALUOP_DIV `ysyx_041514_ALUOP_LEN'd25
-`define ysyx_041514_ALUOP_DIVU `ysyx_041514_ALUOP_LEN'd26
-`define ysyx_041514_ALUOP_REM `ysyx_041514_ALUOP_LEN'd27
-`define ysyx_041514_ALUOP_REMU `ysyx_041514_ALUOP_LEN'd28
-`define ysyx_041514_ALUOP_DIVW `ysyx_041514_ALUOP_LEN'd29
-`define ysyx_041514_ALUOP_DIVUW `ysyx_041514_ALUOP_LEN'd30
-`define ysyx_041514_ALUOP_REMW `ysyx_041514_ALUOP_LEN'd31
-`define ysyx_041514_ALUOP_REMUW `ysyx_041514_ALUOP_LEN'd32
+`define ysyx_041514_ALUOP_DIV 'd25
+`define ysyx_041514_ALUOP_DIVU 'd26
+`define ysyx_041514_ALUOP_REM 'd27
+`define ysyx_041514_ALUOP_REMU 'd28
+`define ysyx_041514_ALUOP_DIVW 'd29
+`define ysyx_041514_ALUOP_DIVUW 'd30
+`define ysyx_041514_ALUOP_REMW 'd31
+`define ysyx_041514_ALUOP_REMUW 'd32
 
 /* mem操作码 */
-`define ysyx_041514_MEMOP_LEN 4
+`define ysyx_041514_MEMOP_LEN 13
 
 /* 读取 */
 
-`define ysyx_041514_MEMOP_NONE `ysyx_041514_MEMOP_LEN'd0 //空操作
+`define ysyx_041514_MEMOP_NONE 'd0 //空操作
 
-`define ysyx_041514_MEMOP_LB `ysyx_041514_MEMOP_LEN'd1
-`define ysyx_041514_MEMOP_LH `ysyx_041514_MEMOP_LEN'd2
-`define ysyx_041514_MEMOP_LW `ysyx_041514_MEMOP_LEN'd3
-`define ysyx_041514_MEMOP_LBU `ysyx_041514_MEMOP_LEN'd4
-`define ysyx_041514_MEMOP_LHU `ysyx_041514_MEMOP_LEN'd5
-`define ysyx_041514_MEMOP_LD `ysyx_041514_MEMOP_LEN'd6
-`define ysyx_041514_MEMOP_LWU `ysyx_041514_MEMOP_LEN'd7
+`define ysyx_041514_MEMOP_LB 'd1
+`define ysyx_041514_MEMOP_LH 'd2
+`define ysyx_041514_MEMOP_LW 'd3
+`define ysyx_041514_MEMOP_LBU 'd4
+`define ysyx_041514_MEMOP_LHU 'd5
+`define ysyx_041514_MEMOP_LD 'd6
+`define ysyx_041514_MEMOP_LWU 'd7
 
 /* 写入 */
-`define ysyx_041514_MEMOP_SB `ysyx_041514_MEMOP_LEN'd8
-`define ysyx_041514_MEMOP_SH `ysyx_041514_MEMOP_LEN'd9
-`define ysyx_041514_MEMOP_SW `ysyx_041514_MEMOP_LEN'd10
-`define ysyx_041514_MEMOP_SD `ysyx_041514_MEMOP_LEN'd11
+`define ysyx_041514_MEMOP_SB 'd8
+`define ysyx_041514_MEMOP_SH 'd9
+`define ysyx_041514_MEMOP_SW 'd10
+`define ysyx_041514_MEMOP_SD 'd11
 
-`define ysyx_041514_MEMOP_FENCEI `ysyx_041514_MEMOP_LEN'd12
+`define ysyx_041514_MEMOP_FENCEI 'd12
 
 
 /* writeback 操作码 */
-`define ysyx_041514_WBOP_LEN 4
+`define ysyx_041514_WBOP_LEN 2
 
 /* 读取 */
-`define ysyx_041514_WBOP_RD `ysyx_041514_WBOP_LEN'd0
-`define ysyx_041514_WBOP_NONE `ysyx_041514_WBOP_LEN'd1
+`define ysyx_041514_WBOP_RD 'd0
+`define ysyx_041514_WBOP_NONE 'd1
 
 /* PC操作码 */
-`define ysyx_041514_PCOP_LEN 4
+`define ysyx_041514_PCOP_LEN 6
 
-`define ysyx_041514_PCOP_NONE `ysyx_041514_PCOP_LEN'd0 //空操作
-`define ysyx_041514_PCOP_BRANCH `ysyx_041514_PCOP_LEN'd1
-`define ysyx_041514_PCOP_JAL `ysyx_041514_PCOP_LEN'd2
-`define ysyx_041514_PCOP_JALR `ysyx_041514_PCOP_LEN'd3
-`define ysyx_041514_PCOP_INC4 `ysyx_041514_PCOP_LEN'd4
-`define ysyx_041514_PCOP_TRAP `ysyx_041514_PCOP_LEN'd5
+`define ysyx_041514_PCOP_NONE 'd0 //空操作
+`define ysyx_041514_PCOP_BRANCH 'd1
+`define ysyx_041514_PCOP_JAL 'd2
+`define ysyx_041514_PCOP_JALR 'd3
+`define ysyx_041514_PCOP_INC4 'd4
+`define ysyx_041514_PCOP_TRAP 'd5
 
 
 /*************CSR************/
 
-`define ysyx_041514_CSROP_LEN 3
+`define ysyx_041514_CSROP_LEN 5
 
-
-`define ysyx_041514_CSROP_NONE `ysyx_041514_CSROP_LEN'd0
-`define ysyx_041514_CSROP_READ `ysyx_041514_CSROP_LEN'd1
-`define ysyx_041514_CSROP_WRITE `ysyx_041514_CSROP_LEN'd2
-`define ysyx_041514_CSROP_SET `ysyx_041514_CSROP_LEN'd3
-`define ysyx_041514_CSROP_CLEAR `ysyx_041514_CSROP_LEN'd4
+`define ysyx_041514_CSROP_NONE 'd0
+`define ysyx_041514_CSROP_READ 'd1
+`define ysyx_041514_CSROP_WRITE 'd2
+`define ysyx_041514_CSROP_SET 'd3
+`define ysyx_041514_CSROP_CLEAR 'd4
 
 
 //寄存器地址

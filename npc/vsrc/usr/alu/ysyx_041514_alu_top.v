@@ -20,45 +20,45 @@ module ysyx_041514_alu_top (
 );
 
   //加减和逻辑
-  wire _aluop_add = (alu_op_i == `ysyx_041514_ALUOP_ADD);
-  wire _aluop_sub = (alu_op_i == `ysyx_041514_ALUOP_SUB);
-  wire _aluop_xor = (alu_op_i == `ysyx_041514_ALUOP_XOR);
-  wire _aluop_or = (alu_op_i == `ysyx_041514_ALUOP_OR);
-  wire _aluop_and = (alu_op_i == `ysyx_041514_ALUOP_AND);
+  wire _aluop_add = (alu_op_i[`ysyx_041514_ALUOP_ADD]);
+  wire _aluop_sub = (alu_op_i[`ysyx_041514_ALUOP_SUB]);
+  wire _aluop_xor = (alu_op_i[`ysyx_041514_ALUOP_XOR]);
+  wire _aluop_or = (alu_op_i[`ysyx_041514_ALUOP_OR]);
+  wire _aluop_and = (alu_op_i[`ysyx_041514_ALUOP_AND]);
   //移位
-  wire _aluop_sll = (alu_op_i == `ysyx_041514_ALUOP_SLL);
-  wire _aluop_srl = (alu_op_i == `ysyx_041514_ALUOP_SRL);
-  wire _aluop_sra = (alu_op_i == `ysyx_041514_ALUOP_SRA);
-  wire _aluop_sllw = (alu_op_i == `ysyx_041514_ALUOP_SLLW);
-  wire _aluop_srlw = (alu_op_i == `ysyx_041514_ALUOP_SRLW);
-  wire _aluop_sraw = (alu_op_i == `ysyx_041514_ALUOP_SRAW);
+  wire _aluop_sll = (alu_op_i[`ysyx_041514_ALUOP_SLL]);
+  wire _aluop_srl = (alu_op_i[`ysyx_041514_ALUOP_SRL]);
+  wire _aluop_sra = (alu_op_i[`ysyx_041514_ALUOP_SRA]);
+  wire _aluop_sllw = (alu_op_i[`ysyx_041514_ALUOP_SLLW]);
+  wire _aluop_srlw = (alu_op_i[`ysyx_041514_ALUOP_SRLW]);
+  wire _aluop_sraw = (alu_op_i[`ysyx_041514_ALUOP_SRAW]);
   //比较
-  wire _aluop_slt = (alu_op_i == `ysyx_041514_ALUOP_SLT);
-  wire _aluop_sltu = (alu_op_i == `ysyx_041514_ALUOP_SLTU);
+  wire _aluop_slt = (alu_op_i[`ysyx_041514_ALUOP_SLT]);
+  wire _aluop_sltu = (alu_op_i[`ysyx_041514_ALUOP_SLTU]);
 
-  wire _aluop_beq = (alu_op_i == `ysyx_041514_ALUOP_BEQ);
-  wire _aluop_bne = (alu_op_i == `ysyx_041514_ALUOP_BNE);
-  wire _aluop_blt = (alu_op_i == `ysyx_041514_ALUOP_BLT);
-  wire _aluop_bge = (alu_op_i == `ysyx_041514_ALUOP_BGE);
-  wire _aluop_bltu = (alu_op_i == `ysyx_041514_ALUOP_BLTU);
-  wire _aluop_bgeu = (alu_op_i == `ysyx_041514_ALUOP_BGEU);
+  wire _aluop_beq = (alu_op_i[`ysyx_041514_ALUOP_BEQ]);
+  wire _aluop_bne = (alu_op_i[`ysyx_041514_ALUOP_BNE]);
+  wire _aluop_blt = (alu_op_i[`ysyx_041514_ALUOP_BLT]);
+  wire _aluop_bge = (alu_op_i[`ysyx_041514_ALUOP_BGE]);
+  wire _aluop_bltu = (alu_op_i[`ysyx_041514_ALUOP_BLTU]);
+  wire _aluop_bgeu = (alu_op_i[`ysyx_041514_ALUOP_BGEU]);
 
   //乘法
-  wire _aluop_mul = (alu_op_i == `ysyx_041514_ALUOP_MUL);
-  wire _aluop_mulh = (alu_op_i == `ysyx_041514_ALUOP_MULH);
-  wire _aluop_mulhsu = (alu_op_i == `ysyx_041514_ALUOP_MULHSU);
-  wire _aluop_mulhu = (alu_op_i == `ysyx_041514_ALUOP_MULHU);
-  wire _aluop_mulw = (alu_op_i == `ysyx_041514_ALUOP_MULW);
+  wire _aluop_mul = (alu_op_i[`ysyx_041514_ALUOP_MUL]);
+  wire _aluop_mulh = (alu_op_i[`ysyx_041514_ALUOP_MULH]);
+  wire _aluop_mulhsu = (alu_op_i[`ysyx_041514_ALUOP_MULHSU]);
+  wire _aluop_mulhu = (alu_op_i[`ysyx_041514_ALUOP_MULHU]);
+  wire _aluop_mulw = (alu_op_i[`ysyx_041514_ALUOP_MULW]);
 
   //除法
-  wire _aluop_div = (alu_op_i == `ysyx_041514_ALUOP_DIV);
-  wire _aluop_divu = (alu_op_i == `ysyx_041514_ALUOP_DIVU);
-  wire _aluop_rem = (alu_op_i == `ysyx_041514_ALUOP_REM);
-  wire _aluop_remu = (alu_op_i == `ysyx_041514_ALUOP_REMU);
-  wire _aluop_divw = (alu_op_i == `ysyx_041514_ALUOP_DIVW);
-  wire _aluop_divuw = (alu_op_i == `ysyx_041514_ALUOP_DIVUW);
-  wire _aluop_remw = (alu_op_i == `ysyx_041514_ALUOP_REMW);
-  wire _aluop_remuw = (alu_op_i == `ysyx_041514_ALUOP_REMUW);
+  wire _aluop_div = (alu_op_i[`ysyx_041514_ALUOP_DIV]);
+  wire _aluop_divu = (alu_op_i[`ysyx_041514_ALUOP_DIVU]);
+  wire _aluop_rem = (alu_op_i[`ysyx_041514_ALUOP_REM]);
+  wire _aluop_remu = (alu_op_i[`ysyx_041514_ALUOP_REMU]);
+  wire _aluop_divw = (alu_op_i[`ysyx_041514_ALUOP_DIVW]);
+  wire _aluop_divuw = (alu_op_i[`ysyx_041514_ALUOP_DIVUW]);
+  wire _aluop_remw = (alu_op_i[`ysyx_041514_ALUOP_REMW]);
+  wire _aluop_remuw = (alu_op_i[`ysyx_041514_ALUOP_REMUW]);
 
 
   /*********************************加法-减法-比较器实现*************************************/
@@ -234,8 +234,8 @@ module ysyx_041514_alu_top (
                      alu_data_buff_valid_i ? alu_data_buff_i // 优先选择缓存数据
                      :_alu_out;
 
-  assign alu_data_ready_o = _mul_ready | _div_ready;  
-  assign alu_stall_req_o = mul_stall_req | div_stall_req;  
+  assign alu_data_ready_o = _mul_ready | _div_ready;
+  assign alu_stall_req_o = mul_stall_req | div_stall_req;
   assign compare_out_o = _compare_out;
 
 endmodule

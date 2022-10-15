@@ -69,19 +69,33 @@ module ysyx_041514_memory (
 
 
 
-  wire _memop_none = (mem_op_i == `ysyx_041514_MEMOP_NONE);
-  wire _memop_lb = (mem_op_i == `ysyx_041514_MEMOP_LB);
-  wire _memop_lbu = (mem_op_i == `ysyx_041514_MEMOP_LBU);
-  wire _memop_sb = (mem_op_i == `ysyx_041514_MEMOP_SB);
-  wire _memop_lh = (mem_op_i == `ysyx_041514_MEMOP_LH);
-  wire _memop_lhu = (mem_op_i == `ysyx_041514_MEMOP_LHU);
-  wire _memop_sh = (mem_op_i == `ysyx_041514_MEMOP_SH);
-  wire _memop_lw = (mem_op_i == `ysyx_041514_MEMOP_LW);
-  wire _memop_lwu = (mem_op_i == `ysyx_041514_MEMOP_LWU);
-  wire _memop_sw = (mem_op_i == `ysyx_041514_MEMOP_SW);
-  wire _memop_ld = (mem_op_i == `ysyx_041514_MEMOP_LD);
-  wire _memop_sd = (mem_op_i == `ysyx_041514_MEMOP_SD);
-  wire _memop_fencei = (mem_op_i == `ysyx_041514_MEMOP_FENCEI);
+  // wire _memop_none = (mem_op_i == `ysyx_041514_MEMOP_NONE);
+  // wire _memop_lb = (mem_op_i == `ysyx_041514_MEMOP_LB);
+  // wire _memop_lbu = (mem_op_i == `ysyx_041514_MEMOP_LBU);
+  // wire _memop_sb = (mem_op_i == `ysyx_041514_MEMOP_SB);
+  // wire _memop_lh = (mem_op_i == `ysyx_041514_MEMOP_LH);
+  // wire _memop_lhu = (mem_op_i == `ysyx_041514_MEMOP_LHU);
+  // wire _memop_sh = (mem_op_i == `ysyx_041514_MEMOP_SH);
+  // wire _memop_lw = (mem_op_i == `ysyx_041514_MEMOP_LW);
+  // wire _memop_lwu = (mem_op_i == `ysyx_041514_MEMOP_LWU);
+  // wire _memop_sw = (mem_op_i == `ysyx_041514_MEMOP_SW);
+  // wire _memop_ld = (mem_op_i == `ysyx_041514_MEMOP_LD);
+  // wire _memop_sd = (mem_op_i == `ysyx_041514_MEMOP_SD);
+  // wire _memop_fencei = (mem_op_i == `ysyx_041514_MEMOP_FENCEI);
+
+  wire _memop_none = ~(|mem_op_i);
+  wire _memop_lb = mem_op_i[`ysyx_041514_MEMOP_LB];
+  wire _memop_lbu = mem_op_i[`ysyx_041514_MEMOP_LBU];
+  wire _memop_sb = mem_op_i[`ysyx_041514_MEMOP_SB];
+  wire _memop_lh = mem_op_i[`ysyx_041514_MEMOP_LH];
+  wire _memop_lhu = mem_op_i[`ysyx_041514_MEMOP_LHU];
+  wire _memop_sh = mem_op_i[`ysyx_041514_MEMOP_SH];
+  wire _memop_lw = mem_op_i[`ysyx_041514_MEMOP_LW];
+  wire _memop_lwu = mem_op_i[`ysyx_041514_MEMOP_LWU];
+  wire _memop_sw = mem_op_i[`ysyx_041514_MEMOP_SW];
+  wire _memop_ld = mem_op_i[`ysyx_041514_MEMOP_LD];
+  wire _memop_sd = mem_op_i[`ysyx_041514_MEMOP_SD];
+  wire _memop_fencei = mem_op_i[`ysyx_041514_MEMOP_FENCEI];
 
   /* fencei 指令 */
   wire mem_fencei_ready_final = (mem_fencei_buff_valid_i)?mem_fencei_ready_buff_i:mem_fencei_ready_i;

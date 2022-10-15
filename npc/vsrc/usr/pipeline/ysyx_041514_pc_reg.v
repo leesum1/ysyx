@@ -11,21 +11,37 @@ module ysyx_041514_pc_reg (
     input [5:0] stall_valid_i,
     input [5:0] flush_valid_i,
 
-    input [`ysyx_041514_XLEN_BUS] branch_pc_i,        // branch pc,来自 exc
-    input                         branch_pc_valid_i,
-    input [`ysyx_041514_XLEN_BUS] clint_pc_i,         //trap pc,来自mem
-    input                         clint_pc_valid_i,   //trap pc valide,来自mem
-
+    input  [    `ysyx_041514_XLEN_BUS] branch_pc_i,             // branch pc,来自 exc
+    input                              branch_pc_valid_i,
+    input  [    `ysyx_041514_XLEN_BUS] clint_pc_i,              //trap pc,来自mem
+    input                              clint_pc_valid_i,        //trap pc valide,来自mem
+    input                              clint_pc_plus4_valid_o,  // fencei 的 pc +4
     //input                              if_rdata_valid_i,
     output                             read_req_o,
-    output [`ysyx_041514_NPC_ADDR_BUS] pc_next_o,         //输出 next_pc, icache 取指
-    output [    `ysyx_041514_XLEN_BUS] pc_o               //输出pc
+    output [`ysyx_041514_NPC_ADDR_BUS] pc_next_o,               //输出 next_pc, icache 取指
+    output [    `ysyx_041514_XLEN_BUS] pc_o                     //输出pc
 );
 
   wire [`ysyx_041514_XLEN_BUS] _pc_current;
+  wire [`ysyx_041514_XLEN_BUS] pc_temp = clint_pc_plus4_valid_o ? clint_pc_i : _pc_current;
+  wire [`ysyx_041514_XLEN_BUS] pc_temp_plus4 = pc_temp + 'd4;
 
-  wire [`ysyx_041514_XLEN_BUS] _pc_next =  clint_pc_valid_i ? clint_pc_i : 
-                            branch_pc_valid_i?branch_pc_i:_pc_current+4;
+
+  //   wire [`ysyx_041514_XLEN_BUS] _pc_next =  clint_pc_valid_i ? clint_pc_i : 
+  //                             branch_pc_valid_i?branch_pc_i:_pc_current+4;
+
+  reg [`ysyx_041514_XLEN_BUS] _pc_next;
+  always @(*) begin
+    if (clint_pc_valid_i & clint_pc_plus4_valid_o) begin
+      _pc_next = pc_temp_plus4;
+    end else if (clint_pc_valid_i & ~clint_pc_plus4_valid_o) begin
+      _pc_next = clint_pc_i;
+    end else if (branch_pc_valid_i) begin
+      _pc_next = branch_pc_i;
+    end else begin
+      _pc_next = pc_temp_plus4;
+    end
+  end
 
 
   wire _read_req = (~rst);  // pre if 阶段访问 icache, if 阶段返回数据

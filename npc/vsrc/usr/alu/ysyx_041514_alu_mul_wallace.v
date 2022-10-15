@@ -149,7 +149,7 @@ module ysyx_041514_alu_mul_wallace (
   );
 
   //  部分积生成 ( 共33 个),缓存一个周期
-  reg [127:0] step1_pp_q[33-1:0];
+  wire [127:0] step1_pp_q[33-1:0];
 
   genvar step1_Dflap;
   generate

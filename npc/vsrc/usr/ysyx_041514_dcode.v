@@ -16,7 +16,7 @@ module ysyx_041514_dcode (
     /* from exc bypass */
     input [`ysyx_041514_XLEN_BUS] ex_rd_data_i,
     input [`ysyx_041514_REG_ADDRWIDTH-1:0] ex_rd_addr_i,
-    input [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] ex_csr_writeaddr_i,// TODO 用于 csr bypass
+    input [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] ex_csr_writeaddr_i,  // TODO 用于 csr bypass
     input [`ysyx_041514_XLEN_BUS] ex_csr_writedata_i,
     /* from mem bypass */
     input [`ysyx_041514_XLEN_BUS] mem_rd_data_i,
@@ -32,7 +32,7 @@ module ysyx_041514_dcode (
     output [          `ysyx_041514_IMM_LEN-1:0] imm_data_o,
     /* CSR 译码结果：to id/ex*/
     output [          `ysyx_041514_IMM_LEN-1:0] csr_imm_o,
-    output                          csr_imm_valid_o,
+    output                                      csr_imm_valid_o,
     output [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] csr_idx_o,
     output [             `ysyx_041514_XLEN_BUS] csr_readdata_o,
 
@@ -69,9 +69,15 @@ module ysyx_041514_dcode (
 
   // 不同指令类型的立即数
   wire [`ysyx_041514_IMM_LEN-1:0] _immI = {{21 + 32{_inst[31]}}, _inst[30:20]};
-  wire [`ysyx_041514_IMM_LEN-1:0] _immS = {{21 + 32{_inst[31]}}, _inst[30:25], _inst[11:8], _inst[7]};
-  wire [`ysyx_041514_IMM_LEN-1:0] _immB = {{20 + 32{_inst[31]}}, _inst[7], _inst[30:25], _inst[11:8], 1'b0};
-  wire [`ysyx_041514_IMM_LEN-1:0] _immU = {{1 + 32{_inst[31]}}, _inst[30:20], _inst[19:12], 12'b0};
+  wire [`ysyx_041514_IMM_LEN-1:0] _immS = {
+    {21 + 32{_inst[31]}}, _inst[30:25], _inst[11:8], _inst[7]
+  };
+  wire [`ysyx_041514_IMM_LEN-1:0] _immB = {
+    {20 + 32{_inst[31]}}, _inst[7], _inst[30:25], _inst[11:8], 1'b0
+  };
+  wire [`ysyx_041514_IMM_LEN-1:0] _immU = {
+    {1 + 32{_inst[31]}}, _inst[30:20], _inst[19:12], 12'b0
+  };
   wire [`ysyx_041514_IMM_LEN-1:0] _immJ = {
     {12 + 32{_inst[31]}}, _inst[19:12], _inst[20], _inst[30:25], _inst[24:21], 1'b0
   };
@@ -307,7 +313,7 @@ module ysyx_041514_dcode (
   wire _U_type = _type_auipc | _type_lui;
   wire _J_type = _type_jal;
   // 无效指令_type_miscmem
-  wire _NONE_type = ~(_R_type | _I_type | _S_type | _U_type | _J_type | _B_type|_type_miscmem);
+  wire _NONE_type = ~(_R_type | _I_type | _S_type | _U_type | _J_type | _B_type | _type_miscmem);
 
   /*获取操作数  */  //TODO:一些特殊指令没有归类ecall,ebreak
   // wire _isNeed_imm = (_I_type | _S_type | _B_type | _U_type | _J_type);
@@ -343,8 +349,8 @@ module ysyx_041514_dcode (
   assign csr_imm_valid_o = _csr_imm_valid;
   assign csr_imm_o = _immCSR;
 
-  /******************************************冲突处理***************************************************/
-  wire _pre_inst_is_load = (id_ex_exc_op_i == `ysyx_041514_EXCOP_LOAD);
+  /******************************************通用寄存器 bypass ***************************************************/
+
 
   // 0 号寄存器特殊处理，不然出错
   wire _rs1_idx_not_zero = (_rs1_idx != `ysyx_041514_REG_ADDRWIDTH'b0);
@@ -367,8 +373,11 @@ module ysyx_041514_dcode (
   wire [`ysyx_041514_XLEN_BUS] _rs2_data = (_rs2_exc_bypass_valid)?ex_rd_data_i:
                                 (_rs2_mem_bypass_valid)?mem_rd_data_i:
                                 rs2_data_i;
-  // load-use hazard: 前一条指令为 load 类型，且下一条 rs1、rs2 为 load 指令的 rd，
+
+
+  /* load-use hazard: 前一条指令为 load 类型，且下一条 rs1、rs2 为 load 指令的 rd，*/
   // https://courses.cs.vt.edu/cs2506/Spring2013/Notes/L12.PipelineStalls.pdf
+  wire _pre_inst_is_load = id_ex_exc_op_i[`ysyx_041514_EXCOP_LOAD];
   wire _load_use_data_hazard_valid = _pre_inst_is_load & (_rs1_exc_bypass_valid | _rs2_exc_bypass_valid);
 
 
@@ -385,17 +394,25 @@ module ysyx_041514_dcode (
   /******************************************×××××××***************************************************/
 
   /* CSR_OP */
-  wire _csr_write = _inst_csrrw | _inst_csrrwi;
-  wire _csr_set = _inst_csrrs | _inst_csrrsi;
-  wire _csr_clear = _inst_csrrc | _inst_csrrci;
+  wire _csr_write = (_inst_csrrw | _inst_csrrwi);
+  wire _csr_set = (_inst_csrrs | _inst_csrrsi) & _rs1_idx_not_zero;
+  wire _csr_clear = (_inst_csrrc | _inst_csrrci) & _rs1_idx_not_zero;
   // CSRRSI/CSRRCI must not write 0 to CSRs (uimm[4:0]=='0)
   // CSRRS/CSRRC must not write from x0 to CSRs (rs1=='0)
-  wire _csr_read = (_csr_set | _csr_clear) & (_rs1 == '0);
+  wire _csr_read = (_csr_set | _csr_clear) & (~_rs1_idx_not_zero);
+  wire _csr_none = ~(_csr_write | _csr_set | _csr_clear | _csr_read);
   // read 优先级高
-  wire [`ysyx_041514_CSROP_LEN-1:0]_csr_op = (_csr_read)?`ysyx_041514_CSROP_READ:(
-                 ({`ysyx_041514_CSROP_LEN{_csr_write}}&`ysyx_041514_CSROP_WRITE)|
-                 ({`ysyx_041514_CSROP_LEN{_csr_set}}&`ysyx_041514_CSROP_SET)|
-                 ({`ysyx_041514_CSROP_LEN{_csr_clear}}&`ysyx_041514_CSROP_CLEAR));
+  // wire [`ysyx_041514_CSROP_LEN-1:0]_csr_op = (_csr_read)?`ysyx_041514_CSROP_READ:(
+  //                ({`ysyx_041514_CSROP_LEN{_csr_write}}&`ysyx_041514_CSROP_WRITE)|
+  //                ({`ysyx_041514_CSROP_LEN{_csr_set}}&`ysyx_041514_CSROP_SET)|
+  //                ({`ysyx_041514_CSROP_LEN{_csr_clear}}&`ysyx_041514_CSROP_CLEAR));
+  wire [`ysyx_041514_CSROP_LEN-1:0] _csr_op;
+  assign _csr_op[`ysyx_041514_CSROP_NONE] = _csr_none;
+  assign _csr_op[`ysyx_041514_CSROP_READ] = _csr_read;
+  assign _csr_op[`ysyx_041514_CSROP_WRITE] = _csr_write;
+  assign _csr_op[`ysyx_041514_CSROP_SET] = _csr_set;
+  assign _csr_op[`ysyx_041514_CSROP_CLEAR] = _csr_clear;
+
   assign csr_op_o = _csr_op;
 
   /* ALU_OP */
@@ -443,80 +460,142 @@ module ysyx_041514_dcode (
   // // ALU 计算结果是否需要符号扩展,放在 execute 下实现
   // wire _alu_sext = _type_op_imm_32 | _type_op_32;
   //多路选择器
-  wire [`ysyx_041514_ALUOP_LEN-1:0] _alu_op = ({`ysyx_041514_ALUOP_LEN{_alu_add}} & `ysyx_041514_ALUOP_ADD)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_sub}} & `ysyx_041514_ALUOP_SUB)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_xor}} & `ysyx_041514_ALUOP_XOR)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_or}} & `ysyx_041514_ALUOP_OR)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_and}} & `ysyx_041514_ALUOP_AND)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_sll}} & `ysyx_041514_ALUOP_SLL)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_srl}} & `ysyx_041514_ALUOP_SRL)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_sra}} & `ysyx_041514_ALUOP_SRA)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_sllw}} & `ysyx_041514_ALUOP_SLLW)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_srlw}} & `ysyx_041514_ALUOP_SRLW)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_sraw}} & `ysyx_041514_ALUOP_SRAW)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_slt}} & `ysyx_041514_ALUOP_SLT)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_sltu}} & `ysyx_041514_ALUOP_SLTU)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_beq}} & `ysyx_041514_ALUOP_BEQ)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_bne}} & `ysyx_041514_ALUOP_BNE)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_blt}} & `ysyx_041514_ALUOP_BLT)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_bge}} & `ysyx_041514_ALUOP_BGE)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_bltu}} & `ysyx_041514_ALUOP_BLTU)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_bgeu}} & `ysyx_041514_ALUOP_BGEU)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_mul}} & `ysyx_041514_ALUOP_MUL)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_mulh}} & `ysyx_041514_ALUOP_MULH)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_mulhsu}} & `ysyx_041514_ALUOP_MULHSU)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_mulhu}} & `ysyx_041514_ALUOP_MULHU)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_mulw}} & `ysyx_041514_ALUOP_MULW)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_div}} & `ysyx_041514_ALUOP_DIV)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_divu}} & `ysyx_041514_ALUOP_DIVU)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_rem}} & `ysyx_041514_ALUOP_REM)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_remu}} & `ysyx_041514_ALUOP_REMU)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_divw}} & `ysyx_041514_ALUOP_DIVW)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_divuw}} & `ysyx_041514_ALUOP_DIVUW)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_remw}} & `ysyx_041514_ALUOP_REMW)|
-                                  ({`ysyx_041514_ALUOP_LEN{_alu_remuw}} & `ysyx_041514_ALUOP_REMUW);
+  // wire [`ysyx_041514_ALUOP_LEN-1:0] _alu_op = ({`ysyx_041514_ALUOP_LEN{_alu_add}} & `ysyx_041514_ALUOP_ADD)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_sub}} & `ysyx_041514_ALUOP_SUB)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_xor}} & `ysyx_041514_ALUOP_XOR)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_or}} & `ysyx_041514_ALUOP_OR)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_and}} & `ysyx_041514_ALUOP_AND)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_sll}} & `ysyx_041514_ALUOP_SLL)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_srl}} & `ysyx_041514_ALUOP_SRL)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_sra}} & `ysyx_041514_ALUOP_SRA)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_sllw}} & `ysyx_041514_ALUOP_SLLW)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_srlw}} & `ysyx_041514_ALUOP_SRLW)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_sraw}} & `ysyx_041514_ALUOP_SRAW)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_slt}} & `ysyx_041514_ALUOP_SLT)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_sltu}} & `ysyx_041514_ALUOP_SLTU)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_beq}} & `ysyx_041514_ALUOP_BEQ)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_bne}} & `ysyx_041514_ALUOP_BNE)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_blt}} & `ysyx_041514_ALUOP_BLT)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_bge}} & `ysyx_041514_ALUOP_BGE)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_bltu}} & `ysyx_041514_ALUOP_BLTU)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_bgeu}} & `ysyx_041514_ALUOP_BGEU)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_mul}} & `ysyx_041514_ALUOP_MUL)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_mulh}} & `ysyx_041514_ALUOP_MULH)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_mulhsu}} & `ysyx_041514_ALUOP_MULHSU)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_mulhu}} & `ysyx_041514_ALUOP_MULHU)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_mulw}} & `ysyx_041514_ALUOP_MULW)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_div}} & `ysyx_041514_ALUOP_DIV)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_divu}} & `ysyx_041514_ALUOP_DIVU)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_rem}} & `ysyx_041514_ALUOP_REM)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_remu}} & `ysyx_041514_ALUOP_REMU)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_divw}} & `ysyx_041514_ALUOP_DIVW)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_divuw}} & `ysyx_041514_ALUOP_DIVUW)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_remw}} & `ysyx_041514_ALUOP_REMW)|
+  //                                 ({`ysyx_041514_ALUOP_LEN{_alu_remuw}} & `ysyx_041514_ALUOP_REMUW);
+
+  wire [`ysyx_041514_ALUOP_LEN-1:0] _alu_op;
+  assign _alu_op[`ysyx_041514_ALUOP_NONE] = 'b0;  // TODO 以后处理
+  assign _alu_op[`ysyx_041514_ALUOP_ADD] = _alu_add;
+  assign _alu_op[`ysyx_041514_ALUOP_SUB] = _alu_sub;
+  assign _alu_op[`ysyx_041514_ALUOP_XOR] = _alu_xor;
+  assign _alu_op[`ysyx_041514_ALUOP_OR] = _alu_or;
+  assign _alu_op[`ysyx_041514_ALUOP_AND] = _alu_and;
+  assign _alu_op[`ysyx_041514_ALUOP_SLL] = _alu_sll;
+  assign _alu_op[`ysyx_041514_ALUOP_SRL] = _alu_srl;
+  assign _alu_op[`ysyx_041514_ALUOP_SRA] = _alu_sra;
+  assign _alu_op[`ysyx_041514_ALUOP_SLLW] = _alu_sllw;
+  assign _alu_op[`ysyx_041514_ALUOP_SRLW] = _alu_srlw;
+  assign _alu_op[`ysyx_041514_ALUOP_SRAW] = _alu_sraw;
+  assign _alu_op[`ysyx_041514_ALUOP_SLT] = _alu_slt;
+  assign _alu_op[`ysyx_041514_ALUOP_SLTU] = _alu_sltu;
+  assign _alu_op[`ysyx_041514_ALUOP_BEQ] = _alu_beq;
+  assign _alu_op[`ysyx_041514_ALUOP_BNE] = _alu_bne;
+  assign _alu_op[`ysyx_041514_ALUOP_BLT] = _alu_blt;
+  assign _alu_op[`ysyx_041514_ALUOP_BGE] = _alu_bge;
+  assign _alu_op[`ysyx_041514_ALUOP_BLTU] = _alu_bltu;
+  assign _alu_op[`ysyx_041514_ALUOP_BGEU] = _alu_bgeu;
+  assign _alu_op[`ysyx_041514_ALUOP_MUL] = _alu_mul;
+  assign _alu_op[`ysyx_041514_ALUOP_MULH] = _alu_mulh;
+  assign _alu_op[`ysyx_041514_ALUOP_MULHSU] = _alu_mulhsu;
+  assign _alu_op[`ysyx_041514_ALUOP_MULHU] = _alu_mulhu;
+  assign _alu_op[`ysyx_041514_ALUOP_MULW] = _alu_mulw;
+  assign _alu_op[`ysyx_041514_ALUOP_DIV] = _alu_div;
+  assign _alu_op[`ysyx_041514_ALUOP_DIVU] = _alu_divu;
+  assign _alu_op[`ysyx_041514_ALUOP_REM] = _alu_rem;
+  assign _alu_op[`ysyx_041514_ALUOP_REMU] = _alu_remu;
+  assign _alu_op[`ysyx_041514_ALUOP_DIVW] = _alu_divw;
+  assign _alu_op[`ysyx_041514_ALUOP_DIVUW] = _alu_divuw;
+  assign _alu_op[`ysyx_041514_ALUOP_REMW] = _alu_remw;
+  assign _alu_op[`ysyx_041514_ALUOP_REMUW] = _alu_remuw;
+
 
   assign alu_op_o = _alu_op;
 
   /* EXC_OP */
-  wire [`ysyx_041514_EXCOP_LEN-1:0] _exc_op = ({`ysyx_041514_EXCOP_LEN{_type_auipc}}&`ysyx_041514_EXCOP_AUIPC) |
-                                  ({`ysyx_041514_EXCOP_LEN{_type_lui}}&`ysyx_041514_EXCOP_LUI) |
-                                  ({`ysyx_041514_EXCOP_LEN{_type_jal}}&`ysyx_041514_EXCOP_JAL) |
-                                  ({`ysyx_041514_EXCOP_LEN{_type_jalr}}&`ysyx_041514_EXCOP_JALR) |
-                                  ({`ysyx_041514_EXCOP_LEN{_type_load}}&`ysyx_041514_EXCOP_LOAD) |
-                                  ({`ysyx_041514_EXCOP_LEN{_type_store}}&`ysyx_041514_EXCOP_STORE) |
-                                  ({`ysyx_041514_EXCOP_LEN{_type_branch}}&`ysyx_041514_EXCOP_BRANCH) |
-                                  ({`ysyx_041514_EXCOP_LEN{_type_op_imm}}&`ysyx_041514_EXCOP_OPIMM) |
-                                  ({`ysyx_041514_EXCOP_LEN{_type_op_imm_32}}&`ysyx_041514_EXCOP_OPIMM32) |
-                                  ({`ysyx_041514_EXCOP_LEN{_type_op}}&`ysyx_041514_EXCOP_OP) |
-                                  ({`ysyx_041514_EXCOP_LEN{_type_op_32}}&`ysyx_041514_EXCOP_OP32) |
-                                  ({`ysyx_041514_EXCOP_LEN{_isNeed_csr}}&`ysyx_041514_EXCOP_CSR) |
-                                  ({`ysyx_041514_EXCOP_LEN{_inst_ebreak}}&`ysyx_041514_EXCOP_EBREAK) | //TODO:暂时对 ebreak 特殊处理
+  // wire [`ysyx_041514_EXCOP_LEN-1:0] _exc_op = ({`ysyx_041514_EXCOP_LEN{_type_auipc}}&`ysyx_041514_EXCOP_AUIPC) |
+  //                                 ({`ysyx_041514_EXCOP_LEN{_type_lui}}&`ysyx_041514_EXCOP_LUI) |
+  //                                 ({`ysyx_041514_EXCOP_LEN{_type_jal}}&`ysyx_041514_EXCOP_JAL) |
+  //                                 ({`ysyx_041514_EXCOP_LEN{_type_jalr}}&`ysyx_041514_EXCOP_JALR) |
+  //                                 ({`ysyx_041514_EXCOP_LEN{_type_load}}&`ysyx_041514_EXCOP_LOAD) |
+  //                                 ({`ysyx_041514_EXCOP_LEN{_type_store}}&`ysyx_041514_EXCOP_STORE) |
+  //                                 ({`ysyx_041514_EXCOP_LEN{_type_branch}}&`ysyx_041514_EXCOP_BRANCH) |
+  //                                 ({`ysyx_041514_EXCOP_LEN{_type_op_imm}}&`ysyx_041514_EXCOP_OPIMM) |
+  //                                 ({`ysyx_041514_EXCOP_LEN{_type_op_imm_32}}&`ysyx_041514_EXCOP_OPIMM32) |
+  //                                 ({`ysyx_041514_EXCOP_LEN{_type_op}}&`ysyx_041514_EXCOP_OP) |
+  //                                 ({`ysyx_041514_EXCOP_LEN{_type_op_32}}&`ysyx_041514_EXCOP_OP32) |
+  //                                 ({`ysyx_041514_EXCOP_LEN{_isNeed_csr}}&`ysyx_041514_EXCOP_CSR) |
+  //                                 ({`ysyx_041514_EXCOP_LEN{_NONE_type}} & `ysyx_041514_EXCOP_NONE);
 
-  ({`ysyx_041514_EXCOP_LEN{_NONE_type}} & `ysyx_041514_EXCOP_NONE);
+  wire [`ysyx_041514_EXCOP_LEN-1:0] _exc_op;
+  assign _exc_op[`ysyx_041514_EXCOP_NONE] = 'b0;  // TODO 以后处理
+  assign _exc_op[`ysyx_041514_EXCOP_AUIPC] = _type_auipc;
+  assign _exc_op[`ysyx_041514_EXCOP_LUI] = _type_lui;
+  assign _exc_op[`ysyx_041514_EXCOP_JAL] = _type_jal;
+  assign _exc_op[`ysyx_041514_EXCOP_JALR] = _type_jalr;
+  assign _exc_op[`ysyx_041514_EXCOP_LOAD] = _type_load;
+  assign _exc_op[`ysyx_041514_EXCOP_STORE] = _type_store;
+  assign _exc_op[`ysyx_041514_EXCOP_BRANCH] = _type_branch;
+  assign _exc_op[`ysyx_041514_EXCOP_OPIMM] = _type_op_imm;
+  assign _exc_op[`ysyx_041514_EXCOP_OPIMM32] = _type_op_imm_32;
+  assign _exc_op[`ysyx_041514_EXCOP_OP] = _type_op;
+  assign _exc_op[`ysyx_041514_EXCOP_OP32] = _type_op_32;
+  assign _exc_op[`ysyx_041514_EXCOP_CSR] = _isNeed_csr;
+
 
   assign exc_op_o = _exc_op;
 
 
   /* MEM_OP */
-  wire [`ysyx_041514_MEMOP_LEN-1:0] _mem_op =  ({`ysyx_041514_MEMOP_LEN{_inst_lb}}&`ysyx_041514_MEMOP_LB)|
-                                   ({`ysyx_041514_MEMOP_LEN{_inst_lbu}}&`ysyx_041514_MEMOP_LBU)|
-                                   ({`ysyx_041514_MEMOP_LEN{_inst_lh}}&`ysyx_041514_MEMOP_LH)|
-                                   ({`ysyx_041514_MEMOP_LEN{_inst_lw}}&`ysyx_041514_MEMOP_LW)|
-                                   ({`ysyx_041514_MEMOP_LEN{_inst_lhu}}&`ysyx_041514_MEMOP_LHU)|
-                                   ({`ysyx_041514_MEMOP_LEN{_inst_sb}}&`ysyx_041514_MEMOP_SB)|
-                                   ({`ysyx_041514_MEMOP_LEN{_inst_sh}}&`ysyx_041514_MEMOP_SH)|
-                                   ({`ysyx_041514_MEMOP_LEN{_inst_sw}}&`ysyx_041514_MEMOP_SW)|
-                                   ({`ysyx_041514_MEMOP_LEN{_inst_lwu}}&`ysyx_041514_MEMOP_LWU)|
-                                   ({`ysyx_041514_MEMOP_LEN{_inst_ld}}&`ysyx_041514_MEMOP_LD)|
-                                   ({`ysyx_041514_MEMOP_LEN{_inst_sd}}&`ysyx_041514_MEMOP_SD)|
-                                   ({`ysyx_041514_MEMOP_LEN{_inst_fence_i}}&`ysyx_041514_MEMOP_FENCEI);
+  // wire [`ysyx_041514_MEMOP_LEN-1:0] _mem_op =  ({`ysyx_041514_MEMOP_LEN{_inst_lb}}&`ysyx_041514_MEMOP_LB)|
+  //                                  ({`ysyx_041514_MEMOP_LEN{_inst_lbu}}&`ysyx_041514_MEMOP_LBU)|
+  //                                  ({`ysyx_041514_MEMOP_LEN{_inst_lh}}&`ysyx_041514_MEMOP_LH)|
+  //                                  ({`ysyx_041514_MEMOP_LEN{_inst_lw}}&`ysyx_041514_MEMOP_LW)|
+  //                                  ({`ysyx_041514_MEMOP_LEN{_inst_lhu}}&`ysyx_041514_MEMOP_LHU)|
+  //                                  ({`ysyx_041514_MEMOP_LEN{_inst_sb}}&`ysyx_041514_MEMOP_SB)|
+  //                                  ({`ysyx_041514_MEMOP_LEN{_inst_sh}}&`ysyx_041514_MEMOP_SH)|
+  //                                  ({`ysyx_041514_MEMOP_LEN{_inst_sw}}&`ysyx_041514_MEMOP_SW)|
+  //                                  ({`ysyx_041514_MEMOP_LEN{_inst_lwu}}&`ysyx_041514_MEMOP_LWU)|
+  //                                  ({`ysyx_041514_MEMOP_LEN{_inst_ld}}&`ysyx_041514_MEMOP_LD)|
+  //                                  ({`ysyx_041514_MEMOP_LEN{_inst_sd}}&`ysyx_041514_MEMOP_SD)|
+  //                                  ({`ysyx_041514_MEMOP_LEN{_inst_fence_i}}&`ysyx_041514_MEMOP_FENCEI);
+
+  wire [`ysyx_041514_MEMOP_LEN-1:0] _mem_op;
+  assign _mem_op[`ysyx_041514_MEMOP_NONE] = 'b0;
+  assign _mem_op[`ysyx_041514_MEMOP_LB] = _inst_lb;
+  assign _mem_op[`ysyx_041514_MEMOP_LBU] = _inst_lbu;
+  assign _mem_op[`ysyx_041514_MEMOP_LH] = _inst_lh;
+  assign _mem_op[`ysyx_041514_MEMOP_LW] = _inst_lw;
+  assign _mem_op[`ysyx_041514_MEMOP_LHU] = _inst_lhu;
+  assign _mem_op[`ysyx_041514_MEMOP_SB] = _inst_sb;
+  assign _mem_op[`ysyx_041514_MEMOP_SH] = _inst_sh;
+  assign _mem_op[`ysyx_041514_MEMOP_SW] = _inst_sw;
+  assign _mem_op[`ysyx_041514_MEMOP_LWU] = _inst_lwu;
+  assign _mem_op[`ysyx_041514_MEMOP_LD] = _inst_ld;
+  assign _mem_op[`ysyx_041514_MEMOP_SD] = _inst_sd;
+  assign _mem_op[`ysyx_041514_MEMOP_FENCEI] = _inst_fence_i;
+
+
   assign mem_op_o = _mem_op;
-
-
-  // 已废弃
-  // assign pc_op_o  = `ysyx_041514_PCOP_LEN'b0;
-
 
 
 
@@ -533,7 +612,7 @@ module ysyx_041514_dcode (
         _decode_trap_bus[i] = _inst_mret;
       end else if (i == `ysyx_041514_TRAP_EBREAK) begin
         _decode_trap_bus[i] = _inst_ebreak;
-      end else if (i == `ysyx_041514_TRAP_ECALL_M) begin // TODO 权限设置
+      end else if (i == `ysyx_041514_TRAP_ECALL_M) begin  // TODO 权限设置
         _decode_trap_bus[i] = _inst_ecall;
       end else if (i == `ysyx_041514_TRAP_ILLEGAL_INST) begin
         _decode_trap_bus[i] = _Illegal_instruction;
