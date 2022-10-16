@@ -119,7 +119,7 @@ module ysyx_041514_execute_top (
   assign _pc_add_imm = pc_i + imm_data_i;
 
   wire [`ysyx_041514_XLEN_BUS] _rs1_add_imm;
-  assign _rs1_add_imm = rs1_data_i + imm_data_i;
+  assign _rs1_add_imm = rs1_data_i + imm_data_i; // TODO : 数据旁路！！！！！
 
   wire [`ysyx_041514_XLEN_BUS] _branch_pc = ({`ysyx_041514_XLEN{_excop_jal|_excop_branch}}&_pc_add_imm)|
                                 ({`ysyx_041514_XLEN{_excop_jalr}}&_rs1_add_imm);

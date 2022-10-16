@@ -108,5 +108,4 @@ module ysyx_041514_alu_mul_booth_r4 (
   assign pp32_o = {pp_o[32][63:0], 64'b0};  // 最后一个部分积特殊处理，溢出两位
 
 
-
 endmodule

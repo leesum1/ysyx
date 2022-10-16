@@ -265,7 +265,7 @@ module ysyx_041514_core (
   wire [`ysyx_041514_XLEN-1:0] clint_pc;
   wire clint_pc_valid;
   wire clint_pc_plus4_valid;
-  reg[5:0]stall_clint;  // stall request to PC,IF_ID, ID_EX, EX_MEM, MEM_WB， one bit for one stage respectively
+  wire [5:0]stall_clint;  // stall request to PC,IF_ID, ID_EX, EX_MEM, MEM_WB， one bit for one stage respectively
   wire [5:0] flush_clint;
 
 

@@ -10,7 +10,7 @@ module ysyx_041514_alu_mul_wallace (
     output                           mul_ready_o,
     output [`ysyx_041514_XLEN*2-1:0] mul_out_o
 );
-// 寄存器已经复位
+  // 寄存器已经复位
   localparam STATE_LEN = 3;
   localparam MUL_RST = 3'd0;
   localparam MUL_IDLE = 3'd1;
@@ -27,6 +27,11 @@ module ysyx_041514_alu_mul_wallace (
   reg mul_ready;
   reg [127:0] mul_data128;
 
+  reg [`ysyx_041514_XLEN_BUS] booth_rs1;
+  reg [`ysyx_041514_XLEN_BUS] booth_rs2;
+  reg booth_rs1_signed_valid;
+  reg booth_rs2_signed_valid;
+
 
   wire [127:0] mul_final128;
   assign mul_ready_o = mul_ready;
@@ -40,19 +45,26 @@ module ysyx_041514_alu_mul_wallace (
       mul_state   <= MUL_RST;
       mul_ready   <= `ysyx_041514_FALSE;
       mul_data128 <= 'b0;
+      booth_rs1   <= 'b0;
+      booth_rs2   <= 'b0;
+      booth_rs1_signed_valid<='b0;
+      booth_rs2_signed_valid<='b0;
     end else begin
       case (mul_state)
         MUL_RST: begin
           mul_state <= MUL_IDLE;
         end
-        // MUL_IDLE: begin
-        //   if (_mul_valid) begin  // booth 结果有效
-        //     mul_state <= MUL_BOOTH;
-        //     mul_busy  <= `ysyx_041514_TRUE;
-        //   end
-        // end
-        MUL_IDLE, MUL_BOOTH: begin
+        MUL_IDLE: begin
           mul_ready <= `ysyx_041514_FALSE;
+          if (_mul_valid) begin  // booth 结果有效
+            mul_state <= MUL_BOOTH;
+            booth_rs1 <= rs1_data_i;
+            booth_rs2 <= rs2_data_i;
+            booth_rs1_signed_valid<=rs1_signed_valid_i;
+            booth_rs2_signed_valid<=rs2_signed_valid_i;
+          end
+        end
+        MUL_BOOTH: begin
           if (_mul_valid) begin
             mul_state <= MUL_STEP1;  // booth 结果有效，进入 step 1
           end else begin
@@ -86,6 +98,14 @@ module ysyx_041514_alu_mul_wallace (
         end
         MUL_STEP4: begin
           if (_mul_valid) begin
+            mul_state <= MUL_STEP5;  // step3 8->2，进入 step4
+          end else begin
+            mul_state   <= MUL_IDLE;
+            mul_data128 <= 'b0;
+          end
+        end
+        MUL_STEP5: begin
+          if (_mul_valid) begin
             mul_state   <= MUL_IDLE;  // step4 2->1, 进入 idle
             mul_data128 <= mul_final128;  // 结果有效
             mul_ready   <= `ysyx_041514_TRUE;
@@ -93,9 +113,6 @@ module ysyx_041514_alu_mul_wallace (
             mul_state   <= MUL_IDLE;
             mul_data128 <= 'b0;
           end
-        end
-        MUL_STEP5: begin
-          mul_state <= MUL_IDLE;
         end
       endcase
     end
@@ -109,10 +126,10 @@ module ysyx_041514_alu_mul_wallace (
 
   wire [127:0] Partial_product[33-1:0];
   ysyx_041514_alu_mul_booth_r4 u_alu_mul_booth_r4 (
-      .rs1_signed_valid_i(rs1_signed_valid_i),
-      .rs2_signed_valid_i(rs2_signed_valid_i),
-      .rs1_data_i        (rs1_data_i),
-      .rs2_data_i        (rs2_data_i),
+      .rs1_signed_valid_i(booth_rs1_signed_valid),
+      .rs2_signed_valid_i(booth_rs2_signed_valid),
+      .rs1_data_i        (booth_rs1),
+      .rs2_data_i        (booth_rs2),
       .pp0_o             (Partial_product[0]),
       .pp1_o             (Partial_product[1]),
       .pp2_o             (Partial_product[2]),
@@ -170,22 +187,31 @@ module ysyx_041514_alu_mul_wallace (
   // wire [127:0] step1_pp[33-1:0];
   // assign step1_pp = step1_pp_q;
 
+  /*******                booth                ********/
   /*******             wallace tree            ********/
+
   /*******(33) 5-2 4-2 4-2 4-2 4-2 4-2 4-2 4-2 ********/
+
   /*******(16)        4-2 4-2 4-2 4-2          ********/
+
   /*******(8)            4-2 4-2               ********/
+
   /*******(4)              4-2                 ********/
+
   /*******(2)              2-1                 ********/
 
+  /*******(1)               1                  ********/
 
 
-  /* step1 TODO:插入流水线 */
+
+  /* step1 插入寄存器 */
   wire [129-1:0] step1_A0_cout0  /* verilator split_var */;
   wire [129-1:0] step1_A0_cout1  /* verilator split_var */;
   assign step1_A0_cout0[0] = 1'b0;
   assign step1_A0_cout1[0] = 1'b0;
   wire [128-1:0] step1_A0_sum, step1_A0_carry;
   genvar step1_A0;
+
   generate
     for (step1_A0 = 0; step1_A0 < 128; step1_A0 = step1_A0 + 1) begin
       ysyx_041514_alu_mul_compressor52 u_alu_mul_compressor52 (
@@ -368,9 +394,9 @@ module ysyx_041514_alu_mul_wallace (
 
 
 
-  /* step2 TODO:插入流水线 */
+  /* step2 插入寄存器 */
   wire [127:0] step2_pp_d[16-1:0];
-  reg  [127:0] step2_pp_q[16-1:0];
+  wire [127:0] step2_pp_q[16-1:0];
 
   assign step2_pp_d[0]  = step1_A0_sum;
   assign step2_pp_d[1]  = step1_A1_sum;
@@ -407,10 +433,6 @@ module ysyx_041514_alu_mul_wallace (
 
   // wire [127:0] step2_pp[16-1:0];
   // assign step2_pp = step2_pp_q;
-
-
-
-
 
 
   wire [129-1:0] step2_A0_cout/* verilator split_var */;  // 最低位进位位 0 ，最高位进位不使用
@@ -494,9 +516,9 @@ module ysyx_041514_alu_mul_wallace (
 
 
 
-  /* step3 TODO:插入流水线 */
+  /* step3 插入寄存器 */
   wire [127:0] step3_pp_d[8-1:0];
-  reg  [127:0] step3_pp_q[8-1:0];
+  wire [127:0] step3_pp_q[8-1:0];
   assign step3_pp_d[0] = step2_A0_sum;
   assign step3_pp_d[1] = step2_A1_sum;
   assign step3_pp_d[2] = step2_A2_sum;
@@ -571,7 +593,7 @@ module ysyx_041514_alu_mul_wallace (
 
   /* step4 TODO:插入流水线 */
   wire [127:0] step4_pp_d[4-1:0];
-  reg  [127:0] step4_pp_q[4-1:0];
+  wire [127:0] step4_pp_q[4-1:0];
   assign step4_pp_d[0] = step3_A0_sum;
   assign step4_pp_d[1] = step3_A1_sum;
   assign step4_pp_d[2] = {step3_A0_carry[126:0], 1'b0};
@@ -618,7 +640,33 @@ module ysyx_041514_alu_mul_wallace (
   endgenerate
 
 
-  assign mul_final128 = step4_A0_sum + {step4_A0_carry[126:0], 1'b0};
+
+
+
+  /* step5 TODO:插入流水线 */
+  wire [127:0] step5_pp_d[2-1:0];
+  wire [127:0] step5_pp_q[2-1:0];
+  assign step5_pp_d[0] = step4_A0_sum;
+  assign step5_pp_d[1] = {step4_A0_carry[126:0], 1'b0};
+
+  genvar step5_Dflap;
+  generate
+    for (step5_Dflap = 0; step5_Dflap < 2; step5_Dflap = step5_Dflap + 1) begin
+      ysyx_041514_regTemplate #(
+          .WIDTH    (128),
+          .RESET_VAL(0)
+      ) u_ysyx_041514_regTemplate_step5 (
+          .clk (clk),
+          .rst (rst),
+          .din (step5_pp_d[step5_Dflap]),
+          .dout(step5_pp_q[step5_Dflap]),
+          .wen (1'b1)
+      );
+    end
+  endgenerate
+
+
+  assign mul_final128 = step5_pp_q[0] + step5_pp_q[1];
 
   // /* step5 TODO:插入流水线 */
   // assign mul_out_o = 

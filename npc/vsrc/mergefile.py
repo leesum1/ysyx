@@ -27,4 +27,5 @@ for path in files.splitlines():
 log.close()
 
 os.system("cp testfile.v /home/leesum/ysyxSoC/ysyx/soc/ysyx_041514.v")  # 更新 ysyxSOC 文件
+os.system("cp testfile.v /home/leesum/workhome/leesumSOC/leesumSOC.srcs/sources_1/imports/leesum-soc/ysyx_041514.v")  # 更新 vivado 文件
 os.system("rm ./testfile.v")
