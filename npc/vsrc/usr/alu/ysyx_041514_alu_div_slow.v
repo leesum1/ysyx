@@ -29,7 +29,7 @@ module ysyx_041514_alu_div_slow (
     output div_ready_o
 
 );
-// 寄存器已复位
+  // 寄存器已复位
   localparam STATE_LEN = 3;
   localparam DIV_RST = 3'd0;
   localparam DIV_IDLE = 3'd1;
@@ -100,10 +100,10 @@ module ysyx_041514_alu_div_slow (
   /* 用于最后对 商和余数的修正 */
   wire s_is_zero64 = (s_reg[129:65] == 0);
   wire s_is_zero32 = (s_reg[65:33] == 0);
-  wire s_is_div64 = (s_reg[129:65] == div64_d);
-  wire s_is_neg_div64 = (s_reg[129:65] == div64_d_neg);
-  wire s_is_div32 = (s_reg[65:33] == div32_d);
-  wire s_is_neg_div32 = (s_reg[65:33] == div32_d_neg);
+  wire s_is_div64 = (s_reg[129:65] == d_reg);
+  wire s_is_neg_div64 = (s_reg[129:65] == d_neg_reg);
+  wire s_is_div32 = (s_reg[65:33] == d_reg[32:0]);
+  wire s_is_neg_div32 = (s_reg[65:33] == d_neg_reg[32:0]);
 
   wire need_correct_64 = ((s_sign_64 ^ z_sign_64)) & (~s_is_zero64)|s_is_div64|s_is_neg_div64;  // 结果需要修正 DGX
   wire need_coreect_32 = ((s_sign_32 ^ z_sign_32)) & (~s_is_zero32)|s_is_div32|s_is_neg_div32;  // 结果需要修正
