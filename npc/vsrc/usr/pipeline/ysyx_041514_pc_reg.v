@@ -62,7 +62,8 @@ module ysyx_041514_pc_reg (
   );
 
   // next pc,为 icache 的访存地址, stall 时,保持上一个 pc 的值
-  assign pc_next_o = stall_valid_i[`ysyx_041514_CTRLBUS_PC] ? _pc_current[31:0] : _pc_next_d[31:0];
+  //   assign pc_next_o = stall_valid_i[`ysyx_041514_CTRLBUS_PC] ? _pc_current[31:0] : _pc_next_d[31:0];
+  assign pc_next_o = _pc_current[31:0];
   assign pc_o = _pc_current;
   assign read_req_o = _read_req;
 

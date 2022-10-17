@@ -58,7 +58,7 @@ module ysyx_041514_icache_top (
     output [                    127:0] io_sram7_wdata,
     input  [                    127:0] io_sram7_rdata
 );
-// 寄存器已复位
+  // 寄存器已复位
 
   wire [ 5:0] cache_blk_addr;
   wire [ 5:0] cache_line_idx;
@@ -131,7 +131,7 @@ module ysyx_041514_icache_top (
           icache_tag_wen <= `ysyx_041514_FALSE;
           // cache data 为单端口 ram,不能同时读写
           // fencei 有效时，停止访问
-          if (preif_raddr_valid_i && ~icache_tag_wen && ~uncache && ~_fencei_valid) begin
+          if (preif_raddr_valid_i && ~icache_tag_wen && ~uncache && ~_fencei_valid && ~icache_data_ready) begin
             // hit
             if (icache_hit) begin
               // 下一个周期给数据
@@ -148,7 +148,7 @@ module ysyx_041514_icache_top (
               _ram_rlen_icache_o <= 8'd7;  // 突发 8 次
               burst_count <= 0;  // 清空计数器
             end
-          end else if (preif_raddr_valid_i && uncache && ~_fencei_valid) begin : uncache_rw
+          end else if (preif_raddr_valid_i && uncache && ~_fencei_valid && ~icache_data_ready) begin : uncache_rw
             icache_state              <= UNCACHE_READ;
             icache_data_ready         <= `ysyx_041514_FALSE;
             _ram_raddr_icache_o       <= preif_raddr_i;  // 读地址
@@ -190,9 +190,9 @@ module ysyx_041514_icache_top (
   ysyx_041514_icache_tag u_icache_tag (
       .clk           (clk),
       .rst           (rst),
-      .icache_tag_i  (cache_line_tag),// tag
-      .icache_index_i(cache_line_idx),// index
-      .write_valid_i (icache_tag_wen),// 写使能
+      .icache_tag_i  (cache_line_tag),  // tag
+      .icache_index_i(cache_line_idx),  // index
+      .write_valid_i (icache_tag_wen),  // 写使能
       .fencei_valid_i(_fencei_valid),
       .icache_hit_o  (icache_hit)
   );
