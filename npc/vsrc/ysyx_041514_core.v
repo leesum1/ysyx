@@ -906,7 +906,6 @@ module ysyx_041514_core (
       .rst(rst),
       /* cpu<-->cache 端口 */
       .preif_raddr_i(pc_next[31:0]),  // CPU 的访存信息 
-      .preif_rmask_i(8'b0000_1111),  // 访存掩码
       .preif_raddr_valid_i(read_req),  // 地址是否有效，无效时，停止访问 cache
       .if_rdata_o(if_rdata),  // icache 返回读数据
       .if_rdata_valid_o          (if_rdata_valid),// icache 读数据是否准备好(未准备好需要暂停流水线)

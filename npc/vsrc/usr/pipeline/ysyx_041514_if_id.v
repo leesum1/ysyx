@@ -21,16 +21,18 @@ module ysyx_041514_if_id (
 
   wire reg_wen = !stall_valid_i[`ysyx_041514_CTRLBUS_IF_ID];
   wire _flush_valid = flush_valid_i[`ysyx_041514_CTRLBUS_IF_ID] | (inst_addr_if_i == `ysyx_041514_PC_RESET_ADDR - 'd4);
+  wire reg_rst = rst | _flush_valid;
+
 
   /* inst_addr_if_i 寄存器 */
-  wire [`ysyx_041514_XLEN-1:0] _inst_addr_if_id_d = (_flush_valid) ? `ysyx_041514_XLEN'b0 : inst_addr_if_i;
+  wire [`ysyx_041514_XLEN-1:0] _inst_addr_if_id_d = inst_addr_if_i;
   wire [`ysyx_041514_XLEN-1:0] _inst_addr_if_id_q;
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_XLEN),
       .RESET_VAL(`ysyx_041514_XLEN'b0)
   ) u_inst_addr_if_id (
       .clk (clk),
-      .rst (rst),
+      .rst (reg_rst),
       .din (_inst_addr_if_id_d),
       .dout(_inst_addr_if_id_q),
       .wen (reg_wen)
@@ -38,14 +40,14 @@ module ysyx_041514_if_id (
   assign inst_addr_if_id_o = _inst_addr_if_id_q;
 
   /* inst_data_if_i 寄存器 */
-  wire [`ysyx_041514_INST_LEN-1:0] _inst_data_if_id_d = (_flush_valid) ? `ysyx_041514_INST_NOP : inst_data_if_i;
+  wire [`ysyx_041514_INST_LEN-1:0] _inst_data_if_id_d = inst_data_if_i;
   wire [`ysyx_041514_INST_LEN-1:0] _inst_data_if_id_q;
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_INST_LEN),
       .RESET_VAL(`ysyx_041514_INST_NOP)
   ) u_inst_data_if_id (
       .clk (clk),
-      .rst (rst),
+      .rst (reg_rst),
       .din (_inst_data_if_id_d),
       .dout(_inst_data_if_id_q),
       .wen (reg_wen)
@@ -54,14 +56,14 @@ module ysyx_041514_if_id (
 
 
   /* trap_bus_if_i 寄存器 */
-  wire [`ysyx_041514_TRAP_BUS] _trap_bus_if_id_d = (_flush_valid) ? `ysyx_041514_TRAP_LEN'b0 : trap_bus_if_i;
+  wire [`ysyx_041514_TRAP_BUS] _trap_bus_if_id_d = trap_bus_if_i;
   wire [`ysyx_041514_TRAP_BUS] _trap_bus_if_id_q;
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_TRAP_LEN),
       .RESET_VAL(`ysyx_041514_TRAP_LEN'b0)
   ) u_trap_bus_if_id (
       .clk (clk),
-      .rst (rst),
+      .rst (reg_rst),
       .din (_trap_bus_if_id_d),
       .dout(_trap_bus_if_id_q),
       .wen (reg_wen)
