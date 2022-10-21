@@ -1,7 +1,6 @@
 make all -f /home/leesum/ysyx/nemu/Makefile -C /home/leesum/ysyx/nemu/ --print-data-base --no-builtin-variables --no-builtin-rules --question
 # make: Entering directory '/home/leesum/ysyx/nemu'
  
-make: Warning: File '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter//home/leesum/ysyx/nemu/src/monitor/sdb/watchpoint.d' has modification time 8362 s in the future
 make: *** No rule to make target 'all'.  Stop.
 
 # GNU Make 4.3
@@ -11,7 +10,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Oct 14 21:06:59 2022
+# Make data base, printed on Thu Oct 20 21:54:35 2022
 
 # Variables
 
@@ -55,19 +54,13 @@ CONFIG_HAS_TIMER = y
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/serial.d', line 1)
 cmd_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/serial.o := unused
 # environment
-KONSOLE_DBUS_SERVICE = :1.1795
-# environment
 LC_NAME = zh_CN.UTF-8
 # environment
 LC_NUMERIC = zh_CN.UTF-8
 # environment
-VSCODE_CWD = /home/leesum/ysyx
-# environment
-WINDOWID = 155189255
+VSCODE_CWD = /home/leesum
 # makefile (from 'src/filelist.mk', line 22)
 LIBS = -lSDL2 $(shell llvm-config --libs) $(if $(CONFIG_TARGET_NATIVE_ELF),-lreadline -ldl -pie,)
-# environment
-LESS_TERMCAP_me = [0m
 # makefile (from '/home/leesum/ysyx/nemu/include/config/auto.conf', line 40)
 CONFIG_CC_GCC = y
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/disasm.d', line 5)
@@ -111,8 +104,6 @@ OBJ_DIR = $(BUILD_DIR)/obj-$(NAME)$(SO)
 deps_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/serial.o :=    include/config/serial/mmio.h /home/leesum/ysyx/nemu/include/utils.h include/config/target/native/elf.h /home/leesum/ysyx/nemu/include/common.h include/config/mbase.h include/config/msize.h include/config/isa64.h /home/leesum/ysyx/nemu/include/macro.h /home/leesum/ysyx/nemu/include/debug.h /home/leesum/ysyx/nemu/include/device/map.h /home/leesum/ysyx/nemu/include/cpu/difftest.h include/config/difftest.h /home/leesum/ysyx/nemu/include/difftest-def.h    include/config/isa/riscv64.h 
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/nemu-main.d', line 5)
 deps_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/nemu-main.o :=  /home/leesum/ysyx/nemu/include/common.h include/config/mbase.h include/config/msize.h include/config/isa64.h /home/leesum/ysyx/nemu/include/macro.h /home/leesum/ysyx/nemu/include/debug.h /home/leesum/ysyx/nemu/include/utils.h include/config/target/native/elf.h 
-# environment
-KONSOLE_VERSION = 220801
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/init.d', line 1)
 cmd_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/init.o := unused
 # makefile (from '/home/leesum/ysyx/nemu/scripts/config.mk', line 24)
@@ -135,10 +126,6 @@ deps_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/d
 MAIL = /var/spool/mail/leesum
 # environment
 XDG_DATA_DIRS = /home/leesum/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
-# environment
-OLDPWD = /home/leesum/ysyx
-# environment
-KONSOLE_DBUS_WINDOW = /Windows/1
 # makefile (from '/home/leesum/ysyx/nemu/scripts/config.mk', line 17)
 COLOR_END := \033[0m
 # automatic
@@ -150,7 +137,7 @@ WORK_INDEX = $(YSYX_HOME)/.git/index.$(WORK_BRANCH)
 # environment
 VSCODE_CODE_CACHE_PATH = /home/leesum/.config/Code/CachedData/d045a5eda657f4d7b676dedbfa7aab8207f8a075
 # environment
-XDG_SESSION_PATH = /org/freedesktop/DisplayManager/Session3
+XDG_SESSION_PATH = /org/freedesktop/DisplayManager/Session1
 # environment
 LANG = C
 # makefile (from '/home/leesum/ysyx/nemu/include/config/auto.conf', line 20)
@@ -159,12 +146,8 @@ CONFIG_ITRACE = y
 XAUTHORITY = /home/leesum/.Xauthority
 # default
 .LOADED := 
-# environment
-LESS_TERMCAP_md = [01;32m
 # default
 .INCLUDE_DIRS = /usr/include /usr/local/include /usr/include
-# environment
-COLORFGBG = 15;0
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/paddr.d', line 5)
 deps_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/paddr.o :=  include/config/pmem/garray.h include/config/msize.h include/config/mbase.h include/config/mem/random.h include/config/device.h /home/leesum/ysyx/nemu/include/memory/host.h include/config/rt/check.h include/config/isa64.h /home/leesum/ysyx/nemu/include/common.h  /home/leesum/ysyx/nemu/include/macro.h /home/leesum/ysyx/nemu/include/debug.h /home/leesum/ysyx/nemu/include/utils.h include/config/target/native/elf.h /home/leesum/ysyx/nemu/include/memory/paddr.h include/config/pc/reset/offset.h /home/leesum/ysyx/nemu/include/device/mmio.h /home/leesum/ysyx/nemu/include/isa.h /home/leesum/ysyx/nemu/src/isa/riscv64/include/isa-def.h 
 # makefile (from 'src/filelist.mk', line 19)
@@ -173,8 +156,6 @@ DIRS-BLACKLIST- = src/monitor/sdb
 MAKEFLAGS = pqrRw
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/keyboard.d', line 1)
 cmd_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/keyboard.o := unused
-# environment
-LESS_TERMCAP_so = [01;47;34m
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/vga.d', line 3)
 source_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/vga.o := src/device/vga.c
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/intr.d', line 1)
@@ -205,8 +186,6 @@ CONFIG_PC_RESET_OFFSET = 0
 GITFLAGS = -q --author='$(TRACER) <tracer@ysyx.org>' --no-verify --allow-empty
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/timer.d', line 3)
 source_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/timer.o := src/utils/timer.c
-# environment
-LESS_TERMCAP_ue = [0m
 # makefile (from '/home/leesum/ysyx/nemu/scripts/build.mk', line 14)
 INC_PATH := /home/leesum/ysyx/nemu/include /home/leesum/ysyx/nemu/src/isa/riscv64/include /home/leesum/ysyx/nemu/src/engine/interpreter /usr/include/SDL2
 # environment
@@ -225,8 +204,6 @@ XDG_CONFIG_DIRS = /home/leesum/.config/kdedefaults:/etc/xdg
 MCONF := /home/leesum/ysyx/nemu/tools/kconfig/build/mconf
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
-# environment
-P9K_SSH = 0
 # environment
 XCURSOR_THEME = Vimix-cursors
 # environment
@@ -248,7 +225,7 @@ source_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/inte
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter//home/leesum/ysyx/nemu/src/monitor/sdb/exprresult.d', line 1)
 cmd_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter//home/leesum/ysyx/nemu/src/monitor/sdb/exprresult.o := unused
 # environment
-VSCODE_PID = 15251
+VSCODE_PID = 46651
 # environment
 XDG_SESSION_TYPE = x11
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/map.d', line 1)
@@ -257,6 +234,8 @@ cmd_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/map.
 ?D = $(patsubst %/,%,$(dir $?))
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/log.d', line 5)
 deps_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/log.o := include/config/trace.h include/config/trace/start.h include/config/trace/end.h /home/leesum/ysyx/nemu/include/common.h  include/config/mbase.h include/config/msize.h include/config/isa64.h /home/leesum/ysyx/nemu/include/macro.h /home/leesum/ysyx/nemu/include/debug.h /home/leesum/ysyx/nemu/include/utils.h include/config/target/native/elf.h 
+# environment
+INPUT_METHOD = fcitx
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/difftest/dut.d', line 5)
 deps_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/difftest/dut.o := include/config/difftest.h /home/leesum/ysyx/nemu/include/isa.h /home/leesum/ysyx/nemu/src/isa/riscv64/include/isa-def.h /home/leesum/ysyx/nemu/include/common.h  include/config/mbase.h include/config/msize.h include/config/isa64.h /home/leesum/ysyx/nemu/include/macro.h /home/leesum/ysyx/nemu/include/debug.h /home/leesum/ysyx/nemu/include/utils.h include/config/target/native/elf.h /home/leesum/ysyx/nemu/include/cpu/cpu.h /home/leesum/ysyx/nemu/include/memory/paddr.h include/config/pc/reset/offset.h /home/leesum/ysyx/nemu/include/difftest-def.h    include/config/isa/riscv64.h 
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/sdb/expr.d', line 1)
@@ -270,8 +249,7 @@ INCLUDES = $(addprefix -I, $(INC_PATH))
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/hostcall.d', line 1)
 cmd_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/hostcall.o := unused
 # environment
-SESSION_MANAGER = local/leesum-kde:@/tmp/.ICE-unix/13971,unix/leesum-kde:/tmp/.ICE-unix/13971
- 
+SESSION_MANAGER = local/leesum-kde:@/tmp/.ICE-unix/1498,unix/leesum-kde:/tmp/.ICE-unix/1498
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/map.d', line 5)
 deps_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/map.o := /home/leesum/ysyx/nemu/include/isa.h /home/leesum/ysyx/nemu/src/isa/riscv64/include/isa-def.h /home/leesum/ysyx/nemu/include/common.h  include/config/mbase.h include/config/msize.h include/config/isa64.h /home/leesum/ysyx/nemu/include/macro.h /home/leesum/ysyx/nemu/include/debug.h /home/leesum/ysyx/nemu/include/utils.h include/config/target/native/elf.h /home/leesum/ysyx/nemu/include/memory/host.h include/config/rt/check.h /home/leesum/ysyx/nemu/include/memory/vaddr.h /home/leesum/ysyx/nemu/include/device/map.h /home/leesum/ysyx/nemu/include/cpu/difftest.h include/config/difftest.h /home/leesum/ysyx/nemu/include/difftest-def.h    include/config/isa/riscv64.h 
 # automatic
@@ -296,8 +274,6 @@ LOCK_DIR = $(YSYX_HOME)/.git/
 <D = $(patsubst %/,%,$(dir $<))
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/system/mmu.d', line 1)
 cmd_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/system/mmu.o := unused
-# environment
-P9K_TTY = old
 # makefile (from '/home/leesum/ysyx/nemu/Makefile', line 28)
 GUEST_ISA = $(call remove_quote,$(CONFIG_ISA))
 # environment
@@ -312,14 +288,14 @@ MAKE_HOST := x86_64-pc-linux-gnu
 CONFIG_DIFFTEST_REF_SPIKE = y
 # makefile (from '/home/leesum/ysyx/nemu/scripts/build.mk', line 31)
 OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o) $(CXXSRC:%.cc=$(OBJ_DIR)/%.o)
+# environment
+SDL_IM_MODULE = fcitx
 # makefile
 SHELL = /bin/sh
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/reg.d', line 5)
 deps_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/reg.o := /home/leesum/ysyx/nemu/include/isa.h /home/leesum/ysyx/nemu/src/isa/riscv64/include/isa-def.h /home/leesum/ysyx/nemu/include/common.h  include/config/mbase.h include/config/msize.h include/config/isa64.h /home/leesum/ysyx/nemu/include/macro.h /home/leesum/ysyx/nemu/include/debug.h /home/leesum/ysyx/nemu/include/utils.h include/config/target/native/elf.h src/isa/riscv64/local-include/reg.h include/config/rt/check.h 
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/init.d', line 3)
 source_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/engine/interpreter/init.o := src/engine/interpreter/init.c
-# environment
-LESS_TERMCAP_us = [01;36m
 # default
 MAKECMDGOALS := all
 # environment
@@ -327,15 +303,14 @@ XMODIFIERS = @im=fcitx
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/monitor.d', line 3)
 source_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/monitor.o := src/monitor/monitor.c
 # environment
+ 
 NPC_HOME = /home/leesum/ysyx/npc
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/vaddr.d', line 5)
 deps_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/vaddr.o := /home/leesum/ysyx/nemu/include/isa.h /home/leesum/ysyx/nemu/src/isa/riscv64/include/isa-def.h /home/leesum/ysyx/nemu/include/common.h  include/config/mbase.h include/config/msize.h include/config/isa64.h /home/leesum/ysyx/nemu/include/macro.h /home/leesum/ysyx/nemu/include/debug.h /home/leesum/ysyx/nemu/include/utils.h include/config/target/native/elf.h /home/leesum/ysyx/nemu/include/memory/paddr.h include/config/pc/reset/offset.h 
 # environment
-SHLVL = 2
+SHLVL = 1
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/inst.d', line 3)
 source_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/inst.o := src/isa/riscv64/inst.c
-# environment
-PROFILEHOME = 
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/init.d', line 5)
 deps_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/init.o := /home/leesum/ysyx/nemu/include/isa.h /home/leesum/ysyx/nemu/src/isa/riscv64/include/isa-def.h /home/leesum/ysyx/nemu/include/common.h  include/config/mbase.h include/config/msize.h include/config/isa64.h /home/leesum/ysyx/nemu/include/macro.h /home/leesum/ysyx/nemu/include/debug.h /home/leesum/ysyx/nemu/include/utils.h include/config/target/native/elf.h /home/leesum/ysyx/nemu/include/memory/paddr.h include/config/pc/reset/offset.h 
 # 'override' directive (from '/home/leesum/ysyx/nemu/scripts/native.mk', line 28)
@@ -352,8 +327,6 @@ MAKE = $(MAKE_COMMAND)
 cmd_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/paddr.o := unused
 # environment
 PATH = /home/leesum/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl
-# environment
-LESS_TERMCAP_se = [0m
 # default
 MAKEFILES := 
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/rand.d', line 5)
@@ -378,8 +351,6 @@ CONFIG_HAS_VGA = y
 cmd_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/init.o := unused
 # environment
 LC_TIME = zh_CN.UTF-8
-# environment
-LESS_TERMCAP_mb = [01;32m
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/port-io.d', line 1)
 cmd_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/port-io.o := unused
 # makefile (from 'src/engine/filelist.mk', line 17)
@@ -393,7 +364,7 @@ rm-distclean = include/generated include/config .config .config.old
 # makefile (from '/home/leesum/ysyx/nemu/../Makefile', line 9)
 YSYX_HOME = $(NEMU_HOME)/..
 # environment
-INVOCATION_ID = af604e55227e449aadd3f9256c62a0d6
+INVOCATION_ID = cf4ed134d95f4d3296200dcf4a13c081
 # makefile (from '/home/leesum/ysyx/nemu/scripts/config.mk', line 25)
 KCONFIG_PATH := /home/leesum/ysyx/nemu/tools/kconfig
 # makefile (from '/home/leesum/ysyx/nemu/tools/difftest.mk', line 19)
@@ -448,14 +419,10 @@ CONFIG_MBASE = 0x80000000
 source_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/system/mmu.o := src/isa/riscv64/system/mmu.c
 # makefile (from '/home/leesum/ysyx/nemu/scripts/native.mk', line 31)
 IMG = 
-# environment
-LS_COLORS = rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.swp=00;90:*.tmp=00;90:*.dpkg-dist=00;90:*.dpkg-old=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:
 # automatic
 +F = $(notdir $+)
 # environment
 XDG_SEAT_PATH = /org/freedesktop/DisplayManager/Seat0
-# environment
-LESS = -R
 # environment
 DESKTOP_SESSION = plasma
 # makefile (from '/home/leesum/ysyx/nemu/../Makefile', line 6)
@@ -491,7 +458,7 @@ XDG_VTNR = 1
 # makefile (from '/home/leesum/ysyx/nemu/scripts/build.mk', line 1)
 .DEFAULT_GOAL = app
 # environment
-SYSTEMD_EXEC_PID = 76087
+SYSTEMD_EXEC_PID = 4014
 # environment
 NAVY_HOME = /home/leesum/ysyx/navy-apps
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/timer.d', line 3)
@@ -526,8 +493,6 @@ CONFIG_CC_LTO = y
 ARGS_DIFF = --diff=$(DIFF_REF_SO)
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/inst.d', line 5)
 deps_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/inst.o := src/isa/riscv64/local-include/reg.h include/config/rt/check.h /home/leesum/ysyx/nemu/include/common.h  include/config/mbase.h include/config/msize.h include/config/isa64.h /home/leesum/ysyx/nemu/include/macro.h /home/leesum/ysyx/nemu/include/debug.h /home/leesum/ysyx/nemu/include/utils.h include/config/target/native/elf.h /home/leesum/ysyx/nemu/src/isa/riscv64/include/isa-def.h /home/leesum/ysyx/nemu/include/cpu/cpu.h /home/leesum/ysyx/nemu/include/cpu/ifetch.h /home/leesum/ysyx/nemu/include/memory/vaddr.h /home/leesum/ysyx/nemu/include/cpu/decode.h include/config/itrace.h /home/leesum/ysyx/nemu/include/isa.h 
-# environment
-KONSOLE_DBUS_SESSION = /Sessions/1
 # makefile (from '/home/leesum/ysyx/nemu/../Makefile', line 17)
 git_soft_checkout = 	git checkout --detach -q && git reset --soft $(1) -q && git checkout $(1) -q
 # makefile (from '/home/leesum/ysyx/nemu/Makefile', line 25)
@@ -535,9 +500,8 @@ remove_quote = $(patsubst "%",%,$(1))
 # makefile (from '/home/leesum/ysyx/nemu/scripts/build.mk', line 27)
 LDFLAGS := -O2 -O2 -flto   -fuse-ld=gold -fPIC
 # environment
-MANAGERPID = 13868
+MANAGERPID = 1401
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/device.d', line 1)
- 
 cmd_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/device.o := unused
 # environment
 LC_MEASUREMENT = zh_CN.UTF-8
@@ -565,8 +529,6 @@ CFLAGS := -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/
 CONFIG_I8042_DATA_MMIO = 0xa0000060
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/sdb/expr.d', line 5)
 deps_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/sdb/expr.o := /home/leesum/ysyx/nemu/include/isa.h /home/leesum/ysyx/nemu/src/isa/riscv64/include/isa-def.h /home/leesum/ysyx/nemu/include/common.h  include/config/mbase.h include/config/msize.h include/config/isa64.h /home/leesum/ysyx/nemu/include/macro.h /home/leesum/ysyx/nemu/include/debug.h /home/leesum/ysyx/nemu/include/utils.h include/config/target/native/elf.h 
-# environment
-COLORTERM = truecolor
 # makefile (from '/home/leesum/ysyx/nemu/include/config/auto.conf', line 19)
 CONFIG_MODE_SYSTEM = y
 # makefile (from '/home/leesum/ysyx/nemu/Makefile', line 44)
@@ -574,7 +536,9 @@ CXXSRC = src/utils/disasm.cc $(NEMU_HOME)/src/monitor/sdb/exprresult.cc $(NEMU_H
 # makefile (from '/home/leesum/ysyx/nemu/include/config/auto.conf', line 43)
 CONFIG_VGA_CTL_MMIO = 0xa0000100
 # environment
-JOURNAL_STREAM = 8:722140
+JOURNAL_STREAM = 8:45261
+# environment
+D_DISABLE_RT_SCREEN_SCALE = 1
 # makefile (from '/home/leesum/ysyx/nemu/Makefile', line 38)
 SRCS-BLACKLIST-y = $(SRCS-BLACKLIST) $(shell find $(DIRS-BLACKLIST-y) -name "*.c")
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/disasm.d', line 3)
@@ -611,20 +575,20 @@ SRCS-BLACKLIST- = src/device/alarm.c
 cmd_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/alarm.o := unused
 # makefile (from '/home/leesum/ysyx/nemu/scripts/native.mk', line 44)
 clean-tools = $(dir $(shell find ./tools -maxdepth 2 -mindepth 2 -name "Makefile"))
+# environment
+_JAVA_OPTIONS = -Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -Dsun.java2d.xrender=true
 # makefile (from '/home/leesum/ysyx/nemu/include/config/auto.conf', line 37)
 CONFIG_CC = "gcc"
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
 VSCODE_IPC_HOOK = /run/user/1000/vscode-e9425c36-1.72.2-main.sock
-# environment
-TERM = xterm-256color
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/state.d', line 1)
 cmd_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/state.o := unused
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/rand.d', line 3)
 source_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/utils/rand.o := src/utils/rand.c
 # environment
-XDG_SESSION_ID = 8
+XDG_SESSION_ID = 2
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/reg.d', line 1)
 cmd_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/reg.o := unused
 # environment
@@ -649,8 +613,6 @@ CFLAGS_BUILD = $(call remove_quote,$(CONFIG_CC_OPT)) $(if $(CONFIG_CC_LTO),-flto
 QT_AUTO_SCREEN_SCALE_FACTOR = 0
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/vga.d', line 1)
 cmd_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/vga.o := unused
-# environment
-_P9K_TTY = /dev/pts/10
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/sdb/sdb.d', line 1)
 cmd_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/monitor/sdb/sdb.o := unused
 # environment
@@ -660,15 +622,12 @@ source_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64
 # environment
 ELECTRON_NO_ATTACH_CONSOLE = 1
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/vga.d', line 5)
+ 
 deps_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/vga.o :=   include/config/vga/show/screen.h include/config/vga/size/400x300.h   include/config/vga/ctl/mmio.h include/config/fb/addr.h /home/leesum/ysyx/nemu/include/common.h include/config/mbase.h include/config/msize.h include/config/isa64.h /home/leesum/ysyx/nemu/include/macro.h /home/leesum/ysyx/nemu/include/debug.h /home/leesum/ysyx/nemu/include/utils.h include/config/target/native/elf.h /home/leesum/ysyx/nemu/include/device/map.h /home/leesum/ysyx/nemu/include/cpu/difftest.h include/config/difftest.h /home/leesum/ysyx/nemu/include/difftest-def.h    include/config/isa/riscv64.h 
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/mmio.d', line 3)
 source_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/io/mmio.o := src/device/io/mmio.c
-# environment
-LS_OPTIONS = --color=auto
 # makefile (from 'src/utils/filelist.mk', line 18)
 CXXFLAGS = $(shell llvm-config --cxxflags) -fPIE
-# environment
-SHELL_SESSION_ID = ebf13b8c6b72409fa9c0195e5a14ae86
 # environment
 KDE_SESSION_VERSION = 5
 # default
@@ -712,11 +671,9 @@ CONFIG_ISA = "riscv64"
 # makefile (from '/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/timer.d', line 1)
 cmd_/home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/device/timer.o := unused
 # environment
-PKGFILE_PROMPT_INSTALL_MISSING = 1
-# environment
 LC_IDENTIFICATION = zh_CN.UTF-8
 # variable set hash-table stats:
-# Load=346/1024=34%, Rehash=0, Collisions=258/1033=25%
+# Load=325/1024=32%, Rehash=0, Collisions=214/1012=21%
 
 # Pattern-specific Variable Values
 
@@ -820,7 +777,6 @@ include/config/has/serial.h:
 # Not a target:
 /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/nemu-main.d:
 #  Implicit rule search has been done.
- 
 #  Last modified 2022-10-14 23:26:20.666427849
 #  File has been updated.
 #  Successfully updated.
@@ -1051,6 +1007,7 @@ run-env: /home/leesum/ysyx/nemu/build/riscv64-nemu-interpreter /home/leesum/ysyx
 #  Successfully updated.
 
 # Not a target:
+ 
 /home/leesum/ysyx/nemu/include/config/auto.conf.cmd:
 #  Implicit rule search has been done.
 #  Last modified 2022-10-11 10:20:33
@@ -1109,7 +1066,6 @@ src/memory/Kconfig:
 #  recipe to execute (from '/home/leesum/ysyx/nemu/include/config/auto.conf.cmd', line 10):
 	
 
- 
 /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/memory/paddr.o: include/config/pmem/garray.h include/config/msize.h include/config/mbase.h include/config/mem/random.h include/config/device.h /home/leesum/ysyx/nemu/include/memory/host.h include/config/rt/check.h include/config/isa64.h /home/leesum/ysyx/nemu/include/common.h /home/leesum/ysyx/nemu/include/macro.h /home/leesum/ysyx/nemu/include/debug.h /home/leesum/ysyx/nemu/include/utils.h include/config/target/native/elf.h /home/leesum/ysyx/nemu/include/memory/paddr.h include/config/pc/reset/offset.h /home/leesum/ysyx/nemu/include/device/mmio.h /home/leesum/ysyx/nemu/include/isa.h /home/leesum/ysyx/nemu/src/isa/riscv64/include/isa-def.h
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -1368,6 +1324,7 @@ tools/fixdep/:
 #  File has been updated.
 #  Successfully updated.
 
+ 
 /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/cpu/cpu-exec.o: include/config/itrace/cond.h include/config/itrace.h include/config/watchpoint.h include/config/difftest.h include/config/device.h /home/leesum/ysyx/nemu/include/cpu/cpu.h /home/leesum/ysyx/nemu/include/common.h include/config/mbase.h include/config/msize.h include/config/isa64.h /home/leesum/ysyx/nemu/include/macro.h /home/leesum/ysyx/nemu/include/debug.h /home/leesum/ysyx/nemu/include/utils.h include/config/target/native/elf.h /home/leesum/ysyx/nemu/include/cpu/decode.h /home/leesum/ysyx/nemu/include/isa.h /home/leesum/ysyx/nemu/src/isa/riscv64/include/isa-def.h /home/leesum/ysyx/nemu/include/cpu/difftest.h /home/leesum/ysyx/nemu/include/difftest-def.h include/config/isa/riscv64.h
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -1392,7 +1349,6 @@ run: run-env
 help:
 #  Phony target (prerequisite of .PHONY).
 #  Implicit rule search has not been done.
- 
 #  File does not exist.
 #  File has not been updated.
 #  recipe to execute (from '/home/leesum/ysyx/nemu/scripts/config.mk', line 59):
@@ -1674,7 +1630,6 @@ include/config/isa64.h:
 # Not a target:
 /home/leesum/ysyx/nemu/build/obj-riscv64-nemu-interpreter/src/isa/riscv64/logo.d:
 #  Implicit rule search has been done.
- 
 #  Last modified 2022-10-14 23:26:21.053094507
 #  File has been updated.
 #  Successfully updated.
@@ -1699,6 +1654,7 @@ compile_git:
 	$(call git_commit, "compile NEMU")
 
 src/device/Kconfig:
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -1806,7 +1762,7 @@ src/isa/riscv64/local-include/reg.h:
 # strcache performance: lookups = 1628 / hit rate = 89%
 # hash-table stats:
 # Load=178/8192=2%, Rehash=0, Collisions=13/1628=1%
-# Finished Make data base on Fri Oct 14 21:06:59 2022
+# Finished Make data base on Thu Oct 20 21:54:35 2022
 
 # make: Leaving directory '/home/leesum/ysyx/nemu'
  
