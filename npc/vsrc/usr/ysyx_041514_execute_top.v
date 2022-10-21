@@ -83,7 +83,7 @@ module ysyx_041514_execute_top (
   wire [`ysyx_041514_XLEN_BUS] _alu_out;
   wire _compare_out;
   wire alu_stall_req;
-  
+
 
   // wire _excop_auipc = (exc_op_i == `ysyx_041514_EXCOP_AUIPC);
   // wire _excop_lui = (exc_op_i == `ysyx_041514_EXCOP_LUI);
@@ -119,13 +119,14 @@ module ysyx_041514_execute_top (
   assign _pc_add_imm = pc_i + imm_data_i;
 
   wire [`ysyx_041514_XLEN_BUS] _rs1_add_imm;
-  assign _rs1_add_imm = rs1_data_i + imm_data_i; // TODO : 数据旁路！！！！！
+  assign _rs1_add_imm = rs1_data_i + imm_data_i;  // TODO : 数据旁路！！！！！
 
-  wire [`ysyx_041514_XLEN_BUS] _branch_pc = ({`ysyx_041514_XLEN{_excop_jal|_excop_branch}}&_pc_add_imm)|
+  wire [`ysyx_041514_XLEN_BUS] _branch_pc = ({`ysyx_041514_XLEN{_excop_branch}}&_pc_add_imm)|
                                 ({`ysyx_041514_XLEN{_excop_jalr}}&_rs1_add_imm);
 
+
   // TODO 还需要完善
-  wire _branch_pc_valid = (_compare_out & _excop_branch) | _excop_jal | _excop_jalr;
+  wire _branch_pc_valid = (_compare_out & _excop_branch) | _excop_jalr;
 
   assign branch_pc_o = _branch_pc;
   assign branch_pc_valid_o = _branch_pc_valid;

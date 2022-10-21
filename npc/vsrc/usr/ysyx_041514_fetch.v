@@ -11,8 +11,11 @@ module ysyx_041514_fetch (
     input if_rdata_valid_i,  // 读数据是否准备好
     input [`ysyx_041514_XLEN_BUS] if_rdata_i,
 
+    output [`ysyx_041514_XLEN_BUS] jal_pc_o,
+    output jal_pc_valid_o,
+
     /* stall req */
-    output wire ram_stall_valid_if_o,  // if 阶段访存暂停
+    output ram_stall_valid_if_o,  // if 阶段访存暂停
     /* to if/id */
     output [`ysyx_041514_XLEN_BUS] inst_addr_o,
     output [`ysyx_041514_INST_LEN-1:0] inst_data_o,
@@ -36,6 +39,24 @@ module ysyx_041514_fetch (
   assign ram_stall_valid_if_o = _ram_stall;
   assign inst_data_o = _inst_data;
 
+  /* jal 指令，可以直接在 if 阶段得到跳转地址 */
+  wire [6:0] _opcode = _inst_data[6:0];
+  wire _opcode_6_5_11 = (_opcode[6:5] == 2'b11);
+  wire _opcode_4_2_011 = (_opcode[4:2] == 3'b011);
+  wire _opcode_1_0_11 = (_opcode[1:0] == 2'b11);
+  wire [`ysyx_041514_IMM_LEN-1:0] _immJ = {
+    {12 + 32{_inst_data[31]}},
+    _inst_data[19:12],
+    _inst_data[20],
+    _inst_data[30:25],
+    _inst_data[24:21],
+    1'b0
+  };
+  wire _inst_jal = _opcode_6_5_11 & _opcode_4_2_011 & _opcode_1_0_11;
+  wire [`ysyx_041514_XLEN_BUS] jal_pc = inst_addr_i + _immJ;  // pc+imm
+  wire jal_pc_valid = _inst_jal;
+  assign jal_pc_o = jal_pc;
+  assign jal_pc_valid_o = jal_pc_valid;
 
 
   /***********************TRAP**********************/

@@ -99,11 +99,8 @@ module ysyx_041514_core (
   wire [`ysyx_041514_INST_LEN-1:0] inst_data_if;
   wire [`ysyx_041514_TRAP_BUS] trap_bus_if;
 
-  //   // if ram 接口
-  //   wire [`ysyx_041514_NPC_ADDR_BUS] if_read_addr;  // 地址
-  //   wire if_raddr_valid;  // 地址是否准备好
-  //   wire if_raddr_ready;
-  //   wire [7:0] if_rmask;  // 数据掩码,读取多少位
+  wire [`ysyx_041514_XLEN_BUS] jal_pc;  // jal pc ,来自 if
+  wire jal_pc_valid;
 
   wire if_rdata_valid;  // 读数据是否准备好
   wire [`ysyx_041514_XLEN_BUS] if_rdata;  // 返回到读取的数据
@@ -403,6 +400,8 @@ module ysyx_041514_core (
       .clint_pc_i            (clint_pc),              //trap pc,来自mem
       .clint_pc_valid_i      (clint_pc_valid),        //trap pc valide,来自mem
       .clint_pc_plus4_valid_o(clint_pc_plus4_valid),
+      .jal_pc_i              (jal_pc),
+      .jal_pc_valid_i        (jal_pc_valid),
       .read_req_o            (read_req),
       //.if_rdata_valid_i (if_rdata_valid),
       .pc_next_o             (pc_next),               //输出 next_pc
@@ -411,15 +410,14 @@ module ysyx_041514_core (
   ysyx_041514_fetch u_fetch (
       //指令地址
       //   .rst        (rst),
-      .inst_addr_i(inst_addr),
-      // from pc_reg
+      .inst_addr_i(inst_addr),  // from pc_reg
 
-      .if_rdata_valid_i(if_rdata_valid),  // 读数据是否准备好
-      .if_rdata_i      (if_rdata),        // 返回到读取的数据
-
+      .if_rdata_valid_i    (if_rdata_valid),      // 读数据是否准备好
+      .if_rdata_i          (if_rdata),            // 返回到读取的数据
+      .jal_pc_o            (jal_pc),
+      .jal_pc_valid_o      (jal_pc_valid),
       /* stall req */
-      .ram_stall_valid_if_o(ram_stall_valid_if),
-      // if 阶段访存暂停
+      .ram_stall_valid_if_o(ram_stall_valid_if),  // if 阶段访存暂停
       /* to if/id */
       .inst_addr_o         (inst_addr_if),
       .inst_data_o         (inst_data_if),

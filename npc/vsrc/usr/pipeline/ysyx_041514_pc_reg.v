@@ -11,15 +11,17 @@ module ysyx_041514_pc_reg (
     input [5:0] stall_valid_i,
     input [5:0] flush_valid_i,
 
-    input  [    `ysyx_041514_XLEN_BUS] branch_pc_i,             // branch pc,来自 exc
-    input                              branch_pc_valid_i,
-    input  [    `ysyx_041514_XLEN_BUS] clint_pc_i,              //trap pc,来自mem
-    input                              clint_pc_valid_i,        //trap pc valide,来自mem
-    input                              clint_pc_plus4_valid_o,  // fencei 的 pc +4
-    //input                              if_rdata_valid_i,
+    input [`ysyx_041514_XLEN_BUS] branch_pc_i,             // branch pc,来自 exc
+    input                         branch_pc_valid_i,
+    input [`ysyx_041514_XLEN_BUS] clint_pc_i,              //trap pc,来自mem
+    input                         clint_pc_valid_i,        //trap pc valide,来自mem
+    input                         clint_pc_plus4_valid_o,  // fencei 的 pc +4
+    input [`ysyx_041514_XLEN_BUS] jal_pc_i,                // jal pc ,来自 if
+    input                         jal_pc_valid_i,
+
     output                             read_req_o,
-    output [`ysyx_041514_NPC_ADDR_BUS] pc_next_o,               //输出 next_pc, icache 取指
-    output [    `ysyx_041514_XLEN_BUS] pc_o                     //输出pc
+    output [`ysyx_041514_NPC_ADDR_BUS] pc_next_o,   //输出 next_pc, icache 取指
+    output [    `ysyx_041514_XLEN_BUS] pc_o         //输出pc
 );
 
   wire [`ysyx_041514_XLEN_BUS] _pc_current;
@@ -32,12 +34,14 @@ module ysyx_041514_pc_reg (
 
   reg [`ysyx_041514_XLEN_BUS] _pc_next;
   always @(*) begin
-    if (clint_pc_valid_i & clint_pc_plus4_valid_o) begin
+    if (clint_pc_valid_i & clint_pc_plus4_valid_o) begin : int_pc
       _pc_next = pc_temp_plus4;
-    end else if (clint_pc_valid_i & ~clint_pc_plus4_valid_o) begin
+    end else if (clint_pc_valid_i & ~clint_pc_plus4_valid_o) begin : trap_pc
       _pc_next = clint_pc_i;
-    end else if (branch_pc_valid_i) begin
+    end else if (branch_pc_valid_i) begin : branch_pc
       _pc_next = branch_pc_i;
+    end else if (jal_pc_valid_i) begin : jal_pc
+      _pc_next = jal_pc_i;
     end else begin
       _pc_next = pc_temp_plus4;
     end
