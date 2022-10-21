@@ -1,5 +1,6 @@
 `include "sysconfig.v"
-
+// 1. 移位器实现，能够实现 逻辑左移、逻辑右移、算数右移
+// 2. 采用掩码算法，将右移转换为左移，节省资源
 module ysyx_041514_alu_shift (
     input shift_sra_i,
     input shift_srl_i,

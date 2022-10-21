@@ -58,6 +58,16 @@ module ysyx_041514_icache_top (
     output [                    127:0] io_sram7_wdata,
     input  [                    127:0] io_sram7_rdata
 );
+
+`ifndef ysyx_041514_YSYX_SOC
+  import "DPI-C" function void icache_hit_count(
+    input int last_pc,
+    input int now_pc
+  );
+  import "DPI-C" function void icache_unhit_count();
+`endif
+
+
   // 寄存器已复位
 
   wire [ 5:0] cache_blk_addr;
@@ -153,7 +163,10 @@ module ysyx_041514_icache_top (
             _ram_rsize_icache_o <= 4'b1000;  // 64bit
             _ram_rlen_icache_o <= 8'd7;  // 突发 8 次
             burst_count <= 0;  // 清空计数器
-          end else if (uncache) begin
+`ifndef ysyx_041514_YSYX_SOC 
+            icache_unhit_count();
+`endif
+          end else if (~icache_hit && uncache) begin
             icache_state              <= UNCACHE_READ;
             _ram_raddr_icache_o       <= {line_tag_reg, line_idx_reg, blk_addr_reg};  // 读地址
             _ram_raddr_valid_icache_o <= `ysyx_041514_TRUE;  // 地址有效
@@ -161,6 +174,11 @@ module ysyx_041514_icache_top (
             _ram_rsize_icache_o       <= 4'b0100;  //读大小 32bit,一条指令
             _ram_rlen_icache_o        <= 8'd0;  // 不突发
           end
+`ifndef ysyx_041514_YSYX_SOC 
+          else if (icache_hit) begin : hit
+            icache_hit_count({line_tag_reg, line_idx_reg, blk_addr_reg}, preif_raddr_i);
+          end
+`endif 
         end
         CACHE_MISS: begin
           if (ram_r_handshake) begin  // 在 handshake 时，向 ram 写入数据

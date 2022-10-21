@@ -27,7 +27,6 @@ private:
     uint64_t pc;
     uint64_t clk_count = 0;
     uint64_t commit_count = 0;
-
     struct inst_t {
         uint64_t inst_pc;
         uint32_t inst_data;
@@ -61,6 +60,10 @@ private:
 public:
     uint64_t mem_pc; // 记录当前访存指令的 PC,用于 difftest device 的 skip 处理 
     uint32_t top_status;
+    uint64_t icache_count = 0;
+    uint64_t icache_hit_count = 0;
+    uint64_t dcache_count = 0;
+    uint64_t dcache_hit_count = 0;
     enum {
         TOP_STOP,
         TOP_RUNNING

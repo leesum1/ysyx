@@ -204,11 +204,11 @@ void Simtop::scanMem(paddr_t addr, uint32_t len) {
     //     addr += 4;
     // }
 
-    
+
     /* 每次读取 4byte soc-simulator 总线模型  */
     static uint8_t rbuff[4];
     for (size_t i = 0; i < len; i++) {
-        u_axi4->dram->do_read(addr-MEM_BASE,4,rbuff);
+        u_axi4->dram->do_read(addr - MEM_BASE, 4, rbuff);
         printf("addr:0x%08x\tData: %08lx\n", addr,
             *(uint32_t*)rbuff);
         addr += 4;
@@ -367,10 +367,18 @@ void Simtop::addCommitedInst(uint64_t inst_pc, uint32_t inst_data) {
 }
 
 
-void Simtop::showSimPerformance(){
+void Simtop::showSimPerformance() {
 
-    cout<< COLOR_GREEN<< "clk_num:"<<clk_count<<endl;
-    cout<< COLOR_GREEN<< "commit_num:"<<commit_count<<endl;
-    cout<<COLOR_GREEN<<"CPI:"<<(float)((float)clk_count/(float)commit_count)<<COLOR_END<<endl;
+    cout << COLOR_GREEN << "clk_num:" << clk_count << endl;
+    cout << COLOR_GREEN << "commit_num:" << commit_count << endl;
+    cout << COLOR_GREEN << "CPI:" << (float)((float)clk_count / (float)commit_count) << COLOR_END << endl;
+
+    cout << COLOR_GREEN << "icache req num:" << icache_count << endl;
+    cout << COLOR_GREEN << "icache hit num:" << icache_hit_count << endl;
+    cout << COLOR_GREEN << "icache hit rate:" << (float)((float)icache_hit_count / (float)icache_count) << COLOR_END << endl;
+
+    cout << COLOR_GREEN << "dcache req num:" << dcache_count << endl;
+    cout << COLOR_GREEN << "dcache hit num:" << dcache_hit_count << endl;
+    cout << COLOR_GREEN << "dcache hit rate:" << (float)((float)dcache_hit_count / (float)dcache_count) << COLOR_END << endl;
 
 }

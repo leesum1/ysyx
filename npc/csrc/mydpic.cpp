@@ -7,6 +7,32 @@
 #include "simconf.h"
 
 extern Simtop* mysim_p;
+
+
+
+extern "C" void icache_hit_count(int last_pc, int now_pc) {
+    if (last_pc != now_pc) {
+        mysim_p->icache_count++;
+        mysim_p->icache_hit_count++;
+    }
+}
+
+extern "C" void icache_unhit_count() {
+    mysim_p->icache_count++;
+}
+
+
+extern "C" void dcache_unhit_count() {
+    mysim_p->dcache_count++;
+}
+
+extern "C" void dcache_hit_count() {
+    mysim_p->dcache_count++;
+    mysim_p->dcache_hit_count++;
+}
+
+
+
 extern "C" void set_nextpc(long long nextpc) {
     static bool isfirst_inst = true;
     // NOP 指令对于的 PC 为 0
@@ -71,7 +97,7 @@ extern "C" void pmem_inst_read(long long raddr, long long* rdata, char rmask) {
 
 /**
  * @brief 采用 soc-simulator 后 已弃用
- * 
+ *
  */
 extern "C" void pmem_read(long raddr, long long* rdata, char rmask) {
     // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
@@ -88,8 +114,8 @@ extern "C" void pmem_read(long raddr, long long* rdata, char rmask) {
 };
 
 /**
- * @brief 采用 soc-simulator 后 已弃用 
- * 
+ * @brief 采用 soc-simulator 后 已弃用
+ *
  */
 extern "C" void pmem_write(long waddr, long long wdata, char wmask) {
     // 总是往地址为`waddr & ~0x7ull`的8字节按写掩码`wmask`写入`wdata`

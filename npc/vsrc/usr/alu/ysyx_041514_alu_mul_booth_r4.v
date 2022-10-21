@@ -1,4 +1,6 @@
 `include "sysconfig.v"
+// 1. 一次性生成 64 位 乘法的 booth 的部分积
+// 2. 内含一个加法器，用于实现补码 +1，其余大部分是连线
 module ysyx_041514_alu_mul_booth_r4 (
 
     input             rs1_signed_valid_i,

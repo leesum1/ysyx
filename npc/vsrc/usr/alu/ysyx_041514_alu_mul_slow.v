@@ -1,4 +1,6 @@
 `include "sysconfig.v"
+// 1. booth移位乘法改进，一次性生成所有部分积，并且缓存在寄存器中，关键路径较短，但需要的面积大
+// 2. 接下来每一个周期加上一个部分积
 module ysyx_041514_alu_mul_slow (
     input                            clk,
     input                            rst,
@@ -69,6 +71,26 @@ module ysyx_041514_alu_mul_slow (
       .pp32_o            (Partial_product[32])
   );
 
+  //  部分积生成 ( 共33 个),缓存一个周期
+  wire [127:0] step1_pp_q[33-1:0];
+
+  genvar step1_Dflap;
+  generate
+    for (step1_Dflap = 0; step1_Dflap < 33; step1_Dflap = step1_Dflap + 1) begin
+      ysyx_041514_regTemplate #(
+          .WIDTH    (128),
+          .RESET_VAL(0)
+      ) u_ysyx_041514_regTemplate (
+          .clk (clk),
+          .rst (rst),
+          .din (Partial_product[step1_Dflap]),
+          .dout(step1_pp_q[step1_Dflap]),
+          .wen (1'b1)
+      );
+    end
+  endgenerate
+
+
 
   always @(posedge clk) begin
     if (rst) begin
@@ -93,8 +115,15 @@ module ysyx_041514_alu_mul_slow (
             booth_rs2 <= rs2_data_i;
             booth_rs1_signed_valid <= rs1_signed_valid_i;
             booth_rs2_signed_valid <= rs2_signed_valid_i;
-            mul_state <= MUL_WAIT;
+            mul_state <= MUL_BOOTH;
             mul_data128 <= 'b0;
+          end
+        end
+        MUL_BOOTH: begin
+          if (mul_valid_i) begin
+            mul_state <= MUL_WAIT;
+          end else begin
+            mul_state <= MUL_IDLE;
           end
         end
         MUL_WAIT: begin
@@ -102,7 +131,7 @@ module ysyx_041514_alu_mul_slow (
             mul_state <= MUL_IDLE;
             mul_ready <= `ysyx_041514_TRUE;
           end else if (mul_valid_i) begin
-            mul_data128 <= mul_data128 + Partial_product[mul_count[5:0]]; // TODO 很疑惑能不能这样用
+            mul_data128 <= mul_data128 + step1_pp_q[mul_count[5:0]]; // TODO 很疑惑能不能这样用
             mul_count <= mul_count + 'b1;
           end else begin
             mul_state <= MUL_IDLE;

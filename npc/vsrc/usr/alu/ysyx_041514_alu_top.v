@@ -67,6 +67,24 @@ module ysyx_041514_alu_top (
                   _aluop_sltu |_aluop_beq |
                   _aluop_bne |_aluop_blt  |
                   _aluop_bge|_aluop_bltu  ;
+
+
+//   // 面积换时序，该方法关键路径较短
+//   wire compare_eq = $signed(alu_a_i) == $signed(alu_b_i);
+//   wire compare_neq = $signed(alu_a_i) != $signed(alu_b_i);
+//   wire compare_lt = $signed(alu_a_i) < $signed(alu_b_i);
+//   wire compare_ge = $signed(alu_a_i) >= $signed(alu_b_i);
+//   wire compare_ltu = $unsigned(alu_a_i) < $unsigned(alu_b_i);
+//   wire compare_geu = $unsigned(alu_a_i) >= $unsigned(alu_b_i);
+
+//   wire compare_out = _aluop_beq&compare_eq
+//                    | _aluop_bne&compare_neq
+//                    | (_aluop_blt|_aluop_slt)&compare_lt
+//                    | _aluop_bge&compare_ge
+//                    | (_aluop_bltu|_aluop_sltu)&compare_ltu
+//                    | _aluop_bgeu&compare_geu;
+
+
   /* 如果是减法、比较操作则进行减法 */
   wire _isSUBop = _aluop_sub | _isCMP;
   /* 进位 */

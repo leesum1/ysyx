@@ -71,7 +71,14 @@ module ysyx_041514_dcache_top (
     output [127:0] io_sram3_wdata,
     input  [127:0] io_sram3_rdata
 );
-// 寄存器已复位
+  // 寄存器已复位
+
+`ifndef ysyx_041514_YSYX_SOC
+  import "DPI-C" function void dcache_hit_count();
+  import "DPI-C" function void dcache_unhit_count();
+`endif
+
+
   // uncache 检查
   wire uncache;
   ysyx_041514_uncache_check u_ysyx_041514_uncache_check1 (
@@ -176,8 +183,8 @@ module ysyx_041514_dcache_top (
       _ram_raddr_valid_dcache_o <= `ysyx_041514_FALSE;
       _ram_waddr_valid_dcache_o <= `ysyx_041514_FALSE;
       dcache_wmask_writehit <= 0;
-      _ram_raddr_dcache_o <=0;
-      _ram_wmask_dcache_o<=0;
+      _ram_raddr_dcache_o <= 0;
+      _ram_wmask_dcache_o <= 0;
 
     end else begin
       case (dcache_state)
@@ -196,6 +203,9 @@ module ysyx_041514_dcache_top (
               dcache_hit, mem_write_valid_i
             })
               2'b11: begin : write_hit  // TODO : 只写入 cache ，不写入内存
+`ifndef ysyx_041514_YSYX_SOC
+                dcache_hit_count();
+`endif
                 dcache_state <= CACHE_IDLE;
                 dcache_data_ready <= `ysyx_041514_FALSE;
                 //写 cache
@@ -208,10 +218,16 @@ module ysyx_041514_dcache_top (
                 dcache_wmask_writehit <= (mem_addr_i[3]) ? {wmask_bit, 64'b0} : {64'b0, wmask_bit};
               end
               2'b10: begin : read_hit
+`ifndef ysyx_041514_YSYX_SOC
+                dcache_hit_count();
+`endif
                 dcache_data_ready <= `ysyx_041514_TRUE;
                 dcache_state <= CACHE_IDLE;
               end
               2'b00, 2'b01: begin : miss_allocate  // miss 时 分配 cache，需要考虑脏位
+`ifndef ysyx_041514_YSYX_SOC
+                dcache_unhit_count();
+`endif
                 if (dirty_bit_read) begin  // 需要写回
                   dcache_state <= CACHE_WRITE_BACK;
                   dcache_data_ready <= `ysyx_041514_FALSE;
