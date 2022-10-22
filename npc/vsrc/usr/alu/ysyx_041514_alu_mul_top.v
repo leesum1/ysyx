@@ -50,7 +50,7 @@ module ysyx_041514_alu_mul_top (
       .mul_out_o         (mul_out_o)
   );
 `else
-  ysyx_041514_alu_mul_wallace u_ysyx_041514_alu_mul_wallace (
+  ysyx_041514_alu_mul_wallace_csa u_ysyx_041514_alu_mul_wallace (
       .clk               (clk),
       .rst               (rst),
       .rs1_signed_valid_i(rs1_signed_valid_i),
