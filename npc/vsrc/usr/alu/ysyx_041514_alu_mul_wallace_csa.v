@@ -15,14 +15,16 @@ module ysyx_041514_alu_mul_wallace_csa (
   localparam STATE_LEN = 3;
   localparam MUL_RST = 3'd0;
   localparam MUL_IDLE = 3'd1;
-  localparam MUL_BOOTH = 3'd2;
   localparam MUL_WAIT = 3'd3;
 
 
 
   wire _mul_valid = mul_valid_i;
   reg [STATE_LEN-1:0] mul_state;
-  reg [7:0] mul_count;
+
+  reg [3:0] mul_count;
+  wire [3:0] mul_count_plus1 = mul_count + 'd1;
+
   reg mul_ready;
   reg [127:0] mul_data128;
 
@@ -56,30 +58,25 @@ module ysyx_041514_alu_mul_wallace_csa (
         end
         MUL_IDLE: begin
           mul_ready <= `ysyx_041514_FALSE;
-          if (_mul_valid) begin  // booth 结果有效
-            mul_state <= MUL_BOOTH;
+          mul_count <= 'b0;
+          if (_mul_valid) begin  // 乘法请求
+            mul_state <= MUL_WAIT;
             booth_rs1 <= rs1_data_i;
             booth_rs2 <= rs2_data_i;
             booth_rs1_signed_valid <= rs1_signed_valid_i;
             booth_rs2_signed_valid <= rs2_signed_valid_i;
           end
         end
-        MUL_BOOTH: begin
-          if (_mul_valid) begin
-            mul_state <= MUL_WAIT;  // booth 结果有效，进入 step 1
-          end else begin
-            mul_state   <= MUL_IDLE;
-            mul_data128 <= 'b0;
-          end
-        end
         MUL_WAIT: begin
-          if (_mul_valid) begin
-            mul_state   <= MUL_IDLE;
-            mul_ready   <= `ysyx_041514_TRUE;
-            mul_data128 <= mul_final128;
+          if (~_mul_valid) begin
+            mul_state <= MUL_IDLE;
           end else begin
-            mul_state   <= MUL_IDLE;
-            mul_data128 <= 'b0;
+            mul_count <= mul_count_plus1;
+            if (mul_count == 'd3) begin
+              mul_data128 <= mul_final128;
+              mul_state   <= MUL_IDLE;
+              mul_ready   <= `ysyx_041514_TRUE;
+            end
           end
         end
         default: begin
@@ -318,7 +315,19 @@ module ysyx_041514_alu_mul_wallace_csa (
 
   /* step5  */
   wire [128-1:0] step5_pp_q[7-1:0];
-  assign step5_pp_q[6] = step4_pp_q[9];  // 单独处理
+  // 单独处理
+  // assign step5_pp_q[6] = step4_pp_q[9];  
+  ysyx_041514_regTemplate #(
+      .WIDTH    (128),
+      .RESET_VAL('b0)
+  ) u_ysyx_041514_regTemplate_step4_sum_alone (
+      .clk (clk),
+      .rst (rst),
+      .din (step4_pp_q[9]),
+      .dout(step5_pp_q[6]),
+      .wen (1'b1)
+  );
+
   genvar step5_pp_q_count;
   generate
     for (
@@ -326,8 +335,29 @@ module ysyx_041514_alu_mul_wallace_csa (
         step5_pp_q_count < STEP4_CSA_NUM;
         step5_pp_q_count = step5_pp_q_count + 1
     ) begin
-      assign step5_pp_q[step5_pp_q_count*2+0] = step4_sum[step5_pp_q_count];
-      assign step5_pp_q[step5_pp_q_count*2+1] = {step4_carry[step5_pp_q_count][126:0], 1'b0};
+      // assign step5_pp_q[step5_pp_q_count*2+0] = step4_sum[step5_pp_q_count];
+      // assign step5_pp_q[step5_pp_q_count*2+1] = {step4_carry[step5_pp_q_count][126:0], 1'b0};
+      //插入流水线缓存，切断关键路径
+      ysyx_041514_regTemplate #(
+          .WIDTH    (128),
+          .RESET_VAL('b0)
+      ) u_ysyx_041514_regTemplate_step4_sum (
+          .clk (clk),
+          .rst (rst),
+          .din (step4_sum[step5_pp_q_count]),
+          .dout(step5_pp_q[step5_pp_q_count*2+0]),
+          .wen (1'b1)
+      );
+      ysyx_041514_regTemplate #(
+          .WIDTH    (128),
+          .RESET_VAL('b0)
+      ) u_ysyx_041514_regTemplate_step4_carry (
+          .clk (clk),
+          .rst (rst),
+          .din ({step4_carry[step5_pp_q_count][126:0], 1'b0}),
+          .dout(step5_pp_q[step5_pp_q_count*2+1]),
+          .wen (1'b1)
+      );
     end
   endgenerate
 
@@ -471,10 +501,33 @@ module ysyx_041514_alu_mul_wallace_csa (
     end
   endgenerate
 
+  // // 插入流水线缓存
+  wire [128-1:0] mul_final_a;
+  wire [128-1:0] mul_final_b;
+  ysyx_041514_regTemplate #(
+      .WIDTH    (128),
+      .RESET_VAL('b0)
+  ) u_ysyx_041514_regTemplate_step8_sum (
+      .clk (clk),
+      .rst (rst),
+      .din (step8_sum[0]),
+      .dout(mul_final_a),
+      .wen (1'b1)
+  );
+  ysyx_041514_regTemplate #(
+      .WIDTH    (128),
+      .RESET_VAL('b0)
+  ) u_ysyx_041514_regTemplate_step8_carry (
+      .clk (clk),
+      .rst (rst),
+      .din ({step8_carry[0][126:0], 1'b0}),
+      .dout(mul_final_b),
+      .wen (1'b1)
+  );
 
   /* step9 */
-  assign mul_final128 = step8_sum[0] + {step8_carry[0][126:0], 1'b0};
-
+  // assign mul_final128 = step8_sum[0] + {step8_carry[0][126:0], 1'b0};
+  assign mul_final128 = mul_final_a + mul_final_b;
 
 
 endmodule
