@@ -16,8 +16,8 @@ module ysyx_041514_pc_reg (
     input [`ysyx_041514_XLEN_BUS] clint_pc_i,              //trap pc,来自mem
     input                         clint_pc_valid_i,        //trap pc valide,来自mem
     input                         clint_pc_plus4_valid_o,  // fencei 的 pc +4
-    input [`ysyx_041514_XLEN_BUS] jal_pc_i,                // jal pc ,来自 if
-    input                         jal_pc_valid_i,
+    input [`ysyx_041514_XLEN_BUS] bpu_pc_i,                // jal pc ,来自 if
+    input                         bpu_pc_valid_i,
 
     output                             read_req_o,
     output [`ysyx_041514_NPC_ADDR_BUS] pc_next_o,   //输出 next_pc, icache 取指
@@ -40,8 +40,8 @@ module ysyx_041514_pc_reg (
       _pc_next = clint_pc_i;
     end else if (branch_pc_valid_i) begin : branch_pc
       _pc_next = branch_pc_i;
-    end else if (jal_pc_valid_i) begin : jal_pc
-      _pc_next = jal_pc_i;
+    end else if (bpu_pc_valid_i) begin : bpu_pc
+      _pc_next = bpu_pc_i;
     end else begin
       _pc_next = pc_temp_plus4;
     end
@@ -67,6 +67,7 @@ module ysyx_041514_pc_reg (
 
   // next pc,为 icache 的访存地址, stall 时,保持上一个 pc 的值
   assign pc_next_o = stall_valid_i[`ysyx_041514_CTRLBUS_PC] ? _pc_current[31:0] : _pc_next_d[31:0];
+
   assign pc_o = _pc_current;
   assign read_req_o = _read_req;
 

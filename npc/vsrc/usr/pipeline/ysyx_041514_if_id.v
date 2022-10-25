@@ -6,15 +6,15 @@ module ysyx_041514_if_id (
     input [5:0] stall_valid_i,  // 保持当前数据，不接受新的数据
     input [5:0] flush_valid_i,  // 清空当前数据（nop），不接受新的数据
 
-    //指令地址
-    input wire [`ysyx_041514_XLEN_BUS] inst_addr_if_i,
-    //指令内容
-    input wire [`ysyx_041514_INST_LEN-1:0] inst_data_if_i,
+
+    input [`ysyx_041514_XLEN_BUS] inst_addr_if_i,
+    input [`ysyx_041514_INST_LEN-1:0] inst_data_if_i,
+    input bru_taken_if_i,
     input [`ysyx_041514_TRAP_BUS] trap_bus_if_i,
-    //指令地址
-    output wire [`ysyx_041514_XLEN_BUS] inst_addr_if_id_o,
-    //指令内容
-    output wire [`ysyx_041514_INST_LEN-1:0] inst_data_if_id_o,
+
+    output [`ysyx_041514_XLEN_BUS] inst_addr_if_id_o,
+    output [`ysyx_041514_INST_LEN-1:0] inst_data_if_id_o,
+    output bru_taken_if_id_o,
     output [`ysyx_041514_TRAP_BUS] trap_bus_if_id_o
 );
   // 保持时，写失效
@@ -53,6 +53,22 @@ module ysyx_041514_if_id (
       .wen (reg_wen)
   );
   assign inst_data_if_id_o = _inst_data_if_id_q;
+
+
+  /* bru_taken_if_i 寄存器 */
+  wire _bru_taken_if_id_d = bru_taken_if_i;
+  wire _bru_taken_if_id_q;
+  ysyx_041514_regTemplate #(
+      .WIDTH    (1),
+      .RESET_VAL(0)
+  ) u_bru_taken_if_id (
+      .clk (clk),
+      .rst (reg_rst),
+      .din (_bru_taken_if_id_d),
+      .dout(_bru_taken_if_id_q),
+      .wen (reg_wen)
+  );
+  assign bru_taken_if_id_o = _bru_taken_if_id_q;
 
 
   /* trap_bus_if_i 寄存器 */

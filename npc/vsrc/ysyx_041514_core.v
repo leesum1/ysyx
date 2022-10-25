@@ -99,14 +99,15 @@ module ysyx_041514_core (
   wire [`ysyx_041514_INST_LEN-1:0] inst_data_if;
   wire [`ysyx_041514_TRAP_BUS] trap_bus_if;
 
-  wire [`ysyx_041514_XLEN_BUS] jal_pc;  // jal pc ,来自 if
-  wire jal_pc_valid;
+  wire [`ysyx_041514_XLEN_BUS] bpu_pc;  // bru pc ,来自 分支预测模块
+  wire bpu_pc_valid;
 
   wire if_rdata_valid;  // 读数据是否准备好
   wire [`ysyx_041514_XLEN_BUS] if_rdata;  // 返回到读取的数据
 
   wire ram_stall_valid_if;
   /*************************** if/id 流水线缓存 *************************************/
+  wire bpu_pc_valid_if_id;
   wire [`ysyx_041514_XLEN_BUS] inst_addr_if_id;
   wire [`ysyx_041514_INST_LEN-1:0] inst_data_if_id;
   wire [`ysyx_041514_TRAP_BUS] trap_bus_if_id;
@@ -142,6 +143,8 @@ module ysyx_041514_core (
   /*************************** id/ex 流水线缓存 *************************************/
   //   wire [    `ysyx_041514_REG_ADDRWIDTH-1:0 ] rs1_idx_id_ex;
   //   wire [    `ysyx_041514_REG_ADDRWIDTH-1:0 ] rs2_idx_id_ex;
+  wire bpu_pc_valid_id_ex;
+
   wire [`ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_id_ex;
   wire [`ysyx_041514_XLEN_BUS] rs1_data_id_ex;
   wire [`ysyx_041514_XLEN_BUS] rs2_data_id_ex;
@@ -400,8 +403,8 @@ module ysyx_041514_core (
       .clint_pc_i            (clint_pc),              //trap pc,来自mem
       .clint_pc_valid_i      (clint_pc_valid),        //trap pc valide,来自mem
       .clint_pc_plus4_valid_o(clint_pc_plus4_valid),
-      .jal_pc_i              (jal_pc),
-      .jal_pc_valid_i        (jal_pc_valid),
+      .bpu_pc_i              (bpu_pc),
+      .bpu_pc_valid_i        (bpu_pc_valid),
       .read_req_o            (read_req),
       //.if_rdata_valid_i (if_rdata_valid),
       .pc_next_o             (pc_next),               //输出 next_pc
@@ -414,8 +417,8 @@ module ysyx_041514_core (
 
       .if_rdata_valid_i    (if_rdata_valid),      // 读数据是否准备好
       .if_rdata_i          (if_rdata),            // 返回到读取的数据
-      .jal_pc_o            (jal_pc),
-      .jal_pc_valid_o      (jal_pc_valid),
+      .bpu_pc_o            (bpu_pc),
+      .bpu_pc_valid_o      (bpu_pc_valid),
       /* stall req */
       .ram_stall_valid_if_o(ram_stall_valid_if),  // if 阶段访存暂停
       /* to if/id */
@@ -431,14 +434,12 @@ module ysyx_041514_core (
       .rst              (rst),
       .flush_valid_i    (flush_clint),
       .stall_valid_i    (stall_clint),
-      //指令地址
       .inst_addr_if_i   (inst_addr_if),
-      //指令内容
       .inst_data_if_i   (inst_data_if),
       .trap_bus_if_i    (trap_bus_if),
-      //指令地址
+      .bru_taken_if_i   (bpu_pc_valid),
+      .bru_taken_if_id_o(bpu_pc_valid_if_id),
       .inst_addr_if_id_o(inst_addr_if_id),
-      //指令内容
       .inst_data_if_id_o(inst_data_if_id),
       .trap_bus_if_id_o (trap_bus_if_id)
   );
@@ -495,10 +496,14 @@ module ysyx_041514_core (
   );
 
   ysyx_041514_id_ex u_id_ex (
-      .clk                  (clk),
-      .rst                  (rst),
-      .flush_valid_i        (flush_clint),
-      .stall_valid_i        (stall_clint),
+      .clk          (clk),
+      .rst          (rst),
+      .flush_valid_i(flush_clint),
+      .stall_valid_i(stall_clint),
+
+
+      .bru_taken_id_ex_i    (bpu_pc_valid_if_id),
+      .bru_taken_id_ex_o    (bpu_pc_valid_id_ex),
       /* 输入 */
       .pc_id_ex_i           (inst_addr_id),
       .inst_data_id_ex_i    (inst_data_id),
@@ -555,6 +560,7 @@ module ysyx_041514_core (
   ysyx_041514_execute_top u_execute_top (
       .clk            (clk),
       .rst            (rst),
+      .bru_taken_i(bpu_pc_valid_id_ex),
       /******************************* from id/ex *************************/
       // pc
       .pc_i           (inst_addr_id_ex),

@@ -1,34 +1,36 @@
 `include "sysconfig.v"
 
 module ysyx_041514_id_ex (
-    input                                           clk,
-    input                                           rst,
-    input      [                               5:0] flush_valid_i,
-    input      [                               5:0] stall_valid_i,
+    input                                      clk,
+    input                                      rst,
+    input [                               5:0] flush_valid_i,
+    input [                               5:0] stall_valid_i,
     /* 输入 */
-    input wire [             `ysyx_041514_XLEN-1:0] pc_id_ex_i,
-    input wire [         `ysyx_041514_INST_LEN-1:0] inst_data_id_ex_i,
+    input [             `ysyx_041514_XLEN-1:0] pc_id_ex_i,
+    input [         `ysyx_041514_INST_LEN-1:0] inst_data_id_ex_i,
+    input                                      bru_taken_id_ex_i,
     // input      [    `ysyx_041514_REG_ADDRWIDTH-1:0] rs1_idx_id_ex_i,
     // input      [    `ysyx_041514_REG_ADDRWIDTH-1:0] rs2_idx_id_ex_i,
-    input      [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_id_ex_i,
-    input      [          `ysyx_041514_IMM_LEN-1:0] imm_data_id_ex_i,
-    input      [          `ysyx_041514_IMM_LEN-1:0] csr_imm_id_ex_i,
-    input                                           csr_imm_valid_id_ex_i,
-    input      [             `ysyx_041514_XLEN_BUS] rs1_data_id_ex_i,
-    input      [             `ysyx_041514_XLEN_BUS] rs2_data_id_ex_i,
-    input      [             `ysyx_041514_XLEN_BUS] csr_data_id_ex_i,
-    input      [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] csr_idx_id_ex_i,
-    input      [        `ysyx_041514_ALUOP_LEN-1:0] alu_op_id_ex_i,         // alu 操作码
-    input      [        `ysyx_041514_MEMOP_LEN-1:0] mem_op_id_ex_i,         // mem 操作码
-    input      [        `ysyx_041514_EXCOP_LEN-1:0] exc_op_id_ex_i,         // exc 操作码
+    input [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_id_ex_i,
+    input [          `ysyx_041514_IMM_LEN-1:0] imm_data_id_ex_i,
+    input [          `ysyx_041514_IMM_LEN-1:0] csr_imm_id_ex_i,
+    input                                      csr_imm_valid_id_ex_i,
+    input [             `ysyx_041514_XLEN_BUS] rs1_data_id_ex_i,
+    input [             `ysyx_041514_XLEN_BUS] rs2_data_id_ex_i,
+    input [             `ysyx_041514_XLEN_BUS] csr_data_id_ex_i,
+    input [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] csr_idx_id_ex_i,
+    input [        `ysyx_041514_ALUOP_LEN-1:0] alu_op_id_ex_i,         // alu 操作码
+    input [        `ysyx_041514_MEMOP_LEN-1:0] mem_op_id_ex_i,         // mem 操作码
+    input [        `ysyx_041514_EXCOP_LEN-1:0] exc_op_id_ex_i,         // exc 操作码
     // input      [         `ysyx_041514_PCOP_LEN-1:0] pc_op_id_ex_i,          // pc 操作码
-    input      [        `ysyx_041514_CSROP_LEN-1:0] csr_op_id_ex_i,         // csr 操作码
+    input [        `ysyx_041514_CSROP_LEN-1:0] csr_op_id_ex_i,         // csr 操作码
     /* TARP 总线 */
-    input      [             `ysyx_041514_TRAP_BUS] trap_bus_id_ex_i,
+    input [             `ysyx_041514_TRAP_BUS] trap_bus_id_ex_i,
 
     /* 输出 */
     output [             `ysyx_041514_XLEN-1:0] pc_id_ex_o,
     output [         `ysyx_041514_INST_LEN-1:0] inst_data_id_ex_o,
+    output                                      bru_taken_id_ex_o,
     // output      [    `ysyx_041514_REG_ADDRWIDTH-1:0] rs1_idx_id_ex_o,
     // output      [    `ysyx_041514_REG_ADDRWIDTH-1:0] rs2_idx_id_ex_o,
     output [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_id_ex_o,
@@ -48,10 +50,6 @@ module ysyx_041514_id_ex (
     output [             `ysyx_041514_TRAP_BUS] trap_bus_id_ex_o
 
 );
-  //   wire reg_wen = (~stall_i[2]) | flush_valid_i;
-  //   wire _flush_valid = flush_valid_i | branch_pc_valid_i;
-
-  //   wire _load_hazed = (stall_i[2] == `ysyx_041514_TRUE && stall_i[3] == `ysyx_041514_FALSE);
 
   wire reg_wen = !stall_valid_i[`ysyx_041514_CTRLBUS_ID_EX];
   wire _flush_valid = flush_valid_i[`ysyx_041514_CTRLBUS_ID_EX];
@@ -86,6 +84,22 @@ module ysyx_041514_id_ex (
       .wen (reg_wen)
   );
   assign inst_data_id_ex_o = _inst_data_id_ex_q;
+
+
+  /* bru_taken_if_i 寄存器 */
+  wire _bru_taken_id_ex_d = bru_taken_id_ex_i;
+  wire _bru_taken_id_ex_q;
+  ysyx_041514_regTemplate #(
+      .WIDTH    (1),
+      .RESET_VAL(0)
+  ) u_bru_taken_id_ex (
+      .clk (clk),
+      .rst (reg_rst),
+      .din (_bru_taken_id_ex_d),
+      .dout(_bru_taken_id_ex_q),
+      .wen (reg_wen)
+  );
+  assign bru_taken_id_ex_o = _bru_taken_id_ex_q;
 
 
   //   /* rs1_idx 寄存器 */
@@ -249,7 +263,6 @@ module ysyx_041514_id_ex (
 
 
   /* alu_op 寄存器 */
-  //   wire [`ysyx_041514_ALUOP_LEN-1:0] _alu_op_id_ex_d = (_flush_valid) ? `ysyx_041514_ALUOP_NONE : alu_op_id_ex_i;
   wire [`ysyx_041514_ALUOP_LEN-1:0] _alu_op_id_ex_d = alu_op_id_ex_i;
   wire [`ysyx_041514_ALUOP_LEN-1:0] _alu_op_id_ex_q;
   ysyx_041514_regTemplate #(
@@ -282,7 +295,6 @@ module ysyx_041514_id_ex (
 
 
   /* exc_op 寄存器 */
-  //   wire [`ysyx_041514_EXCOP_LEN-1:0] _exc_op_id_ex_d = (_flush_valid) ? `ysyx_041514_EXCOP_NONE : exc_op_id_ex_i;
 
   wire [`ysyx_041514_EXCOP_LEN-1:0] _exc_op_id_ex_d = exc_op_id_ex_i;
   wire [`ysyx_041514_EXCOP_LEN-1:0] _exc_op_id_ex_q;
@@ -297,22 +309,6 @@ module ysyx_041514_id_ex (
       .wen (reg_wen)
   );
   assign exc_op_id_ex_o = _exc_op_id_ex_q;
-
-
-  /* pc_op 寄存器 */
-  //   wire [`ysyx_041514_PCOP_LEN-1:0] _pc_op_id_ex_d = (_flush_valid) ? `ysyx_041514_PCOP_NONE : pc_op_id_ex_i;
-  //   wire [`ysyx_041514_PCOP_LEN-1:0] _pc_op_id_ex_q;
-  //   ysyx_041514_regTemplate #(
-  //       .WIDTH    (`ysyx_041514_PCOP_LEN),
-  //       .RESET_VAL(`ysyx_041514_PCOP_NONE)
-  //   ) u_pc_op_id_ex (
-  //       .clk (clk),
-  //       .rst (reg_rst),
-  //       .din (_pc_op_id_ex_d),
-  //       .dout(_pc_op_id_ex_q),
-  //       .wen (reg_wen)
-  //   );
-  //   assign pc_op_id_ex_o = _pc_op_id_ex_q;
 
 
   /* csr_op 寄存器 */

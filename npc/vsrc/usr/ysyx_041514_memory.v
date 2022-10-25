@@ -246,7 +246,7 @@ module ysyx_041514_memory (
   /************************××××××向仿真环境传递 PC *****************************/
 
 `ifndef ysyx_041514_YSYX_SOC
-  // 用于 difftest，获��访��指令的 pc
+  // 用于 difftest，获取 mem_pc
   import "DPI-C" function void set_mem_pc(input longint mem_pc);
   always @(*) begin
     if (_isstore | _isload) begin

@@ -19,11 +19,13 @@ extern "C" void icache_hit_count(int last_pc, int now_pc) {
 
 extern "C" void icache_unhit_count() {
     mysim_p->icache_count++;
+    mysim_p->icache_unhit_count++;
 }
 
 
 extern "C" void dcache_unhit_count() {
     mysim_p->dcache_count++;
+    mysim_p->dcache_unhit_count++;
 }
 
 extern "C" void dcache_hit_count() {

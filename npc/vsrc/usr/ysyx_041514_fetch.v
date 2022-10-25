@@ -11,9 +11,10 @@ module ysyx_041514_fetch (
     input if_rdata_valid_i,  // 读数据是否准备好
     input [`ysyx_041514_XLEN_BUS] if_rdata_i,
 
-    output [`ysyx_041514_XLEN_BUS] jal_pc_o,
-    output jal_pc_valid_o,
 
+    /* bru */
+    output [`ysyx_041514_XLEN_BUS] bpu_pc_o,
+    output bpu_pc_valid_o,
     /* stall req */
     output ram_stall_valid_if_o,  // if 阶段访存暂停
     /* to if/id */
@@ -25,10 +26,6 @@ module ysyx_041514_fetch (
 
   assign inst_addr_o = inst_addr_i;
 
-  // 判断是否是 fencei 指令
-  // wire inst_fencei = (if_rdata_i[6:0] == 7'b0001111) & (if_rdata_i[14:12] == 3'b001);
-  // assign fencei_valid_o = inst_fencei & (~fencei_ready_i);
-
   // 选择读取数据
   wire [`ysyx_041514_NPC_ADDR_BUS] _inst_data = (if_rdata_valid_i) ? if_rdata_i[31:0] : `ysyx_041514_INST_NOP;
 
@@ -39,24 +36,18 @@ module ysyx_041514_fetch (
   assign ram_stall_valid_if_o = _ram_stall;
   assign inst_data_o = _inst_data;
 
-  /* jal 指令，可以直接在 if 阶段得到跳转地址 */
-  wire [6:0] _opcode = _inst_data[6:0];
-  wire _opcode_6_5_11 = (_opcode[6:5] == 2'b11);
-  wire _opcode_4_2_011 = (_opcode[4:2] == 3'b011);
-  wire _opcode_1_0_11 = (_opcode[1:0] == 2'b11);
-  wire [`ysyx_041514_IMM_LEN-1:0] _immJ = {
-    {12 + 32{_inst_data[31]}},
-    _inst_data[19:12],
-    _inst_data[20],
-    _inst_data[30:25],
-    _inst_data[24:21],
-    1'b0
-  };
-  wire _inst_jal = _opcode_6_5_11 & _opcode_4_2_011 & _opcode_1_0_11;
-  wire [`ysyx_041514_XLEN_BUS] jal_pc = inst_addr_i + _immJ;  // pc+imm
-  wire jal_pc_valid = _inst_jal;
-  assign jal_pc_o = jal_pc;
-  assign jal_pc_valid_o = jal_pc_valid;
+
+  /* bru */
+  wire [`ysyx_041514_XLEN_BUS] _bpu_pc;
+  wire _bpu_pc_valid;
+  ysyx_041514_bpu_top u_ysyx_041514_bru_top (
+      .inst_data_i   ({32'b0, _inst_data}),
+      .pc_if_i       (inst_addr_i),
+      .bpu_pc_o      (_bpu_pc),
+      .bpu_pc_valid_o(_bpu_pc_valid)
+  );
+  assign bpu_pc_o = _bpu_pc;
+  assign bpu_pc_valid_o = _bpu_pc_valid;
 
 
   /***********************TRAP**********************/

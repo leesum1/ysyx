@@ -125,7 +125,7 @@ void SDL_FillRect(SDL_Surface* dst, SDL_Rect* dstrect, uint32_t color) {
 }
 /**
  * @brief 测试通过
- *
+ * SDL_UpdateRect -- Makes sure the given area is updated on the given screen.
  * @param s
  * @param x
  * @param y

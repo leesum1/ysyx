@@ -6,6 +6,7 @@ module ysyx_041514_execute_top (
     // pc
     input  [             `ysyx_041514_XLEN_BUS] pc_i,
     input  [         `ysyx_041514_INST_LEN-1:0] inst_data_i,
+    input                                       bru_taken_i,
     // gpr 译码结果
     input  [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_i,
     input  [             `ysyx_041514_XLEN_BUS] rs1_data_i,
@@ -126,13 +127,22 @@ module ysyx_041514_execute_top (
 
 
   // TODO 还需要完善
-  wire _branch_pc_valid = (_compare_out & _excop_branch) | _excop_jalr;
+  wire _branch_pc_valid = (_compare_out & _excop_branch) | _excop_jalr | _excop_jal;
 
-  assign branch_pc_o = _branch_pc;
-  assign branch_pc_valid_o = _branch_pc_valid;
+  // assign branch_pc_o = _branch_pc;
+  // assign branch_pc_valid_o = _branch_pc_valid;
+
+  /* 分支预测错误 */
+  wire [`ysyx_041514_XLEN_BUS] pc_plus4 = pc_i + 'd4;
+  
+  wire [`ysyx_041514_XLEN_BUS] redirect_pc = bru_taken_i ? pc_plus4 : _branch_pc;
+  wire redirect_pc_valid = _branch_pc_valid ^ bru_taken_i;
+
+  assign branch_pc_o = redirect_pc;
+  assign branch_pc_valid_o = redirect_pc_valid;
 
   // 若跳转指令有效，通知控制模块，中断流水线
-  assign jump_hazard_valid_o = _branch_pc_valid;
+  assign jump_hazard_valid_o = redirect_pc_valid;
 
   /****************************** ALU 操作******************************************/
 

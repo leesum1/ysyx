@@ -368,17 +368,19 @@ void Simtop::addCommitedInst(uint64_t inst_pc, uint32_t inst_data) {
 
 
 void Simtop::showSimPerformance() {
-
+    cout << COLOR_GREEN << "----------------------------clk&commit:-------------------------" << endl;
     cout << COLOR_GREEN << "clk_num:" << clk_count << endl;
     cout << COLOR_GREEN << "commit_num:" << commit_count << endl;
     cout << COLOR_GREEN << "CPI:" << (float)((float)clk_count / (float)commit_count) << COLOR_END << endl;
-
+    cout << COLOR_GREEN << "----------------------------icache:-------------------------" << endl;
     cout << COLOR_GREEN << "icache req num:" << icache_count << endl;
     cout << COLOR_GREEN << "icache hit num:" << icache_hit_count << endl;
+    cout << COLOR_GREEN << "icache unhit num:" << icache_unhit_count << endl;
     cout << COLOR_GREEN << "icache hit rate:" << (float)((float)icache_hit_count / (float)icache_count) << COLOR_END << endl;
-
+    cout << COLOR_GREEN << "----------------------------dcache:-------------------------" << endl;
     cout << COLOR_GREEN << "dcache req num:" << dcache_count << endl;
     cout << COLOR_GREEN << "dcache hit num:" << dcache_hit_count << endl;
+    cout << COLOR_GREEN << "dcache unhit num:" << dcache_unhit_count << endl;
     cout << COLOR_GREEN << "dcache hit rate:" << (float)((float)dcache_hit_count / (float)dcache_count) << COLOR_END << endl;
 
 }

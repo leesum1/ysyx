@@ -207,7 +207,6 @@ module ysyx_041514_dcache_top (
                 dcache_hit_count();
 `endif
                 dcache_state <= CACHE_IDLE;
-                dcache_data_ready <= `ysyx_041514_FALSE;
                 //写 cache
                 dcache_data_wen <= `ysyx_041514_TRUE;
                 dcache_data_ready <= `ysyx_041514_TRUE;  // 完成信号
@@ -272,6 +271,7 @@ module ysyx_041514_dcache_top (
             end
 
           end else if (fencei_valid) begin
+            dcache_data_ready <= `ysyx_041514_FALSE;
             dcache_state <= CACHE_FENCEI_WAIT;
             fencei_count <= 0;
           end else begin
