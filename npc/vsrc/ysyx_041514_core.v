@@ -99,7 +99,9 @@ module ysyx_041514_core (
   wire [`ysyx_041514_INST_LEN-1:0] inst_data_if;
   wire [`ysyx_041514_TRAP_BUS] trap_bus_if;
 
-  wire [`ysyx_041514_XLEN_BUS] bpu_pc;  // bru pc ,来自 分支预测模块
+  //   wire [`ysyx_041514_XLEN_BUS] bpu_pc;  // bru pc ,来自 分支预测模块
+  wire [`ysyx_041514_XLEN_BUS] bpu_pc_op1;
+  wire [`ysyx_041514_XLEN_BUS] bpu_pc_op2;
   wire bpu_pc_valid;
 
   wire if_rdata_valid;  // 读数据是否准备好
@@ -187,8 +189,8 @@ module ysyx_041514_core (
   wire [`ysyx_041514_TRAP_BUS] trap_bus_ex;
 
 
-  wire [`ysyx_041514_XLEN_BUS] branch_pc;
-  wire branch_pc_valid;
+  wire [`ysyx_041514_XLEN_BUS] redirect_pc;
+  wire redirect_pc_valid;
   /**********************  ex/mem 流水线间缓存 **************************/
 
 
@@ -398,12 +400,14 @@ module ysyx_041514_core (
       .rst                   (rst),
       .stall_valid_i         (stall_clint),
       .flush_valid_i         (flush_clint),
-      .branch_pc_i           (branch_pc),
-      .branch_pc_valid_i     (branch_pc_valid),
+      .redirect_pc_i         (redirect_pc),
+      .redirect_pc_valid_i   (redirect_pc_valid),
       .clint_pc_i            (clint_pc),              //trap pc,来自mem
       .clint_pc_valid_i      (clint_pc_valid),        //trap pc valide,来自mem
       .clint_pc_plus4_valid_o(clint_pc_plus4_valid),
-      .bpu_pc_i              (bpu_pc),
+      //   .bpu_pc_i              (bpu_pc),
+      .bpu_pc_op1_i          (bpu_pc_op1),
+      .bpu_pc_op2_i          (bpu_pc_op2),
       .bpu_pc_valid_i        (bpu_pc_valid),
       .read_req_o            (read_req),
       //.if_rdata_valid_i (if_rdata_valid),
@@ -417,7 +421,9 @@ module ysyx_041514_core (
 
       .if_rdata_valid_i    (if_rdata_valid),      // 读数据是否准备好
       .if_rdata_i          (if_rdata),            // 返回到读取的数据
-      .bpu_pc_o            (bpu_pc),
+      //   .bpu_pc_o            (bpu_pc),
+      .bpu_pc_op1_o        (bpu_pc_op1),
+      .bpu_pc_op2_o        (bpu_pc_op2),
       .bpu_pc_valid_o      (bpu_pc_valid),
       /* stall req */
       .ram_stall_valid_if_o(ram_stall_valid_if),  // if 阶段访存暂停
@@ -560,7 +566,7 @@ module ysyx_041514_core (
   ysyx_041514_execute_top u_execute_top (
       .clk            (clk),
       .rst            (rst),
-      .bru_taken_i(bpu_pc_valid_id_ex),
+      .bru_taken_i    (bpu_pc_valid_id_ex),
       /******************************* from id/ex *************************/
       // pc
       .pc_i           (inst_addr_id_ex),
@@ -621,8 +627,8 @@ module ysyx_041514_core (
       // 请求暂停流水线
       .jump_hazard_valid_o(jump_hazard_valid),
       .alu_mul_div_valid_o(alu_mul_div_valid),
-      .branch_pc_o        (branch_pc),
-      .branch_pc_valid_o  (branch_pc_valid),
+      .redirect_pc_o      (redirect_pc),
+      .redirect_pc_valid_o(redirect_pc_valid),
       /* TARP 总线 */
       .trap_bus_o         (trap_bus_ex)
   );
@@ -1186,6 +1192,33 @@ module ysyx_041514_core (
       .rdata_buff_valid_o     (rdata_buff_valid),
       .rdata_buff_o           (rdata_buff)
   );
+
+
+
+
+`ifndef ysyx_041514_YSYX_SOC
+
+  wire jump_inst = exc_op_id_ex[`ysyx_041514_EXCOP_BRANCH]
+               | exc_op_id_ex[`ysyx_041514_EXCOP_JAL]
+               | exc_op_id_ex[`ysyx_041514_EXCOP_JALR];
+
+  wire bpu_seccess = (~redirect_pc_valid);  // 分支预测成功
+
+  wire exc_go_ready = (~flush_clint[`ysyx_041514_CTRLBUS_EX_MEM])
+                  & (~stall_clint[`ysyx_041514_CTRLBUS_EX_MEM]);
+
+  import "DPI-C" function void bpu_count(input bit bpu_ret);
+  // 1. 用于分支预测准确率
+  // 2. exc 阶段为跳转指令，且 exc/mem 正常流通时，计算一次
+  always @(posedge clk) begin
+    if (jump_inst & exc_go_ready) begin
+      bpu_count(bpu_seccess);
+    end
+  end
+`endif
+
+
+
 
 endmodule
 

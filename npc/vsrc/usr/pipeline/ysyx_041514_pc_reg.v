@@ -1,9 +1,4 @@
 `include "sysconfig.v"
-// /** 纯组合逻辑电路
-//  * 1.branch_pc：来自exc阶段
-//  * 2.csr_pc：来自mem阶段
-//  * 3.pc_next：输出给if阶段
-// ×/
 
 module ysyx_041514_pc_reg (
     input clk,
@@ -11,13 +6,15 @@ module ysyx_041514_pc_reg (
     input [5:0] stall_valid_i,
     input [5:0] flush_valid_i,
 
-    input [`ysyx_041514_XLEN_BUS] branch_pc_i,             // branch pc,来自 exc
-    input                         branch_pc_valid_i,
-    input [`ysyx_041514_XLEN_BUS] clint_pc_i,              //trap pc,来自mem
-    input                         clint_pc_valid_i,        //trap pc valide,来自mem
-    input                         clint_pc_plus4_valid_o,  // fencei 的 pc +4
-    input [`ysyx_041514_XLEN_BUS] bpu_pc_i,                // jal pc ,来自 if
-    input                         bpu_pc_valid_i,
+    input [`ysyx_041514_XLEN_BUS] redirect_pc_i,  // branch pc,来自 exc 模块
+    input redirect_pc_valid_i,  // 分支预测错误时，需要重定向 pc
+    input [`ysyx_041514_XLEN_BUS] clint_pc_i,  // trap pc,来自mem
+    input clint_pc_valid_i,  // trap pc valide,来自mem
+    input clint_pc_plus4_valid_o,  // fencei 的 pc +4
+    // input [`ysyx_041514_XLEN_BUS] bpu_pc_i,  // bpu pc ,来自 if bpu 分支预测
+    input [`ysyx_041514_XLEN_BUS] bpu_pc_op1_i,
+    input [`ysyx_041514_XLEN_BUS] bpu_pc_op2_i,
+    input bpu_pc_valid_i,
 
     output                             read_req_o,
     output [`ysyx_041514_NPC_ADDR_BUS] pc_next_o,   //输出 next_pc, icache 取指
@@ -28,20 +25,16 @@ module ysyx_041514_pc_reg (
   wire [`ysyx_041514_XLEN_BUS] pc_temp = clint_pc_plus4_valid_o ? clint_pc_i : _pc_current;
   wire [`ysyx_041514_XLEN_BUS] pc_temp_plus4 = pc_temp + 'd4;
 
-
-  //   wire [`ysyx_041514_XLEN_BUS] _pc_next =  clint_pc_valid_i ? clint_pc_i : 
-  //                             branch_pc_valid_i?branch_pc_i:_pc_current+4;
-
   reg [`ysyx_041514_XLEN_BUS] _pc_next;
   always @(*) begin
     if (clint_pc_valid_i & clint_pc_plus4_valid_o) begin : int_pc
       _pc_next = pc_temp_plus4;
     end else if (clint_pc_valid_i & ~clint_pc_plus4_valid_o) begin : trap_pc
       _pc_next = clint_pc_i;
-    end else if (branch_pc_valid_i) begin : branch_pc
-      _pc_next = branch_pc_i;
+    end else if (redirect_pc_valid_i) begin : redirect_pc
+      _pc_next = redirect_pc_i;
     end else if (bpu_pc_valid_i) begin : bpu_pc
-      _pc_next = bpu_pc_i;
+      _pc_next = bpu_pc_op1_i + bpu_pc_op2_i;
     end else begin
       _pc_next = pc_temp_plus4;
     end

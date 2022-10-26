@@ -11,9 +11,10 @@ module ysyx_041514_fetch (
     input if_rdata_valid_i,  // 读数据是否准备好
     input [`ysyx_041514_XLEN_BUS] if_rdata_i,
 
-
     /* bru */
-    output [`ysyx_041514_XLEN_BUS] bpu_pc_o,
+    // output [`ysyx_041514_XLEN_BUS] bpu_pc_o,
+    output [`ysyx_041514_XLEN_BUS] bpu_pc_op1_o,
+    output [`ysyx_041514_XLEN_BUS] bpu_pc_op2_o,
     output bpu_pc_valid_o,
     /* stall req */
     output ram_stall_valid_if_o,  // if 阶段访存暂停
@@ -27,8 +28,8 @@ module ysyx_041514_fetch (
   assign inst_addr_o = inst_addr_i;
 
   // 选择读取数据
-  wire [`ysyx_041514_NPC_ADDR_BUS] _inst_data = (if_rdata_valid_i) ? if_rdata_i[31:0] : `ysyx_041514_INST_NOP;
-
+  //wire [`ysyx_041514_NPC_ADDR_BUS] _inst_data = (if_rdata_valid_i) ? if_rdata_i[31:0] : `ysyx_041514_INST_NOP;
+  wire [`ysyx_041514_NPC_ADDR_BUS] _inst_data = if_rdata_i[31:0];
 
   // 若 icache 数据没有准备好,发出 stall 请求,暂停流水线
   wire _ram_stall = (!if_rdata_valid_i);
@@ -38,17 +39,14 @@ module ysyx_041514_fetch (
 
 
   /* bru */
-  wire [`ysyx_041514_XLEN_BUS] _bpu_pc;
-  wire _bpu_pc_valid;
+
   ysyx_041514_bpu_top u_ysyx_041514_bru_top (
       .inst_data_i   ({32'b0, _inst_data}),
       .pc_if_i       (inst_addr_i),
-      .bpu_pc_o      (_bpu_pc),
-      .bpu_pc_valid_o(_bpu_pc_valid)
+      .bpu_pc_op1_o  (bpu_pc_op1_o),
+      .bpu_pc_op2_o  (bpu_pc_op2_o),
+      .bpu_pc_valid_o(bpu_pc_valid_o)
   );
-  assign bpu_pc_o = _bpu_pc;
-  assign bpu_pc_valid_o = _bpu_pc_valid;
-
 
   /***********************TRAP**********************/
   wire _Instruction_address_misaligned = `ysyx_041514_FALSE;

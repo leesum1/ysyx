@@ -22,7 +22,6 @@ module ysyx_041514_execute_top (
     input  [        `ysyx_041514_MEMOP_LEN-1:0] mem_op_i,         // 访存操作码
     input  [        `ysyx_041514_EXCOP_LEN-1:0] exc_op_i,         // exc 操作码
     input  [        `ysyx_041514_CSROP_LEN-1:0] csr_op_i,         // exc_csr 操作码
-    // input  [         `ysyx_041514_PCOP_LEN-1:0] pc_op_i,
     /* TARP 总线 */
     input  [             `ysyx_041514_TRAP_BUS] trap_bus_i,
     /********************** to ex/mem **************************/
@@ -31,75 +30,41 @@ module ysyx_041514_execute_top (
     output [         `ysyx_041514_INST_LEN-1:0] inst_data_o,
     // gpr 译码结果
     output [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_o,
-    // output [             `ysyx_041514_XLEN_BUS] rs1_data_o,
     output [             `ysyx_041514_XLEN_BUS] rs2_data_o,
-    // output [          `ysyx_041514_IMM_LEN-1:0] imm_data_o,
     // CSR 译码结果 
-    // output [             `ysyx_041514_XLEN_BUS] csr_data_o,
-    // output [          `ysyx_041514_IMM_LEN-1:0] csr_imm_o,
-    // output                          csr_imm_valid_o,
     output [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] exc_csr_addr_o,
     output [        `ysyx_041514_MEMOP_LEN-1:0] mem_op_o,         // 访存操作码
-    // output [         `ysyx_041514_PCOP_LEN-1:0] pc_op_o,  
 
-    output [`ysyx_041514_XLEN_BUS] exc_alu_data_o,  // 同时送给 ID 和 EX/MEM
-    output [`ysyx_041514_XLEN_BUS] exc_csr_data_o,
-    output                         exc_csr_valid_o,
-    /************************to id *************************************/
-    // output [`ysyx_041514_EXCOP_LEN-1:0] exc_op_o,         // exc 操作码
-
+    output [`ysyx_041514_XLEN_BUS] exc_alu_data_o,  // ALU 计算得到的数据，同时送给 ID（bypass） 和 EX/MEM
+    output [`ysyx_041514_XLEN_BUS] exc_csr_data_o,  // csr 计算得到的数据
+    output exc_csr_valid_o,
     /************************to pc_reg ******************************************/
-    output [`ysyx_041514_XLEN_BUS] branch_pc_o,
-    output branch_pc_valid_o,
+    output [`ysyx_041514_XLEN_BUS] redirect_pc_o,
+    output redirect_pc_valid_o,
 
     /********************* from data_buff *******************/
-    // ALU结果缓存
-    input alu_data_buff_valid_i,
+
+    input alu_data_buff_valid_i,  // ALU结果缓存
     input [`ysyx_041514_XLEN_BUS] alu_data_buff_i,
     output alu_data_ready_o,
-
-    // 请求暂停流水线
-    output jump_hazard_valid_o,
+    /* trap bus */
+    output jump_hazard_valid_o,  // 请求暂停流水线
     output alu_mul_div_valid_o,
 
-    /* TARP 总线 */
     output [`ysyx_041514_TRAP_BUS] trap_bus_o
 );
   assign pc_o = pc_i;
   assign inst_data_o = inst_data_i;
-  // assign exc_op_o = exc_op_i;
   assign mem_op_o = mem_op_i;
-  // assign pc_op_o = pc_op_i;
-  // assign rs1_data_o = rs1_data_i;
   assign rs2_data_o = rs2_data_i;
   assign rd_idx_o = rd_idx_i;
-  // assign imm_data_o = imm_data_i;
-  // assign csr_data_o = csr_data_i;
-  // assign csr_imm_o = csr_imm_i;
-  // assign csr_imm_valid_o = csr_imm_valid_i;
   assign exc_csr_addr_o = csr_readaddr_i;
-
 
 
   wire [`ysyx_041514_XLEN_BUS] _alu_out;
   wire _compare_out;
   wire alu_stall_req;
 
-
-  // wire _excop_auipc = (exc_op_i == `ysyx_041514_EXCOP_AUIPC);
-  // wire _excop_lui = (exc_op_i == `ysyx_041514_EXCOP_LUI);
-  // wire _excop_jal = (exc_op_i == `ysyx_041514_EXCOP_JAL);
-  // wire _excop_jalr = (exc_op_i == `ysyx_041514_EXCOP_JALR);
-  // wire _excop_load = (exc_op_i == `ysyx_041514_EXCOP_LOAD);
-  // wire _excop_store = (exc_op_i == `ysyx_041514_EXCOP_STORE);
-  // wire _excop_branch = (exc_op_i == `ysyx_041514_EXCOP_BRANCH);
-  // wire _excop_opimm = (exc_op_i == `ysyx_041514_EXCOP_OPIMM);
-  // wire _excop_opimm32 = (exc_op_i == `ysyx_041514_EXCOP_OPIMM32);
-  // wire _excop_op = (exc_op_i == `ysyx_041514_EXCOP_OP);
-  // wire _excop_op32 = (exc_op_i == `ysyx_041514_EXCOP_OP32);
-  // wire _excop_csr = (exc_op_i == `ysyx_041514_EXCOP_CSR);
-  // // wire _excop_ebreak = (exc_op_i == `ysyx_041514_EXCOP_EBREAK);
-  // wire _excop_none = (exc_op_i == `ysyx_041514_EXCOP_NONE);
 
   wire _excop_none = exc_op_i[`ysyx_041514_EXCOP_NONE];
   wire _excop_auipc = exc_op_i[`ysyx_041514_EXCOP_AUIPC];
@@ -116,33 +81,43 @@ module ysyx_041514_execute_top (
   wire _excop_csr = exc_op_i[`ysyx_041514_EXCOP_CSR];
 
   /*****************************branch 操作********************************/
-  wire [`ysyx_041514_XLEN_BUS] _pc_add_imm;
-  assign _pc_add_imm = pc_i + imm_data_i;
 
-  wire [`ysyx_041514_XLEN_BUS] _rs1_add_imm;
-  assign _rs1_add_imm = rs1_data_i + imm_data_i;  // TODO : 数据旁路！！！！！
+  // 以下两种情况 跳转指令 ，应该执行跳转
+  // 1. branch 指令，且条件成立
+  // 2. jal、jalr 指令
+  wire jump_taken = (_compare_out & _excop_branch) | _excop_jalr | _excop_jal;
 
-  wire [`ysyx_041514_XLEN_BUS] _branch_pc = ({`ysyx_041514_XLEN{_excop_branch}}&_pc_add_imm)|
-                                ({`ysyx_041514_XLEN{_excop_jalr}}&_rs1_add_imm);
+  // bru_taken_i 实际的跳转情况
+  // jump_taken 正确的跳转情况
+  // 两者不同，分支预测错误，需要冲刷流水线，修改 pc
+  wire bpu_pc_wrong = jump_taken ^ bru_taken_i;
 
 
-  // TODO 还需要完善
-  wire _branch_pc_valid = (_compare_out & _excop_branch) | _excop_jalr | _excop_jal;
 
-  // assign branch_pc_o = _branch_pc;
-  // assign branch_pc_valid_o = _branch_pc_valid;
+  // 1. _excop_branch，_excop_jal （pc+imm）
+  // 2. _excop_jalr (rs1+imm)
+  // 3. bpu err （pc+4）or (pc+imm)、(rs1+imm)，depending on bru_taken_i
+  reg [`ysyx_041514_XLEN_BUS] redirect_pc_op1;
+  reg [`ysyx_041514_XLEN_BUS] redirect_pc_op2;
+  always @(*) begin
+    if (bru_taken_i) begin
+      redirect_pc_op1 = pc_i;
+      redirect_pc_op2 = 'd4;
+    end else begin
+      redirect_pc_op1 = _excop_jalr ? rs1_data_i : pc_i;
+      redirect_pc_op2 = imm_data_i;
+    end
+  end
 
-  /* 分支预测错误 */
-  wire [`ysyx_041514_XLEN_BUS] pc_plus4 = pc_i + 'd4;
-  
-  wire [`ysyx_041514_XLEN_BUS] redirect_pc = bru_taken_i ? pc_plus4 : _branch_pc;
-  wire redirect_pc_valid = _branch_pc_valid ^ bru_taken_i;
+  // TODO 节省加法器, 可能引入关键路径
+  wire [`ysyx_041514_XLEN_BUS] redirect_pc = redirect_pc_op1 + redirect_pc_op2;
 
-  assign branch_pc_o = redirect_pc;
-  assign branch_pc_valid_o = redirect_pc_valid;
-
+  assign redirect_pc_o = redirect_pc;
+  assign redirect_pc_valid_o = bpu_pc_wrong;
   // 若跳转指令有效，通知控制模块，中断流水线
-  assign jump_hazard_valid_o = redirect_pc_valid;
+  assign jump_hazard_valid_o = bpu_pc_wrong;
+
+
 
   /****************************** ALU 操作******************************************/
 
