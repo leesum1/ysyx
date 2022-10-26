@@ -382,5 +382,9 @@ void Simtop::showSimPerformance() {
     cout << COLOR_GREEN << "dcache hit num:" << dcache_hit_count << endl;
     cout << COLOR_GREEN << "dcache unhit num:" << dcache_unhit_count << endl;
     cout << COLOR_GREEN << "dcache hit rate:" << (float)((float)dcache_hit_count / (float)dcache_count) << COLOR_END << endl;
-
+    cout << COLOR_GREEN << "----------------------------bpu:-------------------------" << endl;
+    cout << COLOR_GREEN << "bpu req num:" << bpu_count << endl;
+    cout << COLOR_GREEN << "bpu hit num:" << bpu_hit_count << endl;
+    cout << COLOR_GREEN << "bpu unhit num:" << bpu_count - bpu_hit_count << endl;
+    cout << COLOR_GREEN << "bpu hit rate:" << (float)((float)bpu_hit_count / (float)bpu_count) << COLOR_END << endl;
 }

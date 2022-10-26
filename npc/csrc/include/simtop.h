@@ -67,6 +67,9 @@ public:
     uint64_t dcache_count = 0;
     uint64_t dcache_hit_count = 0;
     uint64_t dcache_unhit_count = 0;
+
+    uint64_t bpu_count = 0;
+    uint64_t bpu_hit_count = 0;
     enum {
         TOP_STOP,
         TOP_RUNNING

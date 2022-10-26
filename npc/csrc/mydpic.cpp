@@ -9,6 +9,13 @@
 extern Simtop* mysim_p;
 
 
+extern "C" void bpu_count(svBit bpu_ret) {
+
+    mysim_p->bpu_count++;
+    mysim_p->bpu_hit_count += bpu_ret;
+
+}
+
 
 extern "C" void icache_hit_count(int last_pc, int now_pc) {
     if (last_pc != now_pc) {

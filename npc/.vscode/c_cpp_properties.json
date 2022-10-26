@@ -4,9 +4,11 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
+                "${workspaceFolder}/obj_dir/*",
+                "${workspaceFolder}/csrc/**",
                 "/usr/include/SDL2/*",
-                "/usr/local/share/verilator/include/",
-                "/usr/local/share/verilator/include/vltstd/"
+                "/usr/share/verilator/include/*",
+                "/usr/share/verilator/include/vltstd/*"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",
