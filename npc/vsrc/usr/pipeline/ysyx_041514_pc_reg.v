@@ -24,7 +24,8 @@ module ysyx_041514_pc_reg (
   wire [`ysyx_041514_XLEN_BUS] _pc_current;
   wire [`ysyx_041514_XLEN_BUS] pc_temp = clint_pc_plus4_valid_o ? clint_pc_i : _pc_current;
   wire [`ysyx_041514_XLEN_BUS] pc_temp_plus4 = pc_temp + 'd4;
-
+  
+  // TODO 需要统一优化
   reg [`ysyx_041514_XLEN_BUS] _pc_next;
   always @(*) begin
     if (clint_pc_valid_i & clint_pc_plus4_valid_o) begin : int_pc

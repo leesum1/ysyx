@@ -99,7 +99,7 @@ public:
     void sdbOn(const char* sdbname);
     void sdbOff(const char* sdbname);
     void sdbStatus();
-    void sdbRun(void);
+    void sdbpun(void);
     bool isSdbOk(const char* sdbname);
     void showSimPerformance();
 };

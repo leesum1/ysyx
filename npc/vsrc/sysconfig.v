@@ -28,6 +28,10 @@
 
 `define ysyx_041514_MMIO_BASE 32'h0000_0000_a000_0000
 
+/* bpu */
+
+`define ysyx_041514_bpu_cas_num 8
+
 /* BUS */
 `define ysyx_041514_XLEN_BUS `ysyx_041514_XLEN-1:0
 

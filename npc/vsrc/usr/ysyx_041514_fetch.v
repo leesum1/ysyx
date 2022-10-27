@@ -5,13 +5,18 @@
 * 组合逻辑电路,仅仅起到传递作用,PC寄存器位于 IF/ID 
 */
 module ysyx_041514_fetch (
-    //指令地址
-    // input rst,
+    input clk,
+    input rst,
+    input [5:0] stall_valid_i,  // 保持当前数据，不接受新的数据
+    input [5:0] flush_valid_i,  // 清空当前数据（nop），不接受新的数据
+    input [$clog2(8) - 1:0] redirect_ras_ptr_i,
+    input redirect_ras_ptr_valid_i,
+
     input [`ysyx_041514_XLEN_BUS] inst_addr_i,  // from pc_reg
     input if_rdata_valid_i,  // 读数据是否准备好
     input [`ysyx_041514_XLEN_BUS] if_rdata_i,
 
-    /* bru */
+    /* bpu */
     // output [`ysyx_041514_XLEN_BUS] bpu_pc_o,
     output [`ysyx_041514_XLEN_BUS] bpu_pc_op1_o,
     output [`ysyx_041514_XLEN_BUS] bpu_pc_op2_o,
@@ -38,14 +43,20 @@ module ysyx_041514_fetch (
   assign inst_data_o = _inst_data;
 
 
-  /* bru */
+  /* bpu */
 
-  ysyx_041514_bpu_top u_ysyx_041514_bru_top (
-      .inst_data_i   ({32'b0, _inst_data}),
-      .pc_if_i       (inst_addr_i),
-      .bpu_pc_op1_o  (bpu_pc_op1_o),
-      .bpu_pc_op2_o  (bpu_pc_op2_o),
-      .bpu_pc_valid_o(bpu_pc_valid_o)
+  ysyx_041514_bpu_top u_ysyx_041514_bpu_top (
+      .clk                     (clk),
+      .rst                     (rst),
+      .flush_valid_i           (flush_valid_i),
+      .stall_valid_i           (stall_valid_i),
+      .redirect_ras_ptr_i      (redirect_ras_ptr_i),
+      .redirect_ras_ptr_valid_i(redirect_ras_ptr_valid_i),
+      .inst_data_i             ({32'b0, _inst_data}),
+      .pc_if_i                 (inst_addr_i),
+      .bpu_pc_op1_o            (bpu_pc_op1_o),
+      .bpu_pc_op2_o            (bpu_pc_op2_o),
+      .bpu_pc_valid_o          (bpu_pc_valid_o)
   );
 
   /***********************TRAP**********************/

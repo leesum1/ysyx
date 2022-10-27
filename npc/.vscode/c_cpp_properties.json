@@ -8,6 +8,7 @@
                 "${workspaceFolder}/csrc/**",
                 "/usr/include/SDL2/*",
                 "/usr/share/verilator/include/*",
+                "vsrc/lib/obj_dir/*",
                 "/usr/share/verilator/include/vltstd/*"
             ],
             "defines": [],

@@ -1,39 +1,42 @@
 `include "sysconfig.v"
 module ysyx_041514_execute_top (
-    input                                       clk,
-    input                                       rst,
+    input clk,
+    input rst,
+    input [5:0] stall_valid_i,  // 保持当前数据，不接受新的数据
+    input [5:0] flush_valid_i,  // 清空当前数据（nop），不接受新的数据
     /******************************* from id/ex *************************/
     // pc
-    input  [             `ysyx_041514_XLEN_BUS] pc_i,
-    input  [         `ysyx_041514_INST_LEN-1:0] inst_data_i,
-    input                                       bru_taken_i,
+    input [`ysyx_041514_XLEN_BUS] pc_i,
+    input [`ysyx_041514_INST_LEN-1:0] inst_data_i,
+    input bpu_taken_i,
     // gpr 译码结果
-    input  [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_i,
-    input  [             `ysyx_041514_XLEN_BUS] rs1_data_i,
-    input  [             `ysyx_041514_XLEN_BUS] rs2_data_i,
-    input  [          `ysyx_041514_IMM_LEN-1:0] imm_data_i,
+    input [`ysyx_041514_REG_ADDRWIDTH-1:0] rs1_idx_i,
+    input [`ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_i,
+    input [`ysyx_041514_XLEN_BUS] rs1_data_i,
+    input [`ysyx_041514_XLEN_BUS] rs2_data_i,
+    input [`ysyx_041514_IMM_LEN-1:0] imm_data_i,
     // CSR 译码结果 
-    input  [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] csr_readaddr_i,
-    input  [             `ysyx_041514_XLEN_BUS] csr_data_i,
-    input  [          `ysyx_041514_IMM_LEN-1:0] csr_imm_i,
-    input                                       csr_imm_valid_i,
+    input [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] csr_readaddr_i,
+    input [`ysyx_041514_XLEN_BUS] csr_data_i,
+    input [`ysyx_041514_IMM_LEN-1:0] csr_imm_i,
+    input csr_imm_valid_i,
     // 指令微码
-    input  [        `ysyx_041514_ALUOP_LEN-1:0] alu_op_i,         // alu 操作码
-    input  [        `ysyx_041514_MEMOP_LEN-1:0] mem_op_i,         // 访存操作码
-    input  [        `ysyx_041514_EXCOP_LEN-1:0] exc_op_i,         // exc 操作码
-    input  [        `ysyx_041514_CSROP_LEN-1:0] csr_op_i,         // exc_csr 操作码
+    input [`ysyx_041514_ALUOP_LEN-1:0] alu_op_i,  // alu 操作码
+    input [`ysyx_041514_MEMOP_LEN-1:0] mem_op_i,  // 访存操作码
+    input [`ysyx_041514_EXCOP_LEN-1:0] exc_op_i,  // exc 操作码
+    input [`ysyx_041514_CSROP_LEN-1:0] csr_op_i,  // exc_csr 操作码
     /* TARP 总线 */
-    input  [             `ysyx_041514_TRAP_BUS] trap_bus_i,
+    input [`ysyx_041514_TRAP_BUS] trap_bus_i,
     /********************** to ex/mem **************************/
     // pc 同时给 EX/MEM 和 MEM（用于中断返回地址）
-    output [             `ysyx_041514_XLEN_BUS] pc_o,
-    output [         `ysyx_041514_INST_LEN-1:0] inst_data_o,
+    output [`ysyx_041514_XLEN_BUS] pc_o,
+    output [`ysyx_041514_INST_LEN-1:0] inst_data_o,
     // gpr 译码结果
-    output [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_o,
-    output [             `ysyx_041514_XLEN_BUS] rs2_data_o,
+    output [`ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_o,
+    output [`ysyx_041514_XLEN_BUS] rs2_data_o,
     // CSR 译码结果 
     output [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] exc_csr_addr_o,
-    output [        `ysyx_041514_MEMOP_LEN-1:0] mem_op_o,         // 访存操作码
+    output [`ysyx_041514_MEMOP_LEN-1:0] mem_op_o,  // 访存操作码
 
     output [`ysyx_041514_XLEN_BUS] exc_alu_data_o,  // ALU 计算得到的数据，同时送给 ID（bypass） 和 EX/MEM
     output [`ysyx_041514_XLEN_BUS] exc_csr_data_o,  // csr 计算得到的数据
@@ -41,6 +44,10 @@ module ysyx_041514_execute_top (
     /************************to pc_reg ******************************************/
     output [`ysyx_041514_XLEN_BUS] redirect_pc_o,
     output redirect_pc_valid_o,
+
+    /* to bpu */
+    output [$clog2(8) - 1:0] redirect_ras_ptr_o,
+    output redirect_ras_ptr_valid_o,
 
     /********************* from data_buff *******************/
 
@@ -87,20 +94,20 @@ module ysyx_041514_execute_top (
   // 2. jal、jalr 指令
   wire jump_taken = (_compare_out & _excop_branch) | _excop_jalr | _excop_jal;
 
-  // bru_taken_i 实际的跳转情况
+  // bpu_taken_i 实际的跳转情况
   // jump_taken 正确的跳转情况
   // 两者不同，分支预测错误，需要冲刷流水线，修改 pc
-  wire bpu_pc_wrong = jump_taken ^ bru_taken_i;
+  wire bpu_pc_wrong = jump_taken ^ bpu_taken_i;
 
 
-
+  // 先选后加
   // 1. _excop_branch，_excop_jal （pc+imm）
   // 2. _excop_jalr (rs1+imm)
-  // 3. bpu err （pc+4）or (pc+imm)、(rs1+imm)，depending on bru_taken_i
+  // 3. bpu err （pc+4）or (pc+imm)、(rs1+imm)，depending on bpu_taken_i
   reg [`ysyx_041514_XLEN_BUS] redirect_pc_op1;
   reg [`ysyx_041514_XLEN_BUS] redirect_pc_op2;
   always @(*) begin
-    if (bru_taken_i) begin
+    if (bpu_taken_i) begin
       redirect_pc_op1 = pc_i;
       redirect_pc_op2 = 'd4;
     end else begin
@@ -117,7 +124,47 @@ module ysyx_041514_execute_top (
   // 若跳转指令有效，通知控制模块，中断流水线
   assign jump_hazard_valid_o = bpu_pc_wrong;
 
+  /* Return-address prediction stacks */
 
+  wire [`ysyx_041514_REG_ADDRWIDTH-1:0] _rd = rd_idx_i;
+  wire [`ysyx_041514_REG_ADDRWIDTH-1:0] _rs1 = rs1_idx_i;
+
+  wire rd_is_x1 = _rd == 'd1;
+  wire rd_is_x5 = _rd == 'd5;
+  wire rs1_is_x1 = _rs1 == 'd1;
+  wire rs1_is_x5 = _rs1 == 'd5;
+
+  wire rd_is_link = rd_is_x1 | rd_is_x5;
+  wire rs1_is_link = rs1_is_x1 | rs1_is_x5;
+  wire rs1_eq_rd = _rs1 == _rd;
+  // https://www.jianshu.com/p/27f38bae827d
+  wire inst_ret = _excop_jalr & rs1_is_link;
+  wire inst_call = (_excop_jalr | _excop_jal) & rd_is_link;  // 没有实现 pop, then push 
+
+  wire push_valid = inst_call;
+  wire pop_valid = inst_ret;
+  wire exc_ready_go= (~flush_valid_i[`ysyx_041514_CTRLBUS_EX_MEM])
+                  & (~stall_valid_i[`ysyx_041514_CTRLBUS_EX_MEM]);
+
+  wire [$clog2(8) - 1:0] _stack_top_ptr;
+
+
+   wire _stack_top_ptr_valid = bpu_pc_wrong & _excop_branch;
+  //  wire _stack_top_ptr_valid = (_compare_out & _excop_branch) ^ bpu_taken_i;
+
+  ysyx_041514_Stack_top_ptr #(
+      .DEPTH(8)
+  ) u_ysyx_041514_Stack (
+      .clk(clk),
+      .rst(rst),
+      .push(push_valid),
+      .pop(pop_valid),
+      .top_ptr_o(_stack_top_ptr),
+      .en(exc_ready_go)
+  );
+
+  assign redirect_ras_ptr_o = _stack_top_ptr;
+  assign redirect_ras_ptr_valid_o = _stack_top_ptr_valid;
 
   /****************************** ALU 操作******************************************/
 

@@ -99,7 +99,7 @@ module ysyx_041514_core (
   wire [`ysyx_041514_INST_LEN-1:0] inst_data_if;
   wire [`ysyx_041514_TRAP_BUS] trap_bus_if;
 
-  //   wire [`ysyx_041514_XLEN_BUS] bpu_pc;  // bru pc ,来自 分支预测模块
+  //   wire [`ysyx_041514_XLEN_BUS] bpu_pc;  // bpu pc ,来自 分支预测模块
   wire [`ysyx_041514_XLEN_BUS] bpu_pc_op1;
   wire [`ysyx_041514_XLEN_BUS] bpu_pc_op2;
   wire bpu_pc_valid;
@@ -143,7 +143,7 @@ module ysyx_041514_core (
   /* TARP 总线 */
   wire [`ysyx_041514_TRAP_BUS] trap_bus_id;
   /*************************** id/ex 流水线缓存 *************************************/
-  //   wire [    `ysyx_041514_REG_ADDRWIDTH-1:0 ] rs1_idx_id_ex;
+  wire [`ysyx_041514_REG_ADDRWIDTH-1:0] rs1_idx_id_ex;
   //   wire [    `ysyx_041514_REG_ADDRWIDTH-1:0 ] rs2_idx_id_ex;
   wire bpu_pc_valid_id_ex;
 
@@ -191,6 +191,8 @@ module ysyx_041514_core (
 
   wire [`ysyx_041514_XLEN_BUS] redirect_pc;
   wire redirect_pc_valid;
+  wire [$clog2(8) - 1:0] redirect_ras_ptr;
+  wire redirect_ras_ptr_valid;
   /**********************  ex/mem 流水线间缓存 **************************/
 
 
@@ -416,8 +418,13 @@ module ysyx_041514_core (
   );
   ysyx_041514_fetch u_fetch (
       //指令地址
-      //   .rst        (rst),
-      .inst_addr_i(inst_addr),  // from pc_reg
+      .clk                     (clk),
+      .rst                     (rst),
+      .flush_valid_i           (flush_clint),
+      .stall_valid_i           (stall_clint),
+      .redirect_ras_ptr_i      (redirect_ras_ptr),
+      .redirect_ras_ptr_valid_i(redirect_ras_ptr_valid),
+      .inst_addr_i             (inst_addr),               // from pc_reg
 
       .if_rdata_valid_i    (if_rdata_valid),      // 读数据是否准备好
       .if_rdata_i          (if_rdata),            // 返回到读取的数据
@@ -443,8 +450,8 @@ module ysyx_041514_core (
       .inst_addr_if_i   (inst_addr_if),
       .inst_data_if_i   (inst_data_if),
       .trap_bus_if_i    (trap_bus_if),
-      .bru_taken_if_i   (bpu_pc_valid),
-      .bru_taken_if_id_o(bpu_pc_valid_if_id),
+      .bpu_taken_if_i   (bpu_pc_valid),
+      .bpu_taken_if_id_o(bpu_pc_valid_if_id),
       .inst_addr_if_id_o(inst_addr_if_id),
       .inst_data_if_id_o(inst_data_if_id),
       .trap_bus_if_id_o (trap_bus_if_id)
@@ -508,12 +515,12 @@ module ysyx_041514_core (
       .stall_valid_i(stall_clint),
 
 
-      .bru_taken_id_ex_i    (bpu_pc_valid_if_id),
-      .bru_taken_id_ex_o    (bpu_pc_valid_id_ex),
+      .bpu_taken_id_ex_i    (bpu_pc_valid_if_id),
+      .bpu_taken_id_ex_o    (bpu_pc_valid_id_ex),
       /* 输入 */
       .pc_id_ex_i           (inst_addr_id),
       .inst_data_id_ex_i    (inst_data_id),
-      //   .rs1_idx_id_ex_i      (rs1_idx_id),
+      .rs1_idx_id_ex_i      (rs1_idx_id),
       //   .rs2_idx_id_ex_i      (rs2_idx_id),
       .rd_idx_id_ex_i       (rd_idx_id),
       .imm_data_id_ex_i     (imm_data_id),
@@ -538,7 +545,7 @@ module ysyx_041514_core (
       /* 输出 */
       .pc_id_ex_o           (inst_addr_id_ex),
       .inst_data_id_ex_o    (inst_data_id_ex),
-      //   .rs1_idx_id_ex_o      (rs1_idx_id_ex),
+      .rs1_idx_id_ex_o      (rs1_idx_id_ex),
       //   .rs2_idx_id_ex_o      (rs2_idx_id_ex),
       .rd_idx_id_ex_o       (rd_idx_id_ex),
       .imm_data_id_ex_o     (imm_data_id_ex),
@@ -564,59 +571,62 @@ module ysyx_041514_core (
 
 
   ysyx_041514_execute_top u_execute_top (
-      .clk            (clk),
-      .rst            (rst),
-      .bru_taken_i    (bpu_pc_valid_id_ex),
+      .clk                     (clk),
+      .rst                     (rst),
+      .flush_valid_i           (flush_clint),
+      .stall_valid_i           (stall_clint),
+      .bpu_taken_i             (bpu_pc_valid_id_ex),
       /******************************* from id/ex *************************/
       // pc
-      .pc_i           (inst_addr_id_ex),
-      .inst_data_i    (inst_data_id_ex),
+      .pc_i                    (inst_addr_id_ex),
+      .inst_data_i             (inst_data_id_ex),
       // gpr 译码结果
-      .rd_idx_i       (rd_idx_id_ex),
-      .rs1_data_i     (rs1_data_id_ex),
-      .rs2_data_i     (rs2_data_id_ex),
-      .imm_data_i     (imm_data_id_ex),
+      .rd_idx_i                (rd_idx_id_ex),
+      .rs1_idx_i               (rs1_idx_id_ex),
+      .rs1_data_i              (rs1_data_id_ex),
+      .rs2_data_i              (rs2_data_id_ex),
+      .imm_data_i              (imm_data_id_ex),
       // CSR 译码结果 
-      .csr_readaddr_i (csr_idx_id_ex),
-      .csr_data_i     (csr_readdata_id_ex),
-      .csr_imm_i      (csr_imm_id_ex),
-      .csr_imm_valid_i(csr_imm_valid_id_ex),
+      .csr_readaddr_i          (csr_idx_id_ex),
+      .csr_data_i              (csr_readdata_id_ex),
+      .csr_imm_i               (csr_imm_id_ex),
+      .csr_imm_valid_i         (csr_imm_valid_id_ex),
       // 指令微码
-      .alu_op_i       (alu_op_id_ex),
+      .alu_op_i                (alu_op_id_ex),
       // alu 操作码
-      .mem_op_i       (mem_op_id_ex),
+      .mem_op_i                (mem_op_id_ex),
       // 访存操作码
-      .exc_op_i       (exc_op_id_ex),
+      .exc_op_i                (exc_op_id_ex),
       // exc 操作码
-      .csr_op_i       (csr_op_id_ex),
+      .csr_op_i                (csr_op_id_ex),
       // exc_csr 操作码
       // .pc_op_i        (pc_op_id_ex),
       /* TARP 总线 */
-      .trap_bus_i     (trap_bus_id_ex),
+      .trap_bus_i              (trap_bus_id_ex),
       /********************** to ex/mem **************************/
       // pc
-      .pc_o           (pc_ex),
-      .inst_data_o    (inst_data_ex),
+      .pc_o                    (pc_ex),
+      .inst_data_o             (inst_data_ex),
       // gpr 译码结果
-      .rd_idx_o       (rd_idx_ex),
+      .rd_idx_o                (rd_idx_ex),
       // .rs1_data_o     (rs1_data_ex),
-      .rs2_data_o     (rs2_data_ex),
+      .rs2_data_o              (rs2_data_ex),
       // .imm_data_o     (imm_data_ex),
       // CSR 译码结果 
       // .csr_data_o     (csr_data_ex),
       // .csr_imm_o      (csr_imm_ex),
       // .csr_imm_valid_o(csr_imm_valid_ex),
-      .mem_op_o       (mem_op_ex),
+      .mem_op_o                (mem_op_ex),
       // 访存操作码
       // .pc_op_o        (pc_op_ex),
-      .exc_alu_data_o (exc_alu_data_ex),
+      .exc_alu_data_o          (exc_alu_data_ex),
       // 同时送给 ID 和 EX/MEM
-      .exc_csr_data_o (exc_csr_data_ex),
-      .exc_csr_valid_o(exc_csr_valid_ex),
-      .exc_csr_addr_o (exc_csr_addr_ex),
-      /************************to id *************************************/
-      // .exc_op_o       (exc_op_ex),
-      // exc 操作码
+      .exc_csr_data_o          (exc_csr_data_ex),
+      .exc_csr_valid_o         (exc_csr_valid_ex),
+      .exc_csr_addr_o          (exc_csr_addr_ex),
+      /************************ bpu *************************************/
+      .redirect_ras_ptr_o      (redirect_ras_ptr),
+      .redirect_ras_ptr_valid_o(redirect_ras_ptr_valid),
 
       /********************* from data_buff *******************/
       // ALU结果缓存

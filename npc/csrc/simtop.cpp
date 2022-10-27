@@ -112,7 +112,7 @@ void Simtop::stepCycle(bool val) {
         setPC(commited_list.nextpc.front());
         // cout << "nextpc" << hex << cpu_commit.nextpc.front()
         //     << "commitpc" << cpu_commit.inst.front().inst_pc << endl;
-        sdbRun();
+        sdbpun();
         commited_list.inst.pop_front();
         commited_list.nextpc.pop_front();
     }
@@ -318,7 +318,7 @@ void Simtop::sdbStatus() {
  * @brief 调试工具
  *
  */
-void Simtop::sdbRun(void) {
+void Simtop::sdbpun(void) {
     if (isSdbOk("difftest")) {
         this->u_difftest.difftest_step();
     }
