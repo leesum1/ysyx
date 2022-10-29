@@ -6,7 +6,7 @@ module ysyx_041514_bpu_top (
     input rst,
     input [5:0] stall_valid_i,  // 保持当前数据，不接受新的数据
     input [5:0] flush_valid_i,  // 清空当前数据（nop），不接受新的数据
-    input [$clog2(8) - 1:0] redirect_ras_ptr_i,
+    input [$clog2(`ysyx_041514_bpu_cas_num) - 1:0] redirect_ras_ptr_i,
     input redirect_ras_ptr_valid_i,
     input [`ysyx_041514_XLEN_BUS] inst_data_i,
     input [`ysyx_041514_XLEN_BUS] pc_if_i,
@@ -58,7 +58,7 @@ module ysyx_041514_bpu_top (
   wire rs1_is_link = rs1_is_x1 | rs1_is_x5;
   wire rs1_eq_rd = _rs1 == _rd;
   // https://www.jianshu.com/p/27f38bae827d
-  wire inst_ret = _type_jalr & rs1_is_link;
+  wire inst_ret = _type_jalr & rs1_is_link & ~rd_is_link;
   wire inst_call = (_type_jalr | _type_jal) & rd_is_link;  // 没有实现 pop, then push 
 
   wire [`ysyx_041514_NPC_ADDR_BUS] pop_data;
@@ -70,7 +70,7 @@ module ysyx_041514_bpu_top (
 
   ysyx_041514_Stack #(
       .WIDTH(32),
-      .DEPTH(8)
+      .DEPTH(`ysyx_041514_bpu_cas_num)
   ) u_ysyx_041514_Stack (
       .clk (clk),
       .rst (rst),

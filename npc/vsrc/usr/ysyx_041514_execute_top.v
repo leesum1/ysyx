@@ -46,7 +46,7 @@ module ysyx_041514_execute_top (
     output redirect_pc_valid_o,
 
     /* to bpu */
-    output [$clog2(8) - 1:0] redirect_ras_ptr_o,
+    output [$clog2(`ysyx_041514_bpu_cas_num) - 1:0] redirect_ras_ptr_o,
     output redirect_ras_ptr_valid_o,
 
     /********************* from data_buff *******************/
@@ -138,7 +138,7 @@ module ysyx_041514_execute_top (
   wire rs1_is_link = rs1_is_x1 | rs1_is_x5;
   wire rs1_eq_rd = _rs1 == _rd;
   // https://www.jianshu.com/p/27f38bae827d
-  wire inst_ret = _excop_jalr & rs1_is_link;
+  wire inst_ret = _excop_jalr & rs1_is_link & ~rd_is_link;
   wire inst_call = (_excop_jalr | _excop_jal) & rd_is_link;  // 没有实现 pop, then push 
 
   wire push_valid = inst_call;
@@ -146,14 +146,17 @@ module ysyx_041514_execute_top (
   wire exc_ready_go= (~flush_valid_i[`ysyx_041514_CTRLBUS_EX_MEM])
                   & (~stall_valid_i[`ysyx_041514_CTRLBUS_EX_MEM]);
 
-  wire [$clog2(8) - 1:0] _stack_top_ptr;
+  wire [$clog2(`ysyx_041514_bpu_cas_num) - 1:0] _stack_top_ptr;
 
 
-   wire _stack_top_ptr_valid = bpu_pc_wrong & _excop_branch;
+  wire _stack_top_ptr_valid = bpu_pc_wrong
+                            | trap_bus_i[`ysyx_041514_TRAP_ECALL_M]
+                            | trap_bus_i[`ysyx_041514_TRAP_MRET]
+                            | mem_op_i[`ysyx_041514_MEMOP_FENCEI];
   //  wire _stack_top_ptr_valid = (_compare_out & _excop_branch) ^ bpu_taken_i;
 
   ysyx_041514_Stack_top_ptr #(
-      .DEPTH(8)
+      .DEPTH(`ysyx_041514_bpu_cas_num)
   ) u_ysyx_041514_Stack (
       .clk(clk),
       .rst(rst),
@@ -162,8 +165,10 @@ module ysyx_041514_execute_top (
       .top_ptr_o(_stack_top_ptr),
       .en(exc_ready_go)
   );
-
-  assign redirect_ras_ptr_o = _stack_top_ptr;
+ // TODO 需要改善
+  assign redirect_ras_ptr_o = push_valid?_stack_top_ptr+'d1:
+                              pop_valid?   _stack_top_ptr-'d1:
+                              _stack_top_ptr ;
   assign redirect_ras_ptr_valid_o = _stack_top_ptr_valid;
 
   /****************************** ALU 操作******************************************/

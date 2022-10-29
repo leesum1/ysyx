@@ -11,7 +11,6 @@ mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/device/io/
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/device/io/mmio.o src/device/io/mmio.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/device/io/mmio.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/device/io/mmio.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/device/io/mmio.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/device/io/mmio.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/device/io/mmio.d
- 
 echo + CC src/device/io/port-io.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/device/io/
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/device/io/port-io.o src/device/io/port-io.c
@@ -22,32 +21,26 @@ mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/device/io/
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/device/io/map.o src/device/io/map.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/device/io/map.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/device/io/map.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/device/io/map.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/device/io/map.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/device/io/map.d
- 
 echo + CC src/isa/riscv32/difftest/dut.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/difftest/
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/difftest/dut.o src/isa/riscv32/difftest/dut.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/difftest/dut.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/difftest/dut.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/difftest/dut.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/difftest/dut.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/difftest/dut.d
- 
 echo + CC src/isa/riscv32/inst.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/inst.o src/isa/riscv32/inst.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/inst.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/inst.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/inst.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/inst.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/inst.d
- 
 echo + CC src/isa/riscv32/init.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/init.o src/isa/riscv32/init.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/init.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/init.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/init.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/init.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/init.d
- 
 echo + CC src/isa/riscv32/reg.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/reg.o src/isa/riscv32/reg.c
- 
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/reg.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/reg.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/reg.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/reg.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/reg.d
- 
 echo + CC src/isa/riscv32/logo.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/logo.o src/isa/riscv32/logo.c
@@ -58,62 +51,48 @@ mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/system/
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/system/mmu.o src/isa/riscv32/system/mmu.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/system/mmu.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/system/mmu.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/system/mmu.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/system/mmu.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/system/mmu.d
- 
 echo + CC src/isa/riscv32/system/intr.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/system/
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/system/intr.o src/isa/riscv32/system/intr.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/system/intr.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/system/intr.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/system/intr.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/system/intr.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv32/system/intr.d
- 
 echo + CC src/isa/riscv64/difftest/dut.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/difftest/
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/difftest/dut.o src/isa/riscv64/difftest/dut.c
- 
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/difftest/dut.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/difftest/dut.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/difftest/dut.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/difftest/dut.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/difftest/dut.d
- 
 echo + CC src/isa/riscv64/inst.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/inst.o src/isa/riscv64/inst.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/inst.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/inst.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/inst.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/inst.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/inst.d
- 
 echo + CC src/isa/riscv64/init.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/init.o src/isa/riscv64/init.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/init.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/init.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/init.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/init.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/init.d
- 
 echo + CC src/isa/riscv64/reg.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/reg.o src/isa/riscv64/reg.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/reg.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/reg.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/reg.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/reg.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/reg.d
- 
 echo + CC src/isa/riscv64/logo.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/
- 
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/logo.o src/isa/riscv64/logo.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/logo.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/logo.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/logo.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/logo.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/logo.d
- 
 echo + CC src/isa/riscv64/system/mmu.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/system/
- 
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/system/mmu.o src/isa/riscv64/system/mmu.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/system/mmu.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/system/mmu.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/system/mmu.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/system/mmu.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/system/mmu.d
- 
 echo + CC src/isa/riscv64/system/intr.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/system/
- 
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/system/intr.o src/isa/riscv64/system/intr.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/system/intr.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/system/intr.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/system/intr.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/system/intr.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/isa/riscv64/system/intr.d
- 
 echo + CC src/cpu/difftest/dut.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/difftest/
- 
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/difftest/dut.o src/cpu/difftest/dut.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/difftest/dut.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/difftest/dut.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/difftest/dut.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/difftest/dut.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/difftest/dut.d
@@ -122,87 +101,64 @@ mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/difftest/
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/difftest/ref.o src/cpu/difftest/ref.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/difftest/ref.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/difftest/ref.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/difftest/ref.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/difftest/ref.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/difftest/ref.d
- 
 echo + CC src/cpu/cpu-exec.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/cpu-exec.o src/cpu/cpu-exec.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/cpu-exec.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/cpu-exec.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/cpu-exec.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/cpu-exec.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/cpu-exec.d
- 
 echo + CC src/monitor/monitor.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/
- 
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/monitor.o src/monitor/monitor.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/monitor.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/monitor.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/monitor.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/monitor.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/monitor.d
- 
 echo + CC src/monitor/sdb/sdb.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/sdb/
- 
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/sdb/sdb.o src/monitor/sdb/sdb.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/sdb/sdb.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/sdb/sdb.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/sdb/sdb.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/sdb/sdb.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/sdb/sdb.d
- 
 echo + CC src/monitor/sdb/expr.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/sdb/
- 
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/sdb/expr.o src/monitor/sdb/expr.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/sdb/expr.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/sdb/expr.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/sdb/expr.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/sdb/expr.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/sdb/expr.d
- 
 echo + CC src/utils/log.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/
- 
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/log.o src/utils/log.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/log.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/log.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/log.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/log.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/log.d
- 
 echo + CC src/utils/rand.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/
- 
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/rand.o src/utils/rand.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/rand.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/rand.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/rand.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/rand.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/rand.d
- 
 echo + CC src/utils/state.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/
- 
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/state.o src/utils/state.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/state.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/state.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/state.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/state.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/state.d
- 
 echo + CC src/utils/timer.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/timer.o src/utils/timer.c
- 
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/timer.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/timer.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/timer.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/timer.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/utils/timer.d
- 
 echo + CC src/engine/interpreter/init.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/engine/interpreter/
- 
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/engine/interpreter/init.o src/engine/interpreter/init.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/engine/interpreter/init.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/engine/interpreter/init.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/engine/interpreter/init.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/engine/interpreter/init.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/engine/interpreter/init.d
- 
 echo + CC src/engine/interpreter/hostcall.c
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-/src/engine/interpreter/
- 
 O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=  -c -o /home/leesum/ysyx/nemu/build/obj--nemu-/src/engine/interpreter/hostcall.o src/engine/interpreter/hostcall.c
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-/src/engine/interpreter/hostcall.d  /home/leesum/ysyx/nemu/build/obj--nemu-/src/engine/interpreter/hostcall.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-/src/engine/interpreter/hostcall.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-/src/engine/interpreter/hostcall.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-/src/engine/interpreter/hostcall.d
- 
 echo + CXX /home/leesum/ysyx/nemu/src/monitor/sdb/exprresult.cc
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-//home/leesum/ysyx/nemu/src/monitor/sdb/
- 
 g++ -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=   -c -o /home/leesum/ysyx/nemu/build/obj--nemu-//home/leesum/ysyx/nemu/src/monitor/sdb/exprresult.o /home/leesum/ysyx/nemu/src/monitor/sdb/exprresult.cc
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-//home/leesum/ysyx/nemu/src/monitor/sdb/exprresult.d  /home/leesum/ysyx/nemu/build/obj--nemu-//home/leesum/ysyx/nemu/src/monitor/sdb/exprresult.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-//home/leesum/ysyx/nemu/src/monitor/sdb/exprresult.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-//home/leesum/ysyx/nemu/src/monitor/sdb/exprresult.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-//home/leesum/ysyx/nemu/src/monitor/sdb/exprresult.d
- 
 echo + CXX /home/leesum/ysyx/nemu/src/monitor/sdb/watchpoint.cc
 mkdir -p /home/leesum/ysyx/nemu/build/obj--nemu-//home/leesum/ysyx/nemu/src/monitor/sdb/
 g++ -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/ysyx/nemu/src/isa//include -I/home/leesum/ysyx/nemu/src/engine/ -I/usr/include/SDL2     -DITRACE_COND=true -D__GUEST_ISA__=   -c -o /home/leesum/ysyx/nemu/build/obj--nemu-//home/leesum/ysyx/nemu/src/monitor/sdb/watchpoint.o /home/leesum/ysyx/nemu/src/monitor/sdb/watchpoint.cc
- 
 /home/leesum/ysyx/nemu/tools/fixdep/build/fixdep  /home/leesum/ysyx/nemu/build/obj--nemu-//home/leesum/ysyx/nemu/src/monitor/sdb/watchpoint.d  /home/leesum/ysyx/nemu/build/obj--nemu-//home/leesum/ysyx/nemu/src/monitor/sdb/watchpoint.o unused >  /home/leesum/ysyx/nemu/build/obj--nemu-//home/leesum/ysyx/nemu/src/monitor/sdb/watchpoint.d.tmp
 mv  /home/leesum/ysyx/nemu/build/obj--nemu-//home/leesum/ysyx/nemu/src/monitor/sdb/watchpoint.d.tmp  /home/leesum/ysyx/nemu/build/obj--nemu-//home/leesum/ysyx/nemu/src/monitor/sdb/watchpoint.d
 flock /home/leesum/ysyx/nemu/../.git/ make -C /home/leesum/ysyx/nemu/.. .git_commit MSG=' "compile NEMU"'

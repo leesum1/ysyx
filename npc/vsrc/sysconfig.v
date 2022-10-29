@@ -30,7 +30,7 @@
 
 /* bpu */
 
-`define ysyx_041514_bpu_cas_num 8
+`define ysyx_041514_bpu_cas_num 32
 
 /* BUS */
 `define ysyx_041514_XLEN_BUS `ysyx_041514_XLEN-1:0

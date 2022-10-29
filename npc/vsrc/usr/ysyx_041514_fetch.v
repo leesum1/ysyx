@@ -9,7 +9,7 @@ module ysyx_041514_fetch (
     input rst,
     input [5:0] stall_valid_i,  // 保持当前数据，不接受新的数据
     input [5:0] flush_valid_i,  // 清空当前数据（nop），不接受新的数据
-    input [$clog2(8) - 1:0] redirect_ras_ptr_i,
+    input [$clog2(`ysyx_041514_bpu_cas_num) - 1:0] redirect_ras_ptr_i,
     input redirect_ras_ptr_valid_i,
 
     input [`ysyx_041514_XLEN_BUS] inst_addr_i,  // from pc_reg

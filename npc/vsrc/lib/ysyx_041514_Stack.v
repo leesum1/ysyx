@@ -35,7 +35,7 @@ module ysyx_041514_Stack #(
     end
   end
 
-  assign q = stack_buff[stack_top-1];
+  assign q = stack_buff[stack_top-'d1];
 
 
 endmodule

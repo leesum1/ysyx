@@ -191,7 +191,7 @@ module ysyx_041514_core (
 
   wire [`ysyx_041514_XLEN_BUS] redirect_pc;
   wire redirect_pc_valid;
-  wire [$clog2(8) - 1:0] redirect_ras_ptr;
+  wire [$clog2(`ysyx_041514_bpu_cas_num) - 1:0] redirect_ras_ptr;
   wire redirect_ras_ptr_valid;
   /**********************  ex/mem 流水线间缓存 **************************/
 

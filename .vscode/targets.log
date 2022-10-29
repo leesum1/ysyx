@@ -10,7 +10,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sun Oct 23 00:09:05 2022
+# Make data base, printed on Fri Oct 28 11:21:50 2022
 
 # Variables
 
@@ -165,7 +165,7 @@ MAKELEVEL := 0
 # default
 MAKE = $(MAKE_COMMAND)
 # environment
-PATH = /home/leesum/.vscode-server/bin/d045a5eda657f4d7b676dedbfa7aab8207f8a075/bin/remote-cli:/home/leesum/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl
+PATH = /home/leesum/.vscode-server/bin/d045a5eda657f4d7b676dedbfa7aab8207f8a075/bin/remote-cli:/home/leesum/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl
 # default
 MAKEFILES := 
 # makefile (from '/home/leesum/ysyx/nemu/scripts/config.mk', line 33)
@@ -185,7 +185,7 @@ SRCS- = src/device/device.c src/device/alarm.c src/device/intr.c src/device/seri
 # makefile (from '/home/leesum/ysyx/nemu/scripts/config.mk', line 28)
 rm-distclean = include/generated include/config .config .config.old
 # environment
-SSH_CLIENT = 192.168.1.25 2571 22
+SSH_CLIENT = 192.168.1.25 3797 22
 # makefile (from '/home/leesum/ysyx/nemu/../Makefile', line 9)
 YSYX_HOME = $(NEMU_HOME)/..
 # makefile (from '/home/leesum/ysyx/nemu/scripts/config.mk', line 25)
@@ -263,7 +263,7 @@ CFLAGS := -O2 -MMD -Wall  -fPIC -I/home/leesum/ysyx/nemu/include -I/home/leesum/
 # makefile (from '/home/leesum/ysyx/nemu/Makefile', line 44)
 CXXSRC = $(NEMU_HOME)/src/monitor/sdb/exprresult.cc $(NEMU_HOME)/src/monitor/sdb/watchpoint.cc
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-894195e9-5125-457e-9bf9-e4c7620309f7.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-59d0eb4a-0987-43fe-8cc5-20c5bc33611f.sock
 # makefile (from '/home/leesum/ysyx/nemu/Makefile', line 38)
 SRCS-BLACKLIST-y = $(SRCS-BLACKLIST) $(shell find $(DIRS-BLACKLIST-y) -name "*.c")
 # environment
@@ -285,7 +285,7 @@ _JAVA_OPTIONS = -Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -Dsun.java2
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-XDG_SESSION_ID = 20
+XDG_SESSION_ID = 8
 # default
 .RECIPEPREFIX := 
 # automatic
@@ -307,13 +307,12 @@ CC = $(call remove_quote,$(CONFIG_CC))
 # environment
 LC_IDENTIFICATION = zh_CN.UTF-8
 # environment
-SSH_CONNECTION = 192.168.1.25 2571 192.168.1.30 22
+SSH_CONNECTION = 192.168.1.25 3797 192.168.1.30 22
 # variable set hash-table stats:
 # Load=144/1024=14%, Rehash=0, Collisions=43/622=7%
 
 # Pattern-specific Variable Values
 
- 
 # No pattern-specific variable values.
 
 # Directories
@@ -432,6 +431,7 @@ app: /home/leesum/ysyx/nemu/build/-nemu-
 # Not a target:
 /home/leesum/ysyx/nemu/Makefile:
 #  Implicit rule search has been done.
+ 
 #  Last modified 2022-09-28 14:29:11
 #  File has been updated.
 #  Successfully updated.
@@ -621,7 +621,6 @@ clean:
 # Not a target:
 /home/leesum/ysyx/nemu/tools/difftest.mk:
 #  Implicit rule search has been done.
- 
 #  Last modified 2022-09-28 14:29:11
 #  File has been updated.
 #  Successfully updated.
@@ -762,7 +761,6 @@ tools/spike-diff/:
 #  recipe to execute (from '/home/leesum/ysyx/nemu/scripts/native.mk', line 46):
 	-@$(MAKE) -s -C $@ clean
 
- 
 # Not a target:
 /home/leesum/ysyx/nemu/build/obj--nemu-/src/monitor/sdb/expr.o:
 #  Implicit rule search has not been done.
@@ -838,7 +836,6 @@ run: run-env
 #  Implicit rule search has been done.
 #  File does not exist.
 #  File has been updated.
- 
 #  Failed to be updated.
 
 help:
@@ -861,6 +858,7 @@ tools/gen-expr/:
 # Not a target:
 src/filelist.mk:
 #  Implicit rule search has been done.
+ 
 #  Last modified 2022-09-28 14:29:11
 #  File has been updated.
 #  Successfully updated.
@@ -894,7 +892,6 @@ src/am-bin.S:
 
 # Not a target:
 /home/leesum/ysyx/nemu/build/obj--nemu-/src/cpu/difftest/dut.d:
- 
 #  Implicit rule search has been done.
 #  File does not exist.
 #  File has been updated.
@@ -980,7 +977,6 @@ src/utils/filelist.mk:
 # Not a target:
 /home/leesum/ysyx/nemu/build/obj--nemu-//home/leesum/ysyx/nemu/src/monitor/sdb/exprresult.o:
 #  Implicit rule search has not been done.
- 
 #  Modification time never checked.
 #  File has not been updated.
 
@@ -1048,9 +1044,9 @@ compile_git:
 #  recipe to execute (from '/home/leesum/ysyx/nemu/scripts/native.mk', line 22):
 	$(call git_commit, "compile NEMU")
 
+ 
 .PHONY: src/am-bin.S menuconfig savedefconfig defconfig help distclean .git_commit .clean_index _default app clean run gdb run-env clean-tools clean-all tools/qemu-diff/ tools/spike-diff/ tools/fixdep/ tools/kvm-diff/ tools/kconfig/ tools/gen-expr/
 #  Implicit rule search has not been done.
- 
 #  Modification time never checked.
 #  File has not been updated.
 
@@ -1101,9 +1097,8 @@ gdb: run-env
 
 # strcache performance: lookups = 242 / hit rate = 52%
 # hash-table stats:
- 
 # Load=115/8192=1%, Rehash=0, Collisions=0/242=0%
-# Finished Make data base on Sun Oct 23 00:09:05 2022
+# Finished Make data base on Fri Oct 28 11:21:50 2022
 
 # make: Leaving directory '/home/leesum/ysyx/nemu'
  
