@@ -4,7 +4,7 @@
 #include "syscall.h"
 #include <fs.h>
 #include <proc.h>
- //#define STRACE
+#define STRACE
 
 void do_syscall(Context* c) {
   uintptr_t a[4];
