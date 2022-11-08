@@ -16,6 +16,8 @@ static const char* keyname[256] __attribute__((used)) = {
 
 size_t serial_write(const void* buf, size_t offset, size_t len) {
 
+  yield();
+
   for (size_t i = 0; i < len; i++) {
     putch(*(char*)(buf + i));
   }
@@ -30,6 +32,7 @@ size_t serial_write(const void* buf, size_t offset, size_t len) {
  * @return size_t 0:无按键事件 1:有按键事件
  */
 size_t events_read(void* buf, size_t offset, size_t len) {
+  yield();
   assert(len > 10);
   AM_INPUT_KEYBRD_T kb = io_read(AM_INPUT_KEYBRD);
   if (kb.keydown) {
@@ -63,6 +66,7 @@ size_t dispinfo_read(void* buf, size_t offset, size_t len) {
  * @return size_t
  */
 size_t fb_write(const void* buf, size_t offset, size_t len) {
+  yield();
   /* 按页 */
   int x = (offset >> 32);
   int y = (offset);

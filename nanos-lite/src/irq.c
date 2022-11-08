@@ -16,6 +16,8 @@ static Context* do_event(Event e, Context* c) {
     // printf("do_event:EVENT_YIELD\n");
     return schedule(c);
     break;
+  case EVENT_IRQ_TIMER:
+    return c;
   case EVENT_SYSCALL:
     //printf("do_event:EVENT_SYSCALL\n");
     do_syscall(c);

@@ -20,5 +20,8 @@ extern PCB* current;
 
 
 extern void naive_uload(PCB* pcb, const char* filename);
+extern void context_kload(PCB* pcb_p, void (*entry)(void*), void* arg);
+extern void context_uload(PCB* pcb_p, const char* filename);
+
 extern Context* schedule(Context* prev);
 #endif

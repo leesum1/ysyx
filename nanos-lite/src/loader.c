@@ -67,7 +67,7 @@ static uintptr_t loader(PCB* pcb, const char* filename) {
     }
   }
 
-  Log("Ehdr->e_entry:%p\n", Ehdr->e_entry);
+  Log("Ehdr->e_entry:%p\n", (void*)Ehdr->e_entry);
 
   free(Ehdr);
   free(Phdr);
@@ -77,7 +77,26 @@ static uintptr_t loader(PCB* pcb, const char* filename) {
 
 void naive_uload(PCB* pcb, const char* filename) {
   uintptr_t entry = loader(pcb, filename); // TODO 需要加 fencei 指令
-  Log("Jump to entry = %p", entry);
+  Log("Jump to entry = %p", (void*)entry);
   ((void(*)())entry) ();
 }
 
+
+void context_kload(PCB* pcb_p, void (*entry)(void*), void* arg) {
+
+  pcb_p->cp = kcontext(RANGE(pcb_p->stack, pcb_p->stack + STACK_SIZE - 1), entry, arg);
+}
+
+
+void context_uload(PCB* pcb_p, const char* filename) {
+
+  uintptr_t entry = loader(pcb_p, filename);
+  printf("test\n");
+  pcb_p->cp = ucontext(&pcb_p->as, RANGE(pcb_p->stack, pcb_p->stack + STACK_SIZE - 1), (void*)entry);
+
+
+
+  void* stacktop = (void*)pcb_p->cp->GPRx;
+  printf("ustack: %p\n", stacktop);
+
+}

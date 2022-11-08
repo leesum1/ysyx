@@ -4,7 +4,7 @@
 #include "syscall.h"
 #include <fs.h>
 #include <proc.h>
-#define STRACE
+// #define STRACE
 
 void do_syscall(Context* c) {
   uintptr_t a[4];
@@ -97,5 +97,7 @@ void do_syscall(Context* c) {
     panic("Unhandled syscall ID = %d\n", a[0]);
     break;
   }
+
+  
 }
 
