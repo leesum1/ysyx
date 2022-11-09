@@ -425,6 +425,15 @@ main(
 
 --*/
 {
+
+   bool skip_flag = false;
+   for (size_t i = 0; i < argc; i++) {
+      printf("pal argv:%s\n", argv[i]);
+      if (!strcmp("--skip", argv[i])) {
+         skip_flag = true;
+      }
+   }
+
    //
    // Initialize SDL
    //
@@ -448,8 +457,13 @@ main(
    //
    // Show the trademark screen and splash screen
    //
-   PAL_TrademarkScreen();
-   PAL_SplashScreen();
+
+   if (!skip_flag){
+      PAL_TrademarkScreen();
+      PAL_SplashScreen();
+   }
+   
+
 
    //
    // Run the main game routine

@@ -88,15 +88,114 @@ void context_kload(PCB* pcb_p, void (*entry)(void*), void* arg) {
 }
 
 
-void context_uload(PCB* pcb_p, const char* filename) {
+void context_uload(PCB* pcb_p, const char* filename, char* const argv[], char* const envp[]) {
 
   uintptr_t entry = loader(pcb_p, filename);
-  printf("test\n");
   pcb_p->cp = ucontext(&pcb_p->as, RANGE(pcb_p->stack, pcb_p->stack + STACK_SIZE - 1), (void*)entry);
 
+  uintptr_t ustack_end = pcb_p->cp->GPRx;
+  Log("ustack_end: %p\n", ustack_end);
+
+  int argc = 0;
+  int envc = 0;
+  while (argv[argc] != NULL) {
+    argc++;
+  }
+  while (envp[envc] != NULL) {
+    envc++;
+  }
+  Log("argc:%d,envc%d\n", argc, envc);
+
+  // 统计 argv 中字符串长度
+  int argv_str_len = 0;
+  for (size_t argc_i = 0; argc_i < argc; argc_i++) {
+    argv_str_len += strlen(argv[argc_i]) + 1; // 加上字符串结束的 \0
+    Log("argv%d:%s\n", argc_i, argv[argc_i]);
+  }
+
+  // 统计 envp 中字符串长度
+  int envp_str_len = 0;
+  for (size_t envc_i = 0; envc_i < envc; envc_i++) {
+    envp_str_len += strlen(envp[envc_i]) + 1;
+    Log("envp%d:%s\n", envc_i, envp[envc_i]);
+  }
 
 
-  void* stacktop = (void*)pcb_p->cp->GPRx;
-  printf("ustack: %p\n", stacktop);
+  uintptr_t str_area_end = (uintptr_t)ustack_end - envp_str_len - argv_str_len;
 
+  uintptr_t str_area_p = str_area_end;
+  for (size_t argc_i = 0; argc_i < argc; argc_i++) {
+    strcpy((char*)str_area_p, argv[argc_i]);
+    str_area_p += strlen(argv[argc_i]) + 1;
+  }
+
+  for (size_t envc_i = 0; envc_i < envc; envc_i++) {
+    strcpy((char*)str_area_p, envp[envc_i]);
+    str_area_p += strlen(envp[envc_i]) + 1;
+  }
+
+
+  assert(str_area_p == ustack_end); // 不留空
+  assert((str_area_end + envp_str_len + argv_str_len) == ustack_end);
+
+  uintptr_t str_area_end_align = ROUNDDOWN(str_area_end, 8); // 地址对齐
+
+
+  printf("pre:%p,next:%p\n", str_area_end, str_area_end_align);
+
+
+
+  uintptr_t argv_aria_end = str_area_end_align - (envc + argc + 2) * 8;// 2 NULL
+
+  // 指向 用户栈 地址
+  uintptr_t* argv_aria_end_p = (uintptr_t*)argv_aria_end;
+
+  str_area_p = str_area_end;
+  for (size_t argc_i = 0; argc_i < argc; argc_i++) {
+    *(argv_aria_end_p) = str_area_p; // 用户堆栈指向字符串
+    Log("%s", *argv_aria_end_p);
+    argv_aria_end_p++;
+    str_area_p += strlen(argv[argc_i]) + 1;
+  }
+  *(argv_aria_end_p++) = (uintptr_t)NULL;
+
+
+  for (size_t envc_i = 0; envc_i < envc; envc_i++) {
+    *(argv_aria_end_p) = str_area_p;
+    Log("%s", *argv_aria_end_p);
+    argv_aria_end_p++;
+    str_area_p += strlen(envp[envc_i]) + 1;
+  }
+
+  assert(str_area_p == ustack_end);
+
+  *(argv_aria_end_p++) = (uintptr_t)NULL;
+
+
+
+  *(uintptr_t*)(argv_aria_end - 8) = argc;
+
+  pcb_p->cp->GPRx = (argv_aria_end - 8);
+
+  uintptr_t argc_test = *(uintptr_t*)(pcb_p->cp->GPRx);
+
+  // uintptr_t argv_test = 
+  uintptr_t* argv_test = (uintptr_t*)argv_aria_end;
+  uintptr_t** envp_test = (uintptr_t**)(argv_test + argc_test  + 1);
+
+  Log("argv_test:%p,envp_test:%p", argv_test,envp_test);
+
+
+  for (size_t i = 0; i < argc_test; i++) {
+    Log("argc_test%d:%s", i, argv_test[i]);
+  }
+
+  while ((*envp_test) != NULL) {
+    Log("envp_test:%s", *(envp_test++));
+  }
+
+
+
+  //assert(0);
+  Log("argv_str_len:%d,envp_str_len%d\n", argv_str_len, envp_str_len);
 }
