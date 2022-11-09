@@ -91,7 +91,10 @@ void do_syscall(Context* c) {
 #ifdef STRACE
     printf("SYS_execve a1:%s,a2:%d,a3:%d\n", a[1], a[2], a[3]);
 #endif
-    naive_uload(NULL, (char*)a[1]);
+    // naive_uload(NULL, (char*)a[1]);
+    context_uload(current,(char*)a[1],(char**)a[2],(char**)a[3]);
+    switch_boot_pcb();
+    yield();
     break;
   default:
     panic("Unhandled syscall ID = %d\n", a[0]);

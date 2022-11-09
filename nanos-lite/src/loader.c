@@ -84,7 +84,7 @@ void naive_uload(PCB* pcb, const char* filename) {
 
 void context_kload(PCB* pcb_p, void (*entry)(void*), void* arg) {
 
-  pcb_p->cp = kcontext(RANGE(pcb_p->stack, pcb_p->stack + STACK_SIZE - 1), entry, arg);
+  pcb_p->cp = kcontext(RANGE(pcb_p->stack, pcb_p->stack + STACK_SIZE), entry, arg);
 }
 
 
@@ -131,12 +131,14 @@ void context_kload(PCB* pcb_p, void (*entry)(void*), void* arg) {
 void context_uload(PCB* pcb_p, const char* filename, char* const argv[], char* const envp[]) {
 
   uintptr_t entry = loader(pcb_p, filename);
-  pcb_p->cp = ucontext(&pcb_p->as, RANGE(pcb_p->stack, pcb_p->stack + STACK_SIZE - 1), (void*)entry);
+  pcb_p->cp = ucontext(&pcb_p->as, RANGE(pcb_p->stack, pcb_p->stack + STACK_SIZE), (void*)entry);
 
 
   // get user stack end position
   // we use GPRx to transfer stack end parameter
-  char* ustack_end = (char*)pcb_p->cp->GPRx;
+  char* ustack_start = (char*)new_page(8);
+  char* ustack_end = (char*)(ustack_start + PGSIZE * 8);
+
   Log("ustack_end: %p\n", ustack_end);
 
   // get count of argv and envp
@@ -239,5 +241,5 @@ void context_uload(PCB* pcb_p, const char* filename, char* const argv[], char* c
   }
   Log("argv_str_len:%d,envp_str_len%d\n", argv_str_len, envp_str_len);
 
-  
+
 }
