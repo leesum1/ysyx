@@ -88,14 +88,58 @@ void context_kload(PCB* pcb_p, void (*entry)(void*), void* arg) {
 }
 
 
+
+
+/**
+ * @description:  |               |
+                  +---------------+ <---- ustack.end
+                  |  Unspecified  |
+                  +---------------+
+                  |               | <----------+
+                  |    string     | <--------+ |
+                  |     area      | <------+ | |
+                  |               | <----+ | | |
+                  |               | <--+ | | | |
+                  +---------------+    | | | | |
+                  |  Unspecified  |    | | | | |
+                  +---------------+    | | | | |
+                  |     NULL      |    | | | | |
+                  +---------------+    | | | | |
+                  |    ......     |    | | | | |
+                  +---------------+    | | | | |
+                  |    envp[1]    | ---+ | | | |
+                  +---------------+      | | | |
+                  |    envp[0]    | -----+ | | |
+                  +---------------+        | | |
+                  |     NULL      |        | | |
+                  +---------------+        | | |
+                  | argv[argc-1]  | -------+ | |
+                  +---------------+          | |
+                  |    ......     |          | |
+                  +---------------+          | |
+                  |    argv[1]    | ---------+ |
+                  +---------------+            |
+                  |    argv[0]    | -----------+
+                  +---------------+
+                  |      argc     |
+                  +---------------+ <---- cp->GPRx
+                  |               |
+ * @param {PCB*} pcb_p
+ * @param {char*} filename
+ * @return {*}
+ */
 void context_uload(PCB* pcb_p, const char* filename, char* const argv[], char* const envp[]) {
 
   uintptr_t entry = loader(pcb_p, filename);
   pcb_p->cp = ucontext(&pcb_p->as, RANGE(pcb_p->stack, pcb_p->stack + STACK_SIZE - 1), (void*)entry);
 
-  uintptr_t ustack_end = pcb_p->cp->GPRx;
+
+  // get user stack end position
+  // we use GPRx to transfer stack end parameter
+  char* ustack_end = (char*)pcb_p->cp->GPRx;
   Log("ustack_end: %p\n", ustack_end);
 
+  // get count of argv and envp
   int argc = 0;
   int envc = 0;
   while (argv[argc] != NULL) {
@@ -106,96 +150,94 @@ void context_uload(PCB* pcb_p, const char* filename, char* const argv[], char* c
   }
   Log("argc:%d,envc%d\n", argc, envc);
 
-  // 统计 argv 中字符串长度
+  // caculate the length of strings in argv,including '\0'
+  // same as the bytes of string in mem
   int argv_str_len = 0;
   for (size_t argc_i = 0; argc_i < argc; argc_i++) {
-    argv_str_len += strlen(argv[argc_i]) + 1; // 加上字符串结束的 \0
+    argv_str_len += strlen(argv[argc_i]) + 1; // include '\0'
     Log("argv%d:%s\n", argc_i, argv[argc_i]);
   }
 
-  // 统计 envp 中字符串长度
+  // refer to above
   int envp_str_len = 0;
   for (size_t envc_i = 0; envc_i < envc; envc_i++) {
     envp_str_len += strlen(envp[envc_i]) + 1;
     Log("envp%d:%s\n", envc_i, envp[envc_i]);
   }
 
+  // get start positon of string area on ustack
+  // we assume that Unspecified area which blow ustack.end is zero
+  char* str_area_start = ustack_end - envp_str_len - argv_str_len;
 
-  uintptr_t str_area_end = (uintptr_t)ustack_end - envp_str_len - argv_str_len;
 
-  uintptr_t str_area_p = str_area_end;
+  // use another var(str_area_itr) to iterate string area
+  char* str_area_itr = str_area_start;
+  // copy all strings in argv[] to string area
   for (size_t argc_i = 0; argc_i < argc; argc_i++) {
-    strcpy((char*)str_area_p, argv[argc_i]);
-    str_area_p += strlen(argv[argc_i]) + 1;
+    strcpy(str_area_itr, argv[argc_i]);
+    str_area_itr += strlen(argv[argc_i]) + 1; // include '\0'
   }
+  // copy all strings in envp[] to string area
+  for (size_t envc_i = 0; envc_i < envc; envc_i++) {
+    strcpy(str_area_itr, envp[envc_i]);
+    str_area_itr += strlen(envp[envc_i]) + 1;
+  }
+  // cheak
+  assert(str_area_itr == ustack_end);
+  assert((str_area_start + envp_str_len + argv_str_len) == ustack_end);
+
+  // align address to 8
+  char* str_area_start_align = (char*)ROUNDDOWN(str_area_start, 8);
+
+  Log("pre_addr:%p,align_addr:%p\n", str_area_start, str_area_start_align);
+
+  // get the positon of argv[0]
+  char* argv_area_start = str_area_start_align - (envc + argc + 2) * sizeof(uintptr_t);// 2 NULL
+
+  // iterate 
+  char** argv_area_itr = (char**)argv_area_start;
+
+  str_area_itr = str_area_start;
+  for (size_t argc_i = 0; argc_i < argc; argc_i++) {
+    *(argv_area_itr) = str_area_itr; // point to a string
+    Log("%s", *argv_area_itr);
+    argv_area_itr++; // move to next
+    str_area_itr += strlen(argv[argc_i]) + 1;
+  }
+  *(argv_area_itr++) = NULL;
 
   for (size_t envc_i = 0; envc_i < envc; envc_i++) {
-    strcpy((char*)str_area_p, envp[envc_i]);
-    str_area_p += strlen(envp[envc_i]) + 1;
+    *(argv_area_itr) = str_area_itr;
+    Log("%s", *argv_area_itr);
+    argv_area_itr++;
+    str_area_itr += strlen(envp[envc_i]) + 1;
   }
+  *(argv_area_itr++) = NULL;
 
+  // check
+  assert((uintptr_t)argv_area_itr == (uintptr_t)str_area_start_align);
+  assert(str_area_itr == ustack_end);
 
-  assert(str_area_p == ustack_end); // 不留空
-  assert((str_area_end + envp_str_len + argv_str_len) == ustack_end);
-
-  uintptr_t str_area_end_align = ROUNDDOWN(str_area_end, 8); // 地址对齐
-
-
-  printf("pre:%p,next:%p\n", str_area_end, str_area_end_align);
-
-
-
-  uintptr_t argv_aria_end = str_area_end_align - (envc + argc + 2) * 8;// 2 NULL
-
-  // 指向 用户栈 地址
-  uintptr_t* argv_aria_end_p = (uintptr_t*)argv_aria_end;
-
-  str_area_p = str_area_end;
-  for (size_t argc_i = 0; argc_i < argc; argc_i++) {
-    *(argv_aria_end_p) = str_area_p; // 用户堆栈指向字符串
-    Log("%s", *argv_aria_end_p);
-    argv_aria_end_p++;
-    str_area_p += strlen(argv[argc_i]) + 1;
-  }
-  *(argv_aria_end_p++) = (uintptr_t)NULL;
-
-
-  for (size_t envc_i = 0; envc_i < envc; envc_i++) {
-    *(argv_aria_end_p) = str_area_p;
-    Log("%s", *argv_aria_end_p);
-    argv_aria_end_p++;
-    str_area_p += strlen(envp[envc_i]) + 1;
-  }
-
-  assert(str_area_p == ustack_end);
-
-  *(argv_aria_end_p++) = (uintptr_t)NULL;
+  // copy argc to stack
+  uintptr_t* argc_area_start = (uintptr_t*)(argv_area_start - sizeof(uintptr_t));
+  *argc_area_start = argc;
+  pcb_p->cp->GPRx = (uintptr_t)argc_area_start;
 
 
 
-  *(uintptr_t*)(argv_aria_end - 8) = argc;
-
-  pcb_p->cp->GPRx = (argv_aria_end - 8);
-
+  // for check
   uintptr_t argc_test = *(uintptr_t*)(pcb_p->cp->GPRx);
-
-  // uintptr_t argv_test = 
-  uintptr_t* argv_test = (uintptr_t*)argv_aria_end;
-  uintptr_t** envp_test = (uintptr_t**)(argv_test + argc_test  + 1);
-
-  Log("argv_test:%p,envp_test:%p", argv_test,envp_test);
-
+  uintptr_t* argv_test = (uintptr_t*)argv_area_start;
+  uintptr_t** envp_test = (uintptr_t**)(argv_test + argc_test + 1);
 
   for (size_t i = 0; i < argc_test; i++) {
-    Log("argc_test%d:%s", i, argv_test[i]);
+    Log("argv_test%d:%s", i, argv_test[i]);
   }
 
   while ((*envp_test) != NULL) {
     Log("envp_test:%s", *(envp_test++));
   }
-
-
-
-  //assert(0);
   Log("argv_str_len:%d,envp_str_len%d\n", argv_str_len, envp_str_len);
+
+  
 }

@@ -28,20 +28,22 @@ char* pal_argv[] = {
 };
 
 char* pal_envp[] = {
-  "home=pwd",
-  "ARCH=riscv",
-  "ARCH=riscv1",
-  "ARCH=riscv2",
+  // "home=pwd",
+  // "ARCH=riscv",
+  // "ARCH=riscv1",
+  // "ARCH=riscv2",
 NULL
 };
 
 void init_proc() {
+  Log("Initializing processes...");
   context_kload(&pcb[0], hello_fun, "first");
-  // context_kload(&pcb[1], hello_fun, "first2");
   context_uload(&pcb[1], "/bin/pal", pal_argv, pal_envp);
+
+
   switch_boot_pcb();
 
-  // Log("Initializing processes...");
+
 
   // // load program here
   // naive_uload(NULL, "/bin/menu");
