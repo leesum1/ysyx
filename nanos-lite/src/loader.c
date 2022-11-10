@@ -168,8 +168,8 @@ void context_uload(PCB* pcb_p, const char* filename, char* const argv[], char* c
     Log("envp%d:%s\n", envc_i, envp[envc_i]);
   }
 
-  // get start positon of string area on ustack
-  // we assume that Unspecified area which blow ustack.end is zero
+  // get the start position of string-area on ustack
+  // we assume that the Unspecified area which blows ustack.end is zero
   char* str_area_start = ustack_end - envp_str_len - argv_str_len;
 
 
@@ -185,7 +185,7 @@ void context_uload(PCB* pcb_p, const char* filename, char* const argv[], char* c
     strcpy(str_area_itr, envp[envc_i]);
     str_area_itr += strlen(envp[envc_i]) + 1;
   }
-  // cheak
+  // check
   assert(str_area_itr == ustack_end);
   assert((str_area_start + envp_str_len + argv_str_len) == ustack_end);
 
@@ -194,7 +194,7 @@ void context_uload(PCB* pcb_p, const char* filename, char* const argv[], char* c
 
   Log("pre_addr:%p,align_addr:%p\n", str_area_start, str_area_start_align);
 
-  // get the positon of argv[0]
+  // get the position of argv[0]
   char* argv_area_start = str_area_start_align - (envc + argc + 2) * sizeof(uintptr_t);// 2 NULL
 
   // iterate 

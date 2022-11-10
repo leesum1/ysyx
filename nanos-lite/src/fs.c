@@ -45,7 +45,7 @@ size_t invalid_write(const void* buf, size_t offset, size_t len) {
   return 0;
 }
 
-/* This is the information about all files in disk. */
+/* This is the information about all files on disk. */
 static Finfo file_table[] __attribute__((used)) = {
   [FD_STDIN] = {"stdin", 0, 0, invalid_read, invalid_write},
   [FD_STDOUT] = {"stdout", 0, 0, invalid_read, serial_write},
@@ -150,7 +150,7 @@ size_t fs_write(int fd, const void* buf, size_t len) {
   size_t disk_offset = file_table[fd].disk_offset;
   size_t file_size = file_table[fd].size;
   size_t open_offset = file_table[fd].open_offset;
-  // serial, device type:char
+  // serial, device type: char
   if (fd < FD_NUM) {
     return file_table[fd].write(buf, open_offset, len);
   }
