@@ -6,6 +6,9 @@
 #include <proc.h>
 // #define STRACE
 
+
+static char* arg_empty[] = { NULL };
+
 void do_syscall(Context* c) {
   uintptr_t a[4];
 
@@ -31,7 +34,9 @@ void do_syscall(Context* c) {
 #ifdef STRACE
     printf("SYS_exit\n");
 #endif
-    naive_uload(NULL, "/bin/menu");
+    context_uload(current, "/bin/nterm", arg_empty, arg_empty);
+    switch_boot_pcb();
+    yield();
     halt(a[1]);
     break;
   case SYS_write:
@@ -91,16 +96,23 @@ void do_syscall(Context* c) {
 #ifdef STRACE
     printf("SYS_execve a1:%s,a2:%d,a3:%d\n", a[1], a[2], a[3]);
 #endif
-    // naive_uload(NULL, (char*)a[1]);
-    context_uload(current,(char*)a[1],(char**)a[2],(char**)a[3]);
-    switch_boot_pcb();
-    yield();
+    // fail no such file
+    if (fs_open((char*)a[1], 0, 0) < 0) {
+      c->GPRx = -2;
+    }
+    else {
+      context_uload(current, (char*)a[1], (char**)a[2], (char**)a[3]);
+      switch_boot_pcb();
+      yield();
+      c->GPRx = 0;
+    }
     break;
   default:
     panic("Unhandled syscall ID = %d\n", a[0]);
     break;
   }
 
-  
+
+
 }
 

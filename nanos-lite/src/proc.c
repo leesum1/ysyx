@@ -13,7 +13,11 @@ void switch_boot_pcb() {
 void hello_fun(void* arg) {
   int j = 1;
   while (1) {
+    if (j==1000)
+    {
     Log("Hello World from Nanos-lite with arg '%s' for the %dth time!", arg, j);
+    j=0;
+    }
     j++;
     yield();
   }
@@ -23,7 +27,6 @@ void hello_fun(void* arg) {
 
 
 char* pal_argv[] = {
-"/bin/exec-test",
   NULL
 };
 
@@ -39,7 +42,7 @@ void init_proc() {
   Log("Initializing processes...");
 
   context_kload(&pcb[0], hello_fun, "first");
-  context_uload(&pcb[1], "/bin/pal", pal_argv, pal_envp);
+  context_uload(&pcb[1], "/bin/nterm", pal_argv, pal_envp);
 
 
   switch_boot_pcb();

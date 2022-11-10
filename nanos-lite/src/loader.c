@@ -130,9 +130,8 @@ void context_kload(PCB* pcb_p, void (*entry)(void*), void* arg) {
  */
 void context_uload(PCB* pcb_p, const char* filename, char* const argv[], char* const envp[]) {
 
-  uintptr_t entry = loader(pcb_p, filename);
-  pcb_p->cp = ucontext(&pcb_p->as, RANGE(pcb_p->stack, pcb_p->stack + STACK_SIZE), (void*)entry);
-
+  // uintptr_t entry = loader(pcb_p, filename);
+  // pcb_p->cp = ucontext(&pcb_p->as, RANGE(pcb_p->stack, pcb_p->stack + STACK_SIZE), (void*)entry);
 
   // get user stack end position
   // we use GPRx to transfer stack end parameter
@@ -145,13 +144,15 @@ void context_uload(PCB* pcb_p, const char* filename, char* const argv[], char* c
   int argc = 0;
   int envc = 0;
   while (argv[argc] != NULL) {
+    // Log("argv:%p",argv[argc]);
     argc++;
   }
   while (envp[envc] != NULL) {
     envc++;
   }
   Log("argc:%d,envc%d\n", argc, envc);
-
+  Log("%p",argv);
+// assert(0);
   // caculate the length of strings in argv,including '\0'
   // same as the bytes of string in mem
   int argv_str_len = 0;
@@ -223,6 +224,12 @@ void context_uload(PCB* pcb_p, const char* filename, char* const argv[], char* c
   // copy argc to stack
   uintptr_t* argc_area_start = (uintptr_t*)(argv_area_start - sizeof(uintptr_t));
   *argc_area_start = argc;
+
+
+  uintptr_t entry = loader(pcb_p, filename);
+  pcb_p->cp = ucontext(&pcb_p->as, RANGE(pcb_p->stack, pcb_p->stack + STACK_SIZE), (void*)entry);
+
+
   pcb_p->cp->GPRx = (uintptr_t)argc_area_start;
 
 
@@ -240,6 +247,7 @@ void context_uload(PCB* pcb_p, const char* filename, char* const argv[], char* c
     Log("envp_test:%s", *(envp_test++));
   }
   Log("argv_str_len:%d,envp_str_len%d\n", argv_str_len, envp_str_len);
+
 
 
 }

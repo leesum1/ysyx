@@ -2,7 +2,7 @@
 
 /* execvp.c */
 
-/* This and the other exec*.c files in this directory require 
+/* This and the other exec*.c files in this directory require
    the target to provide the execve syscall.  */
 
 #include <_ansi.h>
@@ -12,20 +12,19 @@
 #include <string.h>
 #include <errno.h>
 #include <ctype.h>
-
+#include <stdio.h>
 #define PATH_DELIM ':'
 
-/*
- * Copy string, until c or <nul> is encountered.
- * NUL-terminate the destination string (s1).
- */
+   /*
+    * Copy string, until c or <nul> is encountered.
+    * NUL-terminate the destination string (s1).
+    */
 
-static char *
-strccpy (char *s1,
-	char *s2,
-	char c)
-{
-  char *dest = s1;
+static char*
+strccpy(char* s1,
+  char* s2,
+  char c) {
+  char* dest = s1;
 
   while (*s2 && *s2 != c)
     *s1++ = *s2++;
@@ -35,35 +34,34 @@ strccpy (char *s1,
 }
 
 int
-execvp (const char *file,
-	char * const argv[])
-{
-  char *path = getenv ("PATH");
+execvp(const char* file,
+  char* const argv[]) {
+  char* path = getenv("PATH");
   char buf[MAXNAMLEN];
-
   /* If $PATH doesn't exist, just pass FILE on unchanged.  */
   if (!path)
-    return execv (file, argv);
+    return execv(file, argv);
 
   /* If FILE contains a directory, don't search $PATH.  */
-  if (strchr (file, '/')
-      )
-    return execv (file, argv);
-
-  while (*path)
-    {
-      strccpy (buf, path, PATH_DELIM);
-      /* An empty entry means the current directory.  */
-      if (*buf != 0 && buf[strlen(buf) - 1] != '/')
-	strcat (buf, "/");
-      strcat (buf, file);
-      if (execv (buf, argv) == -1 && errno != ENOENT)
-	return -1;
-      while (*path && *path != PATH_DELIM)
-	path++;
-      if (*path == PATH_DELIM)
-	path++;			/* skip over delim */
+  if (strchr(file, '/')
+    )
+    return execv(file, argv);
+  while (*path) {
+    strccpy(buf, path, PATH_DELIM);
+    /* An empty entry means the current directory.  */
+    if (*buf != 0 && buf[strlen(buf) - 1] != '/')
+      strcat(buf, "/");
+    strcat(buf, file);
+    printf("execvp:%s\n", buf);
+    if (execv(buf, argv) == -1 && errno != ENOENT) {
+      return -1;
     }
+    printf("errno1:%d\n", errno);
+    while (*path && *path != PATH_DELIM)
+      path++;
+    if (*path == PATH_DELIM)
+      path++;			/* skip over delim */
+  }
 
   return -1;
 }
