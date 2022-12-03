@@ -25,6 +25,7 @@ const char* img_path = " ";
 Simtop* mysim_p;
 
 
+
 int main(int argc, char* argv[]) {
 
   /* 解析参数 获取镜像路径*/
@@ -38,11 +39,14 @@ int main(int argc, char* argv[]) {
     }
   }
 
+
+
+
   /* 不知道为什么将 Simtop mysim 声明为全局变量会崩溃(已有思路,全局对象的特性)*/
   mysim_p = new Simtop;
   // /* 加载镜像,若无输入镜像，加载默认镜像 */
-  // mysim_p->mem->setImagePath(img_path);
-  // mysim_p->mem->loadImage();
+   // mysim_p->mem->setImagePath(img_path);
+   // mysim_p->mem->loadImage();
   mysim_p->reset();
 
   size_t file_size = mysim_p->u_axi4->dram->load_binary(0, img_path);

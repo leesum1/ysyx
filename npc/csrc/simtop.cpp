@@ -287,7 +287,7 @@ void Simtop::sdbOff(const char* sdbname) {
         }
         return;
     }
-
+    
     for (auto& iter : sdbToollist) {
         if (sdbname == iter.name) {
             iter.isok = false;
@@ -362,8 +362,8 @@ void Simtop::addCommitedInst(uint64_t inst_pc, uint32_t inst_data) {
     temp_inst.inst_data = inst_data;
     temp_inst.inst_pc = inst_pc;
     this->commited_list.inst.push_back(temp_inst);
-
     commit_count++;
+
 }
 
 
