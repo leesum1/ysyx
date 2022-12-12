@@ -17,7 +17,7 @@ module ysyx_041514_alu_div_top (
 
 
 `ifdef DIV_SIM
-  alu_div_sim u_alu_div_sim (
+  ysyx_041514_alu_div_sim u_alu_div_sim (
       .clk               (clk),
       .rst               (rst),
       .div_signed_valid_i(signed_valid_i),
