@@ -1,5 +1,5 @@
 module ysyx_041514_Vectorinvert #(
-    DATA_LEN = 1
+    DATA_LEN = 10
 ) (
     input [DATA_LEN-1:0] in,
     output reg [DATA_LEN-1:0] out
