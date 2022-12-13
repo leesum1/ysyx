@@ -67,30 +67,14 @@ module ysyx_041514_dcode (
   wire [6:0] _func7 = _inst[31:25];
   wire [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] _csr = _inst[31:20];  // CSR 地址
 
-  // 不同指令类型的立即数
-  wire [`ysyx_041514_IMM_LEN-1:0] _immI = {{21 + 32{_inst[31]}}, _inst[30:20]};
-  wire [`ysyx_041514_IMM_LEN-1:0] _immS = {
-    {21 + 32{_inst[31]}}, _inst[30:25], _inst[11:8], _inst[7]
-  };
-  wire [`ysyx_041514_IMM_LEN-1:0] _immB = {
-    {20 + 32{_inst[31]}}, _inst[7], _inst[30:25], _inst[11:8], 1'b0
-  };
-  wire [`ysyx_041514_IMM_LEN-1:0] _immU = {
-    {1 + 32{_inst[31]}}, _inst[30:20], _inst[19:12], 12'b0
-  };
-  wire [`ysyx_041514_IMM_LEN-1:0] _immJ = {
-    {12 + 32{_inst[31]}}, _inst[19:12], _inst[20], _inst[30:25], _inst[24:21], 1'b0
-  };
+  // // 不同指令类型的立即数
   wire [`ysyx_041514_IMM_LEN-1:0] _immCSR = {59'b0, _inst[19:15]};
-
 
 
   /* 分解_opcode */
   wire [6:0] _opcode = _inst[6:0];
   /* 1:0 */
-  // wire _opcode_1_0_00 = (_opcode[1:0] == 2'b00);
-  // wire _opcode_1_0_01 = (_opcode[1:0] == 2'b01);
-  // wire _opcode_1_0_10 = (_opcode[1:0] == 2'b10);
+
   wire _opcode_1_0_11 = (_opcode[1:0] == 2'b11);
   /* 4:2 */
   wire _opcode_4_2_000 = (_opcode[4:2] == 3'b000);
@@ -120,29 +104,6 @@ module ysyx_041514_dcode (
   wire _func7_0000000 = (_func7 == 7'b0000000);
   wire _func7_0100000 = (_func7 == 7'b0100000);
   wire _func7_0000001 = (_func7 == 7'b0000001);
-  // wire _func7_0000101 = (_func7 == 7'b0000101);
-  // wire _func7_0001001 = (_func7 == 7'b0001001);
-  // wire _func7_0001101 = (_func7 == 7'b0001101);
-  // wire _func7_0010101 = (_func7 == 7'b0010101);
-  // wire _func7_0100001 = (_func7 == 7'b0100001);
-  // wire _func7_0010001 = (_func7 == 7'b0010001);
-  // wire _func7_0101101 = (_func7 == 7'b0101101);
-  // wire _func7_1111111 = (_func7 == 7'b1111111);
-  // wire _func7_0000100 = (_func7 == 7'b0000100);
-  // wire _func7_0001000 = (_func7 == 7'b0001000);
-  // wire _func7_0001100 = (_func7 == 7'b0001100);
-  // wire _func7_0101100 = (_func7 == 7'b0101100);
-  // wire _func7_0010000 = (_func7 == 7'b0010000);
-  // wire _func7_0010100 = (_func7 == 7'b0010100);
-  // wire _func7_1100000 = (_func7 == 7'b1100000);
-  // wire _func7_1110000 = (_func7 == 7'b1110000);
-  // wire _func7_1010000 = (_func7 == 7'b1010000);
-  // wire _func7_1101000 = (_func7 == 7'b1101000);
-  // wire _func7_1111000 = (_func7 == 7'b1111000);
-  // wire _func7_1010001 = (_func7 == 7'b1010001);
-  // wire _func7_1110001 = (_func7 == 7'b1110001);
-  // wire _func7_1100001 = (_func7 == 7'b1100001);
-  // wire _func7_1101001 = (_func7 == 7'b1101001);
 
   /* 指令类型,具体参考手册 */
   /* 000 */
@@ -264,7 +225,8 @@ module ysyx_041514_dcode (
 
 
   /* _type_system */
-
+  
+  // i-type
   wire _inst_ecall = _type_system & _func3_000 & (_inst[31:20] == 12'b0000_0000_0000);
   wire _inst_ebreak = _type_system & _func3_000 & (_inst[31:20] == 12'b0000_0000_0001);
 
@@ -306,16 +268,17 @@ module ysyx_041514_dcode (
   wire _inst_remuw = _type_op_32 & _func3_111 & _func7_0000001;
 
   /* 将指令分为 R I S B U J 六类，便于获得操作数 TODO:还有一些没有添加*/
+  // csr 操作、ecall、ebreak 、mret 在 _type_system 中
   wire _R_type = _type_op | _type_op_32;
   wire _I_type = _type_load | _type_op_imm | _type_op_imm_32 | _type_jalr | _type_system;
   wire _S_type = _type_store;
   wire _B_type = _type_branch;
   wire _U_type = _type_auipc | _type_lui;
   wire _J_type = _type_jal;
-  // 无效指令_type_miscmem
+  // fencei,fence 在 _type_miscmem 中
   wire _NONE_type = ~(_R_type | _I_type | _S_type | _U_type | _J_type | _B_type | _type_miscmem);
 
-  /*获取操作数  */  //TODO:一些特殊指令没有归类ecall,ebreak
+  /*获取操作数  */
   // wire _isNeed_imm = (_I_type | _S_type | _B_type | _U_type | _J_type);
   wire _csr_imm_valid = (_inst_csrrci | _inst_csrrsi | _inst_csrrwi);
 
@@ -331,12 +294,13 @@ module ysyx_041514_dcode (
   wire [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] _csr_idx = (_isNeed_csr) ? _csr : `ysyx_041514_CSR_REG_ADDRWIDTH'b0;
 
 
-  /* assign 实现多路选择器：根据指令类型选立即数 */
-  wire [`ysyx_041514_IMM_LEN-1:0] _imm_data = ({`ysyx_041514_IMM_LEN{_I_type}}&_immI) |
-                                  ({`ysyx_041514_IMM_LEN{_S_type}}&_immS) |
-                                  ({`ysyx_041514_IMM_LEN{_B_type}}&_immB) |
-                                  ({`ysyx_041514_IMM_LEN{_U_type}}&_immU) |
-                                  ({`ysyx_041514_IMM_LEN{_J_type}}&_immJ);
+  wire [`ysyx_041514_IMM_LEN-1:0] _imm_data;
+  wire [4:0] imm_type = {_I_type, _S_type, _B_type, _U_type, _J_type};
+  ysyx_041514_genimm u_ysyx_041514_genimm (
+      .inst_data_i(inst_data_i),
+      .imm_type_i (imm_type),     // [i,s,b,u,j]
+      .imm_data_o (_imm_data)
+  );
 
   /* 输出指定 */
   assign rs1_idx_o = _rs1_idx;

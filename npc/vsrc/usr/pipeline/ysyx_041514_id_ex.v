@@ -8,7 +8,7 @@ module ysyx_041514_id_ex (
     /* 输入 */
     input [             `ysyx_041514_XLEN-1:0] pc_id_ex_i,
     input [         `ysyx_041514_INST_LEN-1:0] inst_data_id_ex_i,
-    input                                      bru_taken_id_ex_i,
+    input                                      bpu_taken_id_ex_i,
     // input      [    `ysyx_041514_REG_ADDRWIDTH-1:0] rs1_idx_id_ex_i,
     // input      [    `ysyx_041514_REG_ADDRWIDTH-1:0] rs2_idx_id_ex_i,
     input [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_id_ex_i,
@@ -30,7 +30,7 @@ module ysyx_041514_id_ex (
     /* 输出 */
     output [             `ysyx_041514_XLEN-1:0] pc_id_ex_o,
     output [         `ysyx_041514_INST_LEN-1:0] inst_data_id_ex_o,
-    output                                      bru_taken_id_ex_o,
+    output                                      bpu_taken_id_ex_o,
     // output      [    `ysyx_041514_REG_ADDRWIDTH-1:0] rs1_idx_id_ex_o,
     // output      [    `ysyx_041514_REG_ADDRWIDTH-1:0] rs2_idx_id_ex_o,
     output [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_id_ex_o,
@@ -86,20 +86,20 @@ module ysyx_041514_id_ex (
   assign inst_data_id_ex_o = _inst_data_id_ex_q;
 
 
-  /* bru_taken_if_i 寄存器 */
-  wire _bru_taken_id_ex_d = bru_taken_id_ex_i;
-  wire _bru_taken_id_ex_q;
+  /* bpu_taken_if_i 寄存器 */
+  wire _bpu_taken_id_ex_d = bpu_taken_id_ex_i;
+  wire _bpu_taken_id_ex_q;
   ysyx_041514_regTemplate #(
       .WIDTH    (1),
       .RESET_VAL(0)
-  ) u_bru_taken_id_ex (
+  ) u_bpu_taken_id_ex (
       .clk (clk),
       .rst (reg_rst),
-      .din (_bru_taken_id_ex_d),
-      .dout(_bru_taken_id_ex_q),
+      .din (_bpu_taken_id_ex_d),
+      .dout(_bpu_taken_id_ex_q),
       .wen (reg_wen)
   );
-  assign bru_taken_id_ex_o = _bru_taken_id_ex_q;
+  assign bpu_taken_id_ex_o = _bpu_taken_id_ex_q;
 
 
   //   /* rs1_idx 寄存器 */

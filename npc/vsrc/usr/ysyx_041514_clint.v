@@ -235,52 +235,6 @@ module ysyx_041514_clint (
   assign Machine_timer_interrupt = mtime_ge_mtime&csr_mstatus_mie_valid&csr_mie_mtie_valid&pc_from_exe_valid;
 
 
-  // wire [`ysyx_041514_NPC_ADDR_BUS] clint_waddr = clint_addr_i;
-  // wire [`ysyx_041514_NPC_ADDR_BUS] clint_raddr = clint_addr_i;
-  // wire clint_waddr_valid = clint_write_valid_i & clint_valid_i;  // 写有效
-  // wire [`ysyx_041514_XLEN_BUS] clint_wdata = clint_wdata_i;  // 写数据
-  // reg [`ysyx_041514_XLEN_BUS] clint_rdata;
-
-  // assign clint_rdata_o = clint_rdata;  // 读数据
-
-
-  // wire [`ysyx_041514_XLEN_BUS] mtime_plus1 = mtime + 64'b1;
-
-  // // 写 mtime
-  // always @(posedge clk) begin
-  //   if (rst) begin
-  //     mtime <= 0;
-  //   end else if (clint_waddr_valid & (clint_waddr == `ysyx_041514_MTIME_ADDR)) begin
-  //     mtime <= clint_wdata;
-  //   end else begin
-  //     mtime <= mtime_plus1;
-  //   end
-  // end
-  // // 写 mtimecmp
-  // always @(posedge clk) begin
-  //   if (rst) begin
-  //     mtimecmp <= 0;
-  //   end else if (clint_waddr_valid & (clint_waddr == `ysyx_041514_MTIMECMP_ADDR)) begin
-  //     mtimecmp <= clint_wdata;
-  //   end else begin : keep
-  //     mtimecmp <= mtimecmp;
-  //   end
-  // end
-  // // 读 mtime mtimecmp
-  // always @(*) begin
-  //   case (clint_raddr)
-  //     `ysyx_041514_MTIMECMP_ADDR: begin
-  //       clint_rdata = mtimecmp;
-  //     end
-  //     `ysyx_041514_MTIME_ADDR: begin
-  //       clint_rdata = mtime;
-  //     end
-  //     default: begin
-  //       clint_rdata = 0;
-  //     end
-  //   endcase
-  // end
-
 
   wire [`ysyx_041514_NPC_ADDR_BUS] mtime_addr_i = clint_addr_i;
   wire mtime_write_valid_i = clint_write_valid_i;

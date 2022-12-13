@@ -58,116 +58,82 @@ module ysyx_041514_memory (
   assign exc_csr_valid_o = exc_csr_valid_i;
 
 
-  wire [`ysyx_041514_NPC_ADDR_BUS] clint_addr;
-  wire clint_valid;
-  wire clint_write_valid;
-  wire [`ysyx_041514_XLEN_BUS] clint_wdata;
-  wire [`ysyx_041514_XLEN_BUS] clint_rdata;
-  wire [`ysyx_041514_XLEN_BUS] mem_rdata;
+  wire [`ysyx_041514_NPC_ADDR_BUS]  clint_addr;
+  wire                              clint_valid;
+  wire                              clint_write_valid;
+  wire [    `ysyx_041514_XLEN_BUS]  clint_wdata;
+  wire [    `ysyx_041514_XLEN_BUS]  clint_rdata;
+  wire [    `ysyx_041514_XLEN_BUS]  mem_rdata;
 
 
+  /* mem_op 译码 */
+  wire                              ls_valid;
+  wire                              ls_type;  // load:0,store:1
+  wire                              ls_signed;  // signed:1,unsigned:0
+  wire [                      3:0 ] ls_size;  // [8,4,2,1]
+  wire                              fencei_valid;
 
+  ysyx_041514_lsu_op u_ysyx_041514_lsu (
+      .mem_op_i      (mem_op_i),
+      .ls_valid_o    (ls_valid),
+      .ls_type_o     (ls_type),
+      .ls_signed_o   (ls_signed),
+      .ls_size_o     (ls_size),
+      .fencei_valid_o(fencei_valid)
+  );
 
-
-  // wire _memop_none = (mem_op_i == `ysyx_041514_MEMOP_NONE);
-  // wire _memop_lb = (mem_op_i == `ysyx_041514_MEMOP_LB);
-  // wire _memop_lbu = (mem_op_i == `ysyx_041514_MEMOP_LBU);
-  // wire _memop_sb = (mem_op_i == `ysyx_041514_MEMOP_SB);
-  // wire _memop_lh = (mem_op_i == `ysyx_041514_MEMOP_LH);
-  // wire _memop_lhu = (mem_op_i == `ysyx_041514_MEMOP_LHU);
-  // wire _memop_sh = (mem_op_i == `ysyx_041514_MEMOP_SH);
-  // wire _memop_lw = (mem_op_i == `ysyx_041514_MEMOP_LW);
-  // wire _memop_lwu = (mem_op_i == `ysyx_041514_MEMOP_LWU);
-  // wire _memop_sw = (mem_op_i == `ysyx_041514_MEMOP_SW);
-  // wire _memop_ld = (mem_op_i == `ysyx_041514_MEMOP_LD);
-  // wire _memop_sd = (mem_op_i == `ysyx_041514_MEMOP_SD);
-  // wire _memop_fencei = (mem_op_i == `ysyx_041514_MEMOP_FENCEI);
-
-  wire _memop_none = ~(|mem_op_i);
-  wire _memop_lb = mem_op_i[`ysyx_041514_MEMOP_LB];
-  wire _memop_lbu = mem_op_i[`ysyx_041514_MEMOP_LBU];
-  wire _memop_sb = mem_op_i[`ysyx_041514_MEMOP_SB];
-  wire _memop_lh = mem_op_i[`ysyx_041514_MEMOP_LH];
-  wire _memop_lhu = mem_op_i[`ysyx_041514_MEMOP_LHU];
-  wire _memop_sh = mem_op_i[`ysyx_041514_MEMOP_SH];
-  wire _memop_lw = mem_op_i[`ysyx_041514_MEMOP_LW];
-  wire _memop_lwu = mem_op_i[`ysyx_041514_MEMOP_LWU];
-  wire _memop_sw = mem_op_i[`ysyx_041514_MEMOP_SW];
-  wire _memop_ld = mem_op_i[`ysyx_041514_MEMOP_LD];
-  wire _memop_sd = mem_op_i[`ysyx_041514_MEMOP_SD];
-  wire _memop_fencei = mem_op_i[`ysyx_041514_MEMOP_FENCEI];
+  wire _isload = (!ls_type) & ls_valid;
+  wire _isstore = (ls_type) & ls_valid;
+  wire _memop_none = !ls_valid;
 
   /* fencei 指令 */
   wire mem_fencei_ready_final = (mem_fencei_buff_valid_i)?mem_fencei_ready_buff_i:mem_fencei_ready_i;
-  assign mem_fencei_valid_o = _memop_fencei && (~mem_fencei_ready_final);
+  assign mem_fencei_valid_o = fencei_valid && (~mem_fencei_ready_final);
 
-
-  /* 写入还是读取 */
-  wire _isload = (_memop_lb |_memop_lbu |_memop_ld|_memop_lh|_memop_lhu|_memop_lw|_memop_lwu);
-  wire _isstore = (_memop_sb | _memop_sd | _memop_sh | _memop_sw);
-
-  /* 读取或写入的 byte */
-  wire _ls1byte = _memop_lb | _memop_lbu | _memop_sb;
-  wire _ls2byte = _memop_lh | _memop_lhu | _memop_sh;
-  wire _ls4byte = _memop_lw | _memop_sw | _memop_lwu;
-  wire _ls8byte = _memop_ld | _memop_sd;
-
-  /* 是否进行符号扩展 */
-  wire _unsigned = _memop_lhu | _memop_lbu | _memop_lwu;
-  wire _signed = _memop_lh | _memop_lb | _memop_lw | _memop_ld;
-
-
-  /* 为 load 指令 */
-  wire _load_valid = _unsigned | _signed;
 
   /* 读取的数据 */
   wire [`ysyx_041514_XLEN_BUS] rdata_switch = (clint_valid) ? clint_rdata : mem_rdata;
 
-  /* 符号扩展后的结果 TODO:改成并行编码*/
-  wire [     `ysyx_041514_XLEN_BUS] _mem_signed_out = ({64{_ls1byte}}&{{`ysyx_041514_XLEN-8{rdata_switch[7]}},rdata_switch[7:0]})
-                                        | ({64{_ls2byte}}&{{`ysyx_041514_XLEN-16{rdata_switch[15]}},rdata_switch[15:0]})
-                                        | ({64{_ls4byte}}&{{`ysyx_041514_XLEN-32{rdata_switch[31]}},rdata_switch[31:0]})
-                                        | ({64{_ls8byte}}&rdata_switch);
 
-  /* 不进行符号扩展的结果 TODO:改成并行编码 */
-  wire [     `ysyx_041514_XLEN_BUS] _mem_unsigned_out = ({64{_ls1byte}}&{{`ysyx_041514_XLEN-8{1'b0}},rdata_switch[7:0]})
-                                          | ({64{_ls2byte}}&{{`ysyx_041514_XLEN-16{1'b0}},rdata_switch[15:0]})
-                                          | ({64{_ls4byte}}&{{`ysyx_041514_XLEN-32{1'b0}},rdata_switch[31:0]})
-                                          | ({64{_ls8byte}}&rdata_switch);
+  /* 读取数据符号扩展 */
+  wire [`ysyx_041514_XLEN_BUS] mem_rdata_ext;
+  ysyx_041514_lsu_ext u_ysyx_041514_lsu_ext_load (
+      /* from ex/mem */
+      .ext_data_i (rdata_switch),
+      .ls_signed_i(ls_signed),
+      // signed:1,unsigned:0
+      .ls_size_i  (ls_size),
+      // [8,4,2,1]
+      .ext_data_o (mem_rdata_ext)
+  );
 
-  /* 选择最终读取的数据 */
-  wire [`ysyx_041514_XLEN_BUS] _mem_final_out = ({64{_signed}}&_mem_signed_out)
-                                  | ({64{_unsigned}}&_mem_unsigned_out);
+  /* 写入数据处理 */
+  wire [`ysyx_041514_XLEN_BUS] _mem_write;
+  ysyx_041514_lsu_ext u_ysyx_041514_lsu_ext_store (
+      /* from ex/mem */
+      .ext_data_i (rs2_data_i),
+      .ls_signed_i(`ysyx_041514_FALSE),
+      // signed:1,unsigned:0
+      .ls_size_i  (ls_size),
+      // [8,4,2,1]
+      .ext_data_o (_mem_write)
+  );
 
-  /* 写入数据选择 */
-  wire [`ysyx_041514_XLEN_BUS] _mem_write = ({64{_ls1byte}}&{56'b0, rs2_data_i[7:0]})  
-                              | ({64{_ls2byte}}&{48'b0, rs2_data_i[15:0]}) 
-                              | ({64{_ls4byte}}&{32'b0, rs2_data_i[31:0]}) 
-                              | ({64{_ls8byte}}&rs2_data_i);
 
   /*  mask 选择, byte 选通 */
-  wire [7:0] _mask = ({8{_ls1byte}}&8'b0000_0001)  
-                   | ({8{_ls2byte}}&8'b0000_0011) 
-                   | ({8{_ls4byte}}&8'b0000_1111) 
-                   | ({8{_ls8byte}}&8'b1111_1111);
+  wire [7:0] _mask = ({8{ls_size[0]}}&8'b0000_0001)  
+                   | ({8{ls_size[1]}}&8'b0000_0011) 
+                   | ({8{ls_size[2]}}&8'b0000_1111) 
+                   | ({8{ls_size[3]}}&8'b1111_1111);
 
   /* 地址 */
-  wire [`ysyx_041514_XLEN_BUS] _addr = (_memop_none) ? `ysyx_041514_PC_RESET_ADDR : exc_alu_data_i;
+  wire [`ysyx_041514_XLEN_BUS] _addr = (ls_valid) ? exc_alu_data_i : `ysyx_041514_PC_RESET_ADDR;
   wire [2:0] addr_last3 = _addr[2:0];
 
   wire [7:0] rmask = _mask;
   wire [7:0] wmask = (_mask << addr_last3);
 
-  wire [3:0] _mem_size = {
-    _ls8byte, _ls4byte, _ls2byte, _ls1byte
-  };  // 全为 0 时，表示没有数据写入或读取
 
-  // wire [7:0] _wmask = (_isstore) ? _mask : 8'b0000_0000;
-  // wire [7:0] _rmask = (_isload) ? _mask : 8'b0000_0000;
-
-
-  // wire [`ysyx_041514_XLEN_BUS] _raddr = _addr;
-  // wire [`ysyx_041514_XLEN_BUS] _waddr = _addr;
   /***************************** clint 接口 ************************************************/
   assign clint_addr = _addr[31:0];
   assign clint_valid = (_addr[31:0] == `ysyx_041514_MTIME_ADDR) | (_addr[31:0] == `ysyx_041514_MTIMECMP_ADDR);
@@ -191,19 +157,23 @@ module ysyx_041514_memory (
 
   assign mem_addr_o = _addr[31:0];
   assign mem_mask_o = mem_write_valid_o ? wmask : rmask;
-  //assign _mem_read = (mem_data_ready_i) ? (mem_rdata_i) : `ysyx_041514_XLEN'b0;
   assign mem_rdata = (mem_data_ready_i) ? (mem_rdata_i) : `ysyx_041514_XLEN'b0;
+
+
   // 访存有效条件
   // 1. 为访存指令
   // 2. 当前周期不是读数据返回周期、写数据成功周期(避免多次访存)
   // 3. 读数据缓存无效(避免多次访存，读数据缓存有效时，直接使用读数据缓存)
   // 4. 不是读写 clint mtime 指令
-  assign mem_addr_valid_o = (_isload | _isstore) & (~mem_data_ready_i) & (~rdata_buff_valid_i) & (~clint_valid);
-  assign mem_write_valid_o = _isstore & (~mem_data_ready_i) & mem_addr_valid_o;
+  assign mem_addr_valid_o = (ls_valid) & (~mem_data_ready_i) & (~rdata_buff_valid_i) & (~clint_valid);
+  assign mem_write_valid_o = _isstore & mem_addr_valid_o;
   assign mem_wdata_o = _mem_write << {addr_last3, 3'b0};  // 对齐位置调整 TODO 移位器优化
-  assign mem_size_o = _mem_size;
-  assign mem_data_o = ({64{~rdata_buff_valid_i & _load_valid}}&_mem_final_out) |  // 使用直接返回的读数据
-      ({64{rdata_buff_valid_i & _load_valid}} & rdata_buff_i) |  // 使用读数据缓存
+
+
+  assign mem_size_o = ls_size;
+  assign mem_data_o = 
+      ({64{~rdata_buff_valid_i & _isload}}&mem_rdata_ext) |  // 使用直接返回的读数据
+      ({64{rdata_buff_valid_i & _isload}} & rdata_buff_i) |  // 使用读数据缓存
       ({64{_memop_none}} & exc_alu_data_i);  // 不是访存指令，直接传递 alu 结果
 
 
@@ -212,13 +182,11 @@ module ysyx_041514_memory (
 
 
 
-
-
   /* trap_bus TODO:add more*/
-  wire _1byte_misaligned = `ysyx_041514_FALSE & _ls1byte;
-  wire _2byte_misaligned = _addr[0] & _ls2byte;
-  wire _4byte_misaligned = (|_addr[1:0]) & _ls4byte;
-  wire _8byte_misaligned = (|_addr[2:0]) & _ls8byte;
+  wire _1byte_misaligned = `ysyx_041514_FALSE & ls_size[0];
+  wire _2byte_misaligned = _addr[0] & ls_size[1];
+  wire _4byte_misaligned = (|_addr[1:0]) & ls_size[2];
+  wire _8byte_misaligned = (|_addr[2:0]) & ls_size[3];
 
   wire _addr_misaligned = _1byte_misaligned|_2byte_misaligned|_4byte_misaligned|_8byte_misaligned;
   wire _load_addr_misaligned = _isload & _addr_misaligned;
@@ -242,14 +210,13 @@ module ysyx_041514_memory (
   assign trap_bus_o = _mem_trap_bus;
 
 
-
   /************************××××××向仿真环境传递 PC *****************************/
 
 `ifndef ysyx_041514_YSYX_SOC
   // 用于 difftest，获取 mem_pc
   import "DPI-C" function void set_mem_pc(input longint mem_pc);
   always @(*) begin
-    if (_isstore | _isload) begin
+    if (ls_valid) begin
       set_mem_pc(pc_i);
     end
   end

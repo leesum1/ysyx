@@ -443,8 +443,8 @@ module ysyx_041514_core (
       .inst_addr_if_i   (inst_addr_if),
       .inst_data_if_i   (inst_data_if),
       .trap_bus_if_i    (trap_bus_if),
-      .bru_taken_if_i   (bpu_pc_valid),
-      .bru_taken_if_id_o(bpu_pc_valid_if_id),
+      .bpu_taken_if_i   (bpu_pc_valid),
+      .bpu_taken_if_id_o(bpu_pc_valid_if_id),
       .inst_addr_if_id_o(inst_addr_if_id),
       .inst_data_if_id_o(inst_data_if_id),
       .trap_bus_if_id_o (trap_bus_if_id)
@@ -508,8 +508,8 @@ module ysyx_041514_core (
       .stall_valid_i(stall_clint),
 
 
-      .bru_taken_id_ex_i    (bpu_pc_valid_if_id),
-      .bru_taken_id_ex_o    (bpu_pc_valid_id_ex),
+      .bpu_taken_id_ex_i    (bpu_pc_valid_if_id),
+      .bpu_taken_id_ex_o    (bpu_pc_valid_id_ex),
       /* 输入 */
       .pc_id_ex_i           (inst_addr_id),
       .inst_data_id_ex_i    (inst_data_id),
@@ -566,7 +566,7 @@ module ysyx_041514_core (
   ysyx_041514_execute_top u_execute_top (
       .clk            (clk),
       .rst            (rst),
-      .bru_taken_i    (bpu_pc_valid_id_ex),
+      .bpu_taken_i    (bpu_pc_valid_id_ex),
       /******************************* from id/ex *************************/
       // pc
       .pc_i           (inst_addr_id_ex),
