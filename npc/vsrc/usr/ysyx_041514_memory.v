@@ -1,6 +1,8 @@
 `include "sysconfig.v"
 module ysyx_041514_memory (
 
+    input clk,
+
     /* from databuff */
     input rdata_buff_valid_i,  // 读缓存有效
     input [`ysyx_041514_XLEN_BUS] rdata_buff_i,  // 读缓存
@@ -221,5 +223,9 @@ module ysyx_041514_memory (
     end
   end
 `endif
+
+
+
+
 
 endmodule
