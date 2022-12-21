@@ -69,20 +69,20 @@ module ysyx_041514_alu_top (
                   _aluop_bge|_aluop_bltu  ;
 
 
-//   // 面积换时序，该方法关键路径较短
-//   wire compare_eq = $signed(alu_a_i) == $signed(alu_b_i);
-//   wire compare_neq = $signed(alu_a_i) != $signed(alu_b_i);
-//   wire compare_lt = $signed(alu_a_i) < $signed(alu_b_i);
-//   wire compare_ge = $signed(alu_a_i) >= $signed(alu_b_i);
-//   wire compare_ltu = $unsigned(alu_a_i) < $unsigned(alu_b_i);
-//   wire compare_geu = $unsigned(alu_a_i) >= $unsigned(alu_b_i);
+  //   // 面积换时序，该方法关键路径较短
+  //   wire compare_eq = $signed(alu_a_i) == $signed(alu_b_i);
+  //   wire compare_neq = $signed(alu_a_i) != $signed(alu_b_i);
+  //   wire compare_lt = $signed(alu_a_i) < $signed(alu_b_i);
+  //   wire compare_ge = $signed(alu_a_i) >= $signed(alu_b_i);
+  //   wire compare_ltu = $unsigned(alu_a_i) < $unsigned(alu_b_i);
+  //   wire compare_geu = $unsigned(alu_a_i) >= $unsigned(alu_b_i);
 
-//   wire compare_out = _aluop_beq&compare_eq
-//                    | _aluop_bne&compare_neq
-//                    | (_aluop_blt|_aluop_slt)&compare_lt
-//                    | _aluop_bge&compare_ge
-//                    | (_aluop_bltu|_aluop_sltu)&compare_ltu
-//                    | _aluop_bgeu&compare_geu;
+  //   wire compare_out = _aluop_beq&compare_eq
+  //                    | _aluop_bne&compare_neq
+  //                    | (_aluop_blt|_aluop_slt)&compare_lt
+  //                    | _aluop_bge&compare_ge
+  //                    | (_aluop_bltu|_aluop_sltu)&compare_ltu
+  //                    | _aluop_bgeu&compare_geu;
 
 
   /* 如果是减法、比较操作则进行减法 */
@@ -120,8 +120,8 @@ module ysyx_041514_alu_top (
   wire _isSLT = _isSF ^ _isOF;  // a<b (signed)
   wire _isSLTU = _isCF;  //a<b (unsigned)
 
-  wire _isBLT = _isSLT;  // a<b(signed)
-  wire _isBLTU = _isSLTU;  // a<b(unsigned)
+//   wire _isBLT = _isSLT;  // a<b(signed)
+//   wire _isBLTU = _isSLTU;  // a<b(unsigned)
   wire _isBGE = ~_isSLT;  // a>=b(signed)
   wire _isBGEU = ~_isSLTU;  //a>=b(unsigned)
 
@@ -186,7 +186,7 @@ module ysyx_041514_alu_top (
       .mul_out_o         (mul_data_direct)
   );
 
-  // 乘法结果选择，缓存中的结果，还是直接的结果
+  // 乘法结果选择
   wire [`ysyx_041514_XLEN*2-1:0] _mul_result = mul_data_direct;
 
   /* 不同乘法指令的结果 */

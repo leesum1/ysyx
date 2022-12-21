@@ -1,7 +1,10 @@
 `include "sysconfig.v"
 
 
-
+// 乘法器顶层模块，可切换三种乘法器
+// 1. mul_sim : 直接使用 *
+// 2. mul_slow: 采用 booth4 的 移位乘法器
+// 3. mul_wallace：booth4 加华莱士树 乘法器
 module ysyx_041514_alu_mul_top (
     input                            clk,
     input                            rst,
@@ -13,15 +16,7 @@ module ysyx_041514_alu_mul_top (
     output                           mul_ready_o,
     output [`ysyx_041514_XLEN*2-1:0] mul_out_o
 );
-  // /* 双符号位扩展 */
-  // wire _rs1_sign = (rs1_signed_valid_i) ? rs1_data_i[`ysyx_041514_XLEN-1] : 1'b0;
-  // wire _rs2_sign = (rs2_signed_valid_i) ? rs2_data_i[`ysyx_041514_XLEN-1] : 1'b0;
-  // /* 共65位 */
-  // wire [`ysyx_041514_XLEN:0] _rs1_65 = {_rs1_sign, rs1_data_i};
-  // wire [`ysyx_041514_XLEN:0] _rs2_65 = {_rs2_sign, rs2_data_i};
 
-  // wire [`ysyx_041514_XLEN*2-1:0] _mul_result = _rs1_65 * _rs2_65;
-  // assign mul_out_o = _mul_result;
 
 `ifdef MUL_SIM
   ysyx_041514_alu_mul_sim u_alu_mul_sim (

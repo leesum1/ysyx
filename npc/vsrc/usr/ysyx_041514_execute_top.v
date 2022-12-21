@@ -6,7 +6,7 @@ module ysyx_041514_execute_top (
     // pc
     input  [             `ysyx_041514_XLEN_BUS] pc_i,
     input  [         `ysyx_041514_INST_LEN-1:0] inst_data_i,
-    input                                       bru_taken_i,
+    input                                       bpu_taken_i,
     // gpr 译码结果
     input  [    `ysyx_041514_REG_ADDRWIDTH-1:0] rd_idx_i,
     input  [             `ysyx_041514_XLEN_BUS] rs1_data_i,
@@ -80,27 +80,27 @@ module ysyx_041514_execute_top (
   wire _excop_op32 = exc_op_i[`ysyx_041514_EXCOP_OP32];
   wire _excop_csr = exc_op_i[`ysyx_041514_EXCOP_CSR];
 
-  /*****************************branch 操作********************************/
+  /***************************** branch ********************************/
 
-  // 以下两种情况 跳转指令 ，应该执行跳转
+  // 当不考虑分支预测时，以下两种情况 跳转指令 ，应该执行跳转
   // 1. branch 指令，且条件成立
   // 2. jal、jalr 指令
   wire jump_taken = (_compare_out & _excop_branch) | _excop_jalr | _excop_jal;
 
-  // bru_taken_i 实际的跳转情况
-  // jump_taken 正确的跳转情况
+  // bpu_taken_i 分支预测的跳转情况
+  // jump_taken  正确的跳转情况
   // 两者不同，分支预测错误，需要冲刷流水线，修改 pc
-  wire bpu_pc_wrong = jump_taken ^ bru_taken_i;
+  wire bpu_pc_wrong = jump_taken ^ bpu_taken_i;
 
 
 
   // 1. _excop_branch，_excop_jal （pc+imm）
   // 2. _excop_jalr (rs1+imm)
-  // 3. bpu err （pc+4）or (pc+imm)、(rs1+imm)，depending on bru_taken_i
+  // 3. bpu err （pc+4）or (pc+imm)、(rs1+imm)，depending on bpu_taken_i
   reg [`ysyx_041514_XLEN_BUS] redirect_pc_op1;
   reg [`ysyx_041514_XLEN_BUS] redirect_pc_op2;
   always @(*) begin
-    if (bru_taken_i) begin
+    if (bpu_taken_i) begin
       redirect_pc_op1 = pc_i;
       redirect_pc_op2 = 'd4;
     end else begin
@@ -118,7 +118,6 @@ module ysyx_041514_execute_top (
   assign jump_hazard_valid_o = bpu_pc_wrong;
 
 
-
   /****************************** ALU 操作******************************************/
 
   /* ALU 两端操作数选择 */
@@ -133,12 +132,13 @@ module ysyx_041514_execute_top (
   /* 拼接代替左移 */
   // wire [`ysyx_041514_IMM_LEN-1:0] _imm_aui_auipc = imm_data << 12;
   wire [`ysyx_041514_IMM_LEN-1:0] _imm_aui_auipc = {imm_data_i[`ysyx_041514_IMM_LEN-1:12], 12'b0};
+
   // ALU 第一个操作数
-  wire [         `ysyx_041514_XLEN_BUS] _alu_in1 = ({`ysyx_041514_XLEN{_rs1_rs2 | _rs1_imm}}&rs1_data_i) |
+  wire [`ysyx_041514_XLEN_BUS] _alu_in1 = ({`ysyx_041514_XLEN{_rs1_rs2 | _rs1_imm}}&rs1_data_i) |
                                        ({`ysyx_041514_XLEN{_pc_4 | _pc_imm12}}&pc_i) |
                                        ({`ysyx_041514_XLEN{_none_imm12|_none_csr}}&`ysyx_041514_XLEN'b0);
   // ALU 第二个操作数
-  wire [         `ysyx_041514_XLEN_BUS] _alu_in2 = ({`ysyx_041514_XLEN{_rs1_rs2}}&rs2_data_i) |
+  wire [`ysyx_041514_XLEN_BUS] _alu_in2 = ({`ysyx_041514_XLEN{_rs1_rs2}}&rs2_data_i) |
                                        ({`ysyx_041514_XLEN{_rs1_imm}}&imm_data_i) |
                                        ({`ysyx_041514_XLEN{_none_csr}}&csr_data_i) |
                                        ({`ysyx_041514_XLEN{_pc_4}}&`ysyx_041514_XLEN'd4)   |
@@ -185,6 +185,8 @@ module ysyx_041514_execute_top (
   assign exc_csr_valid_o = _csr_exe_data_valid;
 
 
+
+
   /* trap_bus TODO:add more*/
   reg [`ysyx_041514_TRAP_BUS] _exc_trap_bus;
   integer i;
@@ -194,4 +196,6 @@ module ysyx_041514_execute_top (
     end
   end
   assign trap_bus_o = _exc_trap_bus;
+
+
 endmodule

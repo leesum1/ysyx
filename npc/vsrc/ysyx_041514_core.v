@@ -273,31 +273,6 @@ module ysyx_041514_core (
 
   /**********************  mem/wb 阶段 **************************/
 
-  wire [`ysyx_041514_XLEN-1:0] csr_mstatus_writedata_mem_wb;
-  wire [`ysyx_041514_XLEN-1:0] csr_mepc_writedata_mem_wb;
-  wire [`ysyx_041514_XLEN-1:0] csr_mcause_writedata_mem_wb;
-  wire [`ysyx_041514_XLEN-1:0] csr_mtval_writedata_mem_wb;
-  //   wire [             `ysyx_041514_XLEN-1:0 ] csr_mtvec_writedata_mem_wb;
-  //   wire [             `ysyx_041514_XLEN-1:0 ] csr_mie_writedata_mem_wb;
-  wire [`ysyx_041514_XLEN-1:0] csr_mip_writedata_mem_wb;
-
-  wire csr_mstatus_write_valid_mem_wb;
-  wire csr_mepc_write_valid_mem_wb;
-  wire csr_mcause_write_valid_mem_wb;
-  wire csr_mtval_write_valid_mem_wb;
-  //   wire                                       csr_mtvec_write_valid_mem_wb;
-  //   wire                                       csr_mie_write_valid_mem_wb;
-  wire csr_mip_write_valid_mem_wb;
-  wire [`ysyx_041514_XLEN-1:0] pc_mem_wb;  //指令地址
-  wire [`ysyx_041514_INST_LEN-1:0] inst_data_mem_wb;  //指令内容
-
-
-  wire [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] csr_addr_mem_wb;  //csr 写回地址
-  wire [`ysyx_041514_XLEN_BUS] exc_csr_data_mem_wb;  //csr 写回数据
-  wire exc_csr_valid_mem_wb;  // csr 写回使能
-  wire [`ysyx_041514_REG_ADDRWIDTH-1:0] rd_addr_mem_wb;  // gpr 写回使能
-  wire [`ysyx_041514_XLEN-1:0] mem_data_mem_wb;  //访存阶段的数据
-
 
 
   //     input [`ysyx_041514_CSR_REG_ADDRWIDTH-1:0] csr_addr_mem_wb_i,       //csr 写回地址
@@ -443,8 +418,8 @@ module ysyx_041514_core (
       .inst_addr_if_i   (inst_addr_if),
       .inst_data_if_i   (inst_data_if),
       .trap_bus_if_i    (trap_bus_if),
-      .bru_taken_if_i   (bpu_pc_valid),
-      .bru_taken_if_id_o(bpu_pc_valid_if_id),
+      .bpu_taken_if_i   (bpu_pc_valid),
+      .bpu_taken_if_id_o(bpu_pc_valid_if_id),
       .inst_addr_if_id_o(inst_addr_if_id),
       .inst_data_if_id_o(inst_data_if_id),
       .trap_bus_if_id_o (trap_bus_if_id)
@@ -508,8 +483,8 @@ module ysyx_041514_core (
       .stall_valid_i(stall_clint),
 
 
-      .bru_taken_id_ex_i    (bpu_pc_valid_if_id),
-      .bru_taken_id_ex_o    (bpu_pc_valid_id_ex),
+      .bpu_taken_id_ex_i    (bpu_pc_valid_if_id),
+      .bpu_taken_id_ex_o    (bpu_pc_valid_id_ex),
       /* 输入 */
       .pc_id_ex_i           (inst_addr_id),
       .inst_data_id_ex_i    (inst_data_id),
@@ -566,7 +541,7 @@ module ysyx_041514_core (
   ysyx_041514_execute_top u_execute_top (
       .clk            (clk),
       .rst            (rst),
-      .bru_taken_i    (bpu_pc_valid_id_ex),
+      .bpu_taken_i    (bpu_pc_valid_id_ex),
       /******************************* from id/ex *************************/
       // pc
       .pc_i           (inst_addr_id_ex),
@@ -670,7 +645,7 @@ module ysyx_041514_core (
 
 
   ysyx_041514_memory u_memory (
-      //TODO:TEST
+      .clk(clk),
       .rdata_buff_valid_i(rdata_buff_valid),
       .rdata_buff_i(rdata_buff),
       .mem_fencei_ready_buff_i(mem_fencei_ready_buff),
@@ -779,79 +754,17 @@ module ysyx_041514_core (
 
 
 
-  ysyx_041514_mem_wb u_mem_wb (
-      .clk                           (clk),
-      .rst                           (rst),
-      .flush_valid_i                 (flush_clint),
-      .stall_valid_i                 (stall_clint),
-      //   // TODO:TSET
-      //   .mem_data_ready_i              (mem_data_ready),
-      //   .rdata_buff_valid_o            (rdata_buff_valid),
-      //   .rdata_buff_o                  (rdata_buff),
-      /* trap 所需寄存器，来自于 csr (写)*/
-      .csr_mstatus_writedata_mem_wb_i(csr_mstatus_writedata),
-      .csr_mepc_writedata_mem_wb_i   (csr_mepc_writedata),
-      .csr_mcause_writedata_mem_wb_i (csr_mcause_writedata),
-      .csr_mtval_writedata_mem_wb_i  (csr_mtval_writedata),
-      //.csr_mtvec_writedata_mem_wb_i  (csr_mtvec_writedata),
-      //.csr_mie_writedata_mem_wb_i    (csr_mie_writedata),
-      .csr_mip_writedata_mem_wb_i    (csr_mip_writedata),
-
-      .csr_mstatus_write_valid_mem_wb_i(csr_mstatus_write_valid),
-      .csr_mepc_write_valid_mem_wb_i   (csr_mepc_write_valid),
-      .csr_mcause_write_valid_mem_wb_i (csr_mcause_write_valid),
-      .csr_mtval_write_valid_mem_wb_i  (csr_mtval_write_valid),
-      //.csr_mtvec_write_valid_mem_wb_i  (csr_mtvec_write_valid),
-      //.csr_mie_write_valid_mem_wb_i  (csr_mie_write_valid),
-      .csr_mip_write_valid_mem_wb_i  (csr_mip_write_valid),
-
-      .pc_mem_wb_i           (pc_mem),
-      .inst_data_mem_wb_i    (inst_data_mem),
-      .csr_addr_mem_wb_i     (csr_addr_mem),
-      .exc_csr_data_mem_wb_i (exc_csr_data_mem),
-      .exc_csr_valid_mem_wb_i(exc_csr_valid_mem),
-      .rd_addr_mem_wb_i      (rd_idx_mem),
-      .mem_data_mem_wb_i     (mem_data_mem),
-
-      /* trap 所需寄存器，来自于 csr (写)*/
-      .csr_mstatus_writedata_mem_wb_o(csr_mstatus_writedata_mem_wb),
-      .csr_mepc_writedata_mem_wb_o(csr_mepc_writedata_mem_wb),
-      .csr_mcause_writedata_mem_wb_o(csr_mcause_writedata_mem_wb),
-      .csr_mtval_writedata_mem_wb_o(csr_mtval_writedata_mem_wb),
-      //   .csr_mtvec_writedata_mem_wb_o(csr_mtvec_writedata_mem_wb),
-      //   .csr_mie_writedata_mem_wb_o(csr_mie_writedata_mem_wb),
-      .csr_mip_writedata_mem_wb_o(csr_mip_writedata_mem_wb),
-
-      .csr_mstatus_write_valid_mem_wb_o(csr_mstatus_write_valid_mem_wb),
-      .csr_mepc_write_valid_mem_wb_o(csr_mepc_write_valid_mem_wb),
-      .csr_mcause_write_valid_mem_wb_o(csr_mcause_write_valid_mem_wb),
-      .csr_mtval_write_valid_mem_wb_o(csr_mtval_write_valid_mem_wb),
-      //   .csr_mtvec_write_valid_mem_wb_o(csr_mtvec_write_valid_mem_wb),
-      //   .csr_mie_write_valid_mem_wb_o(csr_mie_write_valid_mem_wb),
-      .csr_mip_write_valid_mem_wb_o(csr_mip_write_valid_mem_wb),
-
-      .pc_mem_wb_o(pc_mem_wb),
-      .inst_data_mem_wb_o(inst_data_mem_wb),
-      .csr_addr_mem_wb_o(csr_addr_mem_wb),
-      .exc_csr_data_mem_wb_o(exc_csr_data_mem_wb),
-      .exc_csr_valid_mem_wb_o(exc_csr_valid_mem_wb),
-      .rd_addr_mem_wb_o(rd_addr_mem_wb),
-      .mem_data_mem_wb_o(mem_data_mem_wb)
-
-  );
-
-
 
   /***************************写回阶段***********************************/
-`ifndef ysyx_041514_YSYX_SOC
-  ysyx_041514_writeback u_writeback (
-      .clk           (clk),
-      //   .rst           (rst),
-      .pc_wb_i       (pc_mem_wb),
-      .inst_data_wb_i(inst_data_mem_wb)
+  // `ifndef ysyx_041514_YSYX_SOC
+  //   ysyx_041514_writeback u_writeback (
+  //       .clk           (clk),
+  //       //   .rst           (rst),
+  //       .pc_wb_i       (pc_mem),
+  //       .inst_data_wb_i(inst_data_mem)
 
-  );
-`endif
+  //   );
+  // `endif
 
 
 
@@ -862,11 +775,11 @@ module ysyx_041514_core (
       .rs1_idx_i         (rs1_idx_id),
       .rs2_idx_i         (rs2_idx_id),
       .rs1_data_o        (rs1_data_gpr),
-      .rs2_data_o        (rs2_data_gpr),     //TODO 添加 valid 信号
+      .rs2_data_o        (rs2_data_gpr),  //TODO 添加 valid 信号
       /* 写数据 */
-      .write_idx_i       (rd_addr_mem_wb),
-      .write_data_i      (mem_data_mem_wb),
-      .write_data_valid_i(1'b1)
+      .write_idx_i       (rd_idx_mem),
+      .write_data_i      (mem_data_mem),
+      .write_data_valid_i(commit_valid)
   );
 
 
@@ -876,21 +789,21 @@ module ysyx_041514_core (
       .clk                    (clk),
       .rst                    (rst),
       /* 单独引出寄存器(写) */
-      .csr_mstatus_writedata_i(csr_mstatus_writedata_mem_wb),
-      .csr_mepc_writedata_i   (csr_mepc_writedata_mem_wb),
-      .csr_mcause_writedata_i (csr_mcause_writedata_mem_wb),
-      .csr_mtval_writedata_i  (csr_mtval_writedata_mem_wb),
+      .csr_mstatus_writedata_i(csr_mstatus_writedata),
+      .csr_mepc_writedata_i   (csr_mepc_writedata),
+      .csr_mcause_writedata_i (csr_mcause_writedata),
+      .csr_mtval_writedata_i  (csr_mtval_writedata),
       //   .csr_mtvec_writedata_i  (csr_mtvec_writedata_mem_wb),
       //   .csr_mie_writedata_i    (csr_mie_writedata_mem_wb),
-      .csr_mip_writedata_i    (csr_mip_writedata_mem_wb),
+      .csr_mip_writedata_i    (csr_mip_writedata),
 
-      .csr_mstatus_write_valid_i(csr_mstatus_write_valid_mem_wb),
-      .csr_mepc_write_valid_i   (csr_mepc_write_valid_mem_wb),
-      .csr_mcause_write_valid_i (csr_mcause_write_valid_mem_wb),
-      .csr_mtval_write_valid_i  (csr_mtval_write_valid_mem_wb),
+      .csr_mstatus_write_valid_i(csr_mstatus_write_valid & commit_valid),
+      .csr_mepc_write_valid_i   (csr_mepc_write_valid & commit_valid),
+      .csr_mcause_write_valid_i (csr_mcause_write_valid & commit_valid),
+      .csr_mtval_write_valid_i  (csr_mtval_write_valid & commit_valid),
       //   .csr_mtvec_write_valid_i  (csr_mtvec_write_valid_mem_wb),
       //   .csr_mie_write_valid_i    (csr_mie_write_valid_mem_wb),
-      .csr_mip_write_valid_i    (csr_mip_write_valid_mem_wb),
+      .csr_mip_write_valid_i    (csr_mip_write_valid & commit_valid),
       /* 单独引出寄存器(读) */
       .csr_mstatus_readdata_o   (csr_mstatus_readdata_csr),
       .csr_mepc_readdata_o      (csr_mepc_readdata_csr),
@@ -901,11 +814,11 @@ module ysyx_041514_core (
       .csr_mip_readdata_o       (csr_mip_readdata_csr),
       /* 读取数据端口 */
       .csr_readaddr_i           (csr_idx_id),
-      .csr_readdata_o           (csr_data_csr),                    //TODO 添加 valid
+      .csr_readdata_o           (csr_data_csr),                            //TODO 添加 valid
       /* 写入数据端口 */
-      .csr_writeaddr_i          (csr_addr_mem_wb),
-      .csr_write_valid_i        (exc_csr_valid_mem_wb),
-      .csr_writedata_i          (exc_csr_data_mem_wb)
+      .csr_writeaddr_i          (csr_addr_mem),
+      .csr_write_valid_i        (exc_csr_valid_mem & commit_valid),
+      .csr_writedata_i          (exc_csr_data_mem)
   );
 
 
@@ -1195,7 +1108,7 @@ module ysyx_041514_core (
 
 
 
-
+  wire commit_valid = (pc_mem != `ysyx_041514_XLEN'b0) && (!stall_clint[`ysyx_041514_CTRLBUS_MEM_WB])&&(!flush_clint[`ysyx_041514_CTRLBUS_MEM_WB]);
 `ifndef ysyx_041514_YSYX_SOC
 
   wire jump_inst = exc_op_id_ex[`ysyx_041514_EXCOP_BRANCH]
@@ -1215,9 +1128,23 @@ module ysyx_041514_core (
       bpu_count(bpu_seccess);
     end
   end
+
+
+  /***************difftest 使用****************/
+  // 向仿真环境传递指令提交信息
+  // 当指令有效时：pc_wb_i = 当前指令 PC ，commit_valid = 1
+  // 当指令无效时：pc_wb_i = 0 ，commit_valid = 0；
+
+  import "DPI-C" function void inst_commit(
+    input longint pc,
+    input int inst,
+    input bit commit_valid
+  );
+  always @(posedge clk) begin
+    // 延时一个周期，让寄存器写入有效
+    inst_commit(pc_mem, inst_data_mem, commit_valid);
+  end
 `endif
-
-
 
 
 endmodule

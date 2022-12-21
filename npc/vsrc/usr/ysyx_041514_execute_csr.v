@@ -12,11 +12,6 @@ module ysyx_041514_execute_csr (
     output                              csr_exe_data_valid_o
 );
 
-  // wire _csr_write = (csr_op_i == `ysyx_041514_CSROP_WRITE);
-  // wire _csr_set = (csr_op_i == `ysyx_041514_CSROP_SET);
-  // wire _csr_clear = (csr_op_i == `ysyx_041514_CSROP_CLEAR);
-  // wire _csr_read = (csr_op_i == `ysyx_041514_CSROP_READ);
-  // wire _csr_none = (csr_op_i == `ysyx_041514_CSROP_NONE);
 
   wire _csr_write = csr_op_i[`ysyx_041514_CSROP_WRITE];
   wire _csr_set = csr_op_i[`ysyx_041514_CSROP_SET];
@@ -42,4 +37,6 @@ module ysyx_041514_execute_csr (
 
   assign csr_exe_data_o = _csr_exe_data_o;
   assign csr_exe_data_valid_o = ~(_csr_none | _csr_read);  // 读取不写回
+
+
 endmodule

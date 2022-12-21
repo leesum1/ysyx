@@ -26,10 +26,9 @@ module ysyx_041514_fetch (
 
 
   assign inst_addr_o = inst_addr_i;
-
-  // 选择读取数据
-  //wire [`ysyx_041514_NPC_ADDR_BUS] _inst_data = (if_rdata_valid_i) ? if_rdata_i[31:0] : `ysyx_041514_INST_NOP;
   wire [`ysyx_041514_NPC_ADDR_BUS] _inst_data = if_rdata_i[31:0];
+
+  
 
   // 若 icache 数据没有准备好,发出 stall 请求,暂停流水线
   wire _ram_stall = (!if_rdata_valid_i);
