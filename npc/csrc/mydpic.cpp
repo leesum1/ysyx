@@ -9,35 +9,66 @@
 extern Simtop* mysim_p;
 
 
-extern "C" void bpu_count(svBit bpu_ret) {
+extern "C" void bpu_count(svBit bpu_ret, int bpu_type) {
 
-    mysim_p->bpu_count++;
-    mysim_p->bpu_hit_count += bpu_ret;
+    mysim_p->perf_bpu_all.incr_counter();
+    if (bpu_ret) {
+        mysim_p->perf_bpu_all.incr_hit();
+    }
+
+    switch (bpu_type) {
+    case 1:
+        mysim_p->perf_bpu_call.incr_counter();
+        if (bpu_ret) {
+            mysim_p->perf_bpu_call.incr_hit();
+        }
+        break;
+    case 2:
+        mysim_p->perf_bpu_ret.incr_counter();
+        if (bpu_ret) {
+            mysim_p->perf_bpu_ret.incr_hit();
+        }
+        break;
+    case 3:
+        mysim_p->perf_bpu_other.incr_counter();
+        if (bpu_ret) {
+            mysim_p->perf_bpu_other.incr_hit();
+        }
+        break;
+    case 4:
+        mysim_p->perf_bpu_branch.incr_counter();
+        if (bpu_ret) {
+            mysim_p->perf_bpu_branch.incr_hit();
+        }
+        break;
+
+    default:
+        break;
+    }
 
 }
 
 
 extern "C" void icache_hit_count(int last_pc, int now_pc) {
     if (last_pc != now_pc) {
-        mysim_p->icache_count++;
-        mysim_p->icache_hit_count++;
+
+        mysim_p->perf_icache.incr_hit_counter();
     }
 }
 
 extern "C" void icache_unhit_count() {
-    mysim_p->icache_count++;
-    mysim_p->icache_unhit_count++;
+
+    mysim_p->perf_icache.incr_counter();
 }
 
 
 extern "C" void dcache_unhit_count() {
-    mysim_p->dcache_count++;
-    mysim_p->dcache_unhit_count++;
+
+    mysim_p->perf_dcache.incr_counter();
 }
 
 extern "C" void dcache_hit_count() {
-    mysim_p->dcache_count++;
-    mysim_p->dcache_hit_count++;
+    mysim_p->perf_dcache.incr_hit_counter();
 }
 
 

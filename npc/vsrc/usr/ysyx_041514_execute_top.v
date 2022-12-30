@@ -45,8 +45,7 @@ module ysyx_041514_execute_top (
     /************************to bpu ******************************************/
     output [31:0] bpu_update_pc_o,
     output bpu_update_taken_o,
-    output bpu_update_branch_type_o,
-
+    output [4:0] bpu_update_jump_type_o,
     /********************* from data_buff *******************/
 
     input alu_data_buff_valid_i,  // ALU结果缓存
@@ -86,6 +85,30 @@ module ysyx_041514_execute_top (
   wire _excop_csr = exc_op_i[`ysyx_041514_EXCOP_CSR];
 
   /***************************** branch ********************************/
+
+
+  wire [4:0] _rd = inst_data_i[11:7];
+  wire [4:0] _rs1 = inst_data_i[19:15];
+
+  wire rd_is_x1 = _rd == 'd1;
+  wire rd_is_x5 = _rd == 'd5;
+  wire rs1_is_x1 = _rs1 == 'd1;
+  wire rs1_is_x5 = _rs1 == 'd5;
+
+  wire rd_is_link = rd_is_x1 | rd_is_x5;
+  wire rs1_is_link = rs1_is_x1 | rs1_is_x5;
+  wire rs1_eq_rd = _rs1 == _rd;
+  // https://www.jianshu.com/p/27f38bae827d
+  wire jump_ret = _excop_jalr && rs1_is_link && (~rd_is_link);
+
+  wire jump_call =  (_excop_jal&&rd_is_link)
+                 || (_excop_jalr&&rd_is_link&& ~rs1_is_link)
+                 || (_excop_jalr&&rd_is_link&& rs1_is_link && rs1_eq_rd);
+
+
+  // wire inst_call = (_excop_jalr | _excop_jal) && rd_is_link;  // 没有实现 pop, then push 
+
+
 
   // 当不考虑分支预测时，以下两种情况 跳转指令 ，应该执行跳转
   // 1. branch 指令，且条件成立
@@ -129,13 +152,15 @@ module ysyx_041514_execute_top (
   // input bpu_update_taken_i,
   // input bpu_update_branch_type_i
 
-  wire bpu_update_branch_type = _excop_branch;
+  wire [4:0] bpu_update_jump_type = {jump_call, jump_ret, _excop_jal, _excop_jalr, _excop_branch};
+
+
   wire bpu_update_taken = jump_taken;
 
 
   assign bpu_update_pc_o = pc_i[31:0];
   assign bpu_update_taken_o = bpu_update_taken;
-  assign bpu_update_branch_type_o = bpu_update_branch_type;
+  assign bpu_update_jump_type_o = bpu_update_jump_type;
 
   /****************************** ALU 操作******************************************/
 

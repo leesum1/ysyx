@@ -17,7 +17,7 @@ module ysyx_041514_fetch (
 
     input [31:0] bpu_update_pc_i,
     input bpu_update_taken_i,
-    input bpu_update_branch_type_i,
+    input [4:0] bpu_update_jump_type_i,
 
     // output [`ysyx_041514_XLEN_BUS] bpu_pc_o,
     output [`ysyx_041514_XLEN_BUS] bpu_pc_op1_o,
@@ -54,7 +54,7 @@ module ysyx_041514_fetch (
       .bpu_update_pc_i         (bpu_update_pc_i),
       .bpu_update_valid_i      (bpu_update_valid),
       .bpu_update_taken_i      (bpu_update_taken_i),
-      .bpu_update_branch_type_i(bpu_update_branch_type_i),
+      .bpu_update_jump_type_i(bpu_update_jump_type_i),
 
       .bpu_pc_op1_o  (bpu_pc_op1_o),
       .bpu_pc_op2_o  (bpu_pc_op2_o),

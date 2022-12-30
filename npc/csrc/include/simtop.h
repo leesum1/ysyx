@@ -16,6 +16,7 @@
 #include "difftest.h"
 #include "itrace.h"
 #include "ringbuff.hpp"
+#include "perfcounter.h"
 
 
 class Simtop {
@@ -60,16 +61,16 @@ private:
 public:
     uint64_t mem_pc; // 记录当前访存指令的 PC,用于 difftest device 的 skip 处理 
     uint32_t top_status;
-    uint64_t icache_count = 0;
-    uint64_t icache_hit_count = 0;
-    uint64_t icache_unhit_count = 0;
 
-    uint64_t dcache_count = 0;
-    uint64_t dcache_hit_count = 0;
-    uint64_t dcache_unhit_count = 0;
+    PerfCounter perf_clk{"clk"};
+    PerfCounter perf_icache{"icache"};
+    PerfCounter perf_dcache{"dcache"};
+    PerfCounter perf_bpu_all{"bpu_all"};
+    PerfCounter perf_bpu_call{"bpu_call"};
+    PerfCounter perf_bpu_ret{"bpu_ret"};
+    PerfCounter perf_bpu_branch{"bpu_branch"};
+    PerfCounter perf_bpu_other{"bpu_other"};
 
-    uint64_t bpu_count = 0;
-    uint64_t bpu_hit_count = 0;
     enum {
         TOP_STOP,
         TOP_RUNNING

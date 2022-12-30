@@ -102,7 +102,7 @@ module ysyx_041514_core (
 
   wire [31:0] bpu_update_pc;
   wire bpu_update_taken;
-  wire bpu_update_branch_type;
+  wire [4:0] bpu_update_jump_type;
 
   //   wire [`ysyx_041514_XLEN_BUS] bpu_pc;  // bru pc ,来自 分支预测模块
   wire [`ysyx_041514_XLEN_BUS] bpu_pc_op1;
@@ -404,19 +404,19 @@ module ysyx_041514_core (
       .if_rdata_i      (if_rdata),        // 返回到读取的数据
       //   .bpu_pc_o            (bpu_pc),
 
-      .stall_valid_i           (stall_clint),
-      .bpu_update_pc_i         (bpu_update_pc),
-      .bpu_update_taken_i      (bpu_update_taken),
-      .bpu_update_branch_type_i(bpu_update_branch_type),
-      .bpu_pc_op1_o            (bpu_pc_op1),
-      .bpu_pc_op2_o            (bpu_pc_op2),
-      .bpu_pc_valid_o          (bpu_pc_valid),
+      .stall_valid_i         (stall_clint),
+      .bpu_update_pc_i       (bpu_update_pc),
+      .bpu_update_taken_i    (bpu_update_taken),
+      .bpu_update_jump_type_i(bpu_update_jump_type),
+      .bpu_pc_op1_o          (bpu_pc_op1),
+      .bpu_pc_op2_o          (bpu_pc_op2),
+      .bpu_pc_valid_o        (bpu_pc_valid),
       /* stall req */
-      .ram_stall_valid_if_o    (ram_stall_valid_if),      // if 阶段访存暂停
+      .ram_stall_valid_if_o  (ram_stall_valid_if),    // if 阶段访存暂停
       /* to if/id */
-      .inst_addr_o             (inst_addr_if),
-      .inst_data_o             (inst_data_if),
-      .trap_bus_o              (trap_bus_if)
+      .inst_addr_o           (inst_addr_if),
+      .inst_data_o           (inst_data_if),
+      .trap_bus_o            (trap_bus_if)
   );
 
 
@@ -571,7 +571,7 @@ module ysyx_041514_core (
 
       .bpu_update_pc_o(bpu_update_pc),
       .bpu_update_taken_o(bpu_update_taken),
-      .bpu_update_branch_type_o(bpu_update_branch_type),
+      .bpu_update_jump_type_o(bpu_update_jump_type),
 
       .pc_o                 (pc_ex),
       .inst_data_o          (inst_data_ex),
@@ -1104,12 +1104,37 @@ module ysyx_041514_core (
   wire exc_go_ready = (~flush_clint[`ysyx_041514_CTRLBUS_EX_MEM])
                   & (~stall_clint[`ysyx_041514_CTRLBUS_EX_MEM]);
 
-  import "DPI-C" function void bpu_count(input bit bpu_ret);
+
+  wire bpu_update_call = bpu_update_jump_type[4];
+  wire bpu_update_ret = bpu_update_jump_type[3];
+  wire bpu_update_jal = bpu_update_jump_type[2];
+  wire bpu_update_jalr = bpu_update_jump_type[1];
+  wire bpu_update_branch = bpu_update_jump_type[0];
+
+  reg [31:0] bpu_type;
+  always @(*) begin
+    if (bpu_update_call) begin
+      bpu_type = 'd1;
+    end else if (bpu_update_ret) begin
+      bpu_type = 'd2;
+    end else if (bpu_update_jal | bpu_update_jalr) begin
+      bpu_type = 'd3;
+    end else if (bpu_update_branch) begin
+      bpu_type = 'd4;
+    end else begin
+      bpu_type = 'd0;
+    end
+  end
+
+  import "DPI-C" function void bpu_count(
+    input bit bpu_ret,
+    input int bpu_type
+  );
   // 1. 用于分支预测准确率
   // 2. exc 阶段为跳转指令，且 exc/mem 正常流通时，计算一次
   always @(posedge clk) begin
     if (jump_inst & exc_go_ready) begin
-      bpu_count(bpu_seccess);
+      bpu_count(bpu_seccess, bpu_type);
     end
   end
 

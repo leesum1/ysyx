@@ -10,7 +10,7 @@ module ysyx_041514_bpu_top (
     input [31:0] bpu_update_pc_i,
     input bpu_update_valid_i,
     input bpu_update_taken_i,
-    input bpu_update_branch_type_i,
+    input [4:0] bpu_update_jump_type_i,
 
     // output [`ysyx_041514_XLEN_BUS] bpu_pc_o,
     output [`ysyx_041514_XLEN_BUS] bpu_pc_op1_o,
@@ -49,9 +49,17 @@ module ysyx_041514_bpu_top (
   wire _type_jalr = _opcode_6_5_11 & _opcode_4_2_001 & _opcode_1_0_11;
   wire _type_jal = _opcode_6_5_11 & _opcode_4_2_011 & _opcode_1_0_11;
 
+  // {jump_call, jump_ret, _excop_jal, _excop_jalr, _excop_branch};
+  wire bpu_update_call = bpu_update_jump_type_i[4];
+  wire bpu_update_ret = bpu_update_jump_type_i[3];
+  wire bpu_update_jal = bpu_update_jump_type_i[2];
+  wire bpu_update_jalr = bpu_update_jump_type_i[1];
+  wire bpu_update_branch = bpu_update_jump_type_i[0];
+  // assign {bpu_update_call,bpu_update_ret,bpu_update_jal,bpu_update_jalr,bpu_update_branch} = bpu_update_jump_type_i;
+
 
   // 向后跳转跳转，向前跳转不跳转BTFN (Backward Taken，Forward Not-taken) rs1+imm
-   wire branch_unhit_jump_valid = ((_immB[`ysyx_041514_XLEN-1]) & _type_branch);
+  wire branch_unhit_jump_valid = ((_immB[`ysyx_041514_XLEN-1]) & _type_branch);
   // wire branch_unhit_jump_valid = (1'b0 & _type_branch);
 
   wire bpu_branch_type = _type_branch;
@@ -71,7 +79,7 @@ module ysyx_041514_bpu_top (
       .bpu_update_pc_i         (bpu_update_pc_i),
       .bpu_update_valid_i      (bpu_update_valid_i),
       .bpu_update_taken_i      (bpu_update_taken_i),
-      .bpu_update_branch_type_i(bpu_update_branch_type_i)
+      .bpu_update_branch_type_i(bpu_update_branch)
   );
 
   wire branch_jump_valid = bpu_branch_hit ? bpu_branch_taken : branch_unhit_jump_valid;
