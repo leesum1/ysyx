@@ -99,6 +99,11 @@ module ysyx_041514_core (
   wire [`ysyx_041514_INST_LEN-1:0] inst_data_if;
   wire [`ysyx_041514_TRAP_BUS] trap_bus_if;
 
+
+  wire [31:0] bpu_update_pc;
+  wire bpu_update_taken;
+  wire bpu_update_branch_type;
+
   //   wire [`ysyx_041514_XLEN_BUS] bpu_pc;  // bru pc ,来自 分支预测模块
   wire [`ysyx_041514_XLEN_BUS] bpu_pc_op1;
   wire [`ysyx_041514_XLEN_BUS] bpu_pc_op2;
@@ -391,21 +396,27 @@ module ysyx_041514_core (
   );
   ysyx_041514_fetch u_fetch (
       //指令地址
-      //   .rst        (rst),
-      .inst_addr_i(inst_addr),  // from pc_reg
+      .clk        (clk),
+      .rst        (rst),
+      .inst_addr_i(inst_addr), // from pc_reg
 
-      .if_rdata_valid_i    (if_rdata_valid),      // 读数据是否准备好
-      .if_rdata_i          (if_rdata),            // 返回到读取的数据
+      .if_rdata_valid_i(if_rdata_valid),  // 读数据是否准备好
+      .if_rdata_i      (if_rdata),        // 返回到读取的数据
       //   .bpu_pc_o            (bpu_pc),
-      .bpu_pc_op1_o        (bpu_pc_op1),
-      .bpu_pc_op2_o        (bpu_pc_op2),
-      .bpu_pc_valid_o      (bpu_pc_valid),
+
+      .stall_valid_i           (stall_clint),
+      .bpu_update_pc_i         (bpu_update_pc),
+      .bpu_update_taken_i      (bpu_update_taken),
+      .bpu_update_branch_type_i(bpu_update_branch_type),
+      .bpu_pc_op1_o            (bpu_pc_op1),
+      .bpu_pc_op2_o            (bpu_pc_op2),
+      .bpu_pc_valid_o          (bpu_pc_valid),
       /* stall req */
-      .ram_stall_valid_if_o(ram_stall_valid_if),  // if 阶段访存暂停
+      .ram_stall_valid_if_o    (ram_stall_valid_if),      // if 阶段访存暂停
       /* to if/id */
-      .inst_addr_o         (inst_addr_if),
-      .inst_data_o         (inst_data_if),
-      .trap_bus_o          (trap_bus_if)
+      .inst_addr_o             (inst_addr_if),
+      .inst_data_o             (inst_data_if),
+      .trap_bus_o              (trap_bus_if)
   );
 
 
@@ -542,70 +553,43 @@ module ysyx_041514_core (
       .clk            (clk),
       .rst            (rst),
       .bpu_taken_i    (bpu_pc_valid_id_ex),
-      /******************************* from id/ex *************************/
-      // pc
       .pc_i           (inst_addr_id_ex),
       .inst_data_i    (inst_data_id_ex),
-      // gpr 译码结果
       .rd_idx_i       (rd_idx_id_ex),
       .rs1_data_i     (rs1_data_id_ex),
       .rs2_data_i     (rs2_data_id_ex),
       .imm_data_i     (imm_data_id_ex),
-      // CSR 译码结果 
       .csr_readaddr_i (csr_idx_id_ex),
       .csr_data_i     (csr_readdata_id_ex),
       .csr_imm_i      (csr_imm_id_ex),
       .csr_imm_valid_i(csr_imm_valid_id_ex),
-      // 指令微码
       .alu_op_i       (alu_op_id_ex),
-      // alu 操作码
       .mem_op_i       (mem_op_id_ex),
-      // 访存操作码
       .exc_op_i       (exc_op_id_ex),
-      // exc 操作码
       .csr_op_i       (csr_op_id_ex),
-      // exc_csr 操作码
-      // .pc_op_i        (pc_op_id_ex),
-      /* TARP 总线 */
       .trap_bus_i     (trap_bus_id_ex),
-      /********************** to ex/mem **************************/
-      // pc
-      .pc_o           (pc_ex),
-      .inst_data_o    (inst_data_ex),
-      // gpr 译码结果
-      .rd_idx_o       (rd_idx_ex),
-      // .rs1_data_o     (rs1_data_ex),
-      .rs2_data_o     (rs2_data_ex),
-      // .imm_data_o     (imm_data_ex),
-      // CSR 译码结果 
-      // .csr_data_o     (csr_data_ex),
-      // .csr_imm_o      (csr_imm_ex),
-      // .csr_imm_valid_o(csr_imm_valid_ex),
-      .mem_op_o       (mem_op_ex),
-      // 访存操作码
-      // .pc_op_o        (pc_op_ex),
-      .exc_alu_data_o (exc_alu_data_ex),
-      // 同时送给 ID 和 EX/MEM
-      .exc_csr_data_o (exc_csr_data_ex),
-      .exc_csr_valid_o(exc_csr_valid_ex),
-      .exc_csr_addr_o (exc_csr_addr_ex),
-      /************************to id *************************************/
-      // .exc_op_o       (exc_op_ex),
-      // exc 操作码
 
-      /********************* from data_buff *******************/
-      // ALU结果缓存
+      .bpu_update_pc_o(bpu_update_pc),
+      .bpu_update_taken_o(bpu_update_taken),
+      .bpu_update_branch_type_o(bpu_update_branch_type),
+
+      .pc_o                 (pc_ex),
+      .inst_data_o          (inst_data_ex),
+      .rd_idx_o             (rd_idx_ex),
+      .rs2_data_o           (rs2_data_ex),
+      .mem_op_o             (mem_op_ex),
+      .exc_alu_data_o       (exc_alu_data_ex),
+      .exc_csr_data_o       (exc_csr_data_ex),
+      .exc_csr_valid_o      (exc_csr_valid_ex),
+      .exc_csr_addr_o       (exc_csr_addr_ex),
       .alu_data_buff_valid_i(alu_data_buff_valid),
-      .alu_data_buff_i(alu_data_buff),
-      .alu_data_ready_o(alu_data_ready),
-
-      // 请求暂停流水线
-      .jump_hazard_valid_o(jump_hazard_valid),
-      .alu_mul_div_valid_o(alu_mul_div_valid),
-      .redirect_pc_o      (redirect_pc),
-      .redirect_pc_valid_o(redirect_pc_valid),
-      /* TARP 总线 */
-      .trap_bus_o         (trap_bus_ex)
+      .alu_data_buff_i      (alu_data_buff),
+      .alu_data_ready_o     (alu_data_ready),
+      .jump_hazard_valid_o  (jump_hazard_valid),
+      .alu_mul_div_valid_o  (alu_mul_div_valid),
+      .redirect_pc_o        (redirect_pc),
+      .redirect_pc_valid_o  (redirect_pc_valid),
+      .trap_bus_o           (trap_bus_ex)
   );
 
   ysyx_041514_ex_mem u_ex_mem (

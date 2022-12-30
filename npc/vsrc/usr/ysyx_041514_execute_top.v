@@ -42,6 +42,11 @@ module ysyx_041514_execute_top (
     output [`ysyx_041514_XLEN_BUS] redirect_pc_o,
     output redirect_pc_valid_o,
 
+    /************************to bpu ******************************************/
+    output [31:0] bpu_update_pc_o,
+    output bpu_update_taken_o,
+    output bpu_update_branch_type_o,
+
     /********************* from data_buff *******************/
 
     input alu_data_buff_valid_i,  // ALU结果缓存
@@ -117,6 +122,20 @@ module ysyx_041514_execute_top (
   // 若跳转指令有效，通知控制模块，中断流水线
   assign jump_hazard_valid_o = bpu_pc_wrong;
 
+
+  // // from exe
+  // input [31:0] bpu_update_pc_i,
+  // input bpu_update_valid_i,
+  // input bpu_update_taken_i,
+  // input bpu_update_branch_type_i
+
+  wire bpu_update_branch_type = _excop_branch;
+  wire bpu_update_taken = jump_taken;
+
+
+  assign bpu_update_pc_o = pc_i[31:0];
+  assign bpu_update_taken_o = bpu_update_taken;
+  assign bpu_update_branch_type_o = bpu_update_branch_type;
 
   /****************************** ALU 操作******************************************/
 

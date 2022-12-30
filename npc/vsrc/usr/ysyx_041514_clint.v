@@ -4,16 +4,10 @@ module ysyx_041514_clint (
     input wire clk,
     input wire rst,
 
-<<<<<<< HEAD
-    input [`ysyx_041514_XLEN-1:0] pc_from_mem_i,  // from mem
-    input [`ysyx_041514_XLEN-1:0] pc_from_exe_i,  // from exe
-    input [`ysyx_041514_INST_LEN-1:0] inst_data_i,
-=======
     input [     `ysyx_041514_XLEN-1:0] pc_from_mem_i,  // from mem
     input [     `ysyx_041514_XLEN-1:0] pc_from_exe_i,  // from exe
     input [ `ysyx_041514_INST_LEN-1:0] inst_data_i,
 
->>>>>>> origin/pa4
 
     /* clint 接口 */
     input  [`ysyx_041514_NPC_ADDR_BUS] clint_addr_i,
@@ -239,28 +233,6 @@ module ysyx_041514_clint (
 
 
   wire pc_from_exe_valid = (|pc_from_exe_i[31:0]); // exe 阶段为有效指令时，才能进入中断，不然中断返回找不到返回地址
-<<<<<<< HEAD
-  assign Machine_timer_interrupt = mtime_ge_mtime&csr_mstatus_mie_valid&csr_mie_mtie_valid&pc_from_exe_valid;
-
-
-
-  wire [`ysyx_041514_NPC_ADDR_BUS] mtime_addr_i = clint_addr_i;
-  wire mtime_write_valid_i = clint_write_valid_i;
-  wire [`ysyx_041514_XLEN_BUS] mtime_wdata_i = clint_wdata_i;  // 写数据
-  wire [`ysyx_041514_XLEN_BUS] mtime_rdata;
-  yays_041514_mtime u_yays_041514_mtime (
-      .clk                (clk),
-      .rst                (rst),
-      .mtime_addr_i       (mtime_addr_i),
-      .mtime_write_valid_i(mtime_write_valid_i),
-      .mtime_wdata_i      (mtime_wdata_i),
-      .mtime_rdata_o      (mtime_rdata),
-      .mtime_ge_mtime_o   (mtime_ge_mtime)
-  );
-
-  assign clint_rdata_o = mtime_rdata;
-
-=======
   wire pc_from_mem_valid = (|pc_from_mem_i[31:0]);
   assign Machine_timer_interrupt = mtime_ge_mtime&csr_mstatus_mie_valid&csr_mie_mtie_valid&pc_from_exe_valid&pc_from_mem_valid;
 
@@ -282,7 +254,6 @@ module ysyx_041514_clint (
 
   assign clint_rdata_o = mtime_rdata;
 
->>>>>>> origin/pa4
 
   /*************ebreak仿真使用**************************/
 
