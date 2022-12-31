@@ -95,9 +95,12 @@ module ysyx_041514_bpu_branch #(
   always @(posedge clk) begin
     if (rst) begin
       for (i2 = 0; i2 < BHT_NUM; i2 = i2 + 1) begin
-        bht_pc_reg[i2] <= 'b0;
-        bht_valid_reg[i2] <= 'b0;
-        bht_bi_reg[i2] <= 'b0;
+        // bht_pc_reg[i2] <= 'b0;
+        // bht_valid_reg[i2] <= 'b0;
+        // bht_bi_reg[i2] <= 'b0;
+        bht_pc_reg[i2] = 'b0;
+        bht_valid_reg[i2] = 'b0;
+        bht_bi_reg[i2] = 'b0;
       end
     end else if (bht_update_valid) begin
       bht_pc_reg[bht_write_entry] <= bpu_update_pc_i;

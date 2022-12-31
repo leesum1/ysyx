@@ -359,6 +359,7 @@ void Simtop::setGPRregs(uint64_t* ptr) {
 void Simtop::addCommitedInst(uint64_t inst_pc, uint32_t inst_data) {
 
     inst_t temp_inst;
+    perf_inst_type.perf_inst_count(inst_data);
     temp_inst.inst_data = inst_data;
     temp_inst.inst_pc = inst_pc;
     this->commited_list.inst.push_back(temp_inst);
@@ -380,6 +381,8 @@ void Simtop::showSimPerformance() {
     perf_bpu_branch.display();
     perf_bpu_call.display();
     perf_bpu_ret.display();
-    perf_bpu_other.display();
+    perf_bpu_other_jal.display();
+    perf_bpu_other_jalr.display();
+    perf_inst_type.display();
 
 }

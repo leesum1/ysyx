@@ -9,13 +9,13 @@ VERILATOR_INC_PATH := -I./vsrc \
 			-I./vsrc/lib 
 
 # verilator flags: 
-VERILATOR_FLAGS +=  --trace  --trace-fst
-VERILATOR_FLAGS +=  --trace-max-array 256
+# VERILATOR_FLAGS +=    --trace-fst
+# VERILATOR_FLAGS +=  --trace-max-array 256
 # VERILATOR_FLAGS +=  -threads 10
 VERILATOR_FLAGS +=  -O3 -noassert --x-assign fast --x-initial fast -j $(shell nproc)
 VERILATOR_FLAGS +=  -cc --exe  --build  --clk clk  
 VERILATOR_FLAGS += ${VERILATOR_INC_PATH}
-VERILATOR_FLAGS += --top ${TOP_MODULE} --prefix Vtop -Wno-DECLFILENAME
+VERILATOR_FLAGS += --top ${TOP_MODULE} --prefix Vtop 
 
 
 # gcc flags 

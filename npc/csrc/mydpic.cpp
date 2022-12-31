@@ -30,12 +30,18 @@ extern "C" void bpu_count(svBit bpu_ret, int bpu_type) {
         }
         break;
     case 3:
-        mysim_p->perf_bpu_other.incr_counter();
+        mysim_p->perf_bpu_other_jal.incr_counter();
         if (bpu_ret) {
-            mysim_p->perf_bpu_other.incr_hit();
+            mysim_p->perf_bpu_other_jal.incr_hit();
         }
         break;
     case 4:
+        mysim_p->perf_bpu_other_jalr.incr_counter();
+        if (bpu_ret) {
+            mysim_p->perf_bpu_other_jalr.incr_hit();
+        }
+        break;
+    case 5:
         mysim_p->perf_bpu_branch.incr_counter();
         if (bpu_ret) {
             mysim_p->perf_bpu_branch.incr_hit();

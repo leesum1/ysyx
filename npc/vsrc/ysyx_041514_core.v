@@ -1117,10 +1117,12 @@ module ysyx_041514_core (
       bpu_type = 'd1;
     end else if (bpu_update_ret) begin
       bpu_type = 'd2;
-    end else if (bpu_update_jal | bpu_update_jalr) begin
+    end else if (bpu_update_jal) begin
       bpu_type = 'd3;
-    end else if (bpu_update_branch) begin
+    end else if (bpu_update_jalr) begin
       bpu_type = 'd4;
+    end else if (bpu_update_branch) begin
+      bpu_type = 'd5;
     end else begin
       bpu_type = 'd0;
     end

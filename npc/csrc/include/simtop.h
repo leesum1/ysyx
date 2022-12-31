@@ -17,7 +17,7 @@
 #include "itrace.h"
 #include "ringbuff.hpp"
 #include "perfcounter.h"
-
+#include "riscv64_decoder.h"
 
 class Simtop {
 private:
@@ -69,7 +69,9 @@ public:
     PerfCounter perf_bpu_call{"bpu_call"};
     PerfCounter perf_bpu_ret{"bpu_ret"};
     PerfCounter perf_bpu_branch{"bpu_branch"};
-    PerfCounter perf_bpu_other{"bpu_other"};
+    PerfCounter perf_bpu_other_jal{"bpu_other_jal"};
+    PerfCounter perf_bpu_other_jalr{"bpu_other_jalr"};
+    Riscv64_decoder perf_inst_type;
 
     enum {
         TOP_STOP,
