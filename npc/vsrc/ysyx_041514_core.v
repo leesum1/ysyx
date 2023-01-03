@@ -404,19 +404,22 @@ module ysyx_041514_core (
       .if_rdata_i      (if_rdata),        // 返回到读取的数据
       //   .bpu_pc_o            (bpu_pc),
 
-      .stall_valid_i         (stall_clint),
-      .bpu_update_pc_i       (bpu_update_pc),
-      .bpu_update_taken_i    (bpu_update_taken),
-      .bpu_update_jump_type_i(bpu_update_jump_type),
-      .bpu_pc_op1_o          (bpu_pc_op1),
-      .bpu_pc_op2_o          (bpu_pc_op2),
-      .bpu_pc_valid_o        (bpu_pc_valid),
+      .stall_valid_i           (stall_clint),
+      .flush_valid_i           (flush_clint),
+      .bpu_update_pc_i         (bpu_update_pc),
+      .bpu_update_taken_i      (bpu_update_taken),
+      .bpu_update_jump_type_i  (bpu_update_jump_type),
+      .bpu_update_redirect_pc_i(redirect_pc[31:0]),
+
+      .bpu_pc_op1_o        (bpu_pc_op1),
+      .bpu_pc_op2_o        (bpu_pc_op2),
+      .bpu_pc_valid_o      (bpu_pc_valid),
       /* stall req */
-      .ram_stall_valid_if_o  (ram_stall_valid_if),    // if 阶段访存暂停
+      .ram_stall_valid_if_o(ram_stall_valid_if),  // if 阶段访存暂停
       /* to if/id */
-      .inst_addr_o           (inst_addr_if),
-      .inst_data_o           (inst_data_if),
-      .trap_bus_o            (trap_bus_if)
+      .inst_addr_o         (inst_addr_if),
+      .inst_data_o         (inst_data_if),
+      .trap_bus_o          (trap_bus_if)
   );
 
 
@@ -553,6 +556,7 @@ module ysyx_041514_core (
       .clk            (clk),
       .rst            (rst),
       .bpu_taken_i    (bpu_pc_valid_id_ex),
+      .pc_decode_i    (inst_addr_id),
       .pc_i           (inst_addr_id_ex),
       .inst_data_i    (inst_data_id_ex),
       .rd_idx_i       (rd_idx_id_ex),
@@ -1155,6 +1159,21 @@ module ysyx_041514_core (
     // 延时一个周期，让寄存器写入有效
     inst_commit(pc_mem, inst_data_mem, commit_valid);
   end
+
+
+  import "DPI-C" function void set_next_commit_pc(
+    input longint nextpc,
+    input bit commit_valid
+  );
+
+  wire next_commit_valid = exc_go_ready;
+  always @(posedge clk) begin
+    set_next_commit_pc(pc_ex, next_commit_valid);
+  end
+
+
+
+
 `endif
 
 

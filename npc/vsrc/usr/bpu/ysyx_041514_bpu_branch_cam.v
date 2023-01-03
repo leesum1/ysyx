@@ -1,6 +1,6 @@
 `include "sysconfig.v"
 
-module ysyx_041514_bpu_branch #(
+module ysyx_041514_bpu_branch_cam #(
     BHT_NUM = 64
 ) (
     input clk,
@@ -89,8 +89,15 @@ module ysyx_041514_bpu_branch #(
 
   integer i2;
   wire bht_update_valid = bpu_update_valid_i & bpu_update_branch_type_i;
-  wire bht_bi_inc_valid = bpu_update_taken_i && (bht_bi_reg[bht_write_entry] < 2'b11);
-  wire bht_bi_dec_valid = (~bpu_update_taken_i) && (bht_bi_reg[bht_write_entry] > 2'b00);
+  wire [1:0] bim_update_data_o;
+
+
+  ysyx_041514_bim_update u_ysyx_041514_bim_update (
+      .bim_update_req_i (bht_update_valid),
+      .bim_update_type_i(bpu_update_taken_i), // 1： 加 0: 减
+      .bim_update_data_i(bht_bi_reg[bht_write_entry]),
+      .bim_update_data_o(bim_update_data_o)
+  );
 
   always @(posedge clk) begin
     if (rst) begin
@@ -105,12 +112,7 @@ module ysyx_041514_bpu_branch #(
     end else if (bht_update_valid) begin
       bht_pc_reg[bht_write_entry] <= bpu_update_pc_i;
       bht_valid_reg[bht_write_entry] <= 1'b1;
-
-      if (bht_bi_inc_valid) begin
-        bht_bi_reg[bht_write_entry] <= bht_bi_reg[bht_write_entry] + 'd1;
-      end else if (bht_bi_dec_valid) begin
-        bht_bi_reg[bht_write_entry] <= bht_bi_reg[bht_write_entry] - 'd1;
-      end
+      bht_bi_reg[bht_write_entry] <= bim_update_data_o;
 
     end
   end

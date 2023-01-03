@@ -3,7 +3,7 @@
 
 `ifdef ysyx_041514_YSYX_SOC
 
-module ysyx_041514 (
+module ysyx_22041514 (
   input          clock,
   input          reset,
   input          io_master_arready,

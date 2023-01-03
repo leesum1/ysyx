@@ -11,6 +11,7 @@ module ysyx_041514_bpu_top (
     input bpu_update_valid_i,
     input bpu_update_taken_i,
     input [4:0] bpu_update_jump_type_i,
+    input [31:0] bpu_update_redirect_pc_i,
 
     // output [`ysyx_041514_XLEN_BUS] bpu_pc_o,
     output [`ysyx_041514_XLEN_BUS] bpu_pc_op1_o,
@@ -55,7 +56,22 @@ module ysyx_041514_bpu_top (
   wire bpu_update_jal = bpu_update_jump_type_i[2];
   wire bpu_update_jalr = bpu_update_jump_type_i[1];
   wire bpu_update_branch = bpu_update_jump_type_i[0];
+
+  wire bpu_update_type = |bpu_update_jump_type_i;
   // assign {bpu_update_call,bpu_update_ret,bpu_update_jal,bpu_update_jalr,bpu_update_branch} = bpu_update_jump_type_i;
+
+
+
+  wire [31:0] bpu_ghr_data;
+  ysyx_041514_bpu_ghr #(
+      .GHR_LEN(32)
+  ) u_ysyx_041514_bpu_ghr (
+      .clk               (clk),
+      .rst               (rst),
+      .bpu_update_valid_i(bpu_update_valid_i & bpu_update_type),
+      .bpu_update_taken_i(bpu_update_taken_i),
+      .bpu_ghr_data_o    (bpu_ghr_data)
+  );
 
 
   // 向后跳转跳转，向前跳转不跳转BTFN (Backward Taken，Forward Not-taken) rs1+imm
@@ -65,8 +81,8 @@ module ysyx_041514_bpu_top (
   wire bpu_branch_type = _type_branch;
   wire bpu_branch_taken;
   wire bpu_branch_hit;
-  ysyx_041514_bpu_branch #(
-      .BHT_NUM(64)
+  ysyx_041514_bpu_branch_pc #(
+      .BHT_NUM(1024)
   ) u_ysyx_041514_bpu_branch (
       .clk                     (clk),
       .rst                     (rst),
@@ -91,15 +107,43 @@ module ysyx_041514_bpu_top (
   // jal 指令，跳转地址在地址中得到 pc+imm
   wire jal_jump_valid = _type_jal;
 
+
+  wire bpu_jalr_type = _type_jalr;
+  wire bpu_jalr_taken;
+  wire bpu_jalr_hit;
+  wire [31:0] bpu_jalr_pc;
+  ysyx_041514_bpu_jalr #(
+      .JALR_NUM(64)
+  ) u_ysyx_041514_bpu_jalr (
+      .clk                        (clk),
+      .rst                        (rst),
+      .bpu_ghr_data_i             (bpu_ghr_data),
+      // from if
+      .bpu_pc_i                   (pc_if_i[31:0]),
+      .bpu_jalr_type_i            (bpu_jalr_type),
+      .bpu_jalr_taken_o           (bpu_jalr_taken),
+      .bpu_jalr_hit_o             (bpu_jalr_hit),
+      .bpu_jalr_pc_o              (bpu_jalr_pc),
+      // from exe
+      .bpu_update_pc_i            (bpu_update_pc_i),
+      .bpu_update_valid_i         (bpu_update_valid_i),
+      .bpu_update_taken_i         (bpu_update_taken_i),
+      .bpu_update_jalr_type_i     (bpu_update_jalr),
+      .bpu_update_jalr_redirect_pc(bpu_update_redirect_pc_i)
+  );
+
   // jalr 指令，rs1 为 x0 时，可以直接得到跳转地址 rs1+imm
-  wire jalr_pc_valid = _type_jalr & rs1_idx_zero;
+  wire jalr_pc_valid = _type_jalr & bpu_jalr_taken & bpu_jalr_hit;
+  // wire jalr_pc_valid = 1'b0;
+
+
 
 
   wire [`ysyx_041514_XLEN_BUS] bpu_pc_op1 = ({`ysyx_041514_XLEN{_type_branch|_type_jal}}&pc_if_i)
                                           | ({`ysyx_041514_XLEN{_type_jalr}}&64'b0);
 
   wire [`ysyx_041514_XLEN_BUS] bpu_pc_op2=({`ysyx_041514_XLEN{_type_branch}}&_immB)
-                                          | ({`ysyx_041514_XLEN{_type_jalr}}&_immI)
+                                          | ({`ysyx_041514_XLEN{_type_jalr}}&{32'b0,bpu_jalr_pc})
                                           | ({`ysyx_041514_XLEN{_type_jal}}&_immJ);
 
   // wire [`ysyx_041514_XLEN_BUS] bpu_pc = bpu_pc_op1 + bpu_pc_op2;

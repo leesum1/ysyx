@@ -146,7 +146,7 @@ void Itrace::llvmDis() {
     dis_data.append(pc_str);
     dis_data.append(dis_str);
     this->inst_trace.push_back(dis_data);
-    //cout << dis_data << endl;
+    // cout << dis_data << endl;
 }
 
 

@@ -3,6 +3,8 @@ module ysyx_041514_execute_top (
     input                                       clk,
     input                                       rst,
     /******************************* from id/ex *************************/
+    // from decoder
+    input  [             `ysyx_041514_XLEN_BUS] pc_decode_i,
     // pc
     input  [             `ysyx_041514_XLEN_BUS] pc_i,
     input  [         `ysyx_041514_INST_LEN-1:0] inst_data_i,
@@ -118,8 +120,14 @@ module ysyx_041514_execute_top (
   // bpu_taken_i 分支预测的跳转情况
   // jump_taken  正确的跳转情况
   // 两者不同，分支预测错误，需要冲刷流水线，修改 pc
-  wire bpu_pc_wrong = jump_taken ^ bpu_taken_i;
 
+
+  wire jalr_pc_wrong = (redirect_pc != pc_decode_i) && _excop_jalr;
+  wire branch_pc_wrong = (_compare_out ^ bpu_taken_i) && _excop_branch;
+  wire jal_pc_wrong = 1'b0;
+
+
+  wire bpu_pc_wrong = jalr_pc_wrong | branch_pc_wrong | jal_pc_wrong;
 
 
   // 1. _excop_branch，_excop_jal （pc+imm）
@@ -127,15 +135,39 @@ module ysyx_041514_execute_top (
   // 3. bpu err （pc+4）or (pc+imm)、(rs1+imm)，depending on bpu_taken_i
   reg [`ysyx_041514_XLEN_BUS] redirect_pc_op1;
   reg [`ysyx_041514_XLEN_BUS] redirect_pc_op2;
+  // always @(*) begin
+  //   if (bpu_taken_i) begin
+  //     redirect_pc_op1 = pc_i;
+  //     redirect_pc_op2 = 'd4;
+  //   end else begin
+  //     redirect_pc_op1 = _excop_jalr ? rs1_data_i : pc_i;
+  //     redirect_pc_op2 = imm_data_i;
+  //   end
+  // end
+
   always @(*) begin
-    if (bpu_taken_i) begin
+    redirect_pc_op1 = 'd0;
+    redirect_pc_op2 = 'd0;
+    if (_excop_branch) begin
+      if (bpu_taken_i) begin
+        redirect_pc_op1 = pc_i;
+        redirect_pc_op2 = 'd4;
+      end else begin
+        redirect_pc_op1 = pc_i;
+        redirect_pc_op2 = imm_data_i;
+      end
+    end else if (_excop_jalr) begin
+      redirect_pc_op1 = rs1_data_i;
+      redirect_pc_op2 = imm_data_i;
+    end else if (_excop_jal) begin
       redirect_pc_op1 = pc_i;
-      redirect_pc_op2 = 'd4;
-    end else begin
-      redirect_pc_op1 = _excop_jalr ? rs1_data_i : pc_i;
       redirect_pc_op2 = imm_data_i;
     end
+
   end
+
+
+
 
   // TODO 节省加法器, 可能引入关键路径
   wire [`ysyx_041514_XLEN_BUS] redirect_pc = redirect_pc_op1 + redirect_pc_op2;

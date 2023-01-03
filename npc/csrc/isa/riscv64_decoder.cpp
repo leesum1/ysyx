@@ -100,7 +100,7 @@ void Riscv64_decoder::perf_inst_count(uint32_t inst_data) {
         break;
     default:
         printf("unkown opcode %x\n", opcode);
-        assert(0);
+        // assert(0);
         break;
     }
 }

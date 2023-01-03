@@ -14,10 +14,12 @@ module ysyx_041514_fetch (
 
     /* bru */
     input [5:0] stall_valid_i,  // 保持当前数据，不接受新的数据
+    input [5:0] flush_valid_i,
 
     input [31:0] bpu_update_pc_i,
     input bpu_update_taken_i,
     input [4:0] bpu_update_jump_type_i,
+    input [31:0] bpu_update_redirect_pc_i,
 
     // output [`ysyx_041514_XLEN_BUS] bpu_pc_o,
     output [`ysyx_041514_XLEN_BUS] bpu_pc_op1_o,
@@ -45,7 +47,7 @@ module ysyx_041514_fetch (
 
 
   /* bru */
-  wire bpu_update_valid = ~stall_valid_i[`ysyx_041514_CTRLBUS_EX_MEM];
+  wire bpu_update_valid = !stall_valid_i[`ysyx_041514_CTRLBUS_EX_MEM]&& !flush_valid_i[`ysyx_041514_CTRLBUS_EX_MEM];
   ysyx_041514_bpu_top u_ysyx_041514_bru_top (
       .clk                     (clk),
       .rst                     (rst),
@@ -54,7 +56,9 @@ module ysyx_041514_fetch (
       .bpu_update_pc_i         (bpu_update_pc_i),
       .bpu_update_valid_i      (bpu_update_valid),
       .bpu_update_taken_i      (bpu_update_taken_i),
-      .bpu_update_jump_type_i(bpu_update_jump_type_i),
+      .bpu_update_jump_type_i  (bpu_update_jump_type_i),
+      .bpu_update_redirect_pc_i(bpu_update_redirect_pc_i),
+
 
       .bpu_pc_op1_o  (bpu_pc_op1_o),
       .bpu_pc_op2_o  (bpu_pc_op2_o),

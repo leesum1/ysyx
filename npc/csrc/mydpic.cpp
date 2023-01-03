@@ -79,10 +79,10 @@ extern "C" void dcache_hit_count() {
 
 
 
-extern "C" void set_nextpc(long long nextpc) {
+extern "C" void set_next_commit_pc(long long nextpc, svBit commit_valid) {
     static bool isfirst_inst = true;
     // NOP 指令对于的 PC 为 0
-    if (nextpc == 0) {
+    if (nextpc == 0 || !commit_valid) {
         return;
     }
     /**
