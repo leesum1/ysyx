@@ -129,6 +129,9 @@ module ysyx_041514_soc (
 
 
 
+  
+
+
   ysyx_041514_core u_ysyx_041514_core (
       .clk              (clock),              //todo clock reset
       .rst              (reset),

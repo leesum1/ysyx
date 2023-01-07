@@ -185,7 +185,7 @@ module ysyx_041514_dcache_top (
       dcache_wmask_writehit <= 0;
       _ram_raddr_dcache_o <= 0;
       _ram_wmask_dcache_o <= 0;
-
+    
     end else begin
       case (dcache_state)
         CACHE_RST: begin

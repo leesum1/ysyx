@@ -58,7 +58,7 @@ module ysyx_041514_bpu_branch_pc #(
       end
     end
   end
-  
+
   // read
   assign bpu_branch_hit_o   = 1'b1 & bpu_branch_type_i;
   assign bpu_branch_taken_o = bht_bi_reg[_pc_idx_if] >= 2'b10;

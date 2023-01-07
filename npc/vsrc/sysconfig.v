@@ -3,7 +3,7 @@
 // `define MUL_SIM
 // `define MUL_SLOW
 // `define DIV_SIM
-//`define ysyx_041514_YSYX_SOC          // ysyxSOC 仿真环境
+// `define ysyx_041514_YSYX_SOC          // ysyxSOC 仿真环境
 
 `define ysyx_041514_XLEN 64             //cpu 位数
 `define ysyx_041514_INST_LEN 32         //指令长度

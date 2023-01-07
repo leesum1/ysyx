@@ -1,6 +1,7 @@
 
 #include "simtop.h"
 #include "simconf.h"
+#include "tabulate.hpp"
 
 using namespace std;
 
@@ -369,20 +370,22 @@ void Simtop::addCommitedInst(uint64_t inst_pc, uint32_t inst_data) {
 
 
 void Simtop::showSimPerformance() {
-    cout << COLOR_GREEN << "----------------------------clk&commit:-------------------------" << endl;
-    cout << COLOR_GREEN << "clk_num:" << clk_count << endl;
-    cout << COLOR_GREEN << "commit_num:" << commit_count << endl;
-    cout << COLOR_GREEN << "CPI:" << (float)((float)clk_count / (float)commit_count) << COLOR_END << endl;
-    cout << COLOR_GREEN << "IPC:" << (float)((float)commit_count / (float)clk_count) << COLOR_END << endl;
 
-    perf_icache.display();
-    perf_dcache.display();
-    perf_bpu_all.display();
-    perf_bpu_branch.display();
-    perf_bpu_call.display();
-    perf_bpu_ret.display();
-    perf_bpu_other_jal.display();
-    perf_bpu_other_jalr.display();
+    tabulate::Table universal_constants;
+
+    universal_constants.format()
+        .color(tabulate::Color::blue)
+        .font_style({ tabulate::FontStyle::bold })
+        .font_align(tabulate::FontAlign::left);
+
+    universal_constants.add_row({ " total clk","total commit","IPC (commit/clk)","CPI (clk/commit)" });
+    universal_constants.add_row({ to_string(clk_count),to_string(commit_count),to_string((float)((float)clk_count / (float)commit_count)),to_string((float)((float)commit_count / (float)clk_count)) });
+
+    cout << universal_constants << endl;
+
+
+    perf_count.display();
+
     perf_inst_type.display();
 
 }

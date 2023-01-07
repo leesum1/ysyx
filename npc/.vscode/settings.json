@@ -2,6 +2,7 @@
     "systemverilog.compileOnSave": true,
     "systemverilog.compilerType": "Verilator",
     "systemverilog.includeIndexing": [
+
         "**/*.{sv,v,svh,vh}"
     ],
     "systemverilog.documentSymbolsPrecision": "full",
@@ -61,8 +62,41 @@
         "tuple": "cpp",
         "utility": "cpp",
         "random": "cpp",
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "charconv": "cpp",
+        "cinttypes": "cpp",
+        "codecvt": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "coroutine": "cpp",
+        "cstddef": "cpp",
+        "algorithm": "cpp",
+        "iterator": "cpp",
+        "memory_resource": "cpp",
+        "numeric": "cpp",
+        "source_location": "cpp",
+        "future": "cpp",
+        "numbers": "cpp",
+        "semaphore": "cpp",
+        "stop_token": "cpp",
+        "valarray": "cpp",
+        "variant": "cpp"
     },
     "systemverilog.antlrVerification": false,
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "verilog.formatting.iStyleVerilogFormatter.style": "ANSI",
+    "verilog.linting.linter": "verilator",
+    "verilog.linting.verilator.includePath": [
+        "./vsrc/usr/pipeline",
+        "./vsrc/lib",
+        "./vsrc",
+        "./vsrc/usr",
+        "./vsrc/usr/cache",
+        "./vsrc/usr/alu",
+        "./vsrc/usr/axi",
+        "./vsrc/usr/bpu"
+    ],
+    "verilog.ctags.path": "ctags",
+    "verilog.formatting.verilogHDL.formatter": "verible-verilog-format",
+    "verilog.languageServer.hdlChecker.enabled": false
 }

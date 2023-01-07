@@ -11,41 +11,57 @@ extern Simtop* mysim_p;
 
 extern "C" void bpu_count(svBit bpu_ret, int bpu_type) {
 
-    mysim_p->perf_bpu_all.incr_counter();
-    if (bpu_ret) {
-        mysim_p->perf_bpu_all.incr_hit();
-    }
+    mysim_p->perf_count.bpu_all.total_num++;
+    mysim_p->perf_count.bpu_all.hit_num += bpu_ret;
 
     switch (bpu_type) {
     case 1:
-        mysim_p->perf_bpu_call.incr_counter();
-        if (bpu_ret) {
-            mysim_p->perf_bpu_call.incr_hit();
-        }
+
+        mysim_p->perf_count.bpu_call.total_num++;
+        mysim_p->perf_count.bpu_call.hit_num += bpu_ret;
+
+        // mysim_p->perf_bpu_call.incr_counter();
+        // if (bpu_ret) {
+        //     mysim_p->perf_bpu_call.incr_hit();
+        // }
         break;
     case 2:
-        mysim_p->perf_bpu_ret.incr_counter();
-        if (bpu_ret) {
-            mysim_p->perf_bpu_ret.incr_hit();
-        }
+
+        mysim_p->perf_count.bpu_ret.total_num++;
+        mysim_p->perf_count.bpu_ret.hit_num += bpu_ret;
+
+        // mysim_p->perf_bpu_ret.incr_counter();
+        // if (bpu_ret) {
+        //     mysim_p->perf_bpu_ret.incr_hit();
+        // }
         break;
     case 3:
-        mysim_p->perf_bpu_other_jal.incr_counter();
-        if (bpu_ret) {
-            mysim_p->perf_bpu_other_jal.incr_hit();
-        }
+
+        mysim_p->perf_count.bpu_other_jal.total_num++;
+        mysim_p->perf_count.bpu_other_jal.hit_num += bpu_ret;
+
+        // mysim_p->perf_bpu_other_jal.incr_counter();
+        // if (bpu_ret) {
+        //     mysim_p->perf_bpu_other_jal.incr_hit();
+        // }
         break;
     case 4:
-        mysim_p->perf_bpu_other_jalr.incr_counter();
-        if (bpu_ret) {
-            mysim_p->perf_bpu_other_jalr.incr_hit();
-        }
+
+        mysim_p->perf_count.bpu_other_jalr.total_num++;
+        mysim_p->perf_count.bpu_other_jalr.hit_num += bpu_ret;
+        // mysim_p->perf_bpu_other_jalr.incr_counter();
+        // if (bpu_ret) {
+        //     mysim_p->perf_bpu_other_jalr.incr_hit();
+        // }
         break;
     case 5:
-        mysim_p->perf_bpu_branch.incr_counter();
-        if (bpu_ret) {
-            mysim_p->perf_bpu_branch.incr_hit();
-        }
+
+        mysim_p->perf_count.bpu_branch.total_num++;
+        mysim_p->perf_count.bpu_branch.hit_num += bpu_ret;
+        // mysim_p->perf_bpu_branch.incr_counter();
+        // if (bpu_ret) {
+        //     mysim_p->perf_bpu_branch.incr_hit();
+        // }
         break;
 
     default:
@@ -57,24 +73,25 @@ extern "C" void bpu_count(svBit bpu_ret, int bpu_type) {
 
 extern "C" void icache_hit_count(int last_pc, int now_pc) {
     if (last_pc != now_pc) {
-
-        mysim_p->perf_icache.incr_hit_counter();
+        mysim_p->perf_count.icache.total_num++;
+        mysim_p->perf_count.icache.hit_num++;
     }
 }
 
 extern "C" void icache_unhit_count() {
 
-    mysim_p->perf_icache.incr_counter();
+    mysim_p->perf_count.icache.total_num++;
 }
 
 
 extern "C" void dcache_unhit_count() {
 
-    mysim_p->perf_dcache.incr_counter();
+    mysim_p->perf_count.dcache.total_num++;
 }
 
 extern "C" void dcache_hit_count() {
-    mysim_p->perf_dcache.incr_hit_counter();
+    mysim_p->perf_count.dcache.total_num++;
+    mysim_p->perf_count.dcache.hit_num++;
 }
 
 

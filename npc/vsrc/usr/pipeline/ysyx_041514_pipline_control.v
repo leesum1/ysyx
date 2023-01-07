@@ -4,10 +4,10 @@
 module ysyx_041514_pipline_control (
     input rst,
     /* ----- stall request from other modules  --------*/
-    input ram_stall_valid_if_i,  // if ram
-    input ram_stall_valid_mem_i,  // mem ram
-    input load_use_valid_id_i,  //load-use data hazard from id
-    input jump_valid_ex_i,  // branch hazard from ex
+    input ram_stall_valid_if_i,    // if ram
+    input ram_stall_valid_mem_i,   // mem ram
+    input load_use_valid_id_i,     //load-use data hazard from id
+    input jump_valid_ex_i,         // branch hazard from ex
     input alu_mul_div_valid_ex_i,  // mul div stall from ex
     input trap_stall_valid_wb_i,
 

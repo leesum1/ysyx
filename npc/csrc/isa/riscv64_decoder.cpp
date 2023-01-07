@@ -1,4 +1,5 @@
 #include "riscv64_decoder.h"
+#include "tabulate.hpp"
 #include <assert.h>
 
 
@@ -113,9 +114,18 @@ void Riscv64_decoder::display() {
         inst_all += inst_count[i];
     }
 
+    tabulate::Table universal_constants;
 
-    for (size_t i = 0; i < 26; i++) {
-        printf("inst %-15s:\t%-15d\t%.2f%%\n", inst_type_names[i], inst_count[i], (float)(inst_count[i] * 100) / (float)inst_all);
+    universal_constants.format()
+        .color(tabulate::Color::blue)
+        .font_style({ tabulate::FontStyle::bold })
+        .font_align(tabulate::FontAlign::left);
+
+    universal_constants.add_row({ "INST TYPE","NUMBER","PERCENTAGE" ," ","INST TYPE","NUMBER","PERCENTAGE" });
+    for (size_t i = 0; i < 26 / 2; i++) {
+        universal_constants.add_row({ inst_type_names[i],std::to_string(inst_count[i]),std::to_string((float)(inst_count[i] * 100) / (float)inst_all)," ",
+                                      inst_type_names[i + 13],std::to_string(inst_count[i + 13]),std::to_string((float)(inst_count[i + 13] * 100) / (float)inst_all) });
     }
+    std::cout << universal_constants << std::endl;
 
 }

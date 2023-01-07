@@ -62,15 +62,9 @@ public:
     uint64_t mem_pc; // 记录当前访存指令的 PC,用于 difftest device 的 skip 处理 
     uint32_t top_status;
 
-    PerfCounter perf_clk{"clk"};
-    PerfCounter perf_icache{"icache"};
-    PerfCounter perf_dcache{"dcache"};
-    PerfCounter perf_bpu_all{"bpu_all"};
-    PerfCounter perf_bpu_call{"bpu_call"};
-    PerfCounter perf_bpu_ret{"bpu_ret"};
-    PerfCounter perf_bpu_branch{"bpu_branch"};
-    PerfCounter perf_bpu_other_jal{"bpu_other_jal"};
-    PerfCounter perf_bpu_other_jalr{"bpu_other_jalr"};
+    PerfCounter perf_count{"count_name"};
+
+
     Riscv64_decoder perf_inst_type;
 
     enum {
