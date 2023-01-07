@@ -117,7 +117,7 @@ void Riscv64_decoder::display() {
     tabulate::Table universal_constants;
 
     universal_constants.format()
-        .color(tabulate::Color::blue)
+        .color(tabulate::Color::cyan)
         .font_style({ tabulate::FontStyle::bold })
         .font_align(tabulate::FontAlign::left);
 

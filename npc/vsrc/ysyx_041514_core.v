@@ -272,6 +272,7 @@ module ysyx_041514_core (
   wire [`ysyx_041514_XLEN-1:0] clint_pc;
   wire clint_pc_valid;
   wire clint_pc_plus4_valid;
+  wire trap_stall_valid_wb;
   wire [5:0]stall_clint;  // stall request to PC,IF_ID, ID_EX, EX_MEM, MEM_WB， one bit for one stage respectively
   wire [5:0] flush_clint;
 
@@ -686,24 +687,24 @@ module ysyx_041514_core (
 
 
   ysyx_041514_clint u_clint (
-      .clk(clk),
-      .rst(rst),
-      .pc_from_mem_i(pc_ex_mem),
-      .pc_from_exe_i(pc_ex),
-      .inst_data_i(inst_data_ex_mem),
+      .clk                  (clk),
+      .rst                  (rst),
+      .pc_from_mem_i        (pc_ex_mem),
+      .pc_from_exe_i        (pc_ex),
+      .inst_data_i          (inst_data_ex_mem),
       /* 各级流水线的 stall 请求 */
-      .load_use_valid_id_i(load_use_valid),  //load-use data hazard from id
-      .jump_valid_ex_i(jump_hazard_valid),  // branch hazard from ex
-      .alu_mul_div_valid_ex_i(alu_mul_div_valid),
-      .ram_stall_valid_if_i(ram_stall_valid_if),
-      .ram_stall_valid_mem_i(ram_stall_valid_mem),
-
+      // .load_use_valid_id_i(load_use_valid),  //load-use data hazard from id
+      // .jump_valid_ex_i(jump_hazard_valid),  // branch hazard from ex
+      // .alu_mul_div_valid_ex_i(alu_mul_div_valid),
+      // .ram_stall_valid_if_i(ram_stall_valid_if),
+      // .ram_stall_valid_mem_i(ram_stall_valid_mem),
+      .trap_stall_valid_wb_o(trap_stall_valid_wb),
       /* clint 接口 */
-      .clint_addr_i       (clint_addr),
-      .clint_valid_i      (clint_valid),
-      .clint_write_valid_i(clint_write_valid),
-      .clint_wdata_i      (clint_wdata),
-      .clint_rdata_o      (clint_rdata),
+      .clint_addr_i         (clint_addr),
+      .clint_valid_i        (clint_valid),
+      .clint_write_valid_i  (clint_write_valid),
+      .clint_wdata_i        (clint_wdata),
+      .clint_rdata_o        (clint_rdata),
 
       /* TARP 总线 */
       .trap_bus_i(trap_bus_mem),  // 包括 取指，译码，执行，访存 阶段的 trap 请求
@@ -734,9 +735,9 @@ module ysyx_041514_core (
       /* 输出至取指阶段 */
       .clint_pc_o(clint_pc),  // trap pc
       .clint_pc_valid_o(clint_pc_valid),  // trap pc valid
-      .clint_pc_plus4_valid_o(clint_pc_plus4_valid),
-      .stall_o(stall_clint),
-      .flush_o(flush_clint)
+      .clint_pc_plus4_valid_o(clint_pc_plus4_valid)
+      // .stall_o(stall_clint),
+      // .flush_o(flush_clint)
   );
 
 
@@ -1096,6 +1097,22 @@ module ysyx_041514_core (
 
 
 
+  ysyx_041514_pipline_control u_ysyx_041514_pipline_control (
+      .rst                   (rst),
+      /* ----- stall request from other modules  --------*/
+      .load_use_valid_id_i   (load_use_valid),       //load-use data hazard from id
+      .jump_valid_ex_i       (jump_hazard_valid),    // branch hazard from ex
+      .alu_mul_div_valid_ex_i(alu_mul_div_valid),
+      .ram_stall_valid_if_i  (ram_stall_valid_if),
+      .ram_stall_valid_mem_i (ram_stall_valid_mem),
+      .trap_stall_valid_wb_i (trap_stall_valid_wb),
+      /* ---signals to other stages of the pipeline  ----*/
+      .stall_o               (stall_clint),
+      .flush_o               (flush_clint)
+  );
+
+
+
   wire commit_valid = (pc_mem != `ysyx_041514_XLEN'b0) && (!stall_clint[`ysyx_041514_CTRLBUS_MEM_WB])&&(!flush_clint[`ysyx_041514_CTRLBUS_MEM_WB]);
 `ifndef ysyx_041514_YSYX_SOC
 
@@ -1144,6 +1161,45 @@ module ysyx_041514_core (
     end
   end
 
+
+
+
+  // 使用上升沿检测，确保 req 信号只会被计数一次
+  wire [5:0] pipeline_req = {
+    load_use_valid,
+    alu_mul_div_valid,
+    jump_hazard_valid,
+    trap_stall_valid_wb,
+    ram_stall_valid_mem,
+    ram_stall_valid_if
+  };
+
+  wire [5:0] pipeline_req_rise;
+  genvar i0;
+  generate
+    for (i0 = 0; i0 < 6; i0 = i0 + 1) begin
+      ysyx_041514_edge_detect u_ysyx_041514_edge_detect (
+          .clk       (clk),
+          .io_data_in(pipeline_req[i0]),
+          .rise_o    (pipeline_req_rise[i0]),
+          .fall_o    (),
+          .toggle_o  ()
+      );
+    end
+  endgenerate
+
+
+  import "DPI-C" function void pipline_count(
+    input byte stall, // 流水线的 stall 信号
+    input byte flush, // 流水线的 flush 信号
+    input byte pipeline_req_rise // 请求 stall 或 flush 流水线的类型。
+  );
+
+  always @(posedge clk) begin
+    if (~rst) begin
+      pipline_count({2'b00, stall_clint}, {2'b00, flush_clint},{2'b00,pipeline_req_rise});
+    end
+  end
 
   /***************difftest 使用****************/
   // 向仿真环境传递指令提交信息

@@ -4,9 +4,9 @@ module ysyx_041514_clint (
     input wire clk,
     input wire rst,
 
-    input [     `ysyx_041514_XLEN-1:0] pc_from_mem_i,  // from mem
-    input [     `ysyx_041514_XLEN-1:0] pc_from_exe_i,  // from exe
-    input [ `ysyx_041514_INST_LEN-1:0] inst_data_i,
+    input [    `ysyx_041514_XLEN-1:0] pc_from_mem_i,  // from mem
+    input [    `ysyx_041514_XLEN-1:0] pc_from_exe_i,  // from exe
+    input [`ysyx_041514_INST_LEN-1:0] inst_data_i,
 
 
     /* clint 接口 */
@@ -19,11 +19,12 @@ module ysyx_041514_clint (
     /* TARP 总线 */
     input wire [`ysyx_041514_TRAP_BUS] trap_bus_i,
     /* ----- stall request from other modules 各个阶段请求流水线暂停请求 --------*/
-    input wire ram_stall_valid_if_i,  // if 阶段访存暂停
-    input wire ram_stall_valid_mem_i,  // mem 访存暂停
-    input wire load_use_valid_id_i,  //load-use data hazard from id
-    input wire jump_valid_ex_i,  // branch hazard from ex
-    input wire alu_mul_div_valid_ex_i,  // mul div stall from ex
+    output trap_stall_valid_wb_o,
+    // input wire ram_stall_valid_if_i,  // if 阶段访存暂停
+    // input wire ram_stall_valid_mem_i,  // mem 访存暂停
+    // input wire load_use_valid_id_i,  //load-use data hazard from id
+    // input wire jump_valid_ex_i,  // branch hazard from ex
+    // input wire alu_mul_div_valid_ex_i,  // mul div stall from ex
 
     /* trap 所需寄存器，来自于 csr (读)*/
     input  wire [`ysyx_041514_XLEN-1:0] csr_mstatus_readdata_i,
@@ -53,11 +54,8 @@ module ysyx_041514_clint (
     /* 输出至取指阶段 */
     output [`ysyx_041514_XLEN-1:0] clint_pc_o,
     output clint_pc_valid_o,
-    output clint_pc_plus4_valid_o,
+    output clint_pc_plus4_valid_o
 
-    /* ---signals to other stages of the pipeline  ----*/
-    output reg[5:0]              stall_o,   // stall request to PC,IF_ID, ID_EX, EX_MEM, MEM_WB， one bit for one stage respectively
-    output reg [5:0] flush_o  // flush the whole pipleline, exception or interrupt happens
 );
 
   /* --------------------- handle the stall request -------------------*/
@@ -70,20 +68,8 @@ module ysyx_041514_clint (
 
 
 
-  wire trap_stall_valid_wb_i = (trap_valid | trap_mret | trap_fencei); // TODO 目前在 mem 阶段检测 tarp
-  ysyx_041514_pipline_control u_ysyx_041514_pipline_control (
-      .rst                   (rst),
-      .ram_stall_valid_if_i  (ram_stall_valid_if_i),
-      .ram_stall_valid_mem_i (ram_stall_valid_mem_i),
-      .load_use_valid_id_i   (load_use_valid_id_i),
-      .jump_valid_ex_i       (jump_valid_ex_i),
-      .alu_mul_div_valid_ex_i(alu_mul_div_valid_ex_i),
-      .trap_stall_valid_wb_i (trap_stall_valid_wb_i),
-      .stall_o               (stall_o),
-      .flush_o               (flush_o)
-  );
-
-
+  wire trap_stall_valid_wb = (trap_valid | trap_mret | trap_fencei); // TODO 目前在 mem 阶段检测 tarp
+  assign trap_stall_valid_wb_o = trap_stall_valid_wb;
 
   /******************************handle the trap request**************************************/
   /* type of trap */
@@ -94,12 +80,12 @@ module ysyx_041514_clint (
   // wire trap_inst_access_fault = trap_bus_i[`ysyx_041514_TRAP_INST_ACCESS_FAULT]; // 1
   // wire trap_illegal_inst = trap_bus_i[`ysyx_041514_TRAP_INST_ACCESS_FAULT]; // 1
 
-  assign trap_mret   = trap_bus_i[`ysyx_041514_TRAP_MRET];
+  assign trap_mret = trap_bus_i[`ysyx_041514_TRAP_MRET];
   assign trap_fencei = trap_bus_i[`ysyx_041514_TRAP_FENCEI];
   // wire [`ysyx_041514_XLEN_BUS]_fencei_pc = pc_from_mem_i+'d4; // TODO 加 4 操作，统一到 pc 自增上，节省一个加法器
 
 
-  assign trap_valid  = (|trap_bus_i[15:0]) | Machine_timer_interrupt;  // 0 - 15 表示 trap 发生
+  assign trap_valid = (|trap_bus_i[15:0]) | Machine_timer_interrupt;  // 0 - 15 表示 trap 发生
 
   reg [`ysyx_041514_XLEN_BUS] mcause_switch;
   always @(*) begin

@@ -5,8 +5,41 @@
 #include "verilated_dpi.h"
 #include "simtop.h"
 #include "simconf.h"
+#include <bitset>
 
 extern Simtop* mysim_p;
+
+
+
+extern "C" void pipline_count(char stall, char flush, char pipeline_req_rise) {
+
+    std::bitset<8> stall_bit(stall);
+    std::bitset<8> flush_bit(flush);
+    std::bitset<8> pipeline_req_bit(pipeline_req_rise);
+    // std::cout << "stall:" << stall_bit << endl;
+    // std::cout << "flush:" << flush_bit << endl;
+
+    // uint8_t i = 0;
+    // for (auto& iter : mysim_p->perf_count.pipeline_list) {
+    //     iter.stall_num += stall_bit[i];
+    //     iter.flush_num += flush_bit[i];
+    //     iter.normal_num += !(stall_bit[i] || flush_bit[i]);
+    //     i++;
+    // }
+
+    for (size_t i = 0; i < mysim_p->perf_count.pipeline_list.size(); i++) {
+        mysim_p->perf_count.pipeline_list[i].stall_num += stall_bit[i];
+        mysim_p->perf_count.pipeline_list[i].flush_num += flush_bit[i];
+        mysim_p->perf_count.pipeline_list[i].normal_num += !(stall_bit[i] || flush_bit[i]);
+    }
+
+    for (size_t j = 0; j < mysim_p->perf_count.pipeline_req_count.size(); j++) {
+        mysim_p->perf_count.pipeline_req_count[j] += pipeline_req_bit[j];
+    }
+
+}
+
+
 
 
 extern "C" void bpu_count(svBit bpu_ret, int bpu_type) {
