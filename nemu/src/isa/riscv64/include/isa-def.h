@@ -20,14 +20,14 @@
 
  // csr 寄存器地址映射
 enum {
-  mtvec, mepc, mstatus, mcause,
+  mtvec, mie, mip, mtval,mepc, mstatus, mcause, MSCRATCH, mhartid
 };
 
 typedef struct {
   word_t gpr[32]; // 64位
   vaddr_t pc;     // 64位
   // CSR 寄存器
-  word_t csr[4];
+  word_t csr[10];
 } riscv64_CPU_state;
 
 // decode

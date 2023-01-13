@@ -38,10 +38,30 @@ static debug_module_config_t difftest_dm_config = {
   .support_impebreak = true
 };
 
+
+// 需要与 nemu 保持一致
+enum {
+  mtvec, mie, mip, mtval,mepc, mstatus, mcause, MSCRATCH, mhartid
+};
+
+// typedef struct {
+//   word_t gpr[32]; // 64位
+//   vaddr_t pc;     // 64位
+//   // CSR 寄存器
+//   word_t csr[10];
+// } riscv64_CPU_state;
+
 struct diff_context_t {
   word_t gpr[32];
   word_t pc;
+  word_t csr[10];
 };
+
+
+
+
+
+
 
 static sim_t* s = NULL;
 static processor_t* p = NULL;
@@ -50,6 +70,7 @@ static state_t* state = NULL;
 void sim_t::diff_init(int port) {
   p = get_core("0");
   state = p->get_state();
+  // state->mstatus = 0xa0000000;
 }
 
 void sim_t::diff_step(uint64_t n) {
@@ -61,6 +82,8 @@ void sim_t::diff_get_regs(void* diff_context) {
   for (int i = 0; i < NXPR; i++) {
     ctx->gpr[i] = state->XPR[i];
   }
+  ctx->csr[mstatus] = state->mstatus;
+  ctx->csr[mepc] = state->mepc;
   ctx->pc = state->pc;
 }
 
@@ -70,6 +93,7 @@ void sim_t::diff_set_regs(void* diff_context) {
     state->XPR.write(i, (sword_t)ctx->gpr[i]);
   }
   state->pc = ctx->pc;
+  // state->mstatus = ctx->csr[mstatus];
 }
 
 void sim_t::diff_memcpy(reg_t dest, void* src, size_t n) {

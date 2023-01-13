@@ -2,8 +2,15 @@
     "files.associations": {
         "Makefile": "makefile",
         "*.nxdc": "makefile",
+        "*.S": "bat",
         "difftest-def.h": "c",
         "isa.h": "c",
-        "dlfcn.h": "c"
+        "dlfcn.h": "c",
+        "bitset": "c",
+        "map.h": "c",
+        "alarm.h": "c",
+        "limits": "c",
+        "decode.h": "c",
+        "reg.h": "c"
     }
 }

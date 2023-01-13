@@ -18,6 +18,9 @@
 
 #include <common.h>
 #include "isa-def.h"
+// #include <cpu/difftest.h>
+
+extern void difftest_skip_ref();
 
 static inline int check_reg_idx(int idx) {
   IFDEF(CONFIG_RT_CHECK, assert(idx >= 0 && idx < 32));
@@ -26,11 +29,16 @@ static inline int check_reg_idx(int idx) {
 
 // csr 地址映射
 static inline int check_csr_idx(int idx) {
-  switch (idx) {
+  switch (idx & 0xfff) {
+  case 0x304: return mie;break; // mie
   case 0x305: return mtvec;break; // mtvec
+  case 0x343: return mtval;break; // mtval
+  case 0x344: difftest_skip_ref();return mip;break; // mip
   case 0x341: return mepc;break; // mepc
   case 0x300: return mstatus;break; // mstatus
   case 0x342: return mcause;break; // mcause
+  case 0x340: return MSCRATCH; break;
+  case 0xf14: return mhartid; break;
   default:  panic("csr error, addr 0x%x", idx); break;
   }
 }

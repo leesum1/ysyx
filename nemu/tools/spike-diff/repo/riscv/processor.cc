@@ -11,6 +11,7 @@
 #include "platform.h"
 #include <cinttypes>
 #include <cmath>
+#include <cstdio>
 #include <cstdlib>
 #include <iostream>
 #include <assert.h>
@@ -770,6 +771,7 @@ void processor_t::take_trap(trap_t& t, reg_t epc)
     state.mtinst = t.get_tinst();
 
     reg_t s = state.mstatus;
+    // printf("pre diff mstatus%x\n",s);
     s = set_field(s, MSTATUS_MPIE, get_field(s, MSTATUS_MIE));
     s = set_field(s, MSTATUS_MPP, state.prv);
     s = set_field(s, MSTATUS_MIE, 0);
@@ -778,6 +780,7 @@ void processor_t::take_trap(trap_t& t, reg_t epc)
     set_csr(CSR_MSTATUS, s);
     set_privilege(PRV_M);
   }
+  // printf("after diff mstatus%x\n",state.mstatus);
 }
 
 void processor_t::disasm(insn_t insn)
@@ -957,6 +960,7 @@ void processor_t::set_csr(int which, reg_t val)
 
       state.mstatus = (state.mstatus & ~mask) | (val & mask);
 
+
       bool dirty = (state.mstatus & MSTATUS_FS) == MSTATUS_FS;
       dirty |= (state.mstatus & MSTATUS_XS) == MSTATUS_XS;
       dirty |= (state.mstatus & MSTATUS_VS) == MSTATUS_VS;
@@ -971,6 +975,8 @@ void processor_t::set_csr(int which, reg_t val)
         state.mstatus = set_field(state.mstatus, MSTATUS_SXL, xlen_to_uxl(max_xlen));
       // U-XLEN == S-XLEN == M-XLEN
       xlen = max_xlen;
+
+      state.mstatus = val; // add by leesum
       break;
     }
     case CSR_MIP: {

@@ -56,6 +56,13 @@ static word_t immJ(uint32_t i) {
     0);
 }
 
+// static word_t immCSR(uint32_t i) {
+
+//   word_t imm_temp = (word_t)BITS(i, 19, 15);
+
+//   return imm_temp;
+// }
+
 /* 格式转换 */
 #define S32(i) ((int32_t)i)
 #define S64(i) ((int64_t)i)
@@ -88,6 +95,10 @@ static void decode_operand(Decode* s, word_t* dest, word_t* src1, word_t* src2, 
 static int decode_exec(Decode* s) {
   word_t dest = 0, src1 = 0, src2 = 0;
   s->dnpc = s->snpc;
+
+  int csr_imm = BITS(s->isa.inst.val, 19, 15);
+
+    bool is_inst_ecall = false;
 
 #define INSTPAT_INST(s) ((s)->isa.inst.val)
 #define INSTPAT_MATCH(s, name, type, ... /* body */ ) { \
@@ -180,19 +191,27 @@ static int decode_exec(Decode* s) {
 
   INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs, I, word_t t = csr(src2); csr(src2) = t | src1; R(dest) = t);
   INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw, I, word_t t = csr(src2); csr(src2) = src1; R(dest) = t);
-  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall, I, s->dnpc = isa_raise_intr(11, s->pc)); //  trap 操作 
-  INSTPAT("0011000 00010 00000 000 00000 11100 11", mret, R, s->dnpc = csrmepc;csrmstatus &= (~0x1800)); //软件实现 +4 操作,区分异常和中断
+  INSTPAT("??????? ????? ????? 011 ????? 11100 11", csrrc, I, word_t t = csr(src2); csr(src2) = t & ~src1; R(dest) = t;);
+  INSTPAT("??????? ????? ????? 101 ????? 11100 11", csrrwi, I, word_t t = csr(src2); csr(src2) = csr_imm; R(dest) = t);
+  INSTPAT("??????? ????? ????? 110 ????? 11100 11", csrrsi, I, word_t t = csr(src2); csr(src2) = t | csr_imm; R(dest) = t);
+  INSTPAT("??????? ????? ????? 111 ????? 11100 11", csrrci, I, word_t t = csr(src2); csr(src2) = t & ~csr_imm; R(dest) = t);
+  //
+  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall, I, s->dnpc = isa_raise_intr(11, s->pc); is_inst_ecall = true); //  trap 操作 
+  INSTPAT("0011000 00010 00000 000 00000 11100 11", mret, R, s->dnpc = isa_intr_ret()); //软件实现 +4 操作,区分异常和中断
 
-  INSTPAT("0000000 00000 00000 001 00000 00011 11", fencei , I, );     // nop
+  INSTPAT("0000000 00000 00000 001 00000 00011 11", fencei, I, );     // nop
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak, N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv, N, INV(s->pc));
+
+
   INSTPAT_END();
   R(0) = 0; // reset $zero to 0
+
 
   return 0;
 }
 
 int isa_exec_once(Decode* s) {
-  s->isa.inst.val = inst_fetch(&s->snpc, 4);
+  s->isa.inst.val = inst_fetch(&s->snpc, 4); // 在其中实现 pc 自增
   return decode_exec(s);
 }

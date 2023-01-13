@@ -31,6 +31,7 @@ void init_sdcard();
 void init_alarm();
 
 void send_key(uint8_t, bool);
+void send_keycode(uint32_t keycode, bool is_keydown);
 void vga_update_screen();
 
 void device_update() {
@@ -47,22 +48,32 @@ void device_update() {
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
-      case SDL_QUIT:
-        nemu_state.state = NEMU_QUIT;
-        break;
+    case SDL_QUIT:
+      nemu_state.state = NEMU_QUIT;
+      break;
 #ifdef CONFIG_HAS_KEYBOARD
       // If a key was pressed
-      case SDL_KEYDOWN:
-      case SDL_KEYUP: {
-        uint8_t k = event.key.keysym.scancode;
-        bool is_keydown = (event.key.type == SDL_KEYDOWN);
-        send_key(k, is_keydown);
-        break;
+    case SDL_KEYDOWN:
+    case SDL_KEYUP: {
+      uint8_t k = event.key.keysym.scancode;
+      bool is_keydown = (event.key.type == SDL_KEYDOWN);
+      send_key(k, is_keydown);
+
+      SDL_Keycode keycode_tmp = SDL_GetKeyFromScancode(k);
+      // shift - 组合键 转换为 _
+      if ((event.key.keysym.mod & KMOD_SHIFT) && keycode_tmp == SDLK_MINUS) {
+        send_keycode(SDLK_UNDERSCORE,is_keydown);
       }
-#endif
-      default: break;
+      else {
+        send_keycode(keycode_tmp,is_keydown);
+      }
+
+      break;
     }
+#endif
+    default: break;
   }
+}
 #endif
 }
 
@@ -86,4 +97,7 @@ void init_device() {
   IFDEF(CONFIG_HAS_SDCARD, init_sdcard());
 
   IFNDEF(CONFIG_TARGET_AM, init_alarm());
+  extern void init_clint(void);
+  init_clint();
+  init_alarm();
 }
