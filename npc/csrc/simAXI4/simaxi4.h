@@ -32,6 +32,8 @@ private:
     axi4_ptr <32, 64, 4> mmio_ptr;
     axi4_xbar<32, 64, 4> mmio;
     axi4     <32, 64, 4> mmio_sigs;
+
+
 public:
     mmio_mem* dram;
     Device2axi4* mydevices;

@@ -147,8 +147,7 @@ module ysyx_041514_clint (
   // step 5 ： mstatus
   wire [`ysyx_041514_XLEN_BUS] trap_mstatus_wdata = {
     csr_mstatus_readdata_i[63:13],
-    1'b0,
-    1'b0,
+    2'b11,
     csr_mstatus_readdata_i[10:8],
     csr_mstatus_readdata_i[3],
     csr_mstatus_readdata_i[6:4],
@@ -166,8 +165,7 @@ module ysyx_041514_clint (
   wire mret_mstatus_valid = trap_mret;
   wire [`ysyx_041514_XLEN_BUS] mret_mstatus_wdata = {
     csr_mstatus_readdata_i[63:13],
-    1'b1,
-    1'b1,
+    2'b11,
     csr_mstatus_readdata_i[10:8],
     1'b1,
     csr_mstatus_readdata_i[6:4],
@@ -220,7 +218,12 @@ module ysyx_041514_clint (
 
   wire pc_from_exe_valid = (|pc_from_exe_i[31:0]); // exe 阶段为有效指令时，才能进入中断，不然中断返回找不到返回地址
   wire pc_from_mem_valid = (|pc_from_mem_i[31:0]);
-  assign Machine_timer_interrupt = mtime_ge_mtime&csr_mstatus_mie_valid&csr_mie_mtie_valid&pc_from_exe_valid&pc_from_mem_valid;
+  assign Machine_timer_interrupt = mtime_ge_mtime&&
+                                  csr_mstatus_mie_valid&&
+                                  csr_mie_mtie_valid&&
+                                  pc_from_exe_valid&&
+                                  pc_from_mem_valid&&
+                                  !(|trap_bus_i[15:0]); // 异常优先级大于中断
 
 
 

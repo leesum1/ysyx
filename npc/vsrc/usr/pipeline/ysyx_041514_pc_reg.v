@@ -64,4 +64,10 @@ module ysyx_041514_pc_reg (
   assign pc_o = _pc_current;
   assign read_req_o = _read_req;
 
+
+  always @(*) begin
+    if (pc_o<`ysyx_041514_PC_RESET_ADDR && ~rst) begin
+      $finish;
+    end
+  end
 endmodule

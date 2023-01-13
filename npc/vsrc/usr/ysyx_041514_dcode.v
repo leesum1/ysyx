@@ -46,7 +46,7 @@ module ysyx_041514_dcode (
     output [`ysyx_041514_XLEN_BUS] inst_addr_o,
     output [`ysyx_041514_INST_LEN-1:0] inst_data_o,
     // 请求暂停流水线
-    output _load_use_valid_o,
+    output load_use_valid_o,
     /* TARP 总线 */
     output wire [`ysyx_041514_TRAP_BUS] trap_bus_o
 
@@ -348,7 +348,7 @@ module ysyx_041514_dcode (
   // 输出指定
   assign rs1_data_o = _rs1_data;
   assign rs2_data_o = _rs2_data;
-  assign _load_use_valid_o = _load_use_data_hazard_valid;
+  assign load_use_valid_o = _load_use_data_hazard_valid;
 
 
   /***************CSR 寄存器冲突处理*****************/

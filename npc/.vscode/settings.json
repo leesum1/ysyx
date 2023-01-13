@@ -80,7 +80,9 @@
         "semaphore": "cpp",
         "stop_token": "cpp",
         "valarray": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "*.inc": "cpp",
+        "*.def": "cpp"
     },
     "systemverilog.antlrVerification": false,
     "python.formatting.provider": "black",

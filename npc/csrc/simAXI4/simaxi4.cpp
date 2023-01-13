@@ -5,29 +5,13 @@
 #include <thread>
 #include <termios.h>
 
-// void uart_input(uart8250& uart) {
-//     termios tmp;
-//     tcgetattr(STDIN_FILENO, &tmp);
-//     tmp.c_lflag &= (~ICANON & ~ECHO);
-//     tcsetattr(STDIN_FILENO, TCSANOW, &tmp);
-//     while (running) {
-//         char c = getchar();
-//         // if (c == 'p') printf("pc = %x\n", *pc);
-//         // else if (c == 't') trace_on = true;
-//         if (c == 10) c = 13; // convert lf to cr
-//         uart.putc(c);
-//     }
-// }
-
-
-// extern Simtop* mysim_p;
 SimAxi4::SimAxi4(Vtop* top) {
-    cout << "2" << endl;
+
     assert(top);
-    cout << "2" << endl;
+
     connect_wire(mmio_ptr, top);// 链接端口
-    cout << "1" << endl;
     assert(mmio_ptr.check());
+
     mmio_device_init();
     cout << COLOR_BLUE "axi4 init success" COLOR_END << endl;
 }
@@ -82,14 +66,6 @@ void SimAxi4::connect_wire(axi4_ptr <32, 64, 4>& mmio_ptr, Vtop* top) {
 
 void SimAxi4::mmio_device_init() {
 
-    axi4     <32, 32, 4> mmio_sigs;
-    axi4_ref <32, 32, 4> mmio_sigs_ref(mmio_sigs);
-
-    // // uart8250 at 0x1fe40000 (APB)
-    // uart8250 uart;
-    // std::thread* uart_input_thread = new std::thread(uart_input, std::ref(uart));
-    // assert(mmio.add_dev(SERIAL_PORT, 4, &uart));
-
     // 内存
     dram = new mmio_mem(0x8000000);
 
@@ -100,8 +76,8 @@ void SimAxi4::mmio_device_init() {
 }
 
 void SimAxi4::update_input() {
-    axi4_ref <32, 64, 4> mmio_sigs_ref(mmio_sigs); // 用于 soc-simulator 的内部信号处理
-    axi4_ref <32, 64, 4> mmio_ref(mmio_ptr); // 指向 npc 与 soc-simulator 的交互信号
+    // axi4_ref <32, 64, 4> mmio_sigs_ref(mmio_sigs); // 用于 soc-simulator 的内部信号处理
+    static axi4_ref <32, 64, 4> mmio_ref(mmio_ptr); // 指向 npc 与 soc-simulator 的交互信号
 
     // posedge
     mmio_sigs.update_input(mmio_ref); // 读取 npc 的 axi 信号
@@ -109,12 +85,13 @@ void SimAxi4::update_input() {
 
 }
 void SimAxi4::beat() {
-    axi4_ref <32, 64, 4> mmio_sigs_ref(mmio_sigs); // 用于 soc-simulator 的内部信号处理
-    axi4_ref <32, 64, 4> mmio_ref(mmio_ptr); // 指向 npc 与 soc-simulator 的交互信号
+
+    // static axi4_ref <32, 64, 4> mmio_ref(mmio_ptr); // 指向 npc 与 soc-simulator 的交互信号
+    static   axi4_ref <32, 64, 4> mmio_sigs_ref(mmio_sigs); // 用于 soc-simulator 的内部信号处理
     mmio.beat(mmio_sigs_ref);   // soc-simulator 根据信号做出反映
 }
 void SimAxi4::update_output() {
-    axi4_ref <32, 64, 4> mmio_sigs_ref(mmio_sigs); // 用于 soc-simulator 的内部信号处理
-    axi4_ref <32, 64, 4> mmio_ref(mmio_ptr); // 指向 npc 与 soc-simulator 的交互信号
-    mmio_sigs.update_output(mmio_ref);// 返回 npc axi 信号
+    // axi4_ref <32, 64, 4> mmio_sigs_ref(mmio_sigs); // 用于 soc-simulator 的内部信号处理
+    static axi4_ref <32, 64, 4> mmio_ref(mmio_ptr); // 指向 npc 与 soc-simulator 的交互信号
+    mmio_sigs.update_output(mmio_ref);// 返回 npc axi 信号,将处理后的数据信号，更新在 axi 总线上
 }

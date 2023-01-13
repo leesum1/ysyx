@@ -112,7 +112,8 @@
         "sdl-video.h": "c",
         "fixedptc.h": "c",
         "fenv.h": "c",
-        "sdl-file.h": "c"
+        "sdl-file.h": "c",
+        "map.h": "c"
     },
     "makefile.makefilePath": "nemu/Makefile",
     "makefile.makeDirectory": "nemu/",

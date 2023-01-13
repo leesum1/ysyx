@@ -1,5 +1,6 @@
 #include "riscv64_decoder.h"
 #include "tabulate.hpp"
+#include "simtop.h"
 #include <assert.h>
 
 
@@ -9,6 +10,9 @@ static const char* inst_type_names[] = {
 "OP_IMM", "OP", "OP_FP", "SYSTEM", "AUIPC", "LUI", "OP_IMM_32", "OP_32",
 "custom_2_rv128", "custom_3_rv128" };
 
+
+
+extern Simtop* mysim_p;
 
 Riscv64_decoder::Riscv64_decoder(/* args */) {
 }
@@ -101,7 +105,7 @@ void Riscv64_decoder::perf_inst_count(uint32_t inst_data) {
         break;
     default:
         printf("unkown opcode %x\n", opcode);
-        // assert(0);
+        mysim_p->top_status = mysim_p->TOP_STOP;
         break;
     }
 }

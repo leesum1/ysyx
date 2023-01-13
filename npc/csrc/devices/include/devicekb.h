@@ -39,7 +39,8 @@ namespace Topdevice {
                             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
                             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,67,55,69,0,72,
                             66,71,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
-        jm::circular_buffer<int, 512> keybuff; //环形缓冲区
+        jm::circular_buffer<int, 64> scancode_buff; //环形缓冲区
+        jm::circular_buffer<SDL_Keycode, 64> keycode_buff; //环形缓冲区
         SDL_Event event;
     public:
         Devicekb(/* args */);
@@ -49,6 +50,7 @@ namespace Topdevice {
         void update();
         void init(const char* name);
         void send_key(uint8_t scancode, bool is_keydown);
+        void send_key_ascii(SDL_Keycode keycode);
     };
 
 } // namespace d

@@ -190,23 +190,23 @@ module ysyx_041514_memory (
   wire _4byte_misaligned = (|_addr[1:0]) & ls_size[2];
   wire _8byte_misaligned = (|_addr[2:0]) & ls_size[3];
 
-  wire _addr_misaligned = _1byte_misaligned|_2byte_misaligned|_4byte_misaligned|_8byte_misaligned;
-  wire _load_addr_misaligned = _isload & _addr_misaligned;
-  wire _store_addr_misaligned = _isstore & _addr_misaligned;
+  wire addr_misaligned = _1byte_misaligned|_2byte_misaligned|_4byte_misaligned|_8byte_misaligned;
+  wire loadaddr_misaligned = _isload & addr_misaligned;
+  wire storeaddr_misaligned = _isstore & addr_misaligned;
 
   reg [`ysyx_041514_TRAP_BUS] _mem_trap_bus;
   integer i;
   always @(*) begin
     for (i = 0; i < `ysyx_041514_TRAP_LEN; i = i + 1) begin
-      if (i == `ysyx_041514_TRAP_LOAD_ADDR_MISALIGNED) begin
-        _mem_trap_bus[i] = _load_addr_misaligned;
-      end else if (i == `ysyx_041514_TRAP_STORE_ADDR_MISALIGNED) begin
-        _mem_trap_bus[i] = _store_addr_misaligned;
-      end else if (i == `ysyx_041514_TRAP_FENCEI) begin  // fencei 复用 trap 线路，实现跳转
-        _mem_trap_bus[i] = mem_fencei_valid_o;
-      end else begin
+      // if (i == `ysyx_041514_TRAPloadaddr_misaligned) begin
+      //   _mem_trap_bus[i] = loadaddr_misaligned;
+      // end else if (i == `ysyx_041514_TRAPstoreaddr_misaligned) begin
+      //   _mem_trap_bus[i] = storeaddr_misaligned;
+      // end else if (i == `ysyx_041514_TRAP_FENCEI) begin  // fencei 复用 trap 线路，实现跳转
+      //   _mem_trap_bus[i] = mem_fencei_valid_o;
+      // end else begin
         _mem_trap_bus[i] = trap_bus_i[i];
-      end
+      // end
     end
   end
   assign trap_bus_o = _mem_trap_bus;
