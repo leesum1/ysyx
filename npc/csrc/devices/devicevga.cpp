@@ -54,7 +54,6 @@ void Devicevga::write(paddr_t addr, word_t data, uint32_t len) {
         }
         else {
             vgaregs.sync = (uint32_t)data;
-            printf("vgaregs.sync,%d\n",data);
             //vga_update_screen();
         }
     }

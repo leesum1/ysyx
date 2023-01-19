@@ -17,6 +17,7 @@
 #define __RISCV64_REG_H__
 
 #include <common.h>
+#include "stdio.h"
 #include "isa-def.h"
 // #include <cpu/difftest.h>
 
@@ -39,7 +40,7 @@ static inline int check_csr_idx(int idx) {
   case 0x342: return mcause;break; // mcause
   case 0x340: return MSCRATCH; break;
   case 0xf14: return mhartid; break;
-  default:  panic("csr error, addr 0x%x", idx); break;
+  default:  printf("csr error, addr 0x%x", idx); break;
   }
 }
 

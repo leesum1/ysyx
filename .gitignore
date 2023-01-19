@@ -8,7 +8,7 @@
 !/abstract-machine/*
 !/am-kernels/*
 !/npc/*
-!/nvboard/*
+!/test/*
 !.vscode/*
 !Makefile
 !README.md

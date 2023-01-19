@@ -34,15 +34,18 @@ static bool g_print_step = false;
 
 void device_update();
 extern word_t do_mtime_trap(word_t dnpc, bool is_ecall);
+static void exec_itrace(Decode *s);
 
-static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
+static void trace_all(Decode *_this) {
+
+  IFDEF(CONFIG_ITRACE, exec_itrace(_this));
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) {
     log_write("%s\n", _this->logbuf);
   }
 #endif
   /* 指令最终打印的地方 */
-  // g_print_step = true;
+  g_print_step = true;
   if (g_print_step) {
     IFDEF(CONFIG_ITRACE, puts(_this->logbuf));
   }
@@ -85,8 +88,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
   s->snpc = pc;
   // 正常指令执行
   isa_exec_once(s);
-  IFDEF(CONFIG_ITRACE, exec_itrace(s));
-  trace_and_difftest(s, cpu.pc);
+  trace_all(s);
   // mtime 中断
   // ecall 优先，发生中断时 mtime_pc 为中断服务程序地址，否则为 dnpc
   bool is_inst_ecall =

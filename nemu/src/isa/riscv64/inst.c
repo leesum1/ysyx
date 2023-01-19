@@ -17,6 +17,7 @@
 #include <cpu/cpu.h>
 #include <cpu/ifetch.h>
 #include <cpu/decode.h>
+#include "stdio.h"
 #include <isa.h>
 #define R(i) gpr(i)
 #define Mr vaddr_read
@@ -200,6 +201,8 @@ static int decode_exec(Decode* s) {
   INSTPAT("0011000 00010 00000 000 00000 11100 11", mret, R, s->dnpc = isa_intr_ret()); //软件实现 +4 操作,区分异常和中断
 
   INSTPAT("0000000 00000 00000 001 00000 00011 11", fencei, I, );     // nop
+  INSTPAT("0000??? ????? 00000 000 00000 00011 11", fence, I, );     // nop
+
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak, N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv, N, INV(s->pc));
 
