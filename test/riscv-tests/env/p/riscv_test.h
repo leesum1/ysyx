@@ -248,7 +248,7 @@ reset_vector:                                                           \
         or TESTNUM, TESTNUM, 1;                                         \
         li a7, 93;                                                      \
         addi a0, TESTNUM, 0;                                            \
-        li a0, 0;                                                       \
+        li a0, -1;                                                       \
         ebreak;
 
 //-----------------------------------------------------------------------

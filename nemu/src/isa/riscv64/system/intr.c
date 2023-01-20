@@ -22,7 +22,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
    * Then return the address of the interrupt/exception vector.
    */
   // printf("\nisa_raise_intr ok \n");
-  mstatus_t *mstatus_temp = &cpu.csr[mstatus];
+  mstatus_t *mstatus_temp = (mstatus_t*)&cpu.csr[mstatus];
 
   // printf("pre dut mstatus:%x\n", cpu.csr[mstatus]);
   mstatus_temp->bit.mpie = mstatus_temp->bit.mie;
@@ -39,7 +39,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
 
 word_t isa_intr_ret(void) {
 
-  mstatus_t *mstatus_temp = &cpu.csr[mstatus];
+  mstatus_t *mstatus_temp = (mstatus_t*)&cpu.csr[mstatus];
   // printf("pre isa_intr_ret mstatus:%x\n", cpu.csr[mstatus]);
   mstatus_temp->bit.mie = mstatus_temp->bit.mpie;
   mstatus_temp->bit.mpp = 0b00;

@@ -112,8 +112,8 @@ static bool make_token(char* e) {
         if (rules[i].token_type != TK_NOTYPE) {
           sprintf(tokens[nr_token].str, "%.*s", substr_len, substr_start);
           tokens[nr_token].type = rules[i].token_type;
-          //DEBUG_M("tokens->str:%s,tpye:%d,index:%d\n", tokens[nr_token].str, \
-            tokens[nr_token].type, nr_token);
+          // DEBUG_M("tokens->str:%s,tpye:%d,index:%d\n", tokens[nr_token].str, 
+          //   tokens[nr_token].type, nr_token);
           nr_token++;
         }
         break;
@@ -163,9 +163,6 @@ void expr_test(void) {
     /* 参考nemu读取命令的代码 */
     char* cmd = strtok(buf, " ");
     char* args = cmd + strlen(cmd) + 1;
-    DEBUG_M("%s\n", buf);
-    DEBUG_M("%s\n", cmd);
-    DEBUG_M("%s\n", args);
 
     int temp;
     sscanf(cmd, "%d", &temp);

@@ -17,6 +17,7 @@
 #include <cpu/cpu.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include "debug.h"
 #include "sdb.h"
 
 #include <utils.h>
@@ -69,7 +70,7 @@ static int cmd_si(char* args) {
   else {
     sscanf(args, "%d", &N);
   }
-  DEBUG_S("cpu_exec:%d,\n", N);
+  Log("cpu_exec:%d,\n", N);
   cpu_exec(N);
   return 0;
 }
@@ -83,7 +84,7 @@ static int cmd_info(char* args) {
 
   char val[20];
   sscanf(args, "%s", val);
-  DEBUG_S("info:%s,\n", val);
+  Log("info:%s,\n", val);
   if (0 == strcmp(val, "r")) {
     isa_reg_display();
   }
@@ -106,11 +107,11 @@ static int cmd_x(char* args) {
   int32_t len;
   //解析参数
   sscanf(args, "%d %x", &len, &addr);
-  DEBUG_S("len:%d,addr:%x\n", len, addr);
+  Log("len:%d,addr:%x\n", len, addr);
   int32_t i = 0;
   /* 每次读取 4byte */
   for (i = 0; i < len; i++) {
-    DEBUG_S("addr:0x%08x\tData: %08lx\n", addr,
+    Log("addr:0x%08x\tData: %08lx\n", addr,
       vaddr_read(addr, 4));
     addr += 4;
   }
@@ -125,8 +126,8 @@ static int cmd_x(char* args) {
 static int cmd_p(char* args) {
 
   bool ret;
-  DEBUG_S("expr:%s\n", args);
-  DEBUG_S("expret:%lu\n", expr(args, &ret));
+  Log("expr:%s\n", args);
+  Log("expret:%lu\n", expr(args, &ret));
   extern void expr_test(void);
   expr_test();
   return 0;
@@ -182,17 +183,17 @@ static int cmd_help(char* args) {
   if (arg == NULL) {
     /* no argument given */
     for (i = 0; i < NR_CMD; i++) {
-      DEBUG_S("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
+      Log("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
     }
   }
   else {
     for (i = 0; i < NR_CMD; i++) {
       if (strcmp(arg, cmd_table[i].name) == 0) {
-        DEBUG_S("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
+        Log("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
         return 0;
       }
     }
-    DEBUG_S("Unknown command '%s'\n", arg);
+    Log("Unknown command '%s'\n", arg);
   }
   return 0;
 }
@@ -244,7 +245,7 @@ void sdb_mainloop() {
     }
 
     if (i == NR_CMD) {
-      DEBUG_S("Unknown command '%s'\n", cmd);
+      Log("Unknown command '%s'\n", cmd);
     }
   }
 }

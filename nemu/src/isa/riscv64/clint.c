@@ -2,7 +2,7 @@
  * @Author: leesum 1255273338@qq.com
  * @Date: 2023-01-11 19:06:09
  * @LastEditors: leesum 1255273338@qq.com
- * @LastEditTime: 2023-01-13 18:11:39
+ * @LastEditTime: 2023-01-20 22:06:03
  * @FilePath: /nemu/src/isa/riscv64/clint.c
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置
  * 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
@@ -23,6 +23,7 @@
  ***************************************************************************************/
 
 #include "local-include/csr.h"
+#include "macro.h"
 #include <device/alarm.h>
 #include <device/map.h>
 #include <isa.h>
@@ -69,14 +70,11 @@ word_t do_mtime_trap(word_t dnpc, bool is_ecall) {
   mstatus_t *mstatus_tmp = (mstatus_t *)&cpu.csr[mstatus];
   mie_t *mie_tmp = (mie_t *)&cpu.csr[mie];
 
-  extern bool get_is_skip_ref();
+  IFDEF(CONFIG_DIFFTEST,extern bool get_is_skip_ref();)
 
-  if (mstatus_tmp->bit.mie && 
-      mip_tmp->bit.mtip && 
-      mie_tmp->bit.mtie &&
-      (!is_ecall) &&
-      (!get_is_skip_ref())) {
-    mstatus_t *mstatus_temp = &cpu.csr[mstatus];
+  if (mstatus_tmp->bit.mie && mip_tmp->bit.mtip && mie_tmp->bit.mtie &&
+      (!is_ecall) && (MUXDEF(CONFIG_DIFFTEST, !get_is_skip_ref(), 1))) {
+    mstatus_t *mstatus_temp = (mstatus_t *)&cpu.csr[mstatus];
     mstatus_temp->bit.mpie = mstatus_temp->bit.mie;
     mstatus_temp->bit.mpp = 0b11;
     mstatus_temp->bit.mie = 0;
@@ -89,3 +87,4 @@ word_t do_mtime_trap(word_t dnpc, bool is_ecall) {
 
   return dnpc;
 }
+

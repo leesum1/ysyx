@@ -27,8 +27,8 @@ GCC_INC_PATH = -I$(NPC_HOME)/csrc/include  \
 			   -I/usr/include/SDL2 \
 
 # llvm
-LLVM_LIB = $(shell llvm-config --libs)
-LLVM_FLAGS = $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config --cxxflags))
+LLVM_LIB = $(shell llvm-config-14 --libs)
+LLVM_FLAGS = $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config-14 --cxxflags))
 
 LLVM_FLAGS += -Ofast  -fexceptions  
 #-lasan(内存检查)
@@ -60,6 +60,9 @@ com:${CSRC} ${VSRC}
 run: com
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 # 运行 bin文件,传入 img 参数, difftest 文件参数
+	${BIN} ${IMG} $(NPC_HOME)/libnemu.so
+
+test:
 	${BIN} ${IMG} $(NPC_HOME)/libnemu.so
 
 clean:
