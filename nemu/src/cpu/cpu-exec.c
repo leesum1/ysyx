@@ -55,6 +55,7 @@ static void trace_all(Decode *_this) {
 }
 
 static void exec_itrace(Decode *s) {
+#ifdef CONFIG_ITRACE
   char *p = s->logbuf;
   /* 地址 */
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
@@ -81,6 +82,7 @@ static void exec_itrace(Decode *s) {
   disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
               MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc),
               (uint8_t *)&s->isa.inst.val, ilen);
+#endif
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {

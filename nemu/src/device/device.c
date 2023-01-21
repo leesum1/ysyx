@@ -98,6 +98,7 @@ void init_device() {
 
   IFNDEF(CONFIG_TARGET_AM, init_alarm());
   extern void init_clint(void);
-  init_clint();
-  init_alarm();
+  IFDEF(CONFIG_HAS_SERIAL,init_clint());
+  IFDEF(CONFIG_HAS_SERIAL,init_alarm());
+  
 }

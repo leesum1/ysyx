@@ -18,27 +18,28 @@ def execCmd(cmd):
     return text
 
 
-execCmd('make -C $NEMU_HOME ')
+
 
 
 files = os.listdir(riscv_tests_path)
 absolute_paths = [os.path.abspath(
     os.path.join(riscv_tests_path, f)) for f in files]
 
-
-for test_bin in absolute_paths:
-    ret = execCmd(nemu_path + test_bin)
-    file_name = os.path.basename(test_bin)
-    if (-1 != ret.find('HIT GOOD TRAP')):
-        print(colored(file_name+'---------ok', 'green'))
-    else:
-        print(colored(file_name+'---------bad', 'red'))
-
-
+# execCmd('make -C $NEMU_HOME ')
 # for test_bin in absolute_paths:
-#     ret = execCmd(npc_path + test_bin)
+#     ret = execCmd(nemu_path + test_bin)
 #     file_name = os.path.basename(test_bin)
-#     if (-1 != ret.find('HIT GOOD')):
-#        print(colored(file_name+'---------ok','green'))
+#     if (-1 != ret.find('HIT GOOD TRAP')):
+#         print(colored(file_name+'---------ok', 'green'))
 #     else:
-#         print(colored(file_name+'---------bad','red'))
+#         print(colored(file_name+'---------bad', 'red'))
+
+
+execCmd('make -C $NPC_HOME ')
+for test_bin in absolute_paths:
+    ret = execCmd(npc_path + test_bin)
+    file_name = os.path.basename(test_bin)
+    if (-1 != ret.find('HIT GOOD')):
+       print(colored(file_name+'---------ok','green'))
+    else:
+        print(colored(file_name+'---------bad','red'))

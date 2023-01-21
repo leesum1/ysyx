@@ -120,8 +120,8 @@ module ysyx_041514_alu_top (
   wire _isSLT = _isSF ^ _isOF;  // a<b (signed)
   wire _isSLTU = _isCF;  //a<b (unsigned)
 
-//   wire _isBLT = _isSLT;  // a<b(signed)
-//   wire _isBLTU = _isSLTU;  // a<b(unsigned)
+  //   wire _isBLT = _isSLT;  // a<b(signed)
+  //   wire _isBLTU = _isSLTU;  // a<b(unsigned)
   wire _isBGE = ~_isSLT;  // a>=b(signed)
   wire _isBGEU = ~_isSLTU;  //a>=b(unsigned)
 
@@ -209,13 +209,28 @@ module ysyx_041514_alu_top (
                    _aluop_remw|_aluop_remuw;
 
   wire _div_ready;
-
+  wire div_check_ready;
   // 除法器需要暂停流水线
-  wire div_stall_req = divop_valid & (~_div_ready) & (~alu_data_buff_valid_i);
+  wire div_stall_req = divop_valid & (~_div_ready) & (~div_check_ready) & (~alu_data_buff_valid_i);
   wire div_req_valid = div_stall_req;  //
 
   /* 暂存结果 */
   wire [`ysyx_041514_XLEN-1:0] _div_result, _rem_result;
+
+  wire [`ysyx_041514_XLEN-1:0] _div_check, _rem_check;
+
+
+  ysyx_041514_alu_div_check ysyx_041514_alu_div_check_dut (
+      .signed_valid_i(_is_div_signed),
+      .div32_valid_i(_is_div32),
+      .sr1_data_i(alu_a_i),
+      .sr2_data_i(alu_b_i),
+      .div_ready_o(div_check_ready),
+      .div_out_o(_div_check),
+      .rem_out_o(_rem_check)
+  );
+
+
 
   ysyx_041514_alu_div_top u_alu_div_top (
       .clk           (clk),
@@ -231,8 +246,8 @@ module ysyx_041514_alu_top (
   );
 
   /* 不同除法指令的结果 */
-  wire [`ysyx_041514_XLEN-1:0] _inst_div_divu_divw_divuw_ret = _div_result;
-  wire [`ysyx_041514_XLEN-1:0] _inst_rem_remu_remw_remuw_ret = _rem_result;
+  wire [`ysyx_041514_XLEN-1:0] _inst_div_divu_divw_divuw_ret = div_check_ready?_div_check:_div_result;
+  wire [`ysyx_041514_XLEN-1:0] _inst_rem_remu_remw_remuw_ret = div_check_ready?_rem_check:_rem_result;
 
   /****************************选择最终ALU结果***********************************************/
 
@@ -250,7 +265,7 @@ module ysyx_041514_alu_top (
   /* 选择最后输出 */
   assign alu_out_o = (_isCMP) ? {63'b0, _compare_out} : 
                      alu_data_buff_valid_i ? alu_data_buff_i // 优先选择缓存数据
-                     :_alu_out;
+      : _alu_out;
 
   assign alu_data_ready_o = _mul_ready | _div_ready;
   assign alu_stall_req_o = mul_stall_req | div_stall_req;
