@@ -18,10 +18,10 @@ module ysyx_041514_alu_mul_sim (
   wire _rs1_sign = (rs1_signed_valid_i) ? rs1_data_i[`ysyx_041514_XLEN-1] : 1'b0;
   wire _rs2_sign = (rs2_signed_valid_i) ? rs2_data_i[`ysyx_041514_XLEN-1] : 1'b0;
   /* 共65位 */
-  wire [`ysyx_041514_XLEN:0] _rs1_65 = {_rs1_sign, rs1_data_i};
-  wire [`ysyx_041514_XLEN:0] _rs2_65 = {_rs2_sign, rs2_data_i};
+  wire signed [`ysyx_041514_XLEN:0] _rs1_65 = {_rs1_sign, rs1_data_i};
+  wire signed [`ysyx_041514_XLEN:0] _rs2_65 = {_rs2_sign, rs2_data_i};
 
-  wire [`ysyx_041514_XLEN*2-1:0] _mul_result = _rs1_65 * _rs2_65;
+  wire  [`ysyx_041514_XLEN*2-1:0] _mul_result = _rs1_65 * _rs2_65;
   assign mul_out_o = _mul_result;
 
   reg mul_ready;

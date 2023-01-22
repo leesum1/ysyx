@@ -1,7 +1,7 @@
 
 // 仅仅用于仿真加快速度，替换多周期乘除法
-// `define MUL_SIM
-`define MUL_SLOW
+`define MUL_SIM
+// `define MUL_SLOW
 // `define DIV_SIM
 // `define ysyx_041514_YSYX_SOC          // ysyxSOC 仿真环境
 

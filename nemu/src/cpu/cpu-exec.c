@@ -38,14 +38,14 @@ static void exec_itrace(Decode *s);
 
 static void trace_all(Decode *_this) {
 
-  IFDEF(CONFIG_ITRACE, exec_itrace(_this));
+  exec_itrace(_this);
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) {
     log_write("%s\n", _this->logbuf);
   }
 #endif
   /* 指令最终打印的地方 */
-  g_print_step = true;
+  // g_print_step = true;
   if (g_print_step) {
     IFDEF(CONFIG_ITRACE, puts(_this->logbuf));
   }

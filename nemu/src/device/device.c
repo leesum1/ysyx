@@ -96,9 +96,9 @@ void init_device() {
   IFDEF(CONFIG_HAS_DISK, init_disk());
   IFDEF(CONFIG_HAS_SDCARD, init_sdcard());
 
-  IFNDEF(CONFIG_TARGET_AM, init_alarm());
+  // IFNDEF(CONFIG_TARGET_AM, init_alarm());
   extern void init_clint(void);
-  IFDEF(CONFIG_HAS_SERIAL,init_clint());
-  IFDEF(CONFIG_HAS_SERIAL,init_alarm());
+  IFDEF(CONFIG_HAS_CLINT,init_clint());
+  IFDEF(CONFIG_HAS_CLINT,init_alarm());
   
 }

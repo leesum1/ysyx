@@ -1,12 +1,3 @@
-/*
- * @Author: leesum 1255273338@qq.com
- * @Date: 2023-01-11 19:06:09
- * @LastEditors: leesum 1255273338@qq.com
- * @LastEditTime: 2023-01-21 18:14:35
- * @FilePath: /nemu/src/isa/riscv64/clint.c
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置
- * 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- */
 /***************************************************************************************
  * Copyright (c) 2014-2021 Zihao Yu, Nanjing University
  *
@@ -29,8 +20,8 @@
 #include <isa.h>
 #include <utils.h>
 
-#define CLINT_MTIMECMP (0x4000 / sizeof(clint_base[0]))
-#define CLINT_MTIME (0xBFF8 / sizeof(clint_base[0]))
+#define CLINT_MTIMECMP (CONFIG_MTIMECMP_PORT / sizeof(clint_base[0]))
+#define CLINT_MTIME (CONFIG_MTIME_PORT / sizeof(clint_base[0]))
 #define TIMEBASE 10000000ul
 
 static uint64_t *clint_base = NULL;
@@ -59,9 +50,9 @@ static void clint_io_handler(uint32_t offset, int len, bool is_write) {
 
 void init_clint(void) {
   clint_base = (uint64_t *)new_space(0x10000);
-  add_mmio_map("clint", 0x2000000, (uint8_t *)clint_base, 0x10000,
+  add_mmio_map("clint", CONFIG_CLINT_MMIO_BASE, (uint8_t *)clint_base, 0x10000,
                clint_io_handler);
-  // IFNDEF(CONFIG_DETERMINISTIC, add_alarm_handle(update_clint));
+  add_alarm_handle(update_clint);
   boot_time = get_time();
 }
 

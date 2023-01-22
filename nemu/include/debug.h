@@ -25,8 +25,6 @@
        __func__, ##__VA_ARGS__)
 // 完整的调试信息：设备类型，当前源文件名，当前源函数名，当前源代码行号，格式化输出内容，格式化参数
 
-
-
 extern void assert_fail_msg();
 #define Assert(cond, format, ...)                                              \
   do {                                                                         \
