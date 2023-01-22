@@ -20,6 +20,12 @@
 #include <isa.h>
 #include <utils.h>
 
+#ifndef CONFIG_HAS_CLINT
+#define CONFIG_MTIMECMP_PORT 0x200
+#define CONFIG_MTIME_PORT 0x300
+#define CONFIG_CLINT_MMIO_BASE 0x200000
+#endif
+
 #define CLINT_MTIMECMP (CONFIG_MTIMECMP_PORT / sizeof(clint_base[0]))
 #define CLINT_MTIME (CONFIG_MTIME_PORT / sizeof(clint_base[0]))
 #define TIMEBASE 10000000ul
@@ -52,7 +58,9 @@ void init_clint(void) {
   clint_base = (uint64_t *)new_space(0x10000);
   add_mmio_map("clint", CONFIG_CLINT_MMIO_BASE, (uint8_t *)clint_base, 0x10000,
                clint_io_handler);
-  add_alarm_handle(update_clint);
+
+  IFDEF(CONFIG_HAS_CLINT, add_alarm_handle(update_clint));
+
   boot_time = get_time();
 }
 
@@ -61,7 +69,7 @@ word_t do_mtime_trap(word_t dnpc, bool is_ecall) {
   mstatus_t *mstatus_tmp = (mstatus_t *)&cpu.csr[mstatus];
   mie_t *mie_tmp = (mie_t *)&cpu.csr[mie];
 
-  IFDEF(CONFIG_DIFFTEST,extern bool get_is_skip_ref();)
+  IFDEF(CONFIG_DIFFTEST, extern bool get_is_skip_ref();)
 
   if (mstatus_tmp->bit.mie && mip_tmp->bit.mtip && mie_tmp->bit.mtie &&
       (!is_ecall) && (MUXDEF(CONFIG_DIFFTEST, !get_is_skip_ref(), 1))) {
@@ -78,4 +86,3 @@ word_t do_mtime_trap(word_t dnpc, bool is_ecall) {
 
   return dnpc;
 }
-

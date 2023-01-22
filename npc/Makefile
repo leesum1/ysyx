@@ -4,13 +4,22 @@ TOP_MODULE := ysyx_041514
 CSRC +=  $(shell find $(abspath ./csrc) -name "*.cpp")
 VSRC +=  $(shell find $(abspath ./vsrc) -name "*.v" -or -name "*.sv")
 
+# 控制参数
+WAVE ?= 0
+AUTO ?= 0
+VGA ?= 1
+
+
+
 VERILATOR_INC_PATH := -I./vsrc \
 			-I./vsrc/usr \
 			-I./vsrc/lib 
 
-# verilator flags: 
+# verilator flags:
+ifeq ($(WAVE),1) 
 VERILATOR_FLAGS +=    --trace-fst
 VERILATOR_FLAGS +=  --trace-max-array 256
+endif
 # VERILATOR_FLAGS +=  -threads 10
 VERILATOR_FLAGS +=  -O3 -noassert --x-assign fast --x-initial fast -j $(shell nproc)
 VERILATOR_FLAGS +=  -cc --exe  --build  --clk clk  
@@ -45,6 +54,15 @@ GCC_LIB += ${LLVM_LIB} -flto
 GCC_LDFLAGS := $(addprefix -LDFLAGS ,${GCC_LIB})
 GCC_CFLAGS :=  $(addprefix -CFLAGS ,${GCC_INC_PATH})
 GCC_CFLAGS += $(addprefix -CFLAGS ,${LLVM_FLAGS})
+ifeq ($(WAVE),1)
+GCC_CFLAGS += $(addprefix -CFLAGS ,-DTOP_WAVE)
+endif
+ifeq ($(AUTO),1)
+GCC_CFLAGS += $(addprefix -CFLAGS ,-DAUTO_RUN)
+endif
+ifeq ($(VGA),1)
+GCC_CFLAGS += $(addprefix -CFLAGS ,-DDEVICE_VGA)
+endif
 GCC_FLAGS := ${GCC_CFLAGS} ${GCC_LDFLAGS}
 
 # run info:

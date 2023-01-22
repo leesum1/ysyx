@@ -5,7 +5,7 @@
 
         "**/*.{sv,v,svh,vh}"
     ],
-    "systemverilog.documentSymbolsPrecision": "declaration",
+    "systemverilog.documentSymbolsPrecision": "full_no_references",
     "systemverilog.launchConfigurationVerilator": "verilator  --lint-only --language 1800-2012  -Wall -y ./vsrc/usr/pipeline -y ./vsrc/lib -y ./vsrc -y ./vsrc/usr -y ./vsrc/usr/cache -y ./vsrc/usr/alu -y ./vsrc/usr/axi -y ./vsrc/usr/bpu",
     "files.associations": {
         "Makefile": "makefile",
