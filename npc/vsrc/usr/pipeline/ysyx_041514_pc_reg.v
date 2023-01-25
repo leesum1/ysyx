@@ -1,5 +1,6 @@
 `include "sysconfig.v"
 
+
 module ysyx_041514_pc_reg (
     input clk,
     input rst,
@@ -25,7 +26,7 @@ module ysyx_041514_pc_reg (
   wire [`ysyx_041514_XLEN_BUS] pc_temp = clint_pc_plus4_valid_o ? clint_pc_i : _pc_current;
   wire [`ysyx_041514_XLEN_BUS] pc_temp_plus4 = pc_temp + 'd4;
 
-  reg [`ysyx_041514_XLEN_BUS] _pc_next;
+  reg  [`ysyx_041514_XLEN_BUS] _pc_next;
   always @(*) begin
     if (clint_pc_valid_i & clint_pc_plus4_valid_o) begin : int_pc
       _pc_next = pc_temp_plus4;
@@ -46,7 +47,7 @@ module ysyx_041514_pc_reg (
   wire _pc_reg_wen = (~stall_valid_i[`ysyx_041514_CTRLBUS_PC]) & (~rst);  // stall
   wire _flush_valid = flush_valid_i[`ysyx_041514_CTRLBUS_PC];  // flush
 
-  wire [`ysyx_041514_XLEN_BUS] _pc_next_d = (_flush_valid) ? `ysyx_041514_PC_RESET_ADDR : _pc_next;
+  wire [`ysyx_041514_XLEN_BUS] _pc_next_d = (_flush_valid) ? `ysyx_041514_PC_RESET_ADDR : {_pc_next[63:1],1'b0}; // fix misalign1-jalr
   ysyx_041514_regTemplate #(
       .WIDTH    (`ysyx_041514_XLEN),
       .RESET_VAL(`ysyx_041514_PC_RESET_ADDR)
@@ -66,7 +67,7 @@ module ysyx_041514_pc_reg (
 
 
   always @(*) begin
-    if (pc_o<`ysyx_041514_PC_RESET_ADDR && ~rst) begin
+    if (pc_o < `ysyx_041514_PC_RESET_ADDR && ~rst) begin
       $finish;
     end
   end

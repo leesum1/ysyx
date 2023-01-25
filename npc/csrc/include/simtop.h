@@ -99,6 +99,7 @@ public:
     void sdbRun(void);
     bool isSdbOk(const char* sdbname);
     void showSimPerformance();
+    void dump_signature(const char* signature_path);
 };
 
 #endif

@@ -1,58 +1,49 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-#include <verilated.h>
-#include <Vtop.h>
-#include "verilated_vcd_c.h"
-#include "simtop.h"
 #include "cppreadline/Console.hpp"
 #include "mysdb.h"
 #include "simMem.h"
 #include "simconf.h"
+#include "simtop.h"
+#include "verilated_vcd_c.h"
 #include <SDL2/SDL.h>
+#include <Vtop.h>
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <verilated.h>
 
 namespace cr = CppReadline;
 using ret = cr::Console::ReturnCode;
 
+const char *nemu_so_path = " ";
+const char *img_path = " ";
+const char *signature_path = NULL;
 
+Simtop *mysim_p;
 
-
-
-
-const char* nemu_so_path = " ";
-const char* img_path = " ";
-
-Simtop* mysim_p;
-
-
-
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
 
   /* 解析参数 获取镜像路径*/
-  for (int i = 0;i < argc;i++) {
+  for (int i = 0; i < argc; i++) {
     printf("argv:%s\n", argv[i]);
     if (i == 1) {
       img_path = argv[i];
-    }
-    else if (i == 2) {
+    } else if (i == 2) {
       nemu_so_path = argv[i];
+    } else if (i == 3) {
+      signature_path = argv[i];
     }
   }
-
-
-
 
   /* 不知道为什么将 Simtop mysim 声明为全局变量会崩溃(已有思路,全局对象的特性)*/
   mysim_p = new Simtop;
   // /* 加载镜像,若无输入镜像，加载默认镜像 */
-   // mysim_p->mem->setImagePath(img_path);
-   // mysim_p->mem->loadImage();
+  // mysim_p->mem->setImagePath(img_path);
+  // mysim_p->mem->loadImage();
   mysim_p->reset();
 
   size_t file_size = mysim_p->u_axi4->dram->load_binary(0, img_path);
 
   cout << "file_size " << file_size << endl;
-
 
   /* 注册命令 */
   cr::Console c(">:");
@@ -88,10 +79,7 @@ int main(int argc, char* argv[]) {
   mysim_p->showSimPerformance();
   mysim_p->excute(1);
   bool hitgood = mysim_p->npcHitGood();
+  mysim_p->dump_signature(signature_path);
   delete mysim_p;
   return 0;
 }
-
-
-
-

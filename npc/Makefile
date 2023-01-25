@@ -6,8 +6,8 @@ VSRC +=  $(shell find $(abspath ./vsrc) -name "*.v" -or -name "*.sv")
 
 # 控制参数
 WAVE ?= 0
-AUTO ?= 0
-VGA ?= 1
+AUTO ?= 1
+VGA ?= 0
 
 
 
