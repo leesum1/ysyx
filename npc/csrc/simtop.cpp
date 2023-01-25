@@ -388,7 +388,7 @@ void Simtop::dump_signature(const char *signature_path) {
   uint8_t rbuff[4];
   for (uint64_t addr = begin_signature; addr < end_signature; addr = addr + 4) {
     u_axi4->dram->do_read(addr - MEM_BASE, 4, rbuff);
-    fwprintf(fp, L"%08x\n", *(uint32_t *)rbuff);
+    fprintf(fp, "%08x\n", *(uint32_t *)rbuff);
   }
 
   fclose(fp);

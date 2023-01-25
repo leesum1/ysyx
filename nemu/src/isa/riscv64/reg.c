@@ -44,7 +44,7 @@ word_t isa_reg_str2val(const char* s, bool* success) {
     /*对比寄存器名字*/
     if (!strcmp(s, reg_name(i, 64))) {
       val = gpr(i);
-      *success = 0;
+      *success = 1;
       return val;
     }
   }

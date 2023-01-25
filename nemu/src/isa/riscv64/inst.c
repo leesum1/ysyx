@@ -139,8 +139,8 @@ static void decode_operand(Decode *s, word_t *dest, word_t *src1, word_t *src2,
 static word_t calc_div(word_t src1, word_t src2, word_t width, bool sign) {
 
   Assert(width == 32 || width == 64, "width err : %lu", width);
-  Log("src1:%lx,src2:%lx\n",src1,src2);
-  if (src2 == 0) {
+  Log("src1:%lx,src2:%lx\n", src1, src2);
+  if ((S32(src2) == 0 && width == 32) || (S64(src2) == 0 && width == 64)) {
     return -1;
   } else if (width == 64 && S64(src1) == INT64_MIN && src2 == -1 && sign) {
     return INT64_MIN;
@@ -164,11 +164,14 @@ static word_t calc_rem(word_t src1, word_t src2, word_t width, bool sign) {
 
   //   Log("src1 %lx\n", src1);
   //   Log("src2 %lx\n", src2);
-  if (src2 == 0) {
-    return src1;
+  if ((S32(src2) == 0 && width == 32)) {
+    return S32(src1);
+  } else if ((S64(src2) == 0 && width == 64)) {
+    return S64(src1);
+
   } else if (width == 64 && S64(src1) == INT64_MIN && src2 == -1 && sign) {
     return 0;
-  } else if (width == 32 && S32(src1) == INT32_MIN && src2 == -1 && sign) {
+  } else if (width == 32 && S32(src1) == INT32_MIN && S32(src2) == -1 && sign) {
     return 0;
   }
 

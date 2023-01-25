@@ -22,6 +22,8 @@ int is_exit_status_bad()
   int good = (nemu_state.state == NEMU_END && nemu_state.halt_ret == 0) ||
              (nemu_state.state == NEMU_QUIT);
 
+  extern void dump_signature(void);
+  dump_signature();
   printf("nemu_state:%d,halt_ret:%d\r\n", nemu_state.state, nemu_state.halt_ret);
   printf("good:%d", !good);
   return !good;
