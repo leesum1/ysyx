@@ -1,21 +1,24 @@
 /***************************************************************************************
-* Copyright (c) 2014-2022 Zihao Yu, Nanjing University
-*
-* NEMU is licensed under Mulan PSL v2.
-* You can use this software according to the terms and conditions of the Mulan PSL v2.
-* You may obtain a copy of Mulan PSL v2 at:
-*          http://license.coscl.org.cn/MulanPSL2
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*
-* See the Mulan PSL v2 for more details.
-***************************************************************************************/
+ * Copyright (c) 2014-2022 Zihao Yu, Nanjing University
+ *
+ * NEMU is licensed under Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan
+ *PSL v2. You may obtain a copy of Mulan PSL v2 at:
+ *          http://license.coscl.org.cn/MulanPSL2
+ *
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY
+ *KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ *NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ *
+ * See the Mulan PSL v2 for more details.
+ ***************************************************************************************/
 
+#include "SDL_mouse.h"
 #include <common.h>
-#include <utils.h>
 #include <device/alarm.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <utils.h>
 #ifndef CONFIG_TARGET_AM
 #include <SDL2/SDL.h>
 #endif
@@ -25,6 +28,7 @@ void init_serial();
 void init_timer();
 void init_vga();
 void init_i8042();
+void init_mouse();
 void init_audio();
 void init_disk();
 void init_sdcard();
@@ -32,6 +36,7 @@ void init_alarm();
 
 void send_key(uint8_t, bool);
 void send_keycode(uint32_t keycode, bool is_keydown);
+void send_mouse_event(uint32_t btn, uint32_t x, uint32_t y);
 void vga_update_screen();
 
 void device_update() {
@@ -43,6 +48,12 @@ void device_update() {
   last = now;
 
   IFDEF(CONFIG_HAS_VGA, vga_update_screen());
+
+  int sdl_x, sdl_y;
+
+  uint32_t mouse_btn = SDL_GetMouseState(&sdl_x, &sdl_y);
+
+  send_mouse_event(mouse_btn, sdl_x / 2, sdl_y / 2);
 
 #ifndef CONFIG_TARGET_AM
   SDL_Event event;
@@ -62,25 +73,26 @@ void device_update() {
       SDL_Keycode keycode_tmp = SDL_GetKeyFromScancode(k);
       // shift - 组合键 转换为 _
       if ((event.key.keysym.mod & KMOD_SHIFT) && keycode_tmp == SDLK_MINUS) {
-        send_keycode(SDLK_UNDERSCORE,is_keydown);
-      }
-      else {
-        send_keycode(keycode_tmp,is_keydown);
+        send_keycode(SDLK_UNDERSCORE, is_keydown);
+      } else {
+        send_keycode(keycode_tmp, is_keydown);
       }
 
       break;
     }
 #endif
-    default: break;
+    default:
+      break;
+    }
   }
-}
 #endif
 }
 
 void sdl_clear_event_queue() {
 #ifndef CONFIG_TARGET_AM
   SDL_Event event;
-  while (SDL_PollEvent(&event));
+  while (SDL_PollEvent(&event))
+    ;
 #endif
 }
 
@@ -92,13 +104,13 @@ void init_device() {
   IFDEF(CONFIG_HAS_TIMER, init_timer());
   IFDEF(CONFIG_HAS_VGA, init_vga());
   IFDEF(CONFIG_HAS_KEYBOARD, init_i8042());
+  init_mouse();
   IFDEF(CONFIG_HAS_AUDIO, init_audio());
   IFDEF(CONFIG_HAS_DISK, init_disk());
   IFDEF(CONFIG_HAS_SDCARD, init_sdcard());
 
   // IFNDEF(CONFIG_TARGET_AM, init_alarm());
   extern void init_clint(void);
-  IFDEF(CONFIG_HAS_CLINT,init_clint());
-  IFDEF(CONFIG_HAS_CLINT,init_alarm());
-  
+  IFDEF(CONFIG_HAS_CLINT, init_clint());
+  IFDEF(CONFIG_HAS_CLINT, init_alarm());
 }

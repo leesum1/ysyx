@@ -37,18 +37,18 @@ int main() {
   divisor = 4;
   out = divident / divisor;
   rem = divident % divisor;
-  printf("out:%d,rem:%d\n",out,rem);
+  //printf("out:%d,rem:%d\n",out,rem);
   //check(1);
   divident = 13;
   divisor = 10;
   out = divident / divisor;
   rem = divident % divisor;
-  printf("out:%d,rem:%d\n",out,rem);
+  //printf("out:%d,rem:%d\n",out,rem);
   divident = -10;
   divisor = 2;
   out = divident / divisor;
   rem = divident % divisor;
-  printf("out:%d,rem:%d\n",out,rem);
+  //printf("out:%d,rem:%d\n",out,rem);
 
   rem = out + 1;
   out = rem + 1;

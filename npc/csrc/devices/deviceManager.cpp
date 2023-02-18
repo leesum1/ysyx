@@ -4,6 +4,7 @@
 #include "devicetimer.h"
 #include "devicevga.h"
 #include "devicekb.h"
+#include "devicemouse.h"
 #include "assert.h"
 #include "simtop.h"
 #include "simconf.h"
@@ -40,7 +41,7 @@ static int thread_func(void* ptr) {
  */
 void DeviceManager::DeviceManagerInit(void) {
     bool ret;
-    ret = installDevice("deviceuart", "uart0");
+    ret = installDevice("Deviceuart", "uart0");
     assert(ret == true);
     printf(COLOR_BLUE "uart0 init\n" COLOR_END);
 
@@ -52,6 +53,10 @@ void DeviceManager::DeviceManagerInit(void) {
     ret = installDevice("Devicekb", "kb0");
     assert(ret == true);
     printf(COLOR_BLUE"keyboard0 init\n" COLOR_END);
+
+    ret = installDevice("Devicemouse", "mouse0");
+    assert(ret == true);
+    printf(COLOR_BLUE"mouse0 init\n" COLOR_END);
 
     ret = installDevice("Devicevga", "vga0");
     assert(ret == true);
@@ -119,10 +124,11 @@ do{\
  * @return Devicebase* 指向设备的指针
  */
 Devicebase* DeviceManager::createDevice(const char* name) {
-    DEVICE_CLASS_MATCH(deviceuart);
+    DEVICE_CLASS_MATCH(Deviceuart);
     DEVICE_CLASS_MATCH(Devicetimer);
     DEVICE_CLASS_MATCH(Devicevga);
     DEVICE_CLASS_MATCH(Devicekb);
+    DEVICE_CLASS_MATCH(Devicemouse);
     return NULL;
 }
 
