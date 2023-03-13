@@ -2,17 +2,20 @@
  * Copyright (c) 2014-2022 Zihao Yu, Nanjing University
  *
  * NEMU is licensed under Mulan PSL v2.
- * You can use this software according to the terms and conditions of the Mulan PSL v2.
- * You may obtain a copy of Mulan PSL v2 at:
+ * You can use this software according to the terms and conditions of the Mulan
+ *PSL v2. You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
  *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY
+ *KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ *NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  *
  * See the Mulan PSL v2 for more details.
  ***************************************************************************************/
 
+#include <cassert>
+#include <cstdio>
+#include <iostream>
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
@@ -37,59 +40,70 @@
 #error Please use LLVM with major version >= 11
 #endif
 
-
 #include "itrace.h"
 
 using namespace llvm;
 
-static llvm::MCDisassembler* gDisassembler = nullptr;
-static llvm::MCSubtargetInfo* gSTI = nullptr;
-static llvm::MCInstPrinter* gIP = nullptr;
+static llvm::MCDisassembler *gDisassembler = nullptr;
+static llvm::MCSubtargetInfo *gSTI = nullptr;
+static llvm::MCInstPrinter *gIP = nullptr;
 
-static void init_disasm(const char* triple) {
-    llvm::InitializeAllTargetInfos();
-    llvm::InitializeAllTargetMCs();
-    llvm::InitializeAllAsmParsers();
-    llvm::InitializeAllDisassemblers();
+static void init_disasm(const char *triple) {
+  llvm::InitializeAllTargetInfos();
+  llvm::InitializeAllTargetMCs();
+  llvm::InitializeAllAsmParsers();
+  llvm::InitializeAllDisassemblers();
 
-    std::string errstr;
-    std::string gTriple(triple);
+  std::string errstr;
+  std::string gTriple(triple);
 
-    llvm::MCInstrInfo* gMII = nullptr;
-    llvm::MCRegisterInfo* gMRI = nullptr;
-    auto target = llvm::TargetRegistry::lookupTarget(gTriple, errstr);
-    if (!target) {
-        llvm::errs() << "Can't find target for " << gTriple << ": " << errstr << "\n";
-        assert(0);
-    }
+  llvm::MCInstrInfo *gMII = nullptr;
+  llvm::MCRegisterInfo *gMRI = nullptr;
+  auto target = llvm::TargetRegistry::lookupTarget(gTriple, errstr);
+  if (!target) {
+    llvm::errs() << "Can't find target for " << gTriple << ": " << errstr
+                 << "\n";
+    assert(0);
+  }
 
-    MCTargetOptions MCOptions;
-    gSTI = target->createMCSubtargetInfo(gTriple, "", "");
-    std::string isa = target->getName();
-    if (isa == "riscv32" || isa == "riscv64") {
-        gSTI->ApplyFeatureFlag("+m");
-        gSTI->ApplyFeatureFlag("+a");
-        gSTI->ApplyFeatureFlag("+c");
-        gSTI->ApplyFeatureFlag("+f");
-        gSTI->ApplyFeatureFlag("+d");
-    }
-    gMII = target->createMCInstrInfo();
-    gMRI = target->createMCRegInfo(gTriple);
-    auto AsmInfo = target->createMCAsmInfo(*gMRI, gTriple, MCOptions);
+  MCTargetOptions MCOptions;
+  gSTI = target->createMCSubtargetInfo(gTriple, "sifive-s76", "+m,+c");
+  std::string isa = target->getName();
+  if (isa == "riscv32" || isa == "riscv64") {
+    gSTI->ApplyFeatureFlag("+m");
+    gSTI->ApplyFeatureFlag("+a");
+    gSTI->ApplyFeatureFlag("+c");
+    gSTI->ApplyFeatureFlag("+f");
+    gSTI->ApplyFeatureFlag("+d");
+    printf("11111\n");
+  }
+
+  //   printf("feature:%s\n", gSTI->getFeatureString());
+  gMII = target->createMCInstrInfo();
+  gMRI = target->createMCRegInfo(gTriple);
+
+  auto x = gSTI->getFeatureString();
+  auto y = gSTI->getFeatureBits();
+  printf("feature:%s\n", x.str().c_str());
+
+  cout << "feature:" << x.str() << endl;
+  assert(0);
+
+  auto AsmInfo = target->createMCAsmInfo(*gMRI, gTriple, MCOptions);
 #if LLVM_VERSION_MAJOR >= 13
-    auto llvmTripleTwine = Twine(triple);
-    auto llvmtriple = llvm::Triple(llvmTripleTwine);
-    auto Ctx = new llvm::MCContext(llvmtriple, AsmInfo, gMRI, nullptr);
+  auto llvmTripleTwine = Twine(triple);
+  auto llvmtriple = llvm::Triple(llvmTripleTwine);
+  auto Ctx = new llvm::MCContext(llvmtriple, AsmInfo, gMRI, nullptr);
 #else
-    auto Ctx = new llvm::MCContext(AsmInfo, gMRI, nullptr);
+  auto Ctx = new llvm::MCContext(AsmInfo, gMRI, nullptr);
 #endif
-    gDisassembler = target->createMCDisassembler(*gSTI, *Ctx);
-    gIP = target->createMCInstPrinter(llvm::Triple(gTriple),
-        AsmInfo->getAssemblerDialect(), *AsmInfo, *gMII, *gMRI);
-    gIP->setPrintImmHex(true);
-    gIP->setPrintBranchImmAsAddress(true);
+  gDisassembler = target->createMCDisassembler(*gSTI, *Ctx);
+  gIP = target->createMCInstPrinter(llvm::Triple(gTriple),
+                                    AsmInfo->getAssemblerDialect(), *AsmInfo,
+                                    *gMII, *gMRI);
+  gIP->setPrintImmHex(true);
+  gIP->setPrintBranchImmAsAddress(true);
 }
-
 
 /**
  * @brief
@@ -100,58 +114,56 @@ static void init_disasm(const char* triple) {
  * @param code 指令内容
  * @param nbyte 指令长度
  */
-static void disassemble(char* str, int size, uint64_t pc, uint8_t* code, int nbyte) {
-    MCInst inst;
-    llvm::ArrayRef<uint8_t> arr(code, nbyte);
-    uint64_t dummy_size = 0;
-    gDisassembler->getInstruction(inst, dummy_size, arr, pc, llvm::nulls());
+static void disassemble(char *str, int size, uint64_t pc, uint8_t *code,
+                        int nbyte) {
+  MCInst inst;
+  llvm::ArrayRef<uint8_t> arr(code, nbyte);
+  uint64_t dummy_size = 0;
+  gDisassembler->getInstruction(inst, dummy_size, arr, pc, llvm::nulls());
 
-    std::string s;
-    raw_string_ostream os(s);
+  std::string s;
+  raw_string_ostream os(s);
 
+  gIP->printInst(&inst, pc, "", *gSTI, os);
+  int skip = s.find_first_not_of('\t');
 
-    gIP->printInst(&inst, pc, "", *gSTI, os);
-    int skip = s.find_first_not_of('\t');
-
-    const char* p = s.c_str() + skip;
-    assert((int)s.length() - skip < size);
-    strcpy(str, p);
+  const char *p = s.c_str() + skip;
+  assert((int)s.length() - skip < size);
+  strcpy(str, p);
 }
 
 #include "simtop.h"
-extern Simtop* mysim_p;
+extern Simtop *mysim_p;
 
 Itrace::Itrace(/* args */) {
-    init_disasm("riscv64-pc-linux-gnu");
-    cout << "Itrace init!" << endl;
+  init_disasm("riscv64-pc-linux-gnu");
+  cout << "Itrace init!" << endl;
 }
 
-Itrace::~Itrace() {
-}
+Itrace::~Itrace() {}
 
 void Itrace::llvmDis() {
 
-    static char pc_str[32];
-    static char dis_str[64];
-    static uint64_t pc;
-    static uint64_t inst_data;
+  static char pc_str[32];
+  static char dis_str[64];
+  static uint64_t pc;
+  static uint64_t inst_data;
 
-    pc = mysim_p->commited_list.inst.front().inst_pc;
-    inst_data = mysim_p->commited_list.inst.front().inst_data;
+  pc = mysim_p->commited_list.inst.front().inst_pc;
+  inst_data = mysim_p->commited_list.inst.front().inst_data;
 
-    disassemble(dis_str, sizeof(dis_str), pc, (uint8_t*)&inst_data, 4);
+  disassemble(dis_str, sizeof(dis_str), pc, (uint8_t *)&inst_data, 4);
 
-    sprintf(pc_str, "pc:%p\t", (void*)pc);
-    string dis_data;
-    dis_data.append(pc_str);
-    dis_data.append(dis_str);
-    this->inst_trace.push_back(dis_data);
-    // cout << dis_data << endl;
+  sprintf(pc_str, "pc:%p\t", (void *)pc);
+  string dis_data;
+  dis_data.append(pc_str);
+  dis_data.append(dis_str);
+  this->inst_trace.push_back(dis_data);
+  // cout << dis_data << endl;
 }
 
-
 void Itrace::printRecentInst() {
-    for (auto itr : inst_trace) {
-        cout << itr << endl;
-    }
+  for (auto itr : inst_trace) {
+    cout << itr << endl;
+  }
 }

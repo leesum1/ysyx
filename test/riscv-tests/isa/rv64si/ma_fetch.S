@@ -120,10 +120,10 @@ RVTEST_CODE_BEGIN
   bnez t2, pass
 
   # Skip if clearing misa.C does not set IALIGN=32
-  csrr t0, mepc
+  csrr t0, mtvec
   la t1, 1f
   addi t1, t1, 2
-  csrw mepc, t1
+  csrw mtvec, t1
   j 1f
 
   .option rvc
@@ -132,7 +132,7 @@ RVTEST_CODE_BEGIN
   j pass
   .option norvc
 2:
-  csrw mepc, t0
+  csrw mtvec, t0
   csrsi misa, 1 << ('c' - 'a')
 
   # IALIGN=32 cannot be set if doing so would cause a misaligned instruction
@@ -212,7 +212,7 @@ stvec_handler:
   bne a0, t0, fail
 1:
 
-  addi a1, a1, 12
+  addi a1, a1, 8
   csrw sepc, a1
   sret
 
