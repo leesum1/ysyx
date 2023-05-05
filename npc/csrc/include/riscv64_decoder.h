@@ -3,6 +3,7 @@
 
 
 #include <iostream>
+#include <cstdint>
 
 class Riscv64_decoder {
 private:

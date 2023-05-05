@@ -4,6 +4,8 @@
 #include <dlfcn.h>
 #include <iostream>
 #include <list>
+#include <cstdint>
+
 using namespace std;
 
 class Difftest {

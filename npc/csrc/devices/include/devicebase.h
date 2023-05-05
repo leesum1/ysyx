@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <stdint.h>
 
 using namespace std;
 namespace Topdevice {

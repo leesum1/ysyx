@@ -4,6 +4,7 @@
 #include <iostream>
 #include <regex.h>
 #include <vector>
+#include <cstdint>
 
 using namespace std;
 

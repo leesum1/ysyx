@@ -86,9 +86,6 @@ static void init_disasm(const char *triple) {
   auto y = gSTI->getFeatureBits();
   printf("feature:%s\n", x.str().c_str());
 
-  cout << "feature:" << x.str() << endl;
-  assert(0);
-
   auto AsmInfo = target->createMCAsmInfo(*gMRI, gTriple, MCOptions);
 #if LLVM_VERSION_MAJOR >= 13
   auto llvmTripleTwine = Twine(triple);
