@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <stdint.h>
 // #include "ringbuff.hpp"
 #include "ringbuff.hpp"
 using namespace std;

@@ -1,6 +1,5 @@
 *.*
 *
-build/
 !*/
 !Makefile
 !*.mk
@@ -17,4 +16,7 @@ build/
 !libnemu.so
 !dummy-riscv64-npc.bin
 obj_dir
+build/
+.xmake/
+.vscode/
 testfile.v

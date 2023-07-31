@@ -14,8 +14,8 @@
 namespace cr = CppReadline;
 using ret = cr::Console::ReturnCode;
 
-const char *nemu_so_path = " ";
-const char *img_path = " ";
+const char *nemu_so_path = "/home/leesum/workhome/ysyx/npc/libnemu.so";
+const char *img_path = "/home/leesum/workhome/ysyx/npc/rtthread.bin";
 const char *signature_path = NULL;
 
 Simtop *mysim_p;

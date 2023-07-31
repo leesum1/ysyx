@@ -104,6 +104,7 @@ void Simtop::stepCycle(bool val) {
   if (isSdbOk("wave")) {
     this->dampWave();
   }
+
   /* 提交的时候进行 difftest
    * commited_list.nextpc 和 commited_list.inst，不为空
    * 表示 NPC 指令已经提交，并且得到了下一条提交指令的 pc

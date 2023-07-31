@@ -1,5 +1,5 @@
 #include "devicemouse.h"
-#include "SDL_mouse.h"
+#include <SDL_mouse.h>
 #include "devicebase.h"
 #include <cstdint>
 

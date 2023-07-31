@@ -1,11 +1,11 @@
-TOP_MODULE := ysyx_041514
+TOP_MODULE := ysyx_22041514
 
 # src
 CSRC +=  $(shell find $(abspath ./csrc) -name "*.cpp")
 VSRC +=  $(shell find $(abspath ./vsrc) -name "*.v" -or -name "*.sv")
 
 # 控制参数
-WAVE ?= 0
+WAVE ?= 1
 AUTO ?= 1
 VGA ?= 0
 
@@ -48,7 +48,7 @@ GCC_LIB = -lreadline \
 
 GCC_LIB += $(NPC_HOME)/libnemu.so
 
-GCC_LIB += ${LLVM_LIB} -flto 
+GCC_LIB += ${LLVM_LIB}  
 
 
 GCC_LDFLAGS := $(addprefix -LDFLAGS ,${GCC_LIB})
