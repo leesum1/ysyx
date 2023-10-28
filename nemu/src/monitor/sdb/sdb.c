@@ -128,8 +128,8 @@ static int cmd_p(char* args) {
   bool ret;
   Log("expr:%s\n", args);
   Log("expret:%lu\n", expr(args, &ret));
-  extern void expr_test(void);
-  expr_test();
+  // extern void expr_test(void);
+  // expr_test();
   return 0;
 }
 

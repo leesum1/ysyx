@@ -53,6 +53,7 @@ static void mouse_data_io_handler(uint32_t offset, int len, bool is_write) {
     mouse_data_port_base[3] = mouse_y;
     break;
   default:
+  printf("offset: %d\n", offset);
   assert(0);
     break;
   };

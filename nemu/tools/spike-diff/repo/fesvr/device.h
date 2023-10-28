@@ -6,7 +6,7 @@
 #include <cstring>
 #include <string>
 #include <functional>
-
+#include <cstdint>
 class memif_t;
 
 class command_t

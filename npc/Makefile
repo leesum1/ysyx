@@ -5,7 +5,7 @@ CSRC +=  $(shell find $(abspath ./csrc) -name "*.cpp")
 VSRC +=  $(shell find $(abspath ./vsrc) -name "*.v" -or -name "*.sv")
 
 # 控制参数
-WAVE ?= 1
+WAVE ?= 0
 AUTO ?= 1
 VGA ?= 0
 

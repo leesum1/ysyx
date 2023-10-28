@@ -362,8 +362,8 @@ void Simtop::showSimPerformance() {
       {" total clk", "total commit", "IPC (commit/clk)", "CPI (clk/commit)"});
   universal_constants.add_row(
       {to_string(clk_count), to_string(commit_count),
-       to_string((float)((float)clk_count / (float)commit_count)),
-       to_string((float)((float)commit_count / (float)clk_count))});
+       to_string((float)((float)commit_count / (float)clk_count)),
+       to_string((float)((float)clk_count / (float)commit_count))});
 
   cout << universal_constants << endl;
 
